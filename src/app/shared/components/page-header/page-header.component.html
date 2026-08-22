@@ -1,0 +1,86 @@
+<header class="page-header">
+
+  <div class="page-header-content">
+
+    @if (breadcrumb) {
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+
+        <span class="breadcrumb-item">
+          {{ breadcrumb }}
+        </span>
+
+        <span class="breadcrumb-separator" aria-hidden="true">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </span>
+
+        <span
+          class="breadcrumb-current"
+          aria-current="page">
+          {{ title }}
+        </span>
+
+      </nav>
+    }
+
+    <div class="page-header-main">
+
+      <div class="page-header-text">
+
+        <h1 class="page-title">
+          {{ title }}
+        </h1>
+
+        @if (description) {
+          <p class="page-description">
+            {{ description }}
+          </p>
+        }
+
+      </div>
+
+      @if (showAction && actionLabel) {
+        <div class="page-header-action">
+
+          <button
+            type="button"
+            class="action-button"
+            (click)="onActionClick()"
+            [attr.aria-label]="actionLabel">
+
+            <svg
+              class="action-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true">
+
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+
+            </svg>
+
+            <span>{{ actionLabel }}</span>
+
+          </button>
+
+        </div>
+      }
+
+    </div>
+
+  </div>
+
+</header>

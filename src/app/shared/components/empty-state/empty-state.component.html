@@ -1,0 +1,116 @@
+<div
+  class="empty-state"
+  role="status"
+  aria-live="polite">
+
+  <!-- Icon -->
+  <div class="empty-icon" aria-hidden="true">
+
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.7"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+
+      <rect
+        x="3"
+        y="4"
+        width="18"
+        height="16"
+        rx="2">
+      </rect>
+
+      <line
+        x1="8"
+        y1="9"
+        x2="16"
+        y2="9">
+      </line>
+
+      <line
+        x1="8"
+        y1="13"
+        x2="16"
+        y2="13">
+      </line>
+
+      <line
+        x1="8"
+        y1="17"
+        x2="12"
+        y2="17">
+      </line>
+
+    </svg>
+
+  </div>
+
+
+  <!-- Content -->
+  <div class="empty-content">
+
+    <h3 class="empty-title">
+      {{ title }}
+    </h3>
+
+    @if (description) {
+
+      <p class="empty-description">
+        {{ description }}
+      </p>
+
+    }
+
+  </div>
+
+
+  <!-- Optional Action -->
+  @if (showAction && actionLabel) {
+
+    <button
+      type="button"
+      class="empty-action"
+      (click)="onActionClick()"
+      [attr.aria-label]="actionLabel">
+
+      <svg
+        class="action-icon"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true">
+
+        <line
+          x1="12"
+          y1="5"
+          x2="12"
+          y2="19">
+        </line>
+
+        <line
+          x1="5"
+          y1="12"
+          x2="19"
+          y2="12">
+        </line>
+
+      </svg>
+
+      <span>
+        {{ actionLabel }}
+      </span>
+
+    </button>
+
+  }
+
+</div>

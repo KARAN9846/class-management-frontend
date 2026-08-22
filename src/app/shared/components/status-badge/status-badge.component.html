@@ -1,0 +1,21 @@
+<span
+  class="status-badge"
+  [class.status-success]="variant === 'success'"
+  [class.status-warning]="variant === 'warning'"
+  [class.status-danger]="variant === 'danger'"
+  [class.status-info]="variant === 'info'"
+  [class.status-neutral]="variant === 'neutral'"
+  [attr.aria-label]="label">
+
+  @if (dot) {
+    <span
+      class="status-dot"
+      aria-hidden="true">
+    </span>
+  }
+
+  <span class="status-label">
+    {{ label }}
+  </span>
+
+</span>

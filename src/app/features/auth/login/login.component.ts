@@ -1,0 +1,147 @@
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+
+import { AuthService } from '../../../core/auth/auth.service';
+import { TokenService } from '../../../core/auth/token.service';
+import { LoginResponse } from '../models/login-response.model';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+})
+export class LoginComponent {
+
+  email = '';
+  password = '';
+
+  showPassword = false;
+  rememberMe = false;
+
+  errorMessage = '';
+  isLoading = false;
+
+  constructor(
+    private readonly authService: AuthService,
+    private readonly tokenService: TokenService,
+    private readonly router: Router,
+    private readonly ngZone: NgZone,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
+
+  login(): void {
+
+    if (this.isLoading) {
+      return;
+    }
+
+    this.errorMessage = '';
+
+    if (!this.email.trim() || !this.password.trim()) {
+      this.errorMessage = 'Please enter your email and password.';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.authService.login({
+      email: this.email.trim(),
+      password: this.password
+    })
+    .subscribe({
+
+      next: (response: LoginResponse) => {
+
+        this.ngZone.run(() => {
+
+          console.log('Login successful:', response);
+
+          this.isLoading = false;
+
+          const token = response.data.accessToken;
+
+          this.tokenService.setToken(token);
+
+          const role = this.tokenService.getRole();
+
+          console.log('User role:', role);
+
+          switch (role) {
+
+            case 'SUPER_ADMIN':
+              this.router.navigate(['/super-admin/dashboard']);
+              break;
+
+            case 'ADMIN':
+              this.router.navigate(['/admin/dashboard']);
+              break;
+
+            case 'TEACHER':
+              this.router.navigate(['/teacher/dashboard']);
+              break;
+
+            case 'STUDENT':
+              this.router.navigate(['/student/dashboard']);
+              break;
+
+            default:
+              this.tokenService.removeToken();
+
+              this.errorMessage =
+                'Unable to determine your user role.';
+          }
+
+          this.cdr.detectChanges();
+        });
+      },
+
+      error: (error: HttpErrorResponse) => {
+
+        this.ngZone.run(() => {
+
+          console.error('Login failed:', error);
+
+          // STOP LOADING FIRST
+          this.isLoading = false;
+
+          // SET ERROR MESSAGE
+          if (error.status === 401) {
+
+            this.errorMessage =
+              'Invalid email or password. Please check your credentials and try again.';
+
+          } else if (error.status === 403) {
+
+            this.errorMessage =
+              'You do not have permission to access the system.';
+
+          } else if (error.status === 0) {
+
+            this.errorMessage =
+              'Unable to connect to the server. Please try again later.';
+
+          } else {
+
+            this.errorMessage =
+              'Something went wrong. Please try again.';
+          }
+
+          console.log('ERROR MESSAGE:', this.errorMessage);
+          console.log('LOADING:', this.isLoading);
+
+          // FORCE IMMEDIATE UI UPDATE
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+}

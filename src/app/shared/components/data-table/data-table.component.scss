@@ -1,0 +1,442 @@
+/* =========================================================
+   CMS DATA TABLE
+========================================================= */
+
+:host {
+  display: block;
+  width: 100%;
+
+  --primary: #3b82f6;
+  --primary-light: #eff6ff;
+  --primary-dark: #2563eb;
+
+  --surface: #ffffff;
+  --background: #f9fafb;
+
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+
+  --border: #e5e7eb;
+  --border-light: #f3f4f6;
+
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+
+  --radius-md: 10px;
+
+  --transition: 150ms ease;
+}
+
+
+/* =========================================================
+   WRAPPER
+========================================================= */
+
+.table-wrapper {
+  width: 100%;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-md);
+
+  background: var(--surface);
+
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+
+/* =========================================================
+   TABLE SCROLL
+========================================================= */
+
+.table-scroll {
+  width: 100%;
+
+  overflow-x: auto;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: var(--border-light);
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.data-table {
+  width: 100%;
+
+  min-width: 700px;
+
+  border-collapse: collapse;
+
+  table-layout: auto;
+
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.data-table thead {
+  background: #f8fafc;
+}
+
+.data-table th {
+  height: 48px;
+
+  padding: 0 16px;
+
+  border-bottom: 1px solid var(--border);
+
+  color: var(--text-secondary);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  letter-spacing: 0.06em;
+
+  text-align: left;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.data-table tbody tr {
+  background: var(--surface);
+
+  transition:
+    background var(--transition);
+}
+
+.data-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.data-table td {
+  height: 58px;
+
+  padding: 10px 16px;
+
+  border-bottom: 1px solid var(--border-light);
+
+  color: var(--text-primary);
+
+  font-size: 13px;
+
+  font-weight: 400;
+
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+/* =========================================================
+   ALIGNMENT
+========================================================= */
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.actions-header {
+  width: 150px;
+
+  text-align: right !important;
+}
+
+.actions-cell {
+  text-align: right;
+
+  white-space: nowrap;
+}
+
+.row-actions {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 6px;
+}
+
+.row-action {
+  min-height: 32px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 5px;
+
+  padding: 0 9px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 7px;
+
+  background: var(--surface);
+
+  color: var(--text-secondary);
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition);
+}
+
+.row-action:hover {
+  background: var(--primary-light);
+
+  border-color: #bfdbfe;
+
+  color: var(--primary);
+}
+
+.row-action.danger:hover {
+  background: var(--danger-light);
+
+  border-color: #fecaca;
+
+  color: var(--danger);
+}
+
+.row-action:focus-visible {
+  outline: 2px solid var(--primary);
+
+  outline-offset: 2px;
+}
+
+.action-icon {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-cell {
+  height: 220px !important;
+
+  padding: 0 !important;
+
+  text-align: center;
+}
+
+.empty-state {
+  min-height: 220px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  color: var(--text-muted);
+}
+
+.empty-icon {
+  width: 48px;
+
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 6px;
+
+  border-radius: 50%;
+
+  background: var(--background);
+
+  color: var(--text-muted);
+}
+
+.empty-state strong {
+  color: var(--text-primary);
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.empty-state span {
+  color: var(--text-muted);
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.table-loading {
+  min-height: 240px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  color: var(--text-secondary);
+
+  font-size: 13px;
+}
+
+.loading-spinner {
+  width: 28px;
+
+  height: 28px;
+
+  box-sizing: border-box;
+
+  border: 3px solid var(--primary-light);
+
+  border-top-color: var(--primary);
+
+  border-radius: 50%;
+
+  animation: table-spin 700ms linear infinite;
+}
+
+@keyframes table-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .data-table {
+    min-width: 650px;
+  }
+
+  .data-table th {
+    height: 46px;
+
+    padding: 0 14px;
+
+    font-size: 10px;
+  }
+
+  .data-table td {
+    height: 54px;
+
+    padding: 9px 14px;
+
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .table-wrapper {
+    border-radius: 8px;
+  }
+
+  .data-table {
+    min-width: 620px;
+  }
+
+  .data-table th {
+    padding: 0 12px;
+  }
+
+  .data-table td {
+    padding: 8px 12px;
+  }
+
+  .row-action {
+    min-height: 30px;
+
+    padding: 0 8px;
+
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,23 @@
+<div
+  class="loading-container"
+  [class.full-page]="fullPage"
+  [class.size-small]="size === 'small'"
+  [class.size-medium]="size === 'medium'"
+  [class.size-large]="size === 'large'"
+  role="status"
+  aria-live="polite"
+  aria-label="Loading">
+
+  <div class="loading-content">
+
+    <span class="spinner" aria-hidden="true"></span>
+
+    @if (message) {
+      <span class="loading-message">
+        {{ message }}
+      </span>
+    }
+
+  </div>
+
+</div>

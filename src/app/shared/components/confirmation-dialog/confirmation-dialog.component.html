@@ -1,0 +1,94 @@
+@if (visible) {
+
+  <div
+    class="dialog-overlay"
+    (click)="onOverlayClick()"
+    role="presentation">
+
+    <section
+      class="confirmation-dialog"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="'confirmation-title'">
+
+      <!-- Icon -->
+      <div
+        class="dialog-icon"
+        [class.dialog-icon-danger]="danger"
+        aria-hidden="true">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round">
+
+          <path
+            d="M12 9v4">
+          </path>
+
+          <path
+            d="M12 17h.01">
+          </path>
+
+          <path
+            d="M10.3 3.5 2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.5a2 2 0 0 0-3.4 0Z">
+          </path>
+
+        </svg>
+
+      </div>
+
+
+      <!-- Content -->
+      <div class="dialog-content">
+
+        <h2
+          id="confirmation-title"
+          class="dialog-title">
+
+          {{ title }}
+
+        </h2>
+
+        <p class="dialog-message">
+
+          {{ message }}
+
+        </p>
+
+      </div>
+
+
+      <!-- Actions -->
+      <div class="dialog-actions">
+
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="onCancel()">
+
+          {{ cancelLabel }}
+
+        </button>
+
+
+        <button
+          type="button"
+          class="confirm-button"
+          [class.confirm-button-normal]="!danger"
+          (click)="onConfirm()">
+
+          {{ confirmLabel }}
+
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+}

@@ -1,0 +1,169 @@
+/* =========================================================
+   CMS LOADING COMPONENT
+========================================================= */
+
+:host {
+  display: block;
+  width: 100%;
+
+  --primary: #3b82f6;
+  --primary-light: #eff6ff;
+
+  --text-secondary: #6b7280;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.loading-container {
+  width: 100%;
+  min-height: 160px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   FULL PAGE
+========================================================= */
+
+.loading-container.full-page {
+  position: fixed;
+  inset: 0;
+
+  z-index: 9999;
+
+  min-height: 100dvh;
+
+  background: rgba(255, 255, 255, 0.92);
+
+  backdrop-filter: blur(2px);
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+}
+
+
+/* =========================================================
+   SPINNER
+========================================================= */
+
+.spinner {
+  display: block;
+
+  box-sizing: border-box;
+
+  border-style: solid;
+  border-radius: 50%;
+
+  border-color: var(--primary-light);
+  border-top-color: var(--primary);
+
+  animation: loading-spin 700ms linear infinite;
+}
+
+
+/* =========================================================
+   SIZES
+========================================================= */
+
+.size-small .spinner {
+  width: 20px;
+  height: 20px;
+
+  border-width: 2px;
+}
+
+.size-medium .spinner {
+  width: 28px;
+  height: 28px;
+
+  border-width: 3px;
+}
+
+.size-large .spinner {
+  width: 38px;
+  height: 38px;
+
+  border-width: 3px;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.loading-message {
+  color: var(--text-secondary);
+
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  line-height: 1.5;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .spinner {
+    animation-duration: 1.5s;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .loading-container {
+    min-height: 140px;
+  }
+
+  .loading-message {
+    font-size: 12px;
+  }
+}

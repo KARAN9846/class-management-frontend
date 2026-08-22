@@ -1,0 +1,368 @@
+/* =========================================================
+   CMS CONFIRMATION DIALOG
+========================================================= */
+
+:host {
+  display: contents;
+
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+
+  --danger: #dc2626;
+  --danger-dark: #b91c1c;
+  --danger-light: #fef2f2;
+  --danger-border: #fecaca;
+
+  --surface: #ffffff;
+
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+
+  --border: #e5e7eb;
+
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --transition: 150ms ease;
+}
+
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+.dialog-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  background: rgba(15, 23, 42, 0.45);
+
+  backdrop-filter: blur(3px);
+
+  animation: overlay-in 150ms ease-out;
+}
+
+
+/* =========================================================
+   DIALOG
+========================================================= */
+
+.confirmation-dialog {
+  width: 100%;
+
+  max-width: 420px;
+
+  box-sizing: border-box;
+
+  padding: 28px;
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  background: var(--surface);
+
+  box-shadow:
+    0 20px 45px rgba(15, 23, 42, 0.16);
+
+  text-align: center;
+
+  animation: dialog-in 150ms ease-out;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.dialog-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  background: #eff6ff;
+
+  color: var(--primary);
+}
+
+
+.dialog-icon-danger {
+  background: var(--danger-light);
+
+  color: var(--danger);
+}
+
+
+.dialog-icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.dialog-content {
+  max-width: 350px;
+
+  margin: 0 auto;
+}
+
+
+.dialog-title {
+  margin: 0;
+
+  color: var(--text-primary);
+
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+
+  font-size: 18px;
+
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+
+.dialog-message {
+  margin: 8px 0 0;
+
+  color: var(--text-secondary);
+
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.dialog-actions {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 26px;
+}
+
+
+/* =========================================================
+   BUTTON BASE
+========================================================= */
+
+.cancel-button,
+.confirm-button {
+  min-width: 90px;
+
+  height: 40px;
+
+  padding: 0 16px;
+
+  border-radius: var(--radius-md);
+
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+
+/* =========================================================
+   CANCEL
+========================================================= */
+
+.cancel-button {
+  border: 1px solid var(--border);
+
+  background: var(--surface);
+
+  color: var(--text-secondary);
+}
+
+
+.cancel-button:hover {
+  background: #f9fafb;
+
+  border-color: #d1d5db;
+
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   CONFIRM
+========================================================= */
+
+.confirm-button {
+  border: 1px solid var(--danger);
+
+  background: var(--danger);
+
+  color: #ffffff;
+}
+
+
+.confirm-button:hover {
+  border-color: var(--danger-dark);
+
+  background: var(--danger-dark);
+}
+
+
+.confirm-button-normal {
+  border-color: var(--primary);
+
+  background: var(--primary);
+}
+
+
+.confirm-button-normal:hover {
+  border-color: var(--primary-dark);
+
+  background: var(--primary-dark);
+}
+
+
+/* =========================================================
+   ACTIVE / FOCUS
+========================================================= */
+
+.cancel-button:active,
+.confirm-button:active {
+  transform: translateY(1px);
+}
+
+
+.cancel-button:focus-visible,
+.confirm-button:focus-visible {
+  outline: 2px solid var(--primary);
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes overlay-in {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+@keyframes dialog-in {
+
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .dialog-overlay {
+    padding: 16px;
+  }
+
+  .confirmation-dialog {
+    padding: 24px 20px;
+  }
+
+  .dialog-icon {
+    width: 48px;
+    height: 48px;
+
+    margin-bottom: 16px;
+  }
+
+  .dialog-title {
+    font-size: 17px;
+  }
+
+  .dialog-message {
+    font-size: 12px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+
+    gap: 8px;
+
+    margin-top: 22px;
+  }
+
+  .cancel-button,
+  .confirm-button {
+    width: 100%;
+  }
+}

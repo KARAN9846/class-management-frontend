@@ -1,0 +1,104 @@
+@if (totalItems > 0) {
+
+  <div class="pagination">
+
+    <!-- Results Information -->
+    <div class="pagination-info">
+
+      Showing
+      <strong>{{ startItem }}</strong>
+      –
+      <strong>{{ endItem }}</strong>
+      of
+      <strong>{{ totalItems }}</strong>
+
+    </div>
+
+
+    <!-- Controls -->
+    <div class="pagination-controls">
+
+      <!-- Previous -->
+      <button
+        type="button"
+        class="pagination-button navigation-button"
+        [disabled]="currentPage === 1"
+        aria-label="Previous page"
+        (click)="previousPage()">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round">
+
+          <polyline points="15 18 9 12 15 6"></polyline>
+
+        </svg>
+
+      </button>
+
+
+      <!-- Pages -->
+      @for (page of pages; track $index) {
+
+        @if (page === '...') {
+
+          <span class="pagination-ellipsis">
+            …
+          </span>
+
+        } @else {
+
+<button
+
+      type="button"
+
+      class="pagination-button page-button"
+
+      [class.active]="isCurrentPage(page)"
+
+      [attr.aria-current]="isCurrentPage(page) ? 'page' : null"
+
+      [attr.aria-label]="'Go to page ' + page"
+
+      (click)="changePage(+page)">
+
+      {{ page }}
+
+    </button>
+
+        }
+
+      }
+
+
+      <!-- Next -->
+      <button
+        type="button"
+        class="pagination-button navigation-button"
+        [disabled]="currentPage === totalPages"
+        aria-label="Next page"
+        (click)="nextPage()">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round">
+
+          <polyline points="9 18 15 12 9 6"></polyline>
+
+        </svg>
+
+      </button>
+
+    </div>
+
+  </div>
+
+}

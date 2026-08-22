@@ -1,0 +1,203 @@
+<div class="app-shell">
+
+  <!-- Mobile Overlay -->
+  @if (sidebarOpen) {
+    <div
+      class="sidebar-overlay"
+      (click)="closeSidebar()">
+    </div>
+  }
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside
+    class="sidebar"
+    [class.sidebar-open]="sidebarOpen">
+
+<!-- Logo -->
+<div class="sidebar-brand">
+
+  <div class="brand-logo">
+    <img
+      src="/assets/images/cms_logo.png"
+      alt="CMS Logo"
+      class="cms-logo"
+    />
+  </div>
+
+  <div class="brand-text">
+    <strong>CMS</strong>
+    <span>Class Management</span>
+  </div>
+
+</div>
+
+
+
+<!-- Navigation -->
+<!-- Navigation -->
+<nav class="sidebar-nav">
+
+  @for (section of navigationSections; track section.title) {
+
+    <div class="nav-section">
+
+      <span class="nav-section-title">
+        {{ section.title }}
+      </span>
+
+
+      @for (item of section.items; track item.route) {
+
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item"
+          (click)="closeSidebar()">
+
+          <span class="nav-icon">
+            {{ item.icon }}
+          </span>
+
+          <span>
+            {{ item.label }}
+          </span>
+
+        </a>
+
+      }
+
+    </div>
+
+  }
+
+</nav>
+
+    <!-- Sidebar Bottom -->
+    <div class="sidebar-bottom">
+
+      <div class="user-card">
+
+        <div class="user-avatar">
+          {{ userInitial }}
+        </div>
+
+        <div class="user-info">
+
+          <strong>
+            {{ userName }}
+          </strong>
+
+          <span>
+            {{ userRole }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="logout()">
+
+        <span class="logout-icon">↪</span>
+
+        <span>Logout</span>
+
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ================= MAIN AREA ================= -->
+  <div class="main-area">
+
+    <!-- Header -->
+    <header class="top-header">
+
+      <div class="header-left">
+
+        <!-- Mobile Menu -->
+        <button
+          type="button"
+          class="menu-button"
+          aria-label="Open navigation"
+          (click)="toggleSidebar()">
+
+          <span></span>
+          <span></span>
+          <span></span>
+
+        </button>
+
+
+        <div class="breadcrumb">
+
+          <span class="breadcrumb-current">
+            Dashboard
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="header-right">
+
+        <!-- Notification -->
+        <button
+          type="button"
+          class="header-button"
+          aria-label="Notifications">
+
+          <span class="notification-icon">♢</span>
+
+          <span class="notification-dot"></span>
+
+        </button>
+
+
+        <!-- User -->
+        <div class="header-user">
+
+          <div class="header-avatar">
+            {{ userInitial }}
+          </div>
+
+          <div class="header-user-info">
+
+            <strong>
+              {{ userName }}
+            </strong>
+
+            <span>
+              {{ userRole }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- Main Content -->
+    <main class="content-area">
+
+      <div class="content-container">
+
+        <router-outlet></router-outlet>
+
+      </div>
+
+    </main>
+
+  </div>
+
+</div>

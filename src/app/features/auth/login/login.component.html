@@ -1,0 +1,169 @@
+<main class="login-page">
+  <div class="login-wrapper">
+
+    <section class="login-card" aria-label="CMS Login">
+
+      <!-- LEFT: CMS BRANDING -->
+      <div class="login-info">
+
+        <div class="bg-shape bg-shape-1"></div>
+        <div class="bg-shape bg-shape-2"></div>
+        <div class="bg-shape bg-shape-3"></div>
+
+        <div class="info-content">
+
+          <div class="brand-logo">
+
+            <img src="/assets/images/cms_logo.png" alt="CMS Logo" class="cms-logo" />
+
+          </div>
+
+          <div class="brand-content">
+
+            <p class="eyebrow">
+              CLASS MANAGEMENT SYSTEM
+            </p>
+
+            <h1 class="welcome-text">
+              Welcome back.
+            </h1>
+
+            <p class="desc-text">
+              Securely manage students, teachers, academics, and attendance
+              from one centralized professional platform.
+            </p>
+
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- RIGHT: LOGIN FORM -->
+      <div class="login-form-container">
+
+        <div class="form-header">
+          <h2>Sign in</h2>
+          <p>Enter your credentials to access your account.</p>
+        </div>
+
+
+        <!-- ERROR MESSAGE -->
+        @if (errorMessage) {
+        <div class="error-message" role="alert">
+
+          <div class="error-icon">!</div>
+
+          <div>
+            <strong>Authentication Failed</strong>
+            <p>{{ errorMessage }}</p>
+          </div>
+
+        </div>
+        }
+
+
+        <!-- LOGIN FORM -->
+        <form class="login-form" (ngSubmit)="login()">
+
+          <!-- EMAIL -->
+          <div class="form-group">
+
+            <label for="email">
+              Email Address
+            </label>
+
+            <input id="email" name="email" type="email" placeholder="Enter your email" [(ngModel)]="email"
+              [class.input-error]="errorMessage" (input)="errorMessage = ''" autocomplete="email" required />
+
+          </div>
+
+
+          <!-- PASSWORD -->
+          <div class="form-group">
+
+            <label for="password">
+              Password
+            </label>
+
+            <div class="password-input-wrapper">
+
+              <input id="password" name="password" [type]="showPassword ? 'text' : 'password'"
+                placeholder="Enter your password" [(ngModel)]="password" [class.input-error]="errorMessage"
+                (input)="errorMessage = ''" autocomplete="current-password" required />
+
+              <button type="button" class="password-toggle" (click)="togglePassword()"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- REMEMBER / FORGOT -->
+          <div class="form-actions">
+
+            <label class="remember-me">
+
+              <input type="checkbox" name="rememberMe" />
+
+              <span class="checkmark">
+
+                <svg viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 5L4.5 8.5L13 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+
+              </span>
+
+              <span>Remember me</span>
+
+            </label>
+
+
+            <button type="button" class="text-link forgot-link">
+              Forgot password?
+            </button>
+
+          </div>
+
+
+          <!-- LOGIN BUTTON -->
+<button
+  type="submit"
+  class="login-button"
+  [disabled]="isLoading"
+>
+  @if (isLoading) {
+    <span class="spinner"></span>
+    <span>Signing in...</span>
+  } @else {
+    <span>Sign In</span>
+  }
+</button>
+
+        </form>
+
+
+        <!-- FOOTER -->
+        <div class="form-footer">
+
+          <p>
+            Need help accessing your account?
+
+            <button type="button" class="text-link contact-link">
+              Contact Admin
+            </button>
+
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+</main>
