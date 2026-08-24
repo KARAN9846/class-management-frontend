@@ -143,12 +143,6 @@ export class AppLayoutComponent {
               },
 
               {
-                label: 'Sections',
-                route: '/admin/sections',
-                icon: '▥'
-              },
-
-              {
                 label: 'Subjects',
                 route: '/admin/subjects',
                 icon: '▤'

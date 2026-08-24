@@ -2,25 +2,33 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 import { TokenService } from '../auth/token.service';
+import { APP_CONSTANTS } from '../constants/app.constants';
 
 export const authGuard: CanActivateFn = () => {
 
-  const tokenService = inject(TokenService);
-  const router = inject(Router);
 
-  const token = tokenService.getToken();
+    // Development mode: bypass authentication
 
-  console.log('AUTH GUARD');
-  console.log('Token exists:', !!token);
+    if (APP_CONSTANTS.DEV_BYPASS_GUARDS) {
 
-  if (token) {
+        return true;
 
-    console.log('✅ AUTHENTICATED');
+    }
 
-    return true;
-  }
+    const tokenService = inject(TokenService);
+    const router = inject(Router);
 
-  console.log('❌ NOT AUTHENTICATED');
+    const token = tokenService.getToken();
 
-  return router.createUrlTree(['/login']);
+    console.log('AUTH GUARD');
+    console.log('Token exists:', !!token);
+
+    if (token) {
+        console.log('✅ AUTHENTICATED');
+           return true;
+    }
+
+    console.log('❌ NOT AUTHENTICATED');
+
+    return router.createUrlTree(['/login']);
 };

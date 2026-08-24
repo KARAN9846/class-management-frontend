@@ -6,10 +6,21 @@ import {
 } from '@angular/router';
 
 import { TokenService } from '../auth/token.service';
+import { APP_CONSTANTS } from '../constants/app.constants';
 
 export const roleGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot
 ) => {
+
+  // Development mode: bypass role restriction
+
+  if (APP_CONSTANTS.DEV_BYPASS_GUARDS) {
+
+    return true;
+
+  }
+
+
 
   const tokenService = inject(TokenService);
   const router = inject(Router);

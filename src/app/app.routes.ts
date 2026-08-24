@@ -13,6 +13,9 @@ import { PagePlaceholderComponent } from './shared/components/page-placeholder/p
 import { AccessDeniedComponent } from './features/errors/access-denied/access-denied.component';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { AcademicYearsComponent } from './features/admin/academic/academic-years/academic-years';
+import { ClassesComponent } from './features/admin/academic/classes/classes';
+import { SubjectsComponent } from './features/admin/academic/subjects/subjects';
 
 export const routes: Routes = [
 
@@ -91,7 +94,7 @@ export const routes: Routes = [
 
       {
         path: 'admin/academic-years',
-        component: PagePlaceholderComponent,
+        component: AcademicYearsComponent,
 
         canActivate: [roleGuard],
 
@@ -104,7 +107,7 @@ export const routes: Routes = [
 
       {
         path: 'admin/classes',
-        component: PagePlaceholderComponent,
+        component: ClassesComponent,
 
         canActivate: [roleGuard],
 
@@ -116,21 +119,8 @@ export const routes: Routes = [
       },
 
       {
-        path: 'admin/sections',
-        component: PagePlaceholderComponent,
-
-        canActivate: [roleGuard],
-
-        data: {
-          roles: ['ADMIN'],
-          title: 'Sections',
-          description: 'Manage class sections.'
-        }
-      },
-
-      {
         path: 'admin/subjects',
-        component: PagePlaceholderComponent,
+        component: SubjectsComponent,
 
         canActivate: [roleGuard],
 

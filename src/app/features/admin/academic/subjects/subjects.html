@@ -1,0 +1,341 @@
+<div class="subjects-page">
+
+<div class="page-header">
+  <div>
+    <h1>Subjects</h1>
+    <p>Manage subjects for each class.</p>
+  </div>
+
+  <button class="btn-primary" type="button" (click)="openAddForm()">
+    + Add Subject
+  </button>
+</div>
+
+
+<div class="filters-card">
+
+<input
+class="search-input"
+type="text"
+placeholder="Search subjects..."
+[(ngModel)]="searchTerm">
+
+
+<select
+class="filter-select"
+[(ngModel)]="classFilter">
+
+<option value="ALL">
+All Classes
+</option>
+
+@for(cls of classes; track cls.id){
+<option [ngValue]="cls.id">
+{{cls.name}}
+</option>
+}
+
+</select>
+
+
+<select
+class="filter-select"
+[(ngModel)]="statusFilter">
+
+<option value="ALL">
+All Status
+</option>
+
+<option value="ACTIVE">
+Active
+</option>
+
+<option value="INACTIVE">
+Inactive
+</option>
+
+</select>
+
+</div>
+
+
+
+<div class="table-card">
+
+<div class="table-header">
+<h2>Subjects</h2>
+<span>
+{{filteredSubjects.length}} records
+</span>
+</div>
+
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+<tr>
+<th>Subject</th>
+<th>Code</th>
+<th>Class</th>
+<th>Academic Year</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+
+<tbody>
+
+
+@for(subject of filteredSubjects; track subject.id){
+
+<tr>
+
+<td>
+<strong>
+{{subject.name}}
+</strong>
+</td>
+
+
+<td>
+{{subject.code || '-'}}
+</td>
+
+
+<td>
+{{subject.className || '-'}}
+</td>
+
+
+<td>
+{{subject.academicYear || '-'}}
+</td>
+
+
+<td>
+
+<span
+class="status-badge"
+[class.active]="subject.status==='ACTIVE'"
+[class.inactive]="subject.status==='INACTIVE'">
+
+{{subject.status}}
+
+</span>
+
+</td>
+
+
+<td>
+
+<div class="actions">
+
+<button
+class="action-btn edit"
+type="button"
+(click)="openEditForm(subject)">
+Edit
+</button>
+
+
+<button
+class="action-btn delete"
+type="button"
+(click)="deleteSubject(subject)">
+Delete
+</button>
+
+</div>
+
+</td>
+
+
+</tr>
+
+}
+
+
+
+@if(filteredSubjects.length===0){
+
+<tr>
+
+<td colspan="6" class="empty-state">
+
+No subjects found
+
+</td>
+
+</tr>
+
+}
+
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+
+
+
+@if(showForm){
+
+<div
+class="modal-backdrop"
+(click)="closeForm()">
+
+
+
+<div
+class="modal"
+(click)="$event.stopPropagation()">
+
+
+
+<h2>
+{{editingSubject ? 'Edit Subject':'Add Subject'}}
+</h2>
+
+
+
+<form
+#subjectForm="ngForm"
+(ngSubmit)="saveSubject()">
+
+
+
+<div class="form-group">
+
+<label>
+Subject Name
+</label>
+
+<input
+type="text"
+name="name"
+required
+placeholder="Mathematics"
+[(ngModel)]="form.name">
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>
+Code
+</label>
+
+<input
+type="text"
+name="code"
+required
+placeholder="MATH"
+[(ngModel)]="form.code">
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>
+Class
+</label>
+
+<select
+name="classId"
+[(ngModel)]="form.classId"
+required>
+
+@for(cls of classes; track cls.id){
+
+<option [ngValue]="cls.id">
+{{cls.name}}
+</option>
+
+}
+
+</select>
+
+</div>
+
+
+
+
+<div class="form-group">
+
+<label>
+Status
+</label>
+
+<select
+name="status"
+[(ngModel)]="form.status">
+
+<option value="ACTIVE">
+Active
+</option>
+
+<option value="INACTIVE">
+Inactive
+</option>
+
+</select>
+
+</div>
+
+
+
+
+<div class="modal-actions">
+
+
+<button
+type="button"
+class="btn-secondary"
+(click)="closeForm()">
+
+Cancel
+
+</button>
+
+
+
+<button
+type="submit"
+class="btn-primary"
+[disabled]="subjectForm.invalid">
+
+{{editingSubject?'Update':'Save'}}
+
+</button>
+
+
+</div>
+
+
+
+</form>
+
+
+
+</div>
+
+</div>
+
+}
+
+
+</div>
