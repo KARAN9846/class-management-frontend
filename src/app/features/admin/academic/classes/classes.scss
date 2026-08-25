@@ -40,12 +40,15 @@ app-search-input {
 
 .state-card,
 .error-state {
-  padding: 16px;
-  border-radius: 10px;
+  padding: 14px 18px;
   margin-bottom: 20px;
-  text-align: center;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #dc2626;
   font-size: 14px;
 }
+
 
 
 .state-card {
@@ -53,11 +56,6 @@ app-search-input {
   color: #64748b;
 }
 
-.error-state {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
 
 .table-card {
   background: #fff;

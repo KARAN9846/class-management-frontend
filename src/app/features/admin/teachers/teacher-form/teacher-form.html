@@ -1,1 +1,426 @@
-<p>teacher-form works!</p>
+<div class="page">
+
+  <!-- ================= HEADER ================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        {{ editing ? 'Edit Teacher' : 'Add Teacher' }}
+      </h1>
+
+      <p>
+        {{
+          editing
+            ? 'Update teacher information.'
+            : 'Create a new teacher account.'
+        }}
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="back-btn"
+      (click)="cancel()">
+
+      ← Back to Teachers
+
+    </button>
+
+  </div>
+
+
+  <!-- ================= FORM CARD ================= -->
+
+  <div class="form-card">
+
+    <!-- ================= LOADING ================= -->
+
+    @if (loading) {
+
+      <div class="loading-state">
+
+        <div class="loading-spinner"></div>
+
+        <span>
+          Loading teacher...
+        </span>
+
+      </div>
+
+    }
+
+
+    @if (!loading) {
+
+      <!-- ==================================================
+           ERROR BOX
+           ================================================== -->
+
+      @if (errorMessages.length > 0) {
+
+        <div class="error-state">
+
+          <div class="error-title">
+            Please fix the following:
+          </div>
+
+          <ul>
+
+            @for (
+              error of errorMessages;
+              track $index
+            ) {
+
+              <li>
+                {{ error }}
+              </li>
+
+            }
+
+          </ul>
+
+        </div>
+
+      }
+
+
+      <!-- ==================================================
+           SUCCESS BOX
+           ================================================== -->
+
+      @if (successMessage) {
+
+        <div class="success-state">
+
+          {{ successMessage }}
+
+        </div>
+
+      }
+
+
+      <!-- ================= FORM ================= -->
+
+      <form
+        #teacherForm="ngForm"
+        (ngSubmit)="saveTeacher()">
+
+
+        <div class="form-grid">
+
+
+          <!-- ==================================================
+               TEACHER NUMBER
+               EDIT ONLY
+               ================================================== -->
+
+          @if (editing) {
+
+            <div class="form-group">
+
+              <label for="teacherNumber">
+
+                Teacher Number
+
+                <span>*</span>
+
+              </label>
+
+              <input
+                id="teacherNumber"
+                type="text"
+                name="teacherNumber"
+                [(ngModel)]="form.teacherNumber"
+                required
+                maxlength="20"
+                placeholder="Enter teacher number"
+                [class.invalid]="
+                  !form.teacherNumber.trim() &&
+                  teacherForm.submitted
+                " />
+
+              @if (
+                !form.teacherNumber.trim() &&
+                teacherForm.submitted
+              ) {
+
+                <small class="field-error">
+
+                  Teacher number is required.
+
+                </small>
+
+              }
+
+            </div>
+
+          }
+
+
+          <!-- ==================================================
+               FIRST NAME
+               ================================================== -->
+
+          <div class="form-group">
+
+            <label for="firstName">
+
+              First Name
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              id="firstName"
+              type="text"
+              name="firstName"
+              [(ngModel)]="form.firstName"
+              required
+              placeholder="Enter first name"
+              [class.invalid]="
+                !form.firstName.trim() &&
+                teacherForm.submitted
+              " />
+
+            @if (
+              !form.firstName.trim() &&
+              teacherForm.submitted
+            ) {
+
+              <small class="field-error">
+
+                First name is required.
+
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- ==================================================
+               LAST NAME
+               ================================================== -->
+
+          <div class="form-group">
+
+            <label for="lastName">
+
+              Last Name
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              id="lastName"
+              type="text"
+              name="lastName"
+              [(ngModel)]="form.lastName"
+              required
+              placeholder="Enter last name"
+              [class.invalid]="
+                !form.lastName.trim() &&
+                teacherForm.submitted
+              " />
+
+            @if (
+              !form.lastName.trim() &&
+              teacherForm.submitted
+            ) {
+
+              <small class="field-error">
+
+                Last name is required.
+
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- ==================================================
+               EMAIL
+               ================================================== -->
+
+          <div class="form-group">
+
+            <label for="email">
+
+              Email
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              name="email"
+              [(ngModel)]="form.email"
+              required
+              email
+              placeholder="teacher@example.com"
+              [class.invalid]="
+                (
+                  !form.email.trim() ||
+                  teacherForm.controls['email']?.invalid
+                ) &&
+                teacherForm.submitted
+              " />
+
+            @if (
+              !form.email.trim() &&
+              teacherForm.submitted
+            ) {
+
+              <small class="field-error">
+
+                Email is required.
+
+              </small>
+
+            }
+
+            @else if (
+              teacherForm.controls['email']?.hasError('email') &&
+              teacherForm.submitted
+            ) {
+
+              <small class="field-error">
+
+                Please enter a valid email address.
+
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- ==================================================
+               PHONE
+               ================================================== -->
+
+          <div class="form-group">
+
+            <label for="phone">
+
+              Phone
+
+            </label>
+
+            <input
+              id="phone"
+              type="text"
+              name="phone"
+              [(ngModel)]="form.phone"
+              maxlength="15"
+              placeholder="Enter phone number" />
+
+          </div>
+
+
+          <!-- ==================================================
+               PASSWORD
+               CREATE ONLY
+               ================================================== -->
+
+          @if (!editing) {
+
+            <div class="form-group">
+
+              <label for="password">
+
+                Password
+
+                <span>*</span>
+
+              </label>
+
+              <input
+                id="password"
+                type="password"
+                name="password"
+                [(ngModel)]="form.password"
+                required
+                placeholder="Enter password"
+                [class.invalid]="
+                  !form.password &&
+                  teacherForm.submitted
+                " />
+
+              @if (
+                !form.password &&
+                teacherForm.submitted
+              ) {
+
+                <small class="field-error">
+
+                  Password is required.
+
+                </small>
+
+              }
+
+            </div>
+
+          }
+
+
+        </div>
+
+
+        <!-- ==================================================
+             FORM ACTIONS
+             ================================================== -->
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="btn-secondary"
+            [disabled]="saving"
+            (click)="cancel()">
+
+            Cancel
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="saving">
+
+            @if (saving) {
+
+              <span class="button-spinner"></span>
+
+              Saving...
+
+            }
+
+            @else {
+
+              {{ editing ? 'Update Teacher' : 'Create Teacher' }}
+
+            }
+
+          </button>
+
+        </div>
+
+
+      </form>
+
+    }
+
+  </div>
+
+</div>

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { LoginComponent } from './features/auth/login/login.component';
+
 import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
 
 import { AccessDeniedComponent } from './features/errors/access-denied/access-denied.component';
@@ -22,208 +23,263 @@ import { TeacherList } from './features/admin/teachers/teacher-list/teacher-list
 import { TeacherDetails } from './features/admin/teachers/teacher-details/teacher-details';
 import { TeacherForm } from './features/admin/teachers/teacher-form/teacher-form';
 
+import { StudentList } from './features/admin/students/student-list/student-list';
+import { StudentForm } from './features/admin/students/student-form/student-form';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 
 
 export const routes: Routes = [
 
+  // ================= LOGIN =================
+
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+
+
+  // ================= ACCESS DENIED =================
+
+  {
+    path: 'access-denied',
+    component: AccessDeniedComponent
+  },
+
+
+  // ================= MAIN APPLICATION =================
+
+  {
+    path: '',
+    component: AppLayoutComponent,
+    canActivate: [authGuard],
+
+    children: [
+
+      // ================= SUPER ADMIN =================
+
+      {
+        path: 'super-admin/dashboard',
+        component: SuperAdminDashboard,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['SUPER_ADMIN']
+        }
+      },
+
+      {
+        path: 'super-admin/admins',
+        component: PagePlaceholderComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['SUPER_ADMIN'],
+          title: 'Admin Management',
+          description: 'Manage system administrators.'
+        }
+      },
+
+
+      // ================= ADMIN =================
+
+      {
+        path: 'admin/dashboard',
+        component: AdminDashboard,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+
+      // ================= ACADEMIC =================
+
+      {
+        path: 'admin/academic-years',
+        component: AcademicYearsComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+      {
+        path: 'admin/classes',
+        component: ClassesComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+      {
+        path: 'admin/subjects',
+        component: SubjectsComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+
+      // ================= TEACHERS =================
+
+      {
+        path: 'admin/teachers/create',
+        component: TeacherForm,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+      {
+        path: 'admin/teachers/:id/edit',
+        component: TeacherForm,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+      {
+        path: 'admin/teachers/:id',
+        component: TeacherDetails,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+      {
+        path: 'admin/teachers',
+        component: TeacherList,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+
+      // ================= STUDENTS =================
+
 {
-path:'login',
-component:LoginComponent
+  path: 'admin/students/create',
+  component: StudentForm,
+  canActivate: [roleGuard],
+  data: {
+    roles: ['ADMIN']
+  }
 },
 
 {
-path:'access-denied',
-component:AccessDeniedComponent
-},
-
-
-{
-path:'',
-component:AppLayoutComponent,
-canActivate:[authGuard],
-
-children:[
-
-// ================= SUPER ADMIN =================
-
-{
-path:'super-admin/dashboard',
-component:SuperAdminDashboard,
-canActivate:[roleGuard],
-data:{roles:['SUPER_ADMIN']}
+  path: 'admin/students/:id/edit',
+  component: StudentForm,
+  canActivate: [roleGuard],
+  data: {
+    roles: ['ADMIN']
+  }
 },
 
 {
-path:'super-admin/admins',
-component:PagePlaceholderComponent,
-canActivate:[roleGuard],
-data:{
-roles:['SUPER_ADMIN'],
-title:'Admin Management',
-description:'Manage system administrators.'
-}
+  path: 'admin/students',
+  component: StudentList,
+  canActivate: [roleGuard],
+  data: {
+    roles: ['ADMIN'],
+    title: 'Students',
+    description: 'Manage students.'
+  }
 },
+      // ================= TEACHER ASSIGNMENTS =================
+
+      {
+        path: 'admin/assignments',
+        component: PagePlaceholderComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN'],
+          title: 'Teacher Assignments',
+          description: 'Manage teacher assignments.'
+        }
+      },
 
 
-// ================= ADMIN =================
+      // ================= ATTENDANCE =================
 
-{
-path:'admin/dashboard',
-component:AdminDashboard,
-canActivate:[roleGuard],
-data:{roles:['ADMIN']}
-},
-
-{
-path:'admin/academic-years',
-component:AcademicYearsComponent,
-canActivate:[roleGuard],
-data:{roles:['ADMIN']}
-},
-
-{
-path:'admin/classes',
-component:ClassesComponent,
-canActivate:[roleGuard],
-data:{roles:['ADMIN']}
-},
-
-{
-path:'admin/subjects',
-component:SubjectsComponent,
-canActivate:[roleGuard],
-data:{roles:['ADMIN']}
-},
+      {
+        path: 'admin/attendance',
+        component: PagePlaceholderComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN'],
+          title: 'Attendance',
+          description: 'Manage attendance.'
+        }
+      },
 
 
-// ================= TEACHERS =================
+      // ================= TEACHER =================
 
-{
-path:'admin/teachers/create',
-component:TeacherForm,
-canActivate:[roleGuard],
-data:{roles:['ADMIN']}
-},
-
-{
-path:'admin/teachers/:id/edit',
-component:TeacherForm,
-canActivate:[roleGuard],
-data:{roles:['ADMIN']}
-},
-
-{
-path:'admin/teachers/:id',
-component:TeacherDetails,
-canActivate:[roleGuard],
-data:{roles:['ADMIN']}
-},
-
-{
-path:'admin/teachers',
-component:TeacherList,
-canActivate:[roleGuard],
-data:{roles:['ADMIN']}
-},
+      {
+        path: 'teacher/dashboard',
+        component: TeacherDashboard,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['TEACHER']
+        }
+      },
 
 
-// ================= STUDENTS =================
+      // ================= STUDENT =================
 
-{
-path:'admin/students',
-component:PagePlaceholderComponent,
-canActivate:[roleGuard],
-data:{
-roles:['ADMIN'],
-title:'Students',
-description:'Manage students.'
-}
-},
+      {
+        path: 'student/dashboard',
+        component: StudentDashboard,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['STUDENT']
+        }
+      },
 
-{
-path:'admin/assignments',
-component:PagePlaceholderComponent,
-canActivate:[roleGuard],
-data:{
-roles:['ADMIN'],
-title:'Teacher Assignments',
-description:'Manage teacher assignments.'
-}
-},
+      {
+        path: 'student/attendance',
+        component: PagePlaceholderComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['STUDENT'],
+          title: 'My Attendance',
+          description: 'View attendance records.'
+        }
+      }
 
-{
-path:'admin/attendance',
-component:PagePlaceholderComponent,
-canActivate:[roleGuard],
-data:{
-roles:['ADMIN'],
-title:'Attendance',
-description:'Manage attendance.'
-}
-},
+    ]
+  },
 
 
-// ================= TEACHER =================
+  // ================= DEFAULT =================
 
-{
-path:'teacher/dashboard',
-component:TeacherDashboard,
-canActivate:[roleGuard],
-data:{roles:['TEACHER']}
-},
-
-
-// ================= STUDENT =================
-
-{
-path:'student/dashboard',
-component:StudentDashboard,
-canActivate:[roleGuard],
-data:{roles:['STUDENT']}
-},
-
-{
-path:'student/attendance',
-component:PagePlaceholderComponent,
-canActivate:[roleGuard],
-data:{
-roles:['STUDENT'],
-title:'My Attendance',
-description:'View attendance records.'
-}
-}
-
-]
-
-},
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
 
 
-// ================= DEFAULT =================
+  // ================= ERRORS =================
 
-{
-path:'',
-redirectTo:'login',
-pathMatch:'full'
-},
+  {
+    path: 'not-found',
+    component: NotFoundComponent
+  },
 
+  {
+    path: 'server-error',
+    component: ServerErrorComponent
+  },
 
-// ================= ERRORS =================
-
-{
-path:'not-found',
-component:NotFoundComponent
-},
-
-{
-path:'server-error',
-component:ServerErrorComponent
-},
-
-{
-path:'**',
-redirectTo:'not-found'
-}
+  {
+    path: '**',
+    redirectTo: 'not-found'
+  }
 
 ];

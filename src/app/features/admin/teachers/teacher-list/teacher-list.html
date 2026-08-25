@@ -1,21 +1,70 @@
 <div class="page">
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
   <div class="page-header">
+
     <div>
       <h1>Teachers</h1>
-      <p>Manage all teachers and their accounts</p>
+
+      <p>
+        Manage all teachers and their accounts
+      </p>
     </div>
-    <button class="add-btn">
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="router.navigate(['/admin/teachers/create'])">
+
       + Add Teacher
+
     </button>
+
   </div>
 
+
+  <!-- =====================================================
+       TABLE
+  ====================================================== -->
+
   <div class="table-card">
+
     <div class="filter-area">
+
       <app-search-input
         placeholder="Search teachers..."
         (searchChange)="onSearch($event)">
       </app-search-input>
+
     </div>
+
+
+    <!-- Error -->
+
+    @if (errorMessage) {
+
+      <div class="error-state">
+        {{ errorMessage }}
+      </div>
+
+    }
+
+
+    <!-- Success -->
+
+    @if (successMessage) {
+
+      <div class="success-state">
+        {{ successMessage }}
+      </div>
+
+    }
+
+
+    <!-- Data Table -->
 
     <app-data-table
       [columns]="columns"
@@ -26,13 +75,220 @@
       (actionClick)="onAction($event)">
     </app-data-table>
 
+
+    <!-- Pagination -->
+
     <div class="pagination-area">
+
       <app-pagination
-        [currentPage]="page+1"
+        [currentPage]="page + 1"
         [totalItems]="totalElements"
         [pageSize]="size"
         (pageChange)="onPageChange($event)">
       </app-pagination>
+
     </div>
+
   </div>
+
+
+  <!-- =====================================================
+       STATUS CONFIRMATION MODAL
+  ====================================================== -->
+
+  @if (showStatusConfirm && selectedTeacher) {
+
+    <div
+      class="modal-backdrop"
+      (click)="cancelStatusChange()">
+
+      <div
+        class="status-modal"
+        (click)="$event.stopPropagation()">
+
+
+        <div class="modal-icon">
+          ?
+        </div>
+
+
+        <h2>
+          Change Teacher Status?
+        </h2>
+
+
+        <p>
+
+          Are you sure you want to
+
+          <strong>
+            {{ selectedTeacher.isActive
+              ? 'deactivate'
+              : 'activate' }}
+          </strong>
+
+          <strong>
+            {{ selectedTeacher.firstName }}
+            {{ selectedTeacher.lastName }}
+          </strong>?
+
+        </p>
+
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            [disabled]="statusChanging"
+            (click)="cancelStatusChange()">
+
+            Cancel
+
+          </button>
+
+
+          <button
+            type="button"
+            class="confirm-btn"
+            [disabled]="statusChanging"
+            (click)="confirmStatusChange()">
+
+            @if (statusChanging) {
+              Updating...
+            } @else {
+              Confirm
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       DELETE CONFIRMATION MODAL
+  ====================================================== -->
+
+  @if (showDeleteConfirm && selectedDeleteTeacher) {
+
+    <div
+      class="modal-backdrop"
+      (click)="cancelDelete()">
+
+      <div
+        class="delete-modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- Warning Icon -->
+
+        <div class="delete-modal-icon">
+          !
+        </div>
+
+
+        <!-- Title -->
+
+        <h2>
+          Delete Teacher?
+        </h2>
+
+
+        <!-- Message -->
+
+        <p>
+
+          Are you sure you want to permanently delete
+
+          <strong>
+            {{ selectedDeleteTeacher.firstName }}
+            {{ selectedDeleteTeacher.lastName }}
+          </strong>?
+
+          <br>
+
+          This action cannot be undone.
+
+        </p>
+
+
+        <!-- Teacher Information -->
+
+        <div class="delete-teacher-info">
+
+          <div>
+
+            <span>
+              Teacher No.
+            </span>
+
+            <strong>
+              {{ selectedDeleteTeacher.teacherNumber }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Email
+            </span>
+
+            <strong>
+              {{ selectedDeleteTeacher.email }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- Actions -->
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            [disabled]="deleting"
+            (click)="cancelDelete()">
+
+            Cancel
+
+          </button>
+
+
+          <button
+            type="button"
+            class="delete-confirm-btn"
+            [disabled]="deleting"
+            (click)="confirmDelete()">
+
+            @if (deleting) {
+
+              Deleting...
+
+            } @else {
+
+              Delete Teacher
+
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
 </div>

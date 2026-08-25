@@ -1,0 +1,86 @@
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Students</h1>
+
+      <p>
+        Manage all students and their accounts
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="router.navigate(['/admin/students/create'])">
+
+      + Add Student
+
+    </button>
+
+  </div>
+
+
+  <div class="table-card">
+
+    <div class="filter-area">
+
+      <app-search-input
+        placeholder="Search students..."
+        (searchChange)="onSearch($event)">
+      </app-search-input>
+
+    </div>
+
+
+    @if (errorMessage) {
+
+      <div class="error-state">
+
+        {{ errorMessage }}
+
+      </div>
+
+    }
+
+
+    <app-data-table
+
+      [columns]="columns"
+
+      [data]="students"
+
+      [loading]="loading"
+
+      [actions]="actions"
+
+      [showActions]="true"
+
+      (actionClick)="onAction($event)">
+
+    </app-data-table>
+
+
+    <div class="pagination-area">
+
+      <app-pagination
+
+        [currentPage]="page + 1"
+
+        [totalItems]="totalElements"
+
+        [pageSize]="size"
+
+        (pageChange)="onPageChange($event)">
+
+      </app-pagination>
+
+    </div>
+
+  </div>
+
+</div>

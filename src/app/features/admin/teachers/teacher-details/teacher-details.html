@@ -1,1 +1,135 @@
-<p>teacher-details works!</p>
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Teacher Details</h1>
+      <p>View teacher account information.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="goBack()">
+      ← Back
+    </button>
+
+  </div>
+
+
+  @if (loading) {
+
+    <div class="state-card">
+      Loading teacher details...
+    </div>
+
+  }
+
+
+  @if (errorMessage && !loading) {
+
+    <div class="error-state">
+      {{ errorMessage }}
+    </div>
+
+  }
+
+
+  @if (teacher && !loading) {
+
+    <div class="details-card">
+
+      <div class="details-header">
+
+        <div>
+          <h2>
+            {{ teacher.firstName }} {{ teacher.lastName }}
+          </h2>
+
+          <span class="teacher-number">
+            {{ teacher.teacherNumber }}
+          </span>
+        </div>
+
+        <span
+          class="status-badge"
+          [class.active]="teacher.isActive"
+          [class.inactive]="!teacher.isActive">
+
+          {{ teacher.isActive ? 'Active' : 'Inactive' }}
+
+        </span>
+
+      </div>
+
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <span class="label">First Name</span>
+          <strong>{{ teacher.firstName }}</strong>
+        </div>
+
+
+        <div class="detail-item">
+          <span class="label">Last Name</span>
+          <strong>{{ teacher.lastName }}</strong>
+        </div>
+
+
+        <div class="detail-item">
+          <span class="label">Teacher Number</span>
+          <strong>{{ teacher.teacherNumber }}</strong>
+        </div>
+
+
+        <div class="detail-item">
+          <span class="label">Email</span>
+          <strong>{{ teacher.email }}</strong>
+        </div>
+
+
+        <div class="detail-item">
+          <span class="label">Phone</span>
+          <strong>{{ teacher.phone || '-' }}</strong>
+        </div>
+
+
+        <div class="detail-item">
+          <span class="label">Account Status</span>
+
+          <strong
+            [class.active-text]="teacher.isActive"
+            [class.inactive-text]="!teacher.isActive">
+
+            {{ teacher.isActive ? 'Active' : 'Inactive' }}
+
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="details-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="goBack()">
+          Back
+        </button>
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="editTeacher()">
+          Edit Teacher
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

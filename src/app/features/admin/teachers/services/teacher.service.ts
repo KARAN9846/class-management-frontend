@@ -15,6 +15,10 @@ export interface TeacherListResponse {
   data: TeacherPage;
 }
 
+export interface TeacherResponse {
+  data: Teacher;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -77,17 +81,26 @@ export class TeacherService {
   }
 
 
-  updateStatus(
-    id: number,
-    isActive: boolean
-  ): Observable<Teacher> {
+updateStatus(
+  id: number,
+  isActive: boolean
+): Observable<TeacherResponse> {
 
-    return this.api.patch<Teacher>(
-      API_ENDPOINTS.TEACHERS.STATUS(id),
-      {
-        isActive
-      }
-    );
-  }
+  return this.api.patch<TeacherResponse>(
+    API_ENDPOINTS.TEACHERS.STATUS(id),
+    {
+      isActive
+    }
+  );
+}
 
+deleteTeacher(
+  id: number
+): Observable<void> {
+
+  return this.api.delete<void>(
+    API_ENDPOINTS.TEACHERS.BY_ID(id)
+  );
+
+}
 }

@@ -1,0 +1,557 @@
+<div class="page">
+
+  <!-- ================= HEADER ================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        {{ isEditMode ? 'Edit Student' : 'Create Student' }}
+      </h1>
+
+      <p>
+        {{
+          isEditMode
+            ? 'Update student information and academic details'
+            : 'Add a new student to the system'
+        }}
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="back-btn"
+      (click)="cancel()">
+
+      ← Back to Students
+
+    </button>
+
+  </div>
+
+
+  <!-- ================= FORM CARD ================= -->
+
+  <div class="form-card">
+
+    <!-- ================= LOADING ================= -->
+
+    @if (loading) {
+
+      <div class="loading-state">
+
+        <div class="loading-spinner"></div>
+
+        <span>
+          Loading student...
+        </span>
+
+      </div>
+
+    }
+
+
+    @if (!loading) {
+
+      <!-- ================= ERROR ================= -->
+
+@if (errorMessages.length > 0) {
+
+  <div class="error-state">
+
+    <div class="error-title">
+      Please fix the following:
+    </div>
+
+    <ul>
+      @for (message of errorMessages; track $index) {
+
+        <li>
+          {{ message }}
+        </li>
+
+      }
+    </ul>
+
+  </div>
+
+}
+
+
+      <!-- ================= SUCCESS ================= -->
+
+      @if (successMessage) {
+
+        <div class="success-state">
+
+          {{ successMessage }}
+
+        </div>
+
+      }
+
+
+      <!-- ================= FORM ================= -->
+
+      <form
+        [formGroup]="studentForm"
+        (ngSubmit)="onSubmit()">
+
+
+        <!-- ================= PERSONAL INFORMATION ================= -->
+
+        <div class="section">
+
+          <div class="section-header">
+
+            <h2>
+              Personal Information
+            </h2>
+
+            <p>
+              Enter the student's basic information.
+            </p>
+
+          </div>
+
+
+          <div class="form-grid">
+
+
+            <!-- ================= ROLL NUMBER ================= -->
+
+            @if (isEditMode) {
+
+              <div class="form-group">
+
+                <label for="rollNumber">
+                  Roll Number
+                  <span>*</span>
+                </label>
+
+                <input
+                  id="rollNumber"
+                  type="text"
+                  formControlName="rollNumber"
+                  placeholder="Enter roll number"
+                  [class.invalid]="isInvalid('rollNumber')" />
+
+                @if (isInvalid('rollNumber')) {
+
+                  <small class="field-error">
+
+                    @if (
+                      studentForm.get('rollNumber')?.hasError('required')
+                    ) {
+
+                      Roll number is required.
+
+                    } @else {
+
+                      Please enter a valid roll number.
+
+                    }
+
+                  </small>
+
+                }
+
+              </div>
+
+            }
+
+
+            <!-- ================= FIRST NAME ================= -->
+
+            <div class="form-group">
+
+              <label for="firstName">
+                First Name
+                <span>*</span>
+              </label>
+
+              <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                placeholder="Enter first name"
+                [class.invalid]="isInvalid('firstName')" />
+
+              @if (isInvalid('firstName')) {
+
+                <small class="field-error">
+                  First name is required.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- ================= LAST NAME ================= -->
+
+            <div class="form-group">
+
+              <label for="lastName">
+                Last Name
+                <span>*</span>
+              </label>
+
+              <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                placeholder="Enter last name"
+                [class.invalid]="isInvalid('lastName')" />
+
+              @if (isInvalid('lastName')) {
+
+                <small class="field-error">
+                  Last name is required.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- ================= EMAIL ================= -->
+
+            <div class="form-group">
+
+              <label for="email">
+                Email
+                <span>*</span>
+              </label>
+
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                placeholder="student@example.com"
+                [class.invalid]="isInvalid('email')" />
+
+              @if (isInvalid('email')) {
+
+                <small class="field-error">
+
+                  @if (
+                    studentForm.get('email')?.hasError('required')
+                  ) {
+
+                    Email is required.
+
+                  } @else {
+
+                    Please enter a valid email address.
+
+                  }
+
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- ================= PHONE ================= -->
+
+            <div class="form-group">
+
+              <label for="phone">
+                Phone
+                <span>*</span>
+              </label>
+
+              <input
+                id="phone"
+                type="tel"
+                formControlName="phone"
+                placeholder="Enter phone number"
+                [class.invalid]="isInvalid('phone')" />
+
+              @if (isInvalid('phone')) {
+
+                <small class="field-error">
+                  Phone is required.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- ================= PASSWORD ================= -->
+
+            @if (!isEditMode) {
+
+              <div class="form-group">
+
+                <label for="password">
+                  Password
+                  <span>*</span>
+                </label>
+
+                <input
+                  id="password"
+                  type="password"
+                  formControlName="password"
+                  placeholder="Enter login password"
+                  [class.invalid]="isInvalid('password')" />
+
+                @if (isInvalid('password')) {
+
+                  <small class="field-error">
+                    Password is required.
+                  </small>
+
+                }
+
+              </div>
+
+            }
+
+          </div>
+
+        </div>
+
+
+        <!-- ================= ACADEMIC INFORMATION ================= -->
+
+        <div class="section">
+
+          <div class="section-header">
+
+            <h2>
+              Academic Information
+            </h2>
+
+            <p>
+              Select the student's academic year, class and section.
+            </p>
+
+          </div>
+
+
+          <div class="form-grid">
+
+
+            <!-- ================= ACADEMIC YEAR ================= -->
+
+            <div class="form-group">
+
+              <label for="academicYearId">
+                Academic Year
+                <span>*</span>
+              </label>
+
+              <select
+                id="academicYearId"
+                formControlName="academicYearId"
+                (change)="onAcademicYearChange()"
+                [class.invalid]="isInvalid('academicYearId')">
+
+                <option [ngValue]="null">
+                  Select Academic Year
+                </option>
+
+                @for (
+                  year of academicYears;
+                  track year.id
+                ) {
+
+                  <option [ngValue]="year.id">
+
+                    {{ year.name }}
+
+                    @if (year.isCurrent) {
+                      (Current)
+                    }
+
+                  </option>
+
+                }
+
+              </select>
+
+
+              @if (isInvalid('academicYearId')) {
+
+                <small class="field-error">
+                  Academic Year is required.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- ================= CLASS ================= -->
+
+            <div class="form-group">
+
+              <label for="classId">
+                Class
+                <span>*</span>
+              </label>
+
+              <select
+                id="classId"
+                formControlName="classId"
+                (change)="onClassChange()"
+                [class.invalid]="isInvalid('classId')">
+
+                <option [ngValue]="null">
+
+                  @if (
+                    !studentForm.get('academicYearId')?.value
+                  ) {
+
+                    Select Academic Year First
+
+                  } @else {
+
+                    Select Class
+
+                  }
+
+                </option>
+
+
+                @for (
+                  classroom of filteredClasses;
+                  track classroom.id
+                ) {
+
+                  <option
+                    [ngValue]="classroom.id">
+
+                    {{ classroom.name }}
+
+                  </option>
+
+                }
+
+              </select>
+
+
+              @if (isInvalid('classId')) {
+
+                <small class="field-error">
+                  Class is required.
+                </small>
+
+              }
+
+            </div>
+
+
+            <!-- ================= SECTION ================= -->
+
+            <div class="form-group">
+
+              <label for="sectionId">
+                Section
+                <span>*</span>
+              </label>
+
+              <select
+                id="sectionId"
+                formControlName="sectionId"
+                [class.invalid]="isInvalid('sectionId')">
+
+                <option [ngValue]="null">
+
+                  @if (
+                    !studentForm.get('classId')?.value
+                  ) {
+
+                    Select Class First
+
+                  } @else {
+
+                    Select Section
+
+                  }
+
+                </option>
+
+
+                @for (
+                  section of sections;
+                  track section.id
+                ) {
+
+                  <option
+                    [ngValue]="section.id">
+
+                    {{ section.name }}
+
+                  </option>
+
+                }
+
+              </select>
+
+
+              @if (isInvalid('sectionId')) {
+
+                <small class="field-error">
+                  Section is required.
+                </small>
+
+              }
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ================= FORM ACTIONS ================= -->
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            [disabled]="saving"
+            (click)="cancel()">
+
+            Cancel
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="submit-btn"
+            [disabled]="saving">
+
+            @if (saving) {
+
+              <span class="button-spinner"></span>
+
+              Saving...
+
+            } @else {
+
+              {{ isEditMode ? 'Update Student' : 'Create Student' }}
+
+            }
+
+          </button>
+
+        </div>
+
+
+      </form>
+
+    }
+
+  </div>
+
+</div>
