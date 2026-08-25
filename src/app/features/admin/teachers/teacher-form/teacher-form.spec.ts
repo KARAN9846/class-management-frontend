@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DataTable } from './data-table';
+import { TeacherForm } from './teacher-form';
 
-describe('DataTable', () => {
-  let component: DataTable;
-  let fixture: ComponentFixture<DataTable>;
+describe('TeacherForm', () => {
+  let component: TeacherForm;
+  let fixture: ComponentFixture<TeacherForm>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DataTable],
+      imports: [TeacherForm],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DataTable);
+    fixture = TestBed.createComponent(TeacherForm);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

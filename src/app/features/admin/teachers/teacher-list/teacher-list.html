@@ -1,0 +1,38 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Teachers</h1>
+      <p>Manage all teachers and their accounts</p>
+    </div>
+    <button class="add-btn">
+      + Add Teacher
+    </button>
+  </div>
+
+  <div class="table-card">
+    <div class="filter-area">
+      <app-search-input
+        placeholder="Search teachers..."
+        (searchChange)="onSearch($event)">
+      </app-search-input>
+    </div>
+
+    <app-data-table
+      [columns]="columns"
+      [data]="teachers"
+      [loading]="loading"
+      [actions]="actions"
+      [showActions]="true"
+      (actionClick)="onAction($event)">
+    </app-data-table>
+
+    <div class="pagination-area">
+      <app-pagination
+        [currentPage]="page+1"
+        [totalItems]="totalElements"
+        [pageSize]="size"
+        (pageChange)="onPageChange($event)">
+      </app-pagination>
+    </div>
+  </div>
+</div>

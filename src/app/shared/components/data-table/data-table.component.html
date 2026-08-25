@@ -1,189 +1,125 @@
 <div class="table-wrapper">
-
-  <!-- Loading -->
   @if (loading) {
-
     <div class="table-loading">
-
       <div class="loading-spinner"></div>
-
       <span>Loading data...</span>
-
     </div>
-
-  }
-
-  <!-- Table -->
-  @else {
-
+  } @else {
     <div class="table-scroll">
-
       <table class="data-table">
-
-        <!-- HEADER -->
         <thead>
-
           <tr>
-
             @for (column of columns; track trackColumn($index, column)) {
-
               <th
                 [style.width]="column.width"
                 [class.text-center]="column.align === 'center'"
                 [class.text-right]="column.align === 'right'">
-
                 {{ column.label }}
-
               </th>
-
             }
-
             @if (showActions) {
-
-              <th class="actions-header">
-                Actions
-              </th>
-
+              <th class="actions-header">Actions</th>
             }
-
           </tr>
-
         </thead>
 
-
-        <!-- BODY -->
         <tbody>
-
-          @if (data.length > 0) {
-
-            @for (
-              row of data;
-              track trackRow($index, row)
-            ) {
-
+          @if (data.length) {
+            @for (row of data; track trackRow($index, row)) {
               <tr>
-
-                @for (
-                  column of columns;
-                  track trackColumn($index, column)
-                ) {
-
+                @for (column of columns; track trackColumn($index, column)) {
                   <td
                     [class.text-center]="column.align === 'center'"
                     [class.text-right]="column.align === 'right'">
 
-                    {{ getCellValue(row, column) }}
+                    @if (column.type === 'status') {
+                      <app-status-badge
+                        [label]="getBooleanCellValue(row, column) ? 'Active' : 'Inactive'"
+                        [variant]="getBooleanCellValue(row, column) ? 'success' : 'danger'">
+                      </app-status-badge>
+                    } @else if (column.type === 'current') {
+                      @if (isCurrent(row)) {
+                        <span class="current-badge">Current</span>
+                      }
+                    } @else if (column.type === 'sections') {
+                      <div class="section-list">
+                        @if (row[column.key]?.length) {
+                          @for (section of row[column.key]; track trackItem($index, section)) {
+                            <span class="section-chip">
+                              {{ section.name }}
 
+                              <button
+                                type="button"
+                                title="Edit"
+                                (click)="onActionClick(
+                                  { label: 'Edit Section', type: 'edit-section' },
+                                  section
+                                )">
+                                ✎
+                              </button>
+
+                              <button
+                                type="button"
+                                title="Delete"
+                                (click)="onActionClick(
+                                  { label: 'Delete Section', type: 'delete-section', danger: true },
+                                  section
+                                )">
+                                ×
+                              </button>
+                            </span>
+                          }
+                        } @else {
+                          <span class="empty-sections">No sections</span>
+                        }
+                      </div>
+                    } @else {
+                      {{ getCellValue(row, column) }}
+
+                      @if (currentField && column.key === 'name' && isCurrent(row)) {
+                        <span class="current-badge">Current</span>
+                      }
+                    }
                   </td>
-
                 }
 
-
-                <!-- ACTIONS -->
                 @if (showActions) {
-
                   <td class="actions-cell">
-
                     <div class="row-actions">
-
-                      @for (action of actions; track action.type) {
-
+                      @for (action of actions; track trackAction($index, action)) {
                         <button
                           type="button"
                           class="row-action"
                           [class.danger]="action.danger"
-                          [attr.aria-label]="action.label"
-                          [title]="action.label"
+                          [attr.title]="action.label"
                           (click)="onActionClick(action, row)">
-
                           @if (action.icon) {
-                            <span class="action-icon">
-                              {{ action.icon }}
-                            </span>
+                            <span class="action-icon">{{ action.icon }}</span>
+                          } @else {
+                            <span>{{ action.label }}</span>
                           }
-
-                          <span>
-                            {{ action.label }}
-                          </span>
-
                         </button>
-
                       }
-
                     </div>
-
                   </td>
-
                 }
-
               </tr>
-
             }
-
-          }
-
-          @else {
-
+          } @else {
             <tr>
-
               <td
                 class="empty-cell"
                 [attr.colspan]="columns.length + (showActions ? 1 : 0)">
-
                 <div class="empty-state">
-
-                  <div class="empty-icon">
-
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.8"
-                      stroke-linecap="round"
-                      stroke-linejoin="round">
-
-                      <rect
-                        x="3"
-                        y="3"
-                        width="18"
-                        height="18"
-                        rx="2">
-                      </rect>
-
-                      <line x1="8" y1="9" x2="16" y2="9"></line>
-
-                      <line x1="8" y1="13" x2="16" y2="13"></line>
-
-                      <line x1="8" y1="17" x2="13" y2="17"></line>
-
-                    </svg>
-
-                  </div>
-
-                  <strong>
-                    No data
-                  </strong>
-
-                  <span>
-                    {{ emptyMessage }}
-                  </span>
-
+                  <div class="empty-icon">◌</div>
+                  <strong>No data</strong>
+                  <span>No records found</span>
                 </div>
-
               </td>
-
             </tr>
-
           }
-
         </tbody>
-
       </table>
-
     </div>
-
   }
-
 </div>

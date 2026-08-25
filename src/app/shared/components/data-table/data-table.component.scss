@@ -1,175 +1,71 @@
-/* =========================================================
-   CMS DATA TABLE
-========================================================= */
-
 :host {
   display: block;
   width: 100%;
-
-  --primary: #3b82f6;
+  --primary: #2563eb;
   --primary-light: #eff6ff;
-  --primary-dark: #2563eb;
-
   --surface: #ffffff;
-  --background: #f9fafb;
-
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
-  --text-muted: #9ca3af;
-
+  --background: #f8fafc;
+  --text: #111827;
+  --muted: #64748b;
   --border: #e5e7eb;
-  --border-light: #f3f4f6;
-
+  --border-light: #f1f5f9;
+  --success: #16a34a;
   --danger: #dc2626;
-  --danger-light: #fef2f2;
-
-  --radius-md: 10px;
-
-  --transition: 150ms ease;
 }
-
-
-/* =========================================================
-   WRAPPER
-========================================================= */
 
 .table-wrapper {
   width: 100%;
-
+  background: white;
+  border-radius: 16px;
   overflow: hidden;
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius-md);
-
-  background: var(--surface);
-
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.03);
 }
-
-
-/* =========================================================
-   TABLE SCROLL
-========================================================= */
 
 .table-scroll {
-  width: 100%;
-
   overflow-x: auto;
-
-  -webkit-overflow-scrolling: touch;
 }
-
-.table-scroll::-webkit-scrollbar {
-  height: 6px;
-}
-
-.table-scroll::-webkit-scrollbar-track {
-  background: var(--border-light);
-}
-
-.table-scroll::-webkit-scrollbar-thumb {
-  background: var(--border);
-
-  border-radius: 10px;
-}
-
-
-/* =========================================================
-   TABLE
-========================================================= */
 
 .data-table {
   width: 100%;
-
-  min-width: 700px;
-
   border-collapse: collapse;
-
-  table-layout: auto;
-
-  font-family:
-    'Inter',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
+  font-family: Inter, Arial, sans-serif;
 }
-
-
-/* =========================================================
-   HEADER
-========================================================= */
 
 .data-table thead {
   background: #f8fafc;
 }
 
 .data-table th {
-  height: 48px;
-
-  padding: 0 16px;
-
-  border-bottom: 1px solid var(--border);
-
-  color: var(--text-secondary);
-
+  height: 52px;
+  padding: 0 22px;
   font-size: 11px;
-
   font-weight: 700;
-
-  line-height: 1;
-
-  letter-spacing: 0.06em;
-
-  text-align: left;
-
+  color: #64748b;
+  letter-spacing: .05em;
   text-transform: uppercase;
-
-  white-space: nowrap;
-}
-
-
-/* =========================================================
-   BODY
-========================================================= */
-
-.data-table tbody tr {
-  background: var(--surface);
-
-  transition:
-    background var(--transition);
-}
-
-.data-table tbody tr:hover {
-  background: #f8fafc;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
 }
 
 .data-table td {
-  height: 58px;
-
-  padding: 10px 16px;
-
+  height: 68px;
+  padding: 0 22px;
+  font-size: 14px;
+  color: var(--text);
   border-bottom: 1px solid var(--border-light);
+}
 
-  color: var(--text-primary);
+.data-table tbody tr {
+  transition: .2s ease;
+}
 
-  font-size: 13px;
-
-  font-weight: 400;
-
-  vertical-align: middle;
+.data-table tbody tr:hover {
+  background: #f8fbff;
 }
 
 .data-table tbody tr:last-child td {
-  border-bottom: 0;
+  border-bottom: none;
 }
 
-
-/* =========================================================
-   ALIGNMENT
-========================================================= */
 
 .text-center {
   text-align: center !important;
@@ -180,263 +76,191 @@
 }
 
 
-/* =========================================================
-   ACTIONS
-========================================================= */
+/* ACTIONS */
 
 .actions-header {
-  width: 150px;
-
   text-align: right !important;
+  width: 120px;
 }
+
 
 .actions-cell {
   text-align: right;
-
-  white-space: nowrap;
 }
+
 
 .row-actions {
   display: flex;
-
-  align-items: center;
-
   justify-content: flex-end;
-
-  gap: 6px;
+  gap: 8px;
 }
+
 
 .row-action {
-  min-height: 32px;
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 5px;
-
-  padding: 0 9px;
-
-  border: 1px solid var(--border);
-
-  border-radius: 7px;
-
-  background: var(--surface);
-
-  color: var(--text-secondary);
-
-  font-family: inherit;
-
-  font-size: 11px;
-
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid #dbeafe;
+  background: white;
+  color: #2563eb;
+  font-size: 12px;
   font-weight: 600;
-
   cursor: pointer;
-
-  transition:
-    background var(--transition),
-    color var(--transition),
-    border-color var(--transition);
+  transition: .2s;
 }
+
 
 .row-action:hover {
-  background: var(--primary-light);
-
-  border-color: #bfdbfe;
-
-  color: var(--primary);
+  background: #eff6ff;
+  border-color: #93c5fd;
 }
+
+
+.row-action.danger {
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
 
 .row-action.danger:hover {
-  background: var(--danger-light);
-
-  border-color: #fecaca;
-
-  color: var(--danger);
+  background: #fef2f2;
 }
 
-.row-action:focus-visible {
-  outline: 2px solid var(--primary);
-
-  outline-offset: 2px;
-}
 
 .action-icon {
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  font-size: 13px;
+  font-size: 14px;
 }
 
 
-/* =========================================================
-   EMPTY STATE
-========================================================= */
+/* EMPTY */
 
 .empty-cell {
-  height: 220px !important;
-
+  height: 260px !important;
   padding: 0 !important;
-
-  text-align: center;
 }
 
 .empty-state {
-  min-height: 220px;
-
+  height: 260px;
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
-
-  gap: 6px;
-
-  color: var(--text-muted);
+  gap: 8px;
 }
+
 
 .empty-icon {
-  width: 48px;
-
-  height: 48px;
-
+  width: 50px;
+  height: 50px;
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
-  margin-bottom: 6px;
-
   border-radius: 50%;
-
-  background: var(--background);
-
-  color: var(--text-muted);
+  background: #f1f5f9;
+  color: #94a3b8;
 }
+
 
 .empty-state strong {
-  color: var(--text-primary);
-
-  font-size: 14px;
-
-  font-weight: 600;
+  font-size: 15px;
+  color: #111827;
 }
+
 
 .empty-state span {
-  color: var(--text-muted);
-
-  font-size: 12px;
+  font-size: 13px;
+  color: #94a3b8;
 }
 
 
-/* =========================================================
-   LOADING
-========================================================= */
+/* LOADING */
 
 .table-loading {
-  min-height: 240px;
-
+  height: 260px;
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 12px;
-
-  color: var(--text-secondary);
-
-  font-size: 13px;
+  color: #64748b;
 }
+
 
 .loading-spinner {
-  width: 28px;
-
-  height: 28px;
-
-  box-sizing: border-box;
-
-  border: 3px solid var(--primary-light);
-
-  border-top-color: var(--primary);
-
+  width: 32px;
+  height: 32px;
+  border: 3px solid #dbeafe;
+  border-top-color: #2563eb;
   border-radius: 50%;
-
-  animation: table-spin 700ms linear infinite;
+  animation: spin .8s linear infinite;
 }
 
-@keyframes table-spin {
+
+@keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
 
-/* =========================================================
-   TABLET
-========================================================= */
+/* MOBILE */
 
-@media (max-width: 900px) {
+@media(max-width:700px) {
 
   .data-table {
-    min-width: 650px;
+    min-width: 700px;
   }
 
-  .data-table th {
-    height: 46px;
-
-    padding: 0 14px;
-
-    font-size: 10px;
-  }
-
+  .data-table th,
   .data-table td {
-    height: 54px;
-
-    padding: 9px 14px;
-
-    font-size: 12px;
+    padding: 0 14px;
   }
+
 }
 
+.section-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px
+}
 
-/* =========================================================
-   MOBILE
-========================================================= */
+.section-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 600
+}
 
-@media (max-width: 600px) {
+.section-chip button {
+  border: 0;
+  background: transparent;
+  padding: 1px 3px;
+  color: inherit;
+  cursor: pointer;
+  font-size: 12px
+}
 
-  .table-wrapper {
-    border-radius: 8px;
-  }
+.section-chip button:hover {
+  color: #dc2626
+}
 
-  .data-table {
-    min-width: 620px;
-  }
+.empty-sections {
+  color: #94a3b8;
+  font-size: 12px
+}
 
-  .data-table th {
-    padding: 0 12px;
-  }
-
-  .data-table td {
-    padding: 8px 12px;
-  }
-
-  .row-action {
-    min-height: 30px;
-
-    padding: 0 8px;
-
-    font-size: 10px;
-  }
+.current-badge {
+  display: inline-flex;
+  margin-left: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 10px;
+  font-weight: 700
 }

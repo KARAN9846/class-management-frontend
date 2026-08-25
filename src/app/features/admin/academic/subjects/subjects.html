@@ -1,341 +1,260 @@
 <div class="subjects-page">
 
-<div class="page-header">
-  <div>
-    <h1>Subjects</h1>
-    <p>Manage subjects for each class.</p>
+  <div class="page-header">
+    <div>
+      <h1>Subjects</h1>
+      <p>Manage subjects for your classes.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="openAddForm()">
+      + Add Subject
+    </button>
   </div>
 
-  <button class="btn-primary" type="button" (click)="openAddForm()">
-    + Add Subject
-  </button>
-</div>
+  <div class="filters-card">
+
+    <input
+      class="search-input"
+      type="text"
+      placeholder="Search subjects..."
+      [(ngModel)]="searchTerm">
+
+    <select
+      class="filter-select"
+      [(ngModel)]="classFilter">
 
+      <option value="ALL">
+        All Classes
+      </option>
 
-<div class="filters-card">
+      @for (cls of classes; track cls.id) {
+        <option [ngValue]="cls.id">
+          {{ cls.name }}
+        </option>
+      }
+
+    </select>
 
-<input
-class="search-input"
-type="text"
-placeholder="Search subjects..."
-[(ngModel)]="searchTerm">
+  </div>
 
+  @if (errorMessage) {
+    <div class="error-card">
+      {{ errorMessage }}
+    </div>
+  }
 
-<select
-class="filter-select"
-[(ngModel)]="classFilter">
+  @if (loading) {
+    <div class="state-card">
+      Loading subjects...
+    </div>
+  }
 
-<option value="ALL">
-All Classes
-</option>
+  <div class="table-card">
 
-@for(cls of classes; track cls.id){
-<option [ngValue]="cls.id">
-{{cls.name}}
-</option>
-}
+    <div class="table-header">
+      <div>
+        <h2>Subjects</h2>
+        <span>
+          {{ filteredSubjects.length }} records
+        </span>
+      </div>
+    </div>
 
-</select>
+    <div class="table-wrapper">
 
+      <table>
 
-<select
-class="filter-select"
-[(ngModel)]="statusFilter">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Code</th>
+            <th>Class</th>
+            <th>Academic Year</th>
+            <th class="actions-column">Actions</th>
+          </tr>
+        </thead>
 
-<option value="ALL">
-All Status
-</option>
+        <tbody>
 
-<option value="ACTIVE">
-Active
-</option>
+          @for (subject of filteredSubjects; track subject.id) {
 
-<option value="INACTIVE">
-Inactive
-</option>
+            <tr>
 
-</select>
+              <td>
+                <div class="subject-name">
+                  {{ subject.name }}
+                </div>
+              </td>
 
-</div>
+              <td>
+                {{ subject.code || '-' }}
+              </td>
 
+              <td>
+                {{ subject.className || '-' }}
+              </td>
 
+              <td>
+                {{ subject.academicYear || '-' }}
+              </td>
 
-<div class="table-card">
+              <td class="actions-column">
 
-<div class="table-header">
-<h2>Subjects</h2>
-<span>
-{{filteredSubjects.length}} records
-</span>
-</div>
+                <div class="actions">
 
+                  <button
+                    type="button"
+                    class="action-btn"
+                    (click)="openEditForm(subject)">
+                    Edit
+                  </button>
 
-<div class="table-wrapper">
+                  <button
+                    type="button"
+                    class="action-btn delete"
+                    (click)="deleteSubject(subject)">
+                    Delete
+                  </button>
 
-<table>
+                </div>
 
-<thead>
-<tr>
-<th>Subject</th>
-<th>Code</th>
-<th>Class</th>
-<th>Academic Year</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
-</thead>
+              </td>
 
+            </tr>
 
-<tbody>
+          }
 
+          @if (filteredSubjects.length === 0 && !loading) {
 
-@for(subject of filteredSubjects; track subject.id){
+            <tr>
+              <td
+                colspan="5"
+                class="empty-state">
+                No subjects found
+              </td>
+            </tr>
 
-<tr>
+          }
 
-<td>
-<strong>
-{{subject.name}}
-</strong>
-</td>
+        </tbody>
 
+      </table>
 
-<td>
-{{subject.code || '-'}}
-</td>
+    </div>
 
+  </div>
 
-<td>
-{{subject.className || '-'}}
-</td>
+  @if (showForm) {
 
+    <div
+      class="modal-backdrop"
+      (click)="closeForm()">
 
-<td>
-{{subject.academicYear || '-'}}
-</td>
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()">
 
+        <div class="modal-header">
 
-<td>
+          <h2>
+            {{ editingSubject ? 'Edit Subject' : 'Add Subject' }}
+          </h2>
 
-<span
-class="status-badge"
-[class.active]="subject.status==='ACTIVE'"
-[class.inactive]="subject.status==='INACTIVE'">
+          <button
+            type="button"
+            class="close-btn"
+            (click)="closeForm()">
+            ×
+          </button>
 
-{{subject.status}}
+        </div>
 
-</span>
+        <form
+          #subjectForm="ngForm"
+          (ngSubmit)="saveSubject()">
 
-</td>
+          <div class="form-group">
 
+            <label>
+              Subject Name
+            </label>
 
-<td>
+            <input
+              type="text"
+              name="name"
+              required
+              placeholder="Mathematics"
+              [(ngModel)]="form.name">
 
-<div class="actions">
+          </div>
 
-<button
-class="action-btn edit"
-type="button"
-(click)="openEditForm(subject)">
-Edit
-</button>
+          <div class="form-group">
 
+            <label>
+              Code
+            </label>
 
-<button
-class="action-btn delete"
-type="button"
-(click)="deleteSubject(subject)">
-Delete
-</button>
+            <input
+              type="text"
+              name="code"
+              required
+              placeholder="MATH"
+              [(ngModel)]="form.code">
 
-</div>
+          </div>
 
-</td>
+          <div class="form-group">
 
+            <label>
+              Class
+            </label>
 
-</tr>
+            <select
+              name="classId"
+              [(ngModel)]="form.classId"
+              required>
 
-}
+              @for (cls of classes; track cls.id) {
 
+                <option [ngValue]="cls.id">
+                  {{ cls.name }}
+                </option>
 
+              }
 
-@if(filteredSubjects.length===0){
+            </select>
 
-<tr>
+          </div>
 
-<td colspan="6" class="empty-state">
+          <div class="modal-actions">
 
-No subjects found
+            <button
+              type="button"
+              class="btn-secondary"
+              (click)="closeForm()">
+              Cancel
+            </button>
 
-</td>
+            <button
+              type="submit"
+              class="btn-primary"
+              [disabled]="subjectForm.invalid || saving">
 
-</tr>
+              {{ editingSubject ? 'Update' : 'Save' }}
 
-}
+            </button>
 
+          </div>
 
-</tbody>
+        </form>
 
-</table>
+      </div>
 
-</div>
+    </div>
 
-</div>
-
-
-
-
-
-@if(showForm){
-
-<div
-class="modal-backdrop"
-(click)="closeForm()">
-
-
-
-<div
-class="modal"
-(click)="$event.stopPropagation()">
-
-
-
-<h2>
-{{editingSubject ? 'Edit Subject':'Add Subject'}}
-</h2>
-
-
-
-<form
-#subjectForm="ngForm"
-(ngSubmit)="saveSubject()">
-
-
-
-<div class="form-group">
-
-<label>
-Subject Name
-</label>
-
-<input
-type="text"
-name="name"
-required
-placeholder="Mathematics"
-[(ngModel)]="form.name">
-
-</div>
-
-
-
-
-<div class="form-group">
-
-<label>
-Code
-</label>
-
-<input
-type="text"
-name="code"
-required
-placeholder="MATH"
-[(ngModel)]="form.code">
-
-</div>
-
-
-
-
-<div class="form-group">
-
-<label>
-Class
-</label>
-
-<select
-name="classId"
-[(ngModel)]="form.classId"
-required>
-
-@for(cls of classes; track cls.id){
-
-<option [ngValue]="cls.id">
-{{cls.name}}
-</option>
-
-}
-
-</select>
-
-</div>
-
-
-
-
-<div class="form-group">
-
-<label>
-Status
-</label>
-
-<select
-name="status"
-[(ngModel)]="form.status">
-
-<option value="ACTIVE">
-Active
-</option>
-
-<option value="INACTIVE">
-Inactive
-</option>
-
-</select>
-
-</div>
-
-
-
-
-<div class="modal-actions">
-
-
-<button
-type="button"
-class="btn-secondary"
-(click)="closeForm()">
-
-Cancel
-
-</button>
-
-
-
-<button
-type="submit"
-class="btn-primary"
-[disabled]="subjectForm.invalid">
-
-{{editingSubject?'Update':'Save'}}
-
-</button>
-
-
-</div>
-
-
-
-</form>
-
-
-
-</div>
-
-</div>
-
-}
-
+  }
 
 </div>
