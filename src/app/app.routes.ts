@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 
 import { LoginComponent } from './features/auth/login/login.component';
-
+import { AssignmentForm } from './features/admin/assignments/assignment-form/assignment-form';
 import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
-
+import { AssignmentList } from './features/admin/assignments/assignment-list/assignment-list';
 import { AccessDeniedComponent } from './features/errors/access-denied/access-denied.component';
 import { NotFoundComponent } from './features/errors/not-found/not-found.component';
 import { ServerErrorComponent } from './features/errors/server-error/server-error.component';
@@ -192,16 +192,33 @@ export const routes: Routes = [
 },
       // ================= TEACHER ASSIGNMENTS =================
 
-      {
-        path: 'admin/assignments',
-        component: PagePlaceholderComponent,
-        canActivate: [roleGuard],
-        data: {
-          roles: ['ADMIN'],
-          title: 'Teacher Assignments',
-          description: 'Manage teacher assignments.'
-        }
-      },
+
+{
+  path: 'admin/assignments/create',
+  component: AssignmentForm,
+  canActivate: [roleGuard],
+  data: {
+    roles: ['ADMIN']
+  }
+},
+
+{
+  path: 'admin/assignments/:id/edit',
+  component: AssignmentForm,
+  canActivate: [roleGuard],
+  data: {
+    roles: ['ADMIN']
+  }
+},
+
+{
+  path: 'admin/assignments',
+  component: AssignmentList,
+  canActivate: [roleGuard],
+  data: {
+    roles: ['ADMIN']
+  }
+},
 
 
       // ================= ATTENDANCE =================

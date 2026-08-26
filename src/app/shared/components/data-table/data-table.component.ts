@@ -7,7 +7,7 @@ export interface TableColumn {
   label: string;
   width?: string;
   align?: 'left' | 'center' | 'right';
-  type?: 'text' | 'status' | 'current' | 'sections';
+  type?: 'text' | 'status' | 'current' | 'sections' | 'date-time' | 'assignment-status';
 }
 
 export interface TableAction {
@@ -41,6 +41,74 @@ export class DataTableComponent {
   getBooleanCellValue(row: any, column: TableColumn): boolean {
     return Boolean(row[column.key]);
   }
+
+  getStatusLabel(row: any, column: TableColumn): string {
+  const value = row[column.key];
+
+  if (typeof value === 'boolean') {
+    return value ? 'Active' : 'Inactive';
+  }
+
+  switch (value) {
+    case 'DRAFT':
+      return 'Draft';
+
+    case 'PUBLISHED':
+      return 'Published';
+
+    case 'CLOSED':
+      return 'Closed';
+
+    default:
+      return value ?? '';
+  }
+}
+
+getStatusVariant(
+  row: any,
+  column: TableColumn
+): 'success' | 'danger' | 'warning' {
+  const value = row[column.key];
+
+  if (typeof value === 'boolean') {
+    return value ? 'success' : 'danger';
+  }
+
+  switch (value) {
+    case 'PUBLISHED':
+      return 'success';
+
+    case 'CLOSED':
+      return 'danger';
+
+    case 'DRAFT':
+      return 'warning';
+
+    default:
+      return 'warning';
+  }
+}
+
+formatDateTime(value: string | null | undefined): string {
+  if (!value) {
+    return '';
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  }).format(date);
+}
 
   isCurrent(row: any): boolean {
     return this.currentField

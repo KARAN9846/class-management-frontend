@@ -28,11 +28,18 @@
           @for (column of columns; track trackColumn($index, column)) {
           <td [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'">
 
-            @if (column.type === 'status') {
-            <app-status-badge [label]="getBooleanCellValue(row, column) ? 'Active' : 'Inactive'"
-              [variant]="getBooleanCellValue(row, column) ? 'success' : 'danger'">
-            </app-status-badge>
-            } @else if (column.type === 'current') {
+            @if (column.type === 'status' || column.type === 'assignment-status') {
+
+  <app-status-badge
+    [label]="getStatusLabel(row, column)"
+    [variant]="getStatusVariant(row, column)">
+  </app-status-badge>
+
+} @else if (column.type === 'date-time') {
+
+  {{ formatDateTime(getCellValue(row, column)) }}
+
+}  @else if (column.type === 'current') {
             @if (isCurrent(row)) {
             <span class="current-badge">Current</span>
             }

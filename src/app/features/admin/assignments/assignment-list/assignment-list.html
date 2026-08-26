@@ -1,0 +1,69 @@
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Assignments</h1>
+
+      <p>
+        Manage assignments for classes, subjects and teachers
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="router.navigate(['/admin/assignments/create'])">
+
+      + Add Assignment
+
+    </button>
+
+  </div>
+
+
+  <div class="table-card">
+
+    <div class="filter-area">
+
+      <app-search-input
+        placeholder="Search assignments..."
+        (searchChange)="onSearch($event)">
+      </app-search-input>
+
+    </div>
+
+
+    @if (errorMessage) {
+
+      <div class="error-state">
+
+        {{ errorMessage }}
+
+      </div>
+
+    }
+
+
+    <app-data-table
+
+      [columns]="columns"
+
+      [data]="assignments"
+
+      [loading]="loading"
+
+      [actions]="actions"
+
+      [showActions]="true"
+
+      (actionClick)="onAction($event)">
+
+    </app-data-table>
+
+  </div>
+
+</div>

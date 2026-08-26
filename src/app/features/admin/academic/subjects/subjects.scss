@@ -112,12 +112,13 @@
 ========================= */
 .state-card,
 .error-card {
-  padding: 18px;
+  padding: 14px 18px;
   margin-bottom: 20px;
+  border: 1px solid #fecaca;
   border-radius: 10px;
-  text-align: center;
-  font-size: 14px;
-}
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 14px;}
 
 .state-card {
   background: #f8fafc;
