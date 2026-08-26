@@ -1,0 +1,317 @@
+<div class="page">
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        Edit Assignment
+      </h1>
+
+      <p>
+        Update your assignment details.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  @if (errorMessage) {
+
+    <div class="error-state">
+      {{ errorMessage }}
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       SUCCESS
+  ====================================================== -->
+
+  @if (successMessage) {
+
+    <div class="success-state">
+      {{ successMessage }}
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       LOADING
+  ====================================================== -->
+
+  @if (loading) {
+
+    <div class="loading-state">
+      Loading assignment...
+    </div>
+
+  } @else {
+
+    <!-- =====================================================
+         FORM
+    ====================================================== -->
+
+    <div class="form-card">
+
+
+      <!-- =================================================
+           ASSIGNMENT INFORMATION
+      ================================================== -->
+
+      <div class="section-title">
+        Assignment Information
+      </div>
+
+
+      <div class="form-grid">
+
+
+        <!-- ================= ACADEMIC YEAR ================= -->
+
+        <div class="form-group">
+
+          <label>
+            Academic Year
+          </label>
+
+          <input
+            type="text"
+            [value]="academicYearName"
+            disabled>
+
+        </div>
+
+
+        <!-- ================= CLASS ================= -->
+
+        <div class="form-group">
+
+          <label>
+            Class
+          </label>
+
+          <input
+            type="text"
+            [value]="className"
+            disabled>
+
+        </div>
+
+
+        <!-- ================= SECTION ================= -->
+
+        <div class="form-group">
+
+          <label>
+            Section
+          </label>
+
+          <input
+            type="text"
+            [value]="sectionName"
+            disabled>
+
+        </div>
+
+
+        <!-- ================= SUBJECT ================= -->
+
+        <div class="form-group">
+
+          <label>
+            Subject
+          </label>
+
+          <input
+            type="text"
+            [value]="subjectName + ' (' + subjectCode + ')'"
+            disabled>
+
+        </div>
+
+
+        <!-- ================= TEACHER ================= -->
+
+        <div class="form-group">
+
+          <label>
+            Teacher
+          </label>
+
+          <input
+            type="text"
+            [value]="teacherName"
+            disabled>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- =================================================
+           ASSIGNMENT DETAILS
+      ================================================== -->
+
+      <div class="section-title">
+        Assignment Details
+      </div>
+
+
+      <div class="form-grid">
+
+
+        <!-- ================= TITLE ================= -->
+
+        <div class="form-group full-width">
+
+          <label>
+            Title
+            <span>*</span>
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="form.title"
+            placeholder="Enter assignment title">
+
+        </div>
+
+
+        <!-- ================= DESCRIPTION ================= -->
+
+        <div class="form-group full-width">
+
+          <label>
+            Description
+          </label>
+
+          <textarea
+            [(ngModel)]="form.description"
+            rows="5"
+            placeholder="Enter assignment description">
+          </textarea>
+
+        </div>
+
+
+        <!-- ================= DUE DATE ================= -->
+
+        <div class="form-group">
+
+          <label>
+            Due Date
+            <span>*</span>
+          </label>
+
+          <input
+            type="datetime-local"
+            [(ngModel)]="form.dueDate">
+
+        </div>
+
+
+        <!-- ================= MAX MARKS ================= -->
+
+        <div class="form-group">
+
+          <label>
+            Maximum Marks
+            <span>*</span>
+          </label>
+
+          <input
+            type="number"
+            min="1"
+            [(ngModel)]="form.maxMarks"
+            placeholder="20">
+
+        </div>
+
+
+        <!-- ================= STATUS ================= -->
+
+        <div class="form-group">
+
+          <label>
+            Status
+          </label>
+
+          <select
+            [(ngModel)]="form.status">
+
+            <option value="DRAFT">
+              Draft
+            </option>
+
+            <option value="PUBLISHED">
+              Published
+            </option>
+
+            <option value="CLOSED">
+              Closed
+            </option>
+
+          </select>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- =================================================
+           ACTIONS
+      ================================================== -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancel()"
+          [disabled]="saving">
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="button"
+          class="save-btn"
+          (click)="saveAssignment()"
+          [disabled]="saving">
+
+          @if (saving) {
+
+            Saving...
+
+          } @else {
+
+            Update Assignment
+
+          }
+
+        </button>
+
+      </div>
+
+
+    </div>
+
+  }
+
+</div>

@@ -1,0 +1,71 @@
+<div class="page">
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>My Assignments</h1>
+
+      <p>
+        Manage assignments created for your classes and subjects
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       TABLE
+  ====================================================== -->
+
+  <div class="table-card">
+
+    <div class="filter-area">
+
+      <app-search-input
+        placeholder="Search my assignments..."
+        (searchChange)="onSearch($event)">
+      </app-search-input>
+
+    </div>
+
+
+    <!-- Error -->
+
+    @if (errorMessage) {
+
+      <div class="error-state">
+
+        {{ errorMessage }}
+
+      </div>
+
+    }
+
+
+    <!-- Data Table -->
+
+    <app-data-table
+
+      [columns]="columns"
+
+      [data]="assignments"
+
+      [loading]="loading"
+
+      [actions]="actions"
+
+      [showActions]="true"
+
+      (actionClick)="onAction($event)">
+
+    </app-data-table>
+
+  </div>
+
+</div>

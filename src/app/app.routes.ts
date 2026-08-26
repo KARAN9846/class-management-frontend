@@ -1,19 +1,44 @@
 import { Routes } from '@angular/router';
 
+// =========================================================
+// AUTH
+// =========================================================
+
 import { LoginComponent } from './features/auth/login/login.component';
-import { AssignmentForm } from './features/admin/assignments/assignment-form/assignment-form';
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+
+// =========================================================
+// LAYOUT
+// =========================================================
+
 import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
-import { AssignmentList } from './features/admin/assignments/assignment-list/assignment-list';
+
+// =========================================================
+// ERROR PAGES
+// =========================================================
+
 import { AccessDeniedComponent } from './features/errors/access-denied/access-denied.component';
 import { NotFoundComponent } from './features/errors/not-found/not-found.component';
 import { ServerErrorComponent } from './features/errors/server-error/server-error.component';
 
-import { SuperAdminDashboard } from './features/super-admin/dashboard/super-admin-dashboard/super-admin-dashboard';
-import { AdminDashboard } from './features/admin/dashboard/admin-dashboard/admin-dashboard';
-import { TeacherDashboard } from './features/teacher/dashboard/teacher-dashboard/teacher-dashboard';
-import { StudentDashboard } from './features/student/dashboard/student-dashboard/student-dashboard';
+// =========================================================
+// SHARED
+// =========================================================
 
 import { PagePlaceholderComponent } from './shared/components/page-placeholder/page-placeholder.component';
+
+// =========================================================
+// SUPER ADMIN
+// =========================================================
+
+import { SuperAdminDashboard } from './features/super-admin/dashboard/super-admin-dashboard/super-admin-dashboard';
+
+// =========================================================
+// ADMIN
+// =========================================================
+
+import { AdminDashboard } from './features/admin/dashboard/admin-dashboard/admin-dashboard';
 
 import { AcademicYearsComponent } from './features/admin/academic/academic-years/academic-years';
 import { ClassesComponent } from './features/admin/academic/classes/classes';
@@ -25,13 +50,36 @@ import { TeacherForm } from './features/admin/teachers/teacher-form/teacher-form
 
 import { StudentList } from './features/admin/students/student-list/student-list';
 import { StudentForm } from './features/admin/students/student-form/student-form';
-import { authGuard } from './core/guards/auth.guard';
-import { roleGuard } from './core/guards/role.guard';
 
+import { AssignmentList } from './features/admin/assignments/assignment-list/assignment-list';
+import { AssignmentForm } from './features/admin/assignments/assignment-form/assignment-form';
+
+// =========================================================
+// TEACHER
+// =========================================================
+
+import { TeacherDashboard } from './features/teacher/dashboard/teacher-dashboard/teacher-dashboard';
+
+import { TeacherAssignmentList } from './features/teacher/assignments/teacher-assignment-list/teacher-assignment-list';
+
+import { TeacherAssignmentForm } from './features/teacher/assignments/teacher-assignment-form/teacher-assignment-form';
+
+// =========================================================
+// STUDENT
+// =========================================================
+
+import { StudentDashboard } from './features/student/dashboard/student-dashboard/student-dashboard';
+
+
+// =========================================================
+// ROUTES
+// =========================================================
 
 export const routes: Routes = [
 
-  // ================= LOGIN =================
+  // =======================================================
+  // LOGIN
+  // =======================================================
 
   {
     path: 'login',
@@ -39,7 +87,9 @@ export const routes: Routes = [
   },
 
 
-  // ================= ACCESS DENIED =================
+  // =======================================================
+  // ACCESS DENIED
+  // =======================================================
 
   {
     path: 'access-denied',
@@ -47,7 +97,9 @@ export const routes: Routes = [
   },
 
 
-  // ================= MAIN APPLICATION =================
+  // =======================================================
+  // MAIN APPLICATION
+  // =======================================================
 
   {
     path: '',
@@ -56,12 +108,16 @@ export const routes: Routes = [
 
     children: [
 
-      // ================= SUPER ADMIN =================
+      // ===================================================
+      // SUPER ADMIN
+      // ===================================================
 
       {
         path: 'super-admin/dashboard',
         component: SuperAdminDashboard,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['SUPER_ADMIN']
         }
@@ -70,7 +126,9 @@ export const routes: Routes = [
       {
         path: 'super-admin/admins',
         component: PagePlaceholderComponent,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['SUPER_ADMIN'],
           title: 'Admin Management',
@@ -79,24 +137,32 @@ export const routes: Routes = [
       },
 
 
-      // ================= ADMIN =================
+      // ===================================================
+      // ADMIN
+      // ===================================================
+
+      // ------------------- DASHBOARD ---------------------
 
       {
         path: 'admin/dashboard',
         component: AdminDashboard,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['ADMIN']
         }
       },
 
 
-      // ================= ACADEMIC =================
+      // ------------------- ACADEMIC ----------------------
 
       {
         path: 'admin/academic-years',
         component: AcademicYearsComponent,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['ADMIN']
         }
@@ -105,7 +171,9 @@ export const routes: Routes = [
       {
         path: 'admin/classes',
         component: ClassesComponent,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['ADMIN']
         }
@@ -114,19 +182,23 @@ export const routes: Routes = [
       {
         path: 'admin/subjects',
         component: SubjectsComponent,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['ADMIN']
         }
       },
 
 
-      // ================= TEACHERS =================
+      // ------------------- TEACHERS ----------------------
 
       {
         path: 'admin/teachers/create',
         component: TeacherForm,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['ADMIN']
         }
@@ -135,7 +207,9 @@ export const routes: Routes = [
       {
         path: 'admin/teachers/:id/edit',
         component: TeacherForm,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['ADMIN']
         }
@@ -144,7 +218,9 @@ export const routes: Routes = [
       {
         path: 'admin/teachers/:id',
         component: TeacherDetails,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['ADMIN']
         }
@@ -153,80 +229,97 @@ export const routes: Routes = [
       {
         path: 'admin/teachers',
         component: TeacherList,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['ADMIN']
         }
       },
 
 
-      // ================= STUDENTS =================
+      // ------------------- STUDENTS ----------------------
 
-{
-  path: 'admin/students/create',
-  component: StudentForm,
-  canActivate: [roleGuard],
-  data: {
-    roles: ['ADMIN']
-  }
-},
+      {
+        path: 'admin/students/create',
+        component: StudentForm,
 
-{
-  path: 'admin/students/:id/edit',
-  component: StudentForm,
-  canActivate: [roleGuard],
-  data: {
-    roles: ['ADMIN']
-  }
-},
+        canActivate: [roleGuard],
 
-{
-  path: 'admin/students',
-  component: StudentList,
-  canActivate: [roleGuard],
-  data: {
-    roles: ['ADMIN'],
-    title: 'Students',
-    description: 'Manage students.'
-  }
-},
-      // ================= TEACHER ASSIGNMENTS =================
+        data: {
+          roles: ['ADMIN']
+        }
+      },
 
+      {
+        path: 'admin/students/:id/edit',
+        component: StudentForm,
 
-{
-  path: 'admin/assignments/create',
-  component: AssignmentForm,
-  canActivate: [roleGuard],
-  data: {
-    roles: ['ADMIN']
-  }
-},
+        canActivate: [roleGuard],
 
-{
-  path: 'admin/assignments/:id/edit',
-  component: AssignmentForm,
-  canActivate: [roleGuard],
-  data: {
-    roles: ['ADMIN']
-  }
-},
+        data: {
+          roles: ['ADMIN']
+        }
+      },
 
-{
-  path: 'admin/assignments',
-  component: AssignmentList,
-  canActivate: [roleGuard],
-  data: {
-    roles: ['ADMIN']
-  }
-},
+      {
+        path: 'admin/students',
+        component: StudentList,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['ADMIN'],
+          title: 'Students',
+          description: 'Manage students.'
+        }
+      },
 
 
-      // ================= ATTENDANCE =================
+      // ------------------- ASSIGNMENTS -------------------
+
+      {
+        path: 'admin/assignments/create',
+        component: AssignmentForm,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+      {
+        path: 'admin/assignments/:id/edit',
+        component: AssignmentForm,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+      {
+        path: 'admin/assignments',
+        component: AssignmentList,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+
+      // ------------------- ATTENDANCE --------------------
 
       {
         path: 'admin/attendance',
         component: PagePlaceholderComponent,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['ADMIN'],
           title: 'Attendance',
@@ -235,33 +328,75 @@ export const routes: Routes = [
       },
 
 
-      // ================= TEACHER =================
+      // ===================================================
+      // TEACHER
+      // ===================================================
+
+      // ------------------- DASHBOARD ---------------------
 
       {
         path: 'teacher/dashboard',
         component: TeacherDashboard,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['TEACHER']
         }
       },
 
 
-      // ================= STUDENT =================
+      // ------------------- ASSIGNMENTS -------------------
+
+      {
+        path: 'teacher/assignments/:id/edit',
+        component: TeacherAssignmentForm,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['TEACHER']
+        }
+      },
+
+      {
+        path: 'teacher/assignments',
+        component: TeacherAssignmentList,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['TEACHER']
+        }
+      },
+
+
+      // ===================================================
+      // STUDENT
+      // ===================================================
+
+      // ------------------- DASHBOARD ---------------------
 
       {
         path: 'student/dashboard',
         component: StudentDashboard,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['STUDENT']
         }
       },
 
+
+      // ------------------- ATTENDANCE --------------------
+
       {
         path: 'student/attendance',
         component: PagePlaceholderComponent,
+
         canActivate: [roleGuard],
+
         data: {
           roles: ['STUDENT'],
           title: 'My Attendance',
@@ -273,7 +408,9 @@ export const routes: Routes = [
   },
 
 
-  // ================= DEFAULT =================
+  // =======================================================
+  // DEFAULT
+  // =======================================================
 
   {
     path: '',
@@ -282,7 +419,9 @@ export const routes: Routes = [
   },
 
 
-  // ================= ERRORS =================
+  // =======================================================
+  // ERROR PAGES
+  // =======================================================
 
   {
     path: 'not-found',
@@ -293,6 +432,11 @@ export const routes: Routes = [
     path: 'server-error',
     component: ServerErrorComponent
   },
+
+
+  // =======================================================
+  // WILDCARD
+  // =======================================================
 
   {
     path: '**',

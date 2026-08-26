@@ -88,10 +88,6 @@ export class StudentList implements OnInit {
 
   actions: TableAction[] = [
     {
-      label: 'View',
-      type: 'view'
-    },
-    {
       label: 'Edit',
       type: 'edit'
     },

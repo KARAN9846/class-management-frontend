@@ -136,11 +136,6 @@ export class TeacherList implements OnInit {
   actions: TableAction[] = [
 
     {
-      label: 'View',
-      type: 'view'
-    },
-
-    {
       label: 'Edit',
       type: 'edit'
     },
@@ -271,19 +266,6 @@ export class TeacherList implements OnInit {
 
 
     switch (event.action.type) {
-
-      // -----------------------------------------------------
-      // VIEW
-      // -----------------------------------------------------
-
-      case 'view':
-
-        this.router.navigate([
-          '/admin/teachers',
-          id
-        ]);
-
-        break;
 
 
       // -----------------------------------------------------
