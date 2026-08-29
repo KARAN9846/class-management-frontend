@@ -1,0 +1,664 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.teacher-role-assignment-page {
+  width: 100%;
+  height: calc(100vh - 110px);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding-right: 8px;
+  padding-bottom: 40px;
+
+  box-sizing: border-box;
+}
+
+.teacher-role-assignment-page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.teacher-role-assignment-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.teacher-role-assignment-page::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.teacher-role-assignment-page::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.page-top {
+  margin-bottom: 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 8px;
+
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.breadcrumb strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.page-top h1 {
+  margin: 0 0 5px;
+
+  color: var(--text-primary);
+
+  font-size: 24px;
+  font-weight: 700;
+
+  letter-spacing: -0.02em;
+}
+
+.page-top p {
+  margin: 0;
+
+  color: var(--text-muted);
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.error-banner {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.error-banner strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.error-banner span {
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+.success-banner {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+
+  background: #f0fdf4;
+  color: #166534;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.form-card {
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  background: var(--surface);
+
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.section-header {
+  padding: 20px 22px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header h2 {
+  margin: 0 0 4px;
+
+  color: var(--text-primary);
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.section-header p {
+  margin: 0;
+
+  color: var(--text-muted);
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.scope-header {
+  margin-top: 8px;
+}
+
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+
+  padding: 22px;
+}
+
+
+/* =========================================================
+   FORM FIELD
+   ========================================================= */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-field label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  color: var(--text-primary);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.form-field label > span:not(.optional) {
+  color: #dc2626;
+}
+
+.form-field label .optional {
+  color: var(--text-muted);
+
+  font-size: 10px;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   INPUT / SELECT
+   ========================================================= */
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  height: 42px;
+
+  box-sizing: border-box;
+
+  padding: 0 12px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  outline: none;
+
+  background: var(--background);
+  color: var(--text-primary);
+
+  font: inherit;
+  font-size: 13px;
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background 150ms ease;
+}
+
+.form-field select {
+  cursor: pointer;
+}
+
+.form-field input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  border-color: var(--primary);
+
+  box-shadow:
+    0 0 0 3px var(--primary-light);
+}
+
+.form-field select:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+
+  background: var(--surface-hover);
+}
+
+
+/* =========================================================
+   ADD SCOPE
+   ========================================================= */
+
+.add-scope-wrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+.add-scope-button {
+  width: 100%;
+  height: 42px;
+
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-md);
+
+  background: var(--surface);
+  color: var(--primary);
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.add-scope-button:hover:not(:disabled) {
+  background: var(--primary-light);
+
+  box-shadow: var(--shadow-sm);
+}
+
+.add-scope-button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   SELECTED SCOPES
+   ========================================================= */
+
+.selected-scopes {
+  margin: 0 22px 22px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  background: var(--background);
+
+  overflow: hidden;
+}
+
+.scope-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.scope-title h3 {
+  margin: 0 0 3px;
+
+  color: var(--text-primary);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.scope-title p {
+  margin: 0;
+
+  color: var(--text-muted);
+
+  font-size: 11px;
+}
+
+.scope-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 24px;
+  height: 24px;
+
+  padding: 0 7px;
+
+  box-sizing: border-box;
+
+  border-radius: 20px;
+
+  background: var(--primary-light);
+  color: var(--primary);
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   SCOPE LIST
+   ========================================================= */
+
+.scope-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.scope-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 13px 16px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.scope-item:last-child {
+  border-bottom: none;
+}
+
+.scope-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 26px;
+  height: 26px;
+
+  flex: 0 0 26px;
+
+  border-radius: 50%;
+
+  background: var(--surface);
+  color: var(--text-muted);
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.scope-details {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  flex: 1;
+}
+
+.scope-details strong {
+  color: var(--text-primary);
+
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.scope-details > span {
+  color: var(--text-muted);
+
+  font-size: 11px;
+}
+
+.separator {
+  margin: 0 5px;
+
+  color: var(--text-muted);
+}
+
+.remove-scope-button {
+  height: 30px;
+
+  padding: 0 10px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  background: var(--surface);
+  color: #dc2626;
+
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
+}
+
+.remove-scope-button:hover {
+  border-color: #fecaca;
+
+  background: #fef2f2;
+}
+
+
+/* =========================================================
+   EMPTY SCOPES
+   ========================================================= */
+
+.empty-scopes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin: 0 22px 22px;
+
+  padding: 30px 20px;
+
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+
+  text-align: center;
+}
+
+.empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  margin-bottom: 10px;
+
+  border-radius: 50%;
+
+  background: var(--primary-light);
+  color: var(--primary);
+
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.empty-scopes strong {
+  margin-bottom: 4px;
+
+  color: var(--text-primary);
+
+  font-size: 12px;
+}
+
+.empty-scopes span {
+  max-width: 400px;
+
+  color: var(--text-muted);
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   FORM FOOTER
+   ========================================================= */
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  padding: 18px 22px;
+
+  border-top: 1px solid var(--border);
+
+  background: var(--background);
+}
+
+.form-footer button {
+  height: 40px;
+
+  padding: 0 17px;
+
+  border-radius: var(--radius-md);
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 150ms ease;
+}
+
+.form-footer button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  border: 1px solid var(--border);
+
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.submit-button {
+  border: 1px solid var(--primary);
+
+  background: var(--primary);
+  color: white;
+}
+
+.submit-button:hover:not(:disabled) {
+  filter: brightness(0.95);
+
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-top h1 {
+    font-size: 21px;
+  }
+
+  .scope-item {
+    align-items: flex-start;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .form-grid {
+    padding: 16px;
+  }
+
+  .section-header {
+    padding: 16px;
+  }
+
+  .selected-scopes,
+  .empty-scopes {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .form-footer {
+    flex-direction: column-reverse;
+
+    padding: 16px;
+  }
+
+  .form-footer button {
+    width: 100%;
+  }
+
+  .scope-item {
+    flex-wrap: wrap;
+  }
+
+  .remove-scope-button {
+    margin-left: 38px;
+  }
+
+}

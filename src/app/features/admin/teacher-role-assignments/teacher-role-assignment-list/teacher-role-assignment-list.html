@@ -1,0 +1,352 @@
+<div class="assignment-page">
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+      <div class="breadcrumb">
+        <span>Management</span>
+        <span>/</span>
+        <strong>Teacher Role Assignments</strong>
+      </div>
+
+      <h1>Teacher Role Assignments</h1>
+
+      <p>
+        Assign additional roles and access scopes to teachers.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="primary-button"
+      (click)="createAssignment()">
+
+      + Assign Role
+
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- SUCCESS -->
+  <!-- ===================================================== -->
+
+  @if (successMessage) {
+
+    <div class="success-banner">
+
+      {{ successMessage }}
+
+    </div>
+
+  }
+
+
+  <!-- ===================================================== -->
+  <!-- ERROR -->
+  <!-- ===================================================== -->
+
+  @if (errorMessage) {
+
+    <div class="error-banner">
+
+      <div>
+        <strong>Something went wrong</strong>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+      </div>
+
+      <button
+        type="button"
+        (click)="retry()">
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- ===================================================== -->
+  <!-- LOADING -->
+  <!-- ===================================================== -->
+
+  @if (loading) {
+
+    <section class="assignment-card loading-card">
+
+      <div class="loader"></div>
+
+      <span>
+        Loading teacher role assignments...
+      </span>
+
+    </section>
+
+  }
+
+
+  <!-- ===================================================== -->
+  <!-- CONTENT -->
+  <!-- ===================================================== -->
+
+  @if (!loading) {
+
+    @if (assignments.length > 0) {
+
+      <section class="assignment-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>Assigned Roles</h2>
+
+            <p>
+              {{ assignments.length }}
+              teacher
+              {{ assignments.length === 1 ? '' : 's' }}
+              with assigned roles.
+            </p>
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- TABLE -->
+        <!-- ================================================= -->
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Teacher</th>
+
+                <th>Role</th>
+
+                <th>Scopes</th>
+
+                <th>Assigned On</th>
+
+                <th>Action</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                assignment of assignments;
+                track assignment.id
+              ) {
+
+                <tr>
+
+                  <!-- ======================================= -->
+                  <!-- TEACHER -->
+                  <!-- ======================================= -->
+
+                  <td>
+
+                    <div class="teacher-cell">
+
+                      <div class="teacher-avatar">
+
+                        {{ assignment.teacherName.charAt(0).toUpperCase() }}
+
+                      </div>
+
+                      <div>
+
+                        <strong>
+                          {{ assignment.teacherName }}
+                        </strong>
+
+                        <span>
+                          {{ assignment.teacherNumber }}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                  </td>
+
+
+                  <!-- ======================================= -->
+                  <!-- ROLE -->
+                  <!-- ======================================= -->
+
+                  <td>
+
+                    <span class="role-badge">
+
+                      {{ assignment.teacherRoleName }}
+
+                    </span>
+
+                  </td>
+
+
+                  <!-- ======================================= -->
+                  <!-- SCOPES -->
+                  <!-- ======================================= -->
+
+                  <td>
+
+                    <div class="scope-cell">
+
+                      <strong>
+                        {{ getScopeCount(assignment) }}
+                        {{ getScopeCount(assignment) === 1 ? 'Scope' : 'Scopes' }}
+                      </strong>
+
+                      @if (assignment.scopes.length > 0) {
+
+                        <div class="scope-list">
+
+                          @for (
+                            scope of assignment.scopes;
+                            track scope.id ?? $index
+                          ) {
+
+                            <span class="scope-item">
+
+                              {{ formatScope(scope) }}
+
+                            </span>
+
+                          }
+
+                        </div>
+
+                      }
+
+                    </div>
+
+                  </td>
+
+
+                  <!-- ======================================= -->
+                  <!-- DATE -->
+                  <!-- ======================================= -->
+
+                  <td>
+
+                    <span class="date-text">
+
+                      {{ assignment.createdAt | date:'dd MMM yyyy' }}
+
+                    </span>
+
+                  </td>
+
+
+                  <!-- ======================================= -->
+                  <!-- ACTION -->
+                  <!-- ======================================= -->
+
+                  
+                  
+                  
+                  <td>
+
+                     <div class="action-buttons">
+
+<button
+  type="button"
+  class="view-button"
+  (click)="viewAssignment(assignment.teacherId)">
+
+  View
+
+</button>
+
+<button
+  type="button"
+  class="edit-button"
+  (click)="editAssignment(assignment.teacherId)">
+
+  Edit
+
+</button>
+
+                    <button
+                      type="button"
+                      class="remove-button"
+                      [disabled]="deleting"
+                      (click)="removeAssignment(assignment.teacherId)">
+
+                      Remove
+
+                    </button>
+
+                     </div>
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- =================================================== -->
+    <!-- EMPTY STATE -->
+    <!-- =================================================== -->
+
+    @else {
+
+      <section class="assignment-card empty-card">
+
+        <div class="empty-icon">
+          +
+        </div>
+
+        <h2>No Teacher Role Assignments</h2>
+
+        <p>
+          No additional roles have been assigned to teachers yet.
+        </p>
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="createAssignment()">
+
+          Assign First Role
+
+        </button>
+
+      </section>
+
+    }
+
+  }
+
+</div>
+

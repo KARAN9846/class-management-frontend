@@ -1,0 +1,180 @@
+<div class="teacher-role-form-page">
+
+  <div class="page-top">
+    <div>
+      <div class="breadcrumb">
+        <span>Management</span>
+        <span>/</span>
+        <strong>{{ isEditMode ? 'Edit Teacher Role' : 'Create Teacher Role' }}</strong>
+      </div>
+
+      <h1>
+        {{ isEditMode ? 'Edit Teacher Role' : 'Create Teacher Role' }}
+      </h1>
+
+      <p>
+        {{ isEditMode
+          ? 'Update the role details and permissions.'
+          : 'Create a new additional role for teachers.' }}
+      </p>
+    </div>
+  </div>
+
+  @if (errorMessage) {
+    <div class="error-banner">
+      <div>
+        <strong>Something went wrong</strong>
+        <span>{{ errorMessage }}</span>
+      </div>
+    </div>
+  }
+
+  @if (loading) {
+
+    <section class="form-card loading-card">
+      <div class="loader"></div>
+      <span>Loading teacher role...</span>
+    </section>
+
+  } @else {
+
+    <form
+      class="form-card"
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <!-- BASIC INFORMATION -->
+
+      <div class="section-header">
+        <h2>Basic Information</h2>
+        <p>Define the name and description of this teacher role.</p>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field full-width">
+          <label for="name">
+            Role Name <span>*</span>
+          </label>
+
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="e.g. Senior Class Coordinator"
+            maxlength="100">
+
+          @if (
+            form.controls.name.invalid &&
+            form.controls.name.touched
+          ) {
+            <small class="field-error">
+              Role name is required.
+            </small>
+          }
+        </div>
+
+        <div class="form-field full-width">
+          <label for="description">
+            Description
+          </label>
+
+          <textarea
+            id="description"
+            formControlName="description"
+            rows="4"
+            maxlength="255"
+            placeholder="Describe the responsibilities of this role...">
+          </textarea>
+        </div>
+
+      </div>
+
+
+      <!-- PERMISSIONS -->
+
+      <div class="section-header permissions-header">
+        <h2>Permissions</h2>
+        <p>
+          Select the permissions available to teachers assigned this role.
+        </p>
+      </div>
+
+      @if (permissions.length > 0) {
+
+        <div class="permissions-grid">
+
+          @for (permission of permissions; track permission.id) {
+
+            <label
+              class="permission-item"
+              [class.selected]="isPermissionSelected(permission.id)">
+
+              <input
+                type="checkbox"
+                [checked]="isPermissionSelected(permission.id)"
+                (change)="togglePermission(permission.id)">
+
+              <span class="checkbox"></span>
+
+              <span class="permission-content">
+
+                <strong>
+                  {{ permission.name }}
+                </strong>
+
+                <span>
+                  {{ permission.description || permission.code }}
+                </span>
+
+              </span>
+
+            </label>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="empty-permissions">
+          No permissions are available.
+        </div>
+
+      }
+
+
+      <!-- FOOTER -->
+
+      <div class="form-footer">
+
+        <button
+          type="button"
+          class="cancel-button"
+          [disabled]="submitting"
+          (click)="cancel()">
+
+          Cancel
+
+        </button>
+
+        <button
+          type="submit"
+          class="submit-button"
+          [disabled]="submitting || form.invalid">
+
+          @if (submitting) {
+            {{ isEditMode ? 'Updating...' : 'Creating...' }}
+          } @else {
+            {{ isEditMode ? 'Update Teacher Role' : 'Create Teacher Role' }}
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

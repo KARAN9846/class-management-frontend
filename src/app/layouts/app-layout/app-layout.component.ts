@@ -160,6 +160,19 @@ export class AppLayoutComponent {
               },
 
               {
+              
+                label: 'Teacher Roles',
+                route: '/admin/teacher-roles',
+                icon: '♙'
+              },
+
+              {
+                label: 'Teacher Role Assignments',
+                route: '/admin/teacher-role-assignments',
+                icon: '♙'
+},
+
+              {
                 label: 'Students',
                 route: '/admin/students',
                 icon: '♙'

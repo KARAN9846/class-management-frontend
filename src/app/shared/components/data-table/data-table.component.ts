@@ -7,7 +7,14 @@ export interface TableColumn {
   label: string;
   width?: string;
   align?: 'left' | 'center' | 'right';
-  type?: 'text' | 'status' | 'current' | 'sections' | 'date-time' | 'assignment-status';
+  type?:
+  | 'text'
+  | 'status'
+  | 'current'
+  | 'sections'
+  | 'permissions'
+  | 'date-time'
+  | 'assignment-status';
 }
 
 export interface TableAction {

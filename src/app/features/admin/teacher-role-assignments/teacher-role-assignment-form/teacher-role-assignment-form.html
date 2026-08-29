@@ -1,0 +1,559 @@
+<div class="teacher-role-assignment-page">
+
+  <!-- ================= HEADER ================= -->
+
+  <div class="page-top">
+
+    <div>
+
+      <div class="breadcrumb">
+        <span>Management</span>
+        <span>/</span>
+        <strong>Teacher Role Assignment</strong>
+      </div>
+
+      <h1>
+        {{
+          isEditMode
+            ? 'Edit Teacher Role Assignment'
+            : 'Assign Teacher Role'
+        }}
+      </h1>
+
+      <p>
+        {{
+          isEditMode
+            ? 'Update the teacher role and assignment scope.'
+            : 'Assign an additional role to a teacher and define the scope.'
+        }}
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= LOADING ASSIGNMENT ================= -->
+
+  @if (loadingAssignment) {
+
+    <div class="state-card">
+      Loading teacher role assignment...
+    </div>
+
+  }
+
+
+  <!-- ================= ERROR ================= -->
+
+  @if (errorMessage && !loadingAssignment) {
+
+    <div class="error-banner">
+
+      <div>
+
+        <strong>Something went wrong</strong>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- ================= SUCCESS ================= -->
+
+  @if (successMessage) {
+
+    <div class="success-banner">
+
+      {{ successMessage }}
+
+    </div>
+
+  }
+
+
+  <!-- ================= FORM ================= -->
+
+  @if (!loadingAssignment) {
+
+    <form
+      class="form-card"
+      (ngSubmit)="submit()">
+
+
+      <!-- ==================================================
+           TEACHER INFORMATION
+           ================================================== -->
+
+      <div class="section-header">
+
+        <h2>Teacher Assignment</h2>
+
+        <p>
+          Select the teacher and the additional role to assign.
+        </p>
+
+      </div>
+
+
+      <div class="form-grid">
+
+
+        <!-- ================= TEACHER ================= -->
+
+        <div class="form-field">
+
+          <label for="teacher">
+
+            Teacher
+
+            <span>*</span>
+
+          </label>
+
+          <select
+            id="teacher"
+            name="teacher"
+            [(ngModel)]="selectedTeacherId"
+            [disabled]="isEditMode"
+            required>
+
+            <option [ngValue]="null">
+              Select teacher
+            </option>
+
+            @for (
+              teacher of teachers;
+              track teacher.id
+            ) {
+
+              <option [ngValue]="teacher.id">
+
+                {{ teacher.teacherNumber }}
+                -
+                {{ teacher.firstName }}
+                {{ teacher.lastName }}
+
+              </option>
+
+            }
+
+          </select>
+
+          @if (isEditMode) {
+
+            <small class="field-help">
+              Teacher cannot be changed while editing an assignment.
+            </small>
+
+          }
+
+        </div>
+
+
+        <!-- ================= ROLE ================= -->
+
+        <div class="form-field">
+
+          <label for="role">
+
+            Teacher Role
+
+            <span>*</span>
+
+          </label>
+
+          <select
+            id="role"
+            name="role"
+            [(ngModel)]="selectedRoleId"
+            required>
+
+            <option [ngValue]="null">
+              Select teacher role
+            </option>
+
+            @for (
+              role of roles;
+              track role.id
+            ) {
+
+              <option [ngValue]="role.id">
+
+                {{ role.name }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           SCOPE
+           ================================================== -->
+
+      <div class="section-header scope-header">
+
+        <h2>Assignment Scope</h2>
+
+        <p>
+          Define the academic year, class and optionally a section
+          where this role will apply.
+        </p>
+
+      </div>
+
+
+      <div class="form-grid">
+
+
+        <!-- ================= ACADEMIC YEAR ================= -->
+
+        <div class="form-field">
+
+          <label for="academicYear">
+
+            Academic Year
+
+            <span>*</span>
+
+          </label>
+
+          <select
+            id="academicYear"
+            name="academicYear"
+            [(ngModel)]="selectedAcademicYearId"
+            (ngModelChange)="onAcademicYearChange()">
+
+            <option [ngValue]="null">
+
+              Select academic year
+
+            </option>
+
+            @for (
+              year of academicYears;
+              track year.id
+            ) {
+
+              <option [ngValue]="year.id">
+
+                {{ year.name }}
+
+                @if (year.isCurrent) {
+                  (Current)
+                }
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- ================= CLASS ================= -->
+
+        <div class="form-field">
+
+          <label for="class">
+
+            Class
+
+            <span>*</span>
+
+          </label>
+
+          <select
+            id="class"
+            name="class"
+            [(ngModel)]="selectedClassId"
+            (ngModelChange)="onClassChange()"
+            [disabled]="
+              !selectedAcademicYearId ||
+              loadingClasses
+            ">
+
+            <option [ngValue]="null">
+
+              @if (loadingClasses) {
+
+                Loading classes...
+
+              } @else {
+
+                Select class
+
+              }
+
+            </option>
+
+            @for (
+              item of classes;
+              track item.id
+            ) {
+
+              <option [ngValue]="item.id">
+
+                {{ item.name }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- ================= SECTION ================= -->
+
+        <div class="form-field">
+
+          <label for="section">
+
+            Section
+
+            <span class="optional">
+              Optional
+            </span>
+
+          </label>
+
+          <select
+            id="section"
+            name="section"
+            [(ngModel)]="selectedSectionId"
+            [disabled]="
+              !selectedClassId ||
+              loadingSections
+            ">
+
+            <option [ngValue]="null">
+
+              @if (loadingSections) {
+
+                Loading sections...
+
+              } @else {
+
+                All Sections
+
+              }
+
+            </option>
+
+            @for (
+              section of sections;
+              track section.id
+            ) {
+
+              <option [ngValue]="section.id">
+
+                {{ section.name }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- ================= ADD SCOPE ================= -->
+
+        <div class="add-scope-wrapper">
+
+          <button
+            type="button"
+            class="add-scope-button"
+            (click)="addScope()"
+            [disabled]="
+              !selectedAcademicYearId ||
+              !selectedClassId
+            ">
+
+            + Add Scope
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           SELECTED SCOPES
+           ================================================== -->
+
+      @if (scopes.length > 0) {
+
+        <div class="selected-scopes">
+
+          <div class="scope-title">
+
+            <div>
+
+              <h3>
+                Selected Scopes
+              </h3>
+
+              <p>
+                This role will apply to the following scope(s).
+              </p>
+
+            </div>
+
+            <span class="scope-count">
+
+              {{ scopes.length }}
+
+            </span>
+
+          </div>
+
+
+          <div class="scope-list">
+
+            @for (
+              scope of scopes;
+              track $index
+            ) {
+
+              <div class="scope-item">
+
+                <div class="scope-number">
+
+                  {{ $index + 1 }}
+
+                </div>
+
+
+                <div class="scope-details">
+
+                  <strong>
+
+                    {{ scope.academicYearName ||
+                       getAcademicYearName(scope.academicYearId) }}
+
+                  </strong>
+
+                  <span>
+
+                    {{ scope.className ||
+                       getClassName(scope.classId) }}
+
+                    <span class="separator">
+                      →
+                    </span>
+
+                    {{ scope.sectionName ||
+                       getSectionName(scope.sectionId) }}
+
+                  </span>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  class="remove-scope-button"
+                  (click)="removeScope($index)">
+
+                  Remove
+
+                </button>
+
+              </div>
+
+            }
+
+          </div>
+
+        </div>
+
+      } @else {
+
+        <div class="empty-scopes">
+
+          <div class="empty-icon">
+            +
+          </div>
+
+          <strong>
+            No scopes added
+          </strong>
+
+          <span>
+            Select an academic year and class, then click
+            "Add Scope".
+          </span>
+
+        </div>
+
+      }
+
+
+      <!-- ==================================================
+           FOOTER
+           ================================================== -->
+
+      <div class="form-footer">
+
+        <button
+          type="button"
+          class="cancel-button"
+          [disabled]="submitting"
+          (click)="cancel()">
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="submit"
+          class="submit-button"
+          [disabled]="submitting">
+
+          @if (submitting) {
+
+            {{
+              isEditMode
+                ? 'Updating...'
+                : 'Assigning...'
+            }}
+
+          } @else {
+
+            {{
+              isEditMode
+                ? 'Update Teacher Role'
+                : 'Assign Teacher Role'
+            }}
+
+          }
+
+        </button>
+
+      </div>
+
+
+    </form>
+
+  }
+
+</div>

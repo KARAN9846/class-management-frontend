@@ -51,7 +51,7 @@
   padding: 0 22px;
   font-size: 14px;
   color: var(--text);
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border);
 }
 
 .data-table tbody tr {
@@ -263,4 +263,44 @@
   color: #2563eb;
   font-size: 10px;
   font-weight: 700
+}
+
+/* =========================================================
+   PERMISSIONS
+========================================================= */
+
+.permission-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 480px;
+}
+
+.permission-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 16px;
+
+  padding: 2px 6px;
+
+  border: 1px solid var(--primary-light);
+  border-radius: 6px;
+
+background: hsl(213, 83%, 93%);
+color: #1e7efb;
+
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.2;
+
+  white-space: nowrap;
+}
+
+.empty-permissions {
+  color: var(--muted);
+  font-size: 11px;
+  font-style: italic;
 }

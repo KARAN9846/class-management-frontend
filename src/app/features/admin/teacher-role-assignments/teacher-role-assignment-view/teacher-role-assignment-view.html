@@ -1,0 +1,375 @@
+<div class="assignment-view-page">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        <span>Management</span>
+        <span>/</span>
+        <span>Teacher Role Assignments</span>
+        <span>/</span>
+        <strong>View</strong>
+      </div>
+
+      <h1>Teacher Role Assignment</h1>
+
+      <p>
+        View the teacher's assigned role and access scopes.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="secondary-button"
+      (click)="goBack()">
+
+      ← Back
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERROR
+       ===================================================== -->
+
+  @if (errorMessage && !loading) {
+
+    <div class="error-banner">
+
+      <div>
+
+        <strong>Something went wrong</strong>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        (click)="retry()">
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       LOADING
+       ===================================================== -->
+
+  @if (loading) {
+
+    <div class="state-card">
+
+      <div class="loader"></div>
+
+      <span>
+        Loading teacher role assignment...
+      </span>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       CONTENT
+       ===================================================== -->
+
+  @if (assignment && !loading) {
+
+    <div class="content-card">
+
+      <!-- =================================================
+           TEACHER + ROLE HEADER
+           ================================================= -->
+
+      <div class="assignment-header">
+
+        <div class="teacher-info">
+
+          <div class="teacher-avatar">
+
+            {{ assignment.teacherName
+              .charAt(0)
+              .toUpperCase() }}
+
+          </div>
+
+          <div>
+
+            <h2>
+              {{ assignment.teacherName }}
+            </h2>
+
+            <span>
+              {{ assignment.teacherNumber }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="role-badge">
+
+          {{ assignment.teacherRoleName }}
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           BASIC INFORMATION
+           ================================================= -->
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div>
+
+            <h3>Assignment Information</h3>
+
+            <p>
+              Basic information about this role assignment.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+          <div class="info-item">
+
+            <span class="label">
+              Teacher
+            </span>
+
+            <strong>
+              {{ assignment.teacherName }}
+            </strong>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Teacher Number
+            </span>
+
+            <strong>
+              {{ assignment.teacherNumber }}
+            </strong>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Assigned Role
+            </span>
+
+            <strong>
+              {{ assignment.teacherRoleName }}
+            </strong>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Number of Scopes
+            </span>
+
+            <strong>
+              {{ getScopeCount() }}
+            </strong>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Assigned On
+            </span>
+
+            <strong>
+              {{ formatDate(assignment.createdAt) }}
+            </strong>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Last Updated
+            </span>
+
+            <strong>
+              {{ formatDate(assignment.updatedAt) }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           SCOPES
+           ================================================= -->
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div>
+
+            <h3>Assignment Scopes</h3>
+
+            <p>
+              Academic areas where this teacher role applies.
+            </p>
+
+          </div>
+
+          <span class="count-badge">
+
+            {{ getScopeCount() }}
+
+          </span>
+
+        </div>
+
+
+        @if (assignment.scopes.length > 0) {
+
+          <div class="scope-list">
+
+            @for (
+              scope of assignment.scopes;
+              track scope.id ?? $index
+            ) {
+
+              <div class="scope-item">
+
+                <div class="scope-number">
+
+                  {{ $index + 1 }}
+
+                </div>
+
+
+                <div class="scope-content">
+
+                  <div class="scope-main">
+
+                    <strong>
+                      {{ scope.academicYearName
+                        || 'Academic Year' }}
+                    </strong>
+
+                    <span>
+                      {{ scope.className
+                        || 'Class' }}
+                    </span>
+
+                  </div>
+
+
+                  <div class="scope-section">
+
+                    <span class="scope-label">
+                      Section
+                    </span>
+
+                    <strong>
+                      {{ scope.sectionName
+                        || 'All Sections' }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        } @else {
+
+          <div class="empty-state">
+
+            <strong>
+              No scopes assigned
+            </strong>
+
+            <span>
+              This teacher role does not have any assignment scopes.
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- =================================================
+           FOOTER ACTIONS
+           ================================================= -->
+
+      <div class="page-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="goBack()">
+
+          ← Back
+
+        </button>
+
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="editAssignment()">
+
+          Edit Assignment
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

@@ -1,0 +1,469 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.teacher-role-form-page {
+  width: 100%;
+  height: calc(100vh - 110px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  padding-bottom: 40px;
+  box-sizing: border-box;
+}
+
+
+.teacher-role-form-page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.teacher-role-form-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.teacher-role-form-page::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.teacher-role-form-page::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.page-top {
+  margin-bottom: 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.breadcrumb strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.page-top h1 {
+  margin: 0 0 5px;
+
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-top p {
+  margin: 0;
+
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error-banner {
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 20px;
+  padding: 14px 16px;
+
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.error-banner strong {
+  display: block;
+  margin-bottom: 3px;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.error-banner span {
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.form-card {
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.section-header {
+  padding: 20px 22px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header h2 {
+  margin: 0 0 4px;
+
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.section-header p {
+  margin: 0;
+
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.permissions-header {
+  margin-top: 8px;
+}
+
+/* =========================================================
+   FORM GRID
+========================================================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  padding: 22px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-field label {
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.form-field label span {
+  color: #dc2626;
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 11px 12px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  outline: none;
+
+  background: var(--background);
+  color: var(--text-primary);
+
+  font: inherit;
+  font-size: 13px;
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.form-field input {
+  height: 42px;
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--primary);
+
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.form-field input.ng-invalid.ng-touched,
+.form-field textarea.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+.field-error {
+  color: #dc2626;
+  font-size: 11px;
+}
+
+/* =========================================================
+   PERMISSIONS
+========================================================= */
+
+.permissions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  padding: 22px;
+}
+
+.permission-item {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+
+  padding: 13px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  background: var(--background);
+
+  cursor: pointer;
+
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.permission-item:hover {
+  border-color: var(--primary);
+  background: var(--surface-hover);
+}
+
+.permission-item.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.permission-item input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+
+  flex: 0 0 18px;
+
+  margin-top: 1px;
+
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+
+  background: var(--surface);
+
+  transition: all 150ms ease;
+}
+
+.permission-item.selected .checkbox {
+  border-color: var(--primary);
+  background: var(--primary);
+
+  box-shadow: inset 0 0 0 3px var(--primary);
+}
+
+.permission-content {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.permission-content strong {
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.permission-content span {
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.empty-permissions {
+  margin: 22px;
+  padding: 20px;
+
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+
+  color: var(--text-muted);
+  text-align: center;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   FORM FOOTER
+========================================================= */
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  padding: 18px 22px;
+
+  border-top: 1px solid var(--border);
+  background: var(--background);
+}
+
+.form-footer button {
+  height: 40px;
+
+  padding: 0 17px;
+
+  border-radius: var(--radius-md);
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 150ms ease;
+}
+
+.form-footer button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  border: 1px solid var(--border);
+
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.submit-button {
+  border: 1px solid var(--primary);
+
+  background: var(--primary);
+  color: white;
+}
+
+.submit-button:hover:not(:disabled) {
+  filter: brightness(0.95);
+  box-shadow: var(--shadow-sm);
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-card {
+  min-height: 180px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.loader {
+  width: 18px;
+  height: 18px;
+
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+  .form-grid,
+  .permissions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .page-top h1 {
+    font-size: 21px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-grid,
+  .permissions-grid {
+    padding: 16px;
+  }
+
+  .section-header {
+    padding: 16px;
+  }
+
+  .form-footer {
+    flex-direction: column-reverse;
+    padding: 16px;
+  }
+
+  .form-footer button {
+    width: 100%;
+  }
+}

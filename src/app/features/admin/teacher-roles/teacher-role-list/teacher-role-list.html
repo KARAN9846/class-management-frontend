@@ -1,0 +1,276 @@
+<div class="teacher-role-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        <span>Management</span>
+        <span>/</span>
+        <strong>Teacher Roles</strong>
+      </div>
+
+      <h1>
+        Teacher Roles
+      </h1>
+
+      <p>
+        Manage additional roles and permissions assigned to teachers.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="primary-button"
+      (click)="createRole()">
+
+      Create Teacher Role
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  @if (errorMessage) {
+
+    <div class="error-banner">
+
+      <div class="error-content">
+
+        <strong>
+          Something went wrong
+        </strong>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadRoles()">
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       MAIN CARD
+  ====================================================== -->
+
+  <section class="roles-card">
+
+    <!-- ===================================================
+         CARD HEADER
+    ==================================================== -->
+
+    <div class="card-header">
+
+      <div>
+
+        <h2>
+          Teacher Roles
+        </h2>
+
+        <p>
+          Define additional responsibilities and permissions
+          available to teachers.
+        </p>
+
+      </div>
+
+
+      <div class="role-count">
+
+        <strong>
+          {{ roles.length }}
+        </strong>
+
+        <span>
+          {{ roles.length === 1 ? 'Active Role' : 'Active Roles' }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         TABLE
+    ==================================================== -->
+
+    <div class="table-container">
+
+      <app-data-table
+        [columns]="columns"
+        [data]="roles"
+        [loading]="loading"
+        [actions]="actions"
+        [showActions]="true"
+        (actionClick)="onActionClick($event)">
+      </app-data-table>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       DEACTIVATE CONFIRMATION MODAL
+  ====================================================== -->
+
+  @if (showDeactivateConfirm && selectedRole) {
+
+    <div
+      class="modal-backdrop"
+      (click)="cancelDeactivate()">
+
+      <div
+        class="deactivate-modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- =================================================
+             MODAL HEADER
+        ================================================== -->
+
+        <div class="modal-header">
+
+          <div class="modal-label">
+            Teacher Role
+          </div>
+
+          <h2>
+            Deactivate Teacher Role?
+          </h2>
+
+          <p>
+
+            Are you sure you want to deactivate
+
+            <strong>
+              {{ selectedRole.name }}
+            </strong>?
+
+            <br>
+
+            This role will no longer be available
+            for new teacher assignments.
+
+          </p>
+
+        </div>
+
+
+        <!-- =================================================
+             WARNING
+        ================================================== -->
+
+        <div class="warning-box">
+
+          <strong>
+            Important
+          </strong>
+
+          <span>
+            Existing teacher assignments using this role
+            will not be automatically removed.
+          </span>
+
+        </div>
+
+
+        <!-- =================================================
+             ROLE INFORMATION
+        ================================================== -->
+
+        <div class="role-info">
+
+          <div>
+
+            <span>
+              Role Name
+            </span>
+
+            <strong>
+              {{ selectedRole.name }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Permissions
+            </span>
+
+            <strong>
+              {{ selectedRole.permissions.length }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             ACTIONS
+        ================================================== -->
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            [disabled]="deactivating"
+            (click)="cancelDeactivate()">
+
+            Cancel
+
+          </button>
+
+
+          <button
+            type="button"
+            class="confirm-btn"
+            [disabled]="deactivating"
+            (click)="confirmDeactivate()">
+
+            @if (deactivating) {
+
+              Deactivating...
+
+            } @else {
+
+              Deactivate Role
+
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

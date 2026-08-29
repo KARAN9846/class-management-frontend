@@ -1,10 +1,12 @@
 <div class="page">
 
+  <!-- ================= HEADER ================= -->
+
   <div class="page-header">
 
     <div>
       <h1>Teacher Details</h1>
-      <p>View teacher account information.</p>
+      <p>View teacher information, role, permissions and scope.</p>
     </div>
 
     <button
@@ -17,14 +19,7 @@
   </div>
 
 
-  @if (loading) {
-
-    <div class="state-card">
-      Loading teacher details...
-    </div>
-
-  }
-
+  <!-- ================= ERROR ================= -->
 
   @if (errorMessage && !loading) {
 
@@ -34,6 +29,19 @@
 
   }
 
+
+  <!-- ================= LOADING ================= -->
+
+  @if (loading) {
+
+    <div class="state-card">
+      Loading teacher details...
+    </div>
+
+  }
+
+
+  <!-- ================= TEACHER DETAILS ================= -->
 
   @if (teacher && !loading) {
 
@@ -70,30 +78,25 @@
           <strong>{{ teacher.firstName }}</strong>
         </div>
 
-
         <div class="detail-item">
           <span class="label">Last Name</span>
           <strong>{{ teacher.lastName }}</strong>
         </div>
-
 
         <div class="detail-item">
           <span class="label">Teacher Number</span>
           <strong>{{ teacher.teacherNumber }}</strong>
         </div>
 
-
         <div class="detail-item">
           <span class="label">Email</span>
           <strong>{{ teacher.email }}</strong>
         </div>
 
-
         <div class="detail-item">
           <span class="label">Phone</span>
           <strong>{{ teacher.phone || '-' }}</strong>
         </div>
-
 
         <div class="detail-item">
           <span class="label">Account Status</span>
@@ -127,6 +130,251 @@
         </button>
 
       </div>
+
+    </div>
+
+
+    <!-- ================= ROLE & PERMISSIONS ================= -->
+
+    <div class="access-card">
+
+      <div class="access-header">
+
+        <div>
+          <h2>Role & Permissions</h2>
+
+          <p>
+            Access granted to this teacher through their assigned role.
+          </p>
+        </div>
+
+      </div>
+
+
+      <!-- ASSIGNMENT LOADING -->
+
+      @if (loadingAssignment) {
+
+        <div class="state-card">
+          Loading role assignment...
+        </div>
+
+      }
+
+
+      <!-- NO ASSIGNMENT -->
+
+      @else if (!assignment) {
+
+        <div class="empty-access">
+
+          <strong>No Additional Role Assigned</strong>
+
+          <span>
+            This teacher does not have an additional teacher role.
+          </span>
+
+        </div>
+
+      }
+
+
+      <!-- ASSIGNMENT -->
+
+      @else {
+
+        <!-- ================= ROLE ================= -->
+
+        <div class="access-section">
+
+          <span class="label">
+            Assigned Role
+          </span>
+
+          <div class="role-display">
+
+            <strong>
+              {{ assignment.teacherRoleName }}
+            </strong>
+
+            @if (role?.isActive) {
+
+              <span class="role-status active">
+                Active
+              </span>
+
+            } @else {
+
+              <span class="role-status inactive">
+                Inactive
+              </span>
+
+            }
+
+          </div>
+
+          @if (role?.description) {
+
+            <p class="role-description">
+              {{ role?.description }}
+            </p>
+
+          }
+
+        </div>
+
+
+        <!-- ================= PERMISSIONS ================= -->
+
+        <div class="access-section">
+
+          <div class="section-title-row">
+
+            <div>
+              <span class="label">
+                Permissions
+              </span>
+
+              @if (loadingRole) {
+
+                <span class="muted">
+                  Loading permissions...
+                </span>
+
+              }
+
+            </div>
+
+            @if (role && !loadingRole) {
+
+              <span class="count-badge">
+                {{ role.permissions.length }}
+              </span>
+
+            }
+
+          </div>
+
+
+          @if (!loadingRole && role) {
+
+            @if (role.permissions.length > 0) {
+
+              <div class="permission-list">
+
+                @for (
+                  permission of role.permissions;
+                  track permission.id
+                ) {
+
+                  <div class="permission-item">
+
+                    <div class="permission-icon">
+                      ✓
+                    </div>
+
+                    <div class="permission-content">
+
+                      <strong>
+                        {{ permission.name }}
+                      </strong>
+
+                      <span>
+                        {{ permission.code }}
+                      </span>
+
+                      @if (permission.description) {
+
+                        <small>
+                          {{ permission.description }}
+                        </small>
+
+                      }
+
+                    </div>
+
+                  </div>
+
+                }
+
+              </div>
+
+            } @else {
+
+              <div class="empty-access">
+                No permissions assigned to this role.
+              </div>
+
+            }
+
+          }
+
+        </div>
+
+
+        <!-- ================= SCOPES ================= -->
+
+        <div class="access-section">
+
+          <div class="section-title-row">
+
+            <span class="label">
+              Assignment Scopes
+            </span>
+
+            <span class="count-badge">
+              {{ assignment.scopes.length }}
+            </span>
+
+          </div>
+
+
+          @if (assignment.scopes.length > 0) {
+
+            <div class="scope-list">
+
+              @for (
+                scope of assignment.scopes;
+                track scope.id ?? $index
+              ) {
+
+                <div class="scope-item">
+
+                  <div class="scope-icon">
+                    #
+                  </div>
+
+                  <div class="scope-content">
+
+                    <strong>
+                      {{ scope.academicYearName || 'Academic Year' }}
+                    </strong>
+
+                    <span>
+                      {{ scope.className || 'Class' }}
+                      →
+                      {{ scope.sectionName || 'All Sections' }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          } @else {
+
+            <div class="empty-access">
+              No scopes assigned.
+            </div>
+
+          }
+
+        </div>
+
+      }
 
     </div>
 
