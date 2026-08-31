@@ -1,38 +1,94 @@
-.page {
-  padding: 24px;
-  background: #f8fafc;
-  min-height: 100%;
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
 }
+
+/* =========================================================
+   PAGE — ONLY THIS FORM PAGE SCROLLS
+   ========================================================= */
+
+.page {
+  width: 100%;
+  height: calc(100vh - 110px);
+
+  min-height: 0;
+
+  padding: 24px 8px 40px 0;
+
+  box-sizing: border-box;
+
+  background: #f8fafc;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Chrome / Safari */
+.page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   margin-bottom: 24px;
 }
 
 .page-header h1 {
   margin: 0;
+
   font-size: 28px;
   font-weight: 700;
+
   color: #111827;
 }
 
 .page-header p {
   margin: 6px 0 0;
+
   color: #64748b;
+
   font-size: 14px;
 }
 
 .back-btn {
   padding: 10px 16px;
+
   border: 1px solid #dbe3ef;
+  border-radius: 9px;
+
   background: white;
   color: #374151;
-  border-radius: 9px;
+
   font-size: 14px;
   font-weight: 600;
+
   cursor: pointer;
+
   transition: 0.2s;
 }
 
@@ -41,15 +97,32 @@
   border-color: #cbd5e1;
 }
 
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
 .form-card {
+  width: 100%;
+
+  box-sizing: border-box;
+
   background: white;
+
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.06);
+
   overflow: hidden;
 }
 
+/* =========================================================
+   SECTION
+   ========================================================= */
+
 .section {
   padding: 28px;
+
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -59,60 +132,97 @@
 
 .section-header h2 {
   margin: 0;
+
   font-size: 18px;
   font-weight: 700;
+
   color: #111827;
 }
 
 .section-header p {
   margin: 6px 0 0;
+
   color: #64748b;
+
   font-size: 13px;
 }
 
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
   gap: 20px;
 }
+
+/* =========================================================
+   FORM GROUP
+   ========================================================= */
 
 .form-group {
   display: flex;
   flex-direction: column;
+
+  min-width: 0;
 }
 
 .form-group label {
   margin-bottom: 7px;
+
   font-size: 13px;
   font-weight: 600;
+
   color: #374151;
 }
 
 .form-group label span {
   color: #dc2626;
+
   margin-left: 2px;
 }
+
+/* =========================================================
+   INPUT / SELECT
+   ========================================================= */
 
 .form-group input,
 .form-group select {
   width: 100%;
   height: 44px;
+
   padding: 0 12px;
+
+  box-sizing: border-box;
+
   border: 1px solid #d1d5db;
   border-radius: 9px;
+
   background: white;
   color: #111827;
+
   font-size: 14px;
+
   outline: none;
-  box-sizing: border-box;
+
   transition: 0.2s;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   border-color: #2563eb;
-  box-shadow: 0 0 0 3px #eff6ff;
+
+  box-shadow:
+    0 0 0 3px #eff6ff;
 }
+
+/* =========================================================
+   INVALID
+   ========================================================= */
 
 .form-group input.invalid,
 .form-group select.invalid {
@@ -121,26 +231,45 @@
 
 .form-group input.invalid:focus,
 .form-group select.invalid:focus {
-  box-shadow: 0 0 0 3px #fef2f2;
+  box-shadow:
+    0 0 0 3px #fef2f2;
 }
+
+/* =========================================================
+   DISABLED
+   ========================================================= */
 
 .form-group select:disabled {
   background: #f8fafc;
+
   color: #94a3b8;
+
   cursor: not-allowed;
 }
 
+/* =========================================================
+   FIELD ERROR
+   ========================================================= */
+
 .field-error {
   margin-top: 5px;
+
   color: #dc2626;
+
   font-size: 12px;
 }
 
+/* =========================================================
+   ERROR STATE
+   ========================================================= */
+
 .error-state {
   margin: 20px 28px 0;
+
   padding: 14px 16px;
 
   background: #fef2f2;
+
   border: 1px solid #fecaca;
   border-radius: 9px;
 
@@ -154,52 +283,82 @@
   margin-bottom: 8px;
 
   font-weight: 700;
+
   color: #991b1b;
 }
 
 .error-state ul {
   margin: 0;
+
   padding-left: 20px;
 }
 
 .error-state li {
   margin: 4px 0;
+
   line-height: 1.5;
 }
 
+/* =========================================================
+   SUCCESS STATE
+   ========================================================= */
+
 .success-state {
   margin: 20px 28px 0;
+
   padding: 14px 16px;
+
   background: #f0fdf4;
+
   border: 1px solid #bbf7d0;
   border-radius: 9px;
+
   color: #15803d;
+
   font-size: 14px;
   font-weight: 500;
 }
 
+/* =========================================================
+   FORM ACTIONS
+   ========================================================= */
+
 .form-actions {
-  padding: 20px 28px;
   display: flex;
   justify-content: flex-end;
+
   gap: 12px;
+
+  padding: 20px 28px;
+
   background: #ffffff;
 }
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
 
 .cancel-btn,
 .submit-btn {
   height: 42px;
+
   padding: 0 18px;
+
   border-radius: 9px;
+
   font-size: 14px;
   font-weight: 600;
+
   cursor: pointer;
+
   transition: 0.2s;
 }
 
 .cancel-btn {
   background: white;
+
   color: #374151;
+
   border: 1px solid #d1d5db;
 }
 
@@ -209,7 +368,9 @@
 
 .submit-btn {
   border: none;
+
   background: #2563eb;
+
   color: white;
 }
 
@@ -220,43 +381,65 @@
 .cancel-btn:disabled,
 .submit-btn:disabled {
   opacity: 0.6;
+
   cursor: not-allowed;
 }
 
+/* =========================================================
+   LOADING
+   ========================================================= */
+
 .loading-state {
   height: 350px;
+
   display: flex;
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
+
   gap: 12px;
+
   color: #64748b;
+
   font-size: 14px;
 }
 
 .loading-spinner,
 .button-spinner {
   border-radius: 50%;
+
   border-style: solid;
-  animation: spin 0.8s linear infinite;
+
+  animation:
+    spin 0.8s linear infinite;
 }
 
 .loading-spinner {
   width: 32px;
   height: 32px;
+
   border-width: 3px;
+
   border-color: #dbeafe;
+
   border-top-color: #2563eb;
 }
 
 .button-spinner {
   display: inline-block;
+
   width: 14px;
   height: 14px;
+
   margin-right: 7px;
+
   border-width: 2px;
+
   border-color: rgba(255, 255, 255, 0.4);
+
   border-top-color: white;
+
   vertical-align: -2px;
 }
 
@@ -266,14 +449,18 @@
   }
 }
 
-@media (max-width: 800px) {
+/* =========================================================
+   TABLET
+   ========================================================= */
 
+@media (max-width: 800px) {
   .page {
-    padding: 16px;
+    padding: 16px 6px 30px 0;
   }
 
   .page-header {
     align-items: flex-start;
+
     gap: 16px;
   }
 
@@ -290,10 +477,15 @@
   }
 }
 
-@media (max-width: 600px) {
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
+@media (max-width: 600px) {
   .page-header {
     flex-direction: column;
+
+    align-items: stretch;
   }
 
   .back-btn {

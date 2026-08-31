@@ -1,8 +1,17 @@
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  inject
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ChangeDetectorRef } from '@angular/core';
+import {
+  Router,
+  ActivatedRoute
+} from '@angular/router';
+
 import { TeacherService } from '../../teachers/services/teacher.service';
 import { Teacher } from '../../teachers/models/teacher.model';
 
@@ -44,6 +53,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
   // =========================================================
 
   private readonly router = inject(Router);
+
   private readonly route = inject(ActivatedRoute);
 
   private readonly teacherService =
@@ -143,22 +153,24 @@ export class TeacherRoleAssignmentForm implements OnInit {
       this.route.snapshot.paramMap.get('teacherId');
 
 
-    // ---------------------------------------------------------
+    // -------------------------------------------------------
     // DETECT EDIT MODE
-    // ---------------------------------------------------------
+    // -------------------------------------------------------
 
     if (teacherIdParam) {
 
       const teacherId =
         Number(teacherIdParam);
 
-      if (!teacherId) {
+
+      if (!teacherId || Number.isNaN(teacherId)) {
 
         this.errorMessage =
           'Invalid teacher ID.';
 
         return;
       }
+
 
       this.isEditMode = true;
 
@@ -170,9 +182,9 @@ export class TeacherRoleAssignmentForm implements OnInit {
     }
 
 
-    // ---------------------------------------------------------
+    // -------------------------------------------------------
     // LOAD BASIC DATA
-    // ---------------------------------------------------------
+    // -------------------------------------------------------
 
     this.loadTeachers();
 
@@ -181,9 +193,9 @@ export class TeacherRoleAssignmentForm implements OnInit {
     this.loadAcademicYears();
 
 
-    // ---------------------------------------------------------
+    // -------------------------------------------------------
     // LOAD EXISTING ASSIGNMENT
-    // ---------------------------------------------------------
+    // -------------------------------------------------------
 
     if (
       this.isEditMode &&
@@ -211,6 +223,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
           this.teachers =
             response?.data?.content ?? [];
+
+          this.cdr.detectChanges();
         },
 
         error: (error) => {
@@ -223,6 +237,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
           this.errorMessage =
             error?.error?.message ??
             'Failed to load teachers.';
+
+          this.cdr.detectChanges();
         }
       });
   }
@@ -242,6 +258,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
           this.roles =
             response?.data ?? [];
+
+          this.cdr.detectChanges();
         },
 
         error: (error) => {
@@ -254,6 +272,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
           this.errorMessage =
             error?.error?.message ??
             'Failed to load teacher roles.';
+
+          this.cdr.detectChanges();
         }
       });
   }
@@ -273,6 +293,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
           this.academicYears =
             response?.data?.content ?? [];
+
+          this.cdr.detectChanges();
         },
 
         error: (error) => {
@@ -285,6 +307,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
           this.errorMessage =
             error?.error?.message ??
             'Failed to load academic years.';
+
+          this.cdr.detectChanges();
         }
       });
   }
@@ -348,7 +372,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
           // ---------------------------------------------------
 
           this.scopes =
-            assignment.scopes?.map(
+            (assignment.scopes ?? []).map(
               scope => ({
 
                 id: scope.id,
@@ -371,7 +395,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
                 sectionName:
                   scope.sectionName
               })
-            ) ?? [];
+            );
 
 
           // ---------------------------------------------------
@@ -394,7 +418,6 @@ export class TeacherRoleAssignmentForm implements OnInit {
               firstScope.sectionId ?? null;
 
 
-            // Load class + section dropdown data
             this.loadClassesForEdit(
               firstScope.academicYearId,
               firstScope.classId,
@@ -485,6 +508,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
                   this.loadingSections =
                     false;
+
+                  this.cdr.detectChanges();
                 },
 
                 error: (error) => {
@@ -500,9 +525,13 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
                   this.loadingSections =
                     false;
+
+                  this.cdr.detectChanges();
                 }
               });
           }
+
+          this.cdr.detectChanges();
         },
 
         error: (error) => {
@@ -518,6 +547,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
           this.loadingClasses =
             false;
+
+          this.cdr.detectChanges();
         }
       });
   }
@@ -529,6 +560,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
   onAcademicYearChange(): void {
 
+    this.errorMessage = '';
+
     this.selectedClassId = null;
 
     this.selectedSectionId = null;
@@ -539,6 +572,9 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
 
     if (!this.selectedAcademicYearId) {
+
+      this.cdr.detectChanges();
+
       return;
     }
 
@@ -565,6 +601,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
           this.loadingClasses =
             false;
+
+          this.cdr.detectChanges();
         },
 
         error: (error) => {
@@ -580,6 +618,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
           this.loadingClasses =
             false;
+
+          this.cdr.detectChanges();
         }
       });
   }
@@ -595,13 +635,21 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
     this.sections = [];
 
+    this.errorMessage = '';
+
 
     if (!this.selectedClassId) {
+
+      this.cdr.detectChanges();
+
       return;
     }
 
 
     this.loadingSections = true;
+
+    this.cdr.detectChanges();
+
 
     this.sectionService
       .getSections(this.selectedClassId)
@@ -614,6 +662,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
           this.loadingSections =
             false;
+
+          this.cdr.detectChanges();
         },
 
         error: (error) => {
@@ -629,6 +679,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
           this.loadingSections =
             false;
+
+          this.cdr.detectChanges();
         }
       });
   }
@@ -642,6 +694,10 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
     this.errorMessage = '';
 
+
+    // -------------------------------------------------------
+    // VALIDATION
+    // -------------------------------------------------------
 
     if (!this.selectedAcademicYearId) {
 
@@ -661,6 +717,10 @@ export class TeacherRoleAssignmentForm implements OnInit {
     }
 
 
+    // -------------------------------------------------------
+    // DUPLICATE CHECK
+    // -------------------------------------------------------
+
     const duplicate =
       this.scopes.some(scope =>
 
@@ -670,8 +730,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
         scope.classId ===
           this.selectedClassId &&
 
-        scope.sectionId ===
-          this.selectedSectionId
+        (scope.sectionId ?? null) ===
+          (this.selectedSectionId ?? null)
       );
 
 
@@ -683,6 +743,10 @@ export class TeacherRoleAssignmentForm implements OnInit {
       return;
     }
 
+
+    // -------------------------------------------------------
+    // CREATE SCOPE
+    // -------------------------------------------------------
 
     const scope: TeacherRoleScope = {
 
@@ -713,17 +777,28 @@ export class TeacherRoleAssignmentForm implements OnInit {
     };
 
 
+    // -------------------------------------------------------
+    // ADD TO LIST
+    // -------------------------------------------------------
+
     this.scopes = [
       ...this.scopes,
       scope
     ];
 
 
+    // -------------------------------------------------------
+    // RESET CLASS + SECTION
+    // Keep academic year selected.
+    // -------------------------------------------------------
+
     this.selectedClassId = null;
 
     this.selectedSectionId = null;
 
     this.sections = [];
+
+    this.cdr.detectChanges();
   }
 
 
@@ -737,6 +812,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
       this.scopes.filter(
         (_, i) => i !== index
       );
+
+    this.cdr.detectChanges();
   }
 
 
@@ -752,6 +829,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
       this.academicYears.find(
         item => item.id === id
       );
+
 
     return year?.name ??
       'Unknown Year';
@@ -850,12 +928,13 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
 
     if (this.submitting) {
+
       return;
     }
 
 
     // -------------------------------------------------------
-    // REQUEST
+    // BUILD REQUEST
     // -------------------------------------------------------
 
     const request:
@@ -884,7 +963,10 @@ export class TeacherRoleAssignmentForm implements OnInit {
             };
 
 
-            if (scope.sectionId) {
+            if (
+              scope.sectionId !== undefined &&
+              scope.sectionId !== null
+            ) {
 
               result.sectionId =
                 scope.sectionId;
@@ -897,16 +979,26 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
 
     // -------------------------------------------------------
-    // SUBMIT
+    // START SUBMITTING
     // -------------------------------------------------------
 
     this.submitting = true;
 
 
-    if (this.isEditMode && this.editingTeacherId) {
+    // -------------------------------------------------------
+    // EDIT
+    // -------------------------------------------------------
+
+    if (
+      this.isEditMode &&
+      this.editingTeacherId
+    ) {
 
       this.assignmentService
-        .updateAssignment(this.editingTeacherId, request)
+        .updateAssignment(
+          this.editingTeacherId,
+          request
+        )
         .subscribe({
 
           next: (response) => {
@@ -916,6 +1008,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
             this.successMessage =
               response?.message ??
               'Teacher role assignment updated successfully.';
+
+            this.cdr.detectChanges();
 
 
             setTimeout(() => {
@@ -939,48 +1033,59 @@ export class TeacherRoleAssignmentForm implements OnInit {
               'Failed to update teacher role assignment.';
 
             this.submitting = false;
+
+            this.cdr.detectChanges();
           }
         });
 
-    } else {
-
-      this.assignmentService
-        .assignRole(request)
-        .subscribe({
-
-          next: (response) => {
-
-            this.submitting = false;
-
-            this.successMessage =
-              response?.message ??
-              'Teacher role assigned successfully.';
-
-
-            setTimeout(() => {
-
-              this.router.navigate([
-                '/admin/teacher-role-assignments'
-              ]);
-
-            }, 800);
-          },
-
-          error: (error) => {
-
-            console.error(
-              'Failed to save teacher role assignment',
-              error
-            );
-
-            this.errorMessage =
-              error?.error?.message ??
-              'Failed to assign teacher role.';
-
-            this.submitting = false;
-          }
-        });
+      return;
     }
+
+
+    // -------------------------------------------------------
+    // CREATE
+    // -------------------------------------------------------
+
+    this.assignmentService
+      .assignRole(request)
+      .subscribe({
+
+        next: (response) => {
+
+          this.submitting = false;
+
+          this.successMessage =
+            response?.message ??
+            'Teacher role assigned successfully.';
+
+          this.cdr.detectChanges();
+
+
+          setTimeout(() => {
+
+            this.router.navigate([
+              '/admin/teacher-role-assignments'
+            ]);
+
+          }, 800);
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Failed to save teacher role assignment',
+            error
+          );
+
+          this.errorMessage =
+            error?.error?.message ??
+            'Failed to assign teacher role.';
+
+          this.submitting = false;
+
+          this.cdr.detectChanges();
+        }
+      });
   }
 
 
@@ -991,6 +1096,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
   cancel(): void {
 
     if (this.submitting) {
+
       return;
     }
 

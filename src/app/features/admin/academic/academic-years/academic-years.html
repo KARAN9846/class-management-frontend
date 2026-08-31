@@ -8,23 +8,39 @@
     (actionClick)="openAddForm()">
   </app-page-header>
 
+
+  <!-- FILTERS -->
   <div class="filter-card">
+
     <app-search-input
       placeholder="Search academic years..."
       [(ngModel)]="searchTerm">
     </app-search-input>
 
-    <select class="filter-select" [(ngModel)]="statusFilter">
+    <select
+      class="filter-select"
+      [(ngModel)]="statusFilter">
+
       <option value="ALL">All Status</option>
       <option value="ACTIVE">Active</option>
       <option value="CLOSED">Closed</option>
+
     </select>
+
   </div>
 
+
+  <!-- ERROR -->
   @if (errorMessage) {
-    <div class="error-state">{{ errorMessage }}</div>
+
+    <div class="error-state">
+      <span>{{ errorMessage }}</span>
+    </div>
+
   }
 
+
+  <!-- DATA TABLE -->
   <app-data-table
     [columns]="columns"
     [data]="filteredYears"
@@ -35,58 +51,99 @@
     (actionClick)="onAction($event)">
   </app-data-table>
 
-  @if (showForm) {
-    <div class="modal-backdrop" (click)="closeForm()">
-      <div class="modal" (click)="$event.stopPropagation()">
 
+  <!-- ADD / EDIT MODAL -->
+  @if (showForm) {
+
+    <div
+      class="modal-backdrop"
+      (click)="closeForm()">
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- MODAL HEADER -->
         <div class="modal-header">
-          <h2>
-            {{ editingYear ? 'Edit Academic Year' : 'Add Academic Year' }}
-          </h2>
+
+          <div class="modal-title">
+            <span class="modal-eyebrow">
+              ACADEMIC MANAGEMENT
+            </span>
+
+            <h2>
+              {{ editingYear ? 'Edit Academic Year' : 'Add Academic Year' }}
+            </h2>
+          </div>
 
           <button
             type="button"
             class="close-btn"
             (click)="closeForm()">
+
             ×
+
           </button>
+
         </div>
 
+
+        <!-- FORM -->
         <form
           (ngSubmit)="saveYear()"
           #academicYearForm="ngForm">
 
+
+          <!-- ACADEMIC YEAR -->
           <div class="form-group">
+
             <label>Academic Year</label>
+
             <input
               type="text"
               name="name"
               placeholder="2026 - 2027"
               [(ngModel)]="form.name"
               required>
+
           </div>
 
+
+          <!-- DATES -->
           <div class="form-row">
+
             <div class="form-group">
+
               <label>Start Date</label>
+
               <input
                 type="date"
                 name="startDate"
                 [(ngModel)]="form.startDate"
                 required>
+
             </div>
 
+
             <div class="form-group">
+
               <label>End Date</label>
+
               <input
                 type="date"
                 name="endDate"
                 [(ngModel)]="form.endDate"
                 required>
+
             </div>
+
           </div>
 
+
+          <!-- STATUS -->
           <div class="form-group">
+
             <label>Status</label>
 
             <select
@@ -97,26 +154,41 @@
               <option value="CLOSED">Closed</option>
 
             </select>
+
           </div>
 
+
+          <!-- ACTIONS -->
           <div class="modal-actions">
+
             <button
               type="button"
               class="btn-secondary"
               (click)="closeForm()">
+
               Cancel
+
             </button>
+
 
             <button
               type="submit"
               class="btn-primary"
               [disabled]="academicYearForm.invalid">
+
               {{ editingYear ? 'Update' : 'Save' }}
+
             </button>
+
           </div>
 
+
         </form>
+
       </div>
+
     </div>
+
   }
+
 </div>
