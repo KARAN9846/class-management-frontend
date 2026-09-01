@@ -57,13 +57,16 @@
       Loading student...
     </div>
 
-  } @else {
+  } @else if (
+  (!isEditMode && canCreateStudent()) ||
+  (isEditMode && canUpdateStudent())
+) {
 
-    <form
-      [formGroup]="studentForm"
-      (ngSubmit)="onSubmit()"
-      novalidate
-    >
+  <form
+    [formGroup]="studentForm"
+    (ngSubmit)="onSubmit()"
+    novalidate
+  >
 
       <div class="form-card">
 
@@ -412,11 +415,19 @@
           Cancel
         </button>
 
-        <button
-          type="submit"
-          class="save-button"
-          [disabled]="saving || loading"
-        >
+<button
+  type="submit"
+  class="save-button"
+  [disabled]="
+    saving ||
+    loading ||
+    (
+      !isEditMode
+        ? !canCreateStudent()
+        : !canUpdateStudent()
+    )
+  "
+>
 
           @if (saving) {
             Saving...
