@@ -1,3 +1,4 @@
+
 import { Routes } from '@angular/router';
 
 // =========================================================
@@ -7,7 +8,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
-import { TeacherRoleList } from './features/admin/teacher-roles/teacher-role-list/teacher-role-list';
+
 // =========================================================
 // LAYOUT
 // =========================================================
@@ -39,7 +40,14 @@ import { SuperAdminDashboard } from './features/super-admin/dashboard/super-admi
 // =========================================================
 
 import { AdminDashboard } from './features/admin/dashboard/admin-dashboard/admin-dashboard';
+
+import { TeacherRoleList } from './features/admin/teacher-roles/teacher-role-list/teacher-role-list';
+import { TeacherRoleForm } from './features/admin/teacher-roles/teacher-role-form/teacher-role-form';
+
+import { TeacherRoleAssignmentList } from './features/admin/teacher-role-assignments/teacher-role-assignment-list/teacher-role-assignment-list';
+import { TeacherRoleAssignmentForm } from './features/admin/teacher-role-assignments/teacher-role-assignment-form/teacher-role-assignment-form';
 import { TeacherRoleAssignmentView } from './features/admin/teacher-role-assignments/teacher-role-assignment-view/teacher-role-assignment-view';
+
 import { AcademicYearsComponent } from './features/admin/academic/academic-years/academic-years';
 import { ClassesComponent } from './features/admin/academic/classes/classes';
 import { SubjectsComponent } from './features/admin/academic/subjects/subjects';
@@ -54,8 +62,6 @@ import { StudentForm } from './features/admin/students/student-form/student-form
 import { AssignmentList } from './features/admin/assignments/assignment-list/assignment-list';
 import { AssignmentForm } from './features/admin/assignments/assignment-form/assignment-form';
 
-import { TeacherRoleAssignmentList } from './features/admin/teacher-role-assignments/teacher-role-assignment-list/teacher-role-assignment-list';
-import { TeacherRoleAssignmentForm } from './features/admin/teacher-role-assignments/teacher-role-assignment-form/teacher-role-assignment-form';
 // =========================================================
 // TEACHER
 // =========================================================
@@ -63,16 +69,18 @@ import { TeacherRoleAssignmentForm } from './features/admin/teacher-role-assignm
 import { TeacherDashboard } from './features/teacher/dashboard/teacher-dashboard/teacher-dashboard';
 
 import { TeacherAssignmentList } from './features/teacher/assignments/teacher-assignment-list/teacher-assignment-list';
-
-import { TeacherRoleForm } from './features/admin/teacher-roles/teacher-role-form/teacher-role-form';
 import { TeacherAssignmentForm } from './features/teacher/assignments/teacher-assignment-form/teacher-assignment-form';
+
+import { TeacherStudentListComponent } from './features/teacher/students/teacher-student-list/teacher-student-list';
+import {
+  TeacherStudentFormComponent
+} from './features/teacher/students/assigned-students/teacher-student-form/teacher-student-form';
 
 // =========================================================
 // STUDENT
 // =========================================================
 
 import { StudentDashboard } from './features/student/dashboard/student-dashboard/student-dashboard';
-import { TeacherStudentListComponent } from './features/teacher/students/teacher-student-list/teacher-student-list';
 
 // =========================================================
 // ROUTES
@@ -89,7 +97,6 @@ export const routes: Routes = [
     component: LoginComponent
   },
 
-
   // =======================================================
   // ACCESS DENIED
   // =======================================================
@@ -98,7 +105,6 @@ export const routes: Routes = [
     path: 'access-denied',
     component: AccessDeniedComponent
   },
-
 
   // =======================================================
   // MAIN APPLICATION
@@ -139,7 +145,6 @@ export const routes: Routes = [
         }
       },
 
-
       // ===================================================
       // ADMIN
       // ===================================================
@@ -156,7 +161,6 @@ export const routes: Routes = [
           roles: ['ADMIN']
         }
       },
-
 
       // ------------------- ACADEMIC ----------------------
 
@@ -193,7 +197,6 @@ export const routes: Routes = [
         }
       },
 
-
       // ------------------- TEACHERS ----------------------
 
       {
@@ -218,8 +221,6 @@ export const routes: Routes = [
         }
       },
 
-
-
       {
         path: 'admin/teachers',
         component: TeacherList,
@@ -230,7 +231,6 @@ export const routes: Routes = [
           roles: ['ADMIN']
         }
       },
-
 
       // ------------------- STUDENTS ----------------------
 
@@ -268,7 +268,9 @@ export const routes: Routes = [
           description: 'Manage students.'
         }
       },
-      // ------------------- Teacher Roles -------------------
+
+      // ------------------- TEACHER ROLES ----------------
+
       {
         path: 'admin/teacher-roles/create',
         component: TeacherRoleForm,
@@ -279,6 +281,7 @@ export const routes: Routes = [
           roles: ['ADMIN']
         }
       },
+
       {
         path: 'admin/teacher-roles/:id/edit',
         component: TeacherRoleForm,
@@ -289,6 +292,7 @@ export const routes: Routes = [
           roles: ['ADMIN']
         }
       },
+
       {
         path: 'admin/teacher-roles',
         component: TeacherRoleList,
@@ -300,54 +304,53 @@ export const routes: Routes = [
         }
       },
 
-      // ------------------- Teacher Role Assignments -------------------
+      // ------------------- TEACHER ROLE ASSIGNMENTS ----
 
-{
-  path: 'admin/teacher-role-assignments/create',
-  component: TeacherRoleAssignmentForm,
+      {
+        path: 'admin/teacher-role-assignments/create',
+        component: TeacherRoleAssignmentForm,
 
-  canActivate: [roleGuard],
+        canActivate: [roleGuard],
 
-  data: {
-    roles: ['ADMIN']
-  }
-},
+        data: {
+          roles: ['ADMIN']
+        }
+      },
 
-{
-  path: 'admin/teacher-role-assignments/:teacherId/edit',
-  component: TeacherRoleAssignmentForm,
+      {
+        path: 'admin/teacher-role-assignments/:teacherId/edit',
+        component: TeacherRoleAssignmentForm,
 
-  canActivate: [roleGuard],
+        canActivate: [roleGuard],
 
-  data: {
-    roles: ['ADMIN']
-  }
-},
+        data: {
+          roles: ['ADMIN']
+        }
+      },
 
-{
-  path: 'admin/teacher-role-assignments/:teacherId/view',
-  component: TeacherRoleAssignmentView,
+      {
+        path: 'admin/teacher-role-assignments/:teacherId/view',
+        component: TeacherRoleAssignmentView,
 
-  canActivate: [roleGuard],
+        canActivate: [roleGuard],
 
-  data: {
-    roles: ['ADMIN']
-  }
-},
+        data: {
+          roles: ['ADMIN']
+        }
+      },
 
-{
-  path: 'admin/teacher-role-assignments',
-  component: TeacherRoleAssignmentList,
+      {
+        path: 'admin/teacher-role-assignments',
+        component: TeacherRoleAssignmentList,
 
-  canActivate: [roleGuard],
+        canActivate: [roleGuard],
 
-  data: {
-    roles: ['ADMIN']
-  }
-},
+        data: {
+          roles: ['ADMIN']
+        }
+      },
 
-
-      // ------------------- ASSIGNMENTS -------------------
+      // ------------------- ASSIGNMENTS ------------------
 
       {
         path: 'admin/assignments/create',
@@ -382,8 +385,7 @@ export const routes: Routes = [
         }
       },
 
-
-      // ------------------- ATTENDANCE --------------------
+      // ------------------- ATTENDANCE -------------------
 
       {
         path: 'admin/attendance',
@@ -397,7 +399,6 @@ export const routes: Routes = [
           description: 'Manage attendance.'
         }
       },
-
 
       // ===================================================
       // TEACHER
@@ -415,7 +416,6 @@ export const routes: Routes = [
           roles: ['TEACHER']
         }
       },
-
 
       // ------------------- ASSIGNMENTS -------------------
 
@@ -440,17 +440,41 @@ export const routes: Routes = [
           roles: ['TEACHER']
         }
       },
-    // ------------------- student page -------------------
-      
-{
-  path: 'teacher/students',
- component: TeacherStudentListComponent,
-  canActivate: [roleGuard],
-  data: {
-    roles: ['TEACHER']
-  }
-},
 
+      // ------------------- STUDENTS ----------------------
+
+      {
+        path: 'teacher/students/create',
+        component: TeacherStudentFormComponent,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['TEACHER']
+        }
+      },
+
+      {
+        path: 'teacher/students/:id/edit',
+        component: TeacherStudentFormComponent,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['TEACHER']
+        }
+      },
+
+      {
+        path: 'teacher/students',
+        component: TeacherStudentListComponent,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['TEACHER']
+        }
+      },
 
       // ===================================================
       // STUDENT
@@ -468,7 +492,6 @@ export const routes: Routes = [
           roles: ['STUDENT']
         }
       },
-
 
       // ------------------- ATTENDANCE --------------------
 
@@ -488,7 +511,6 @@ export const routes: Routes = [
     ]
   },
 
-
   // =======================================================
   // DEFAULT
   // =======================================================
@@ -498,7 +520,6 @@ export const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   },
-
 
   // =======================================================
   // ERROR PAGES
@@ -514,7 +535,6 @@ export const routes: Routes = [
     component: ServerErrorComponent
   },
 
-
   // =======================================================
   // WILDCARD
   // =======================================================
@@ -525,4 +545,3 @@ export const routes: Routes = [
   }
 
 ];
-

@@ -7,7 +7,11 @@ import { ApiService } from '../../../../core/services/api.service';
 import {
   TeacherStudent,
   TeacherStudentPage,
-  ApiResponse
+  ApiResponse,
+  TeacherStudentQuery,
+  TeacherStudentScopeOption,
+  CreateStudentRequest,
+  UpdateStudentRequest
 } from '../models/teacher-student.model';
 
 @Injectable({
@@ -17,18 +21,50 @@ export class TeacherStudentService {
 
   private readonly api = inject(ApiService);
 
+  // =========================================================
+  // GET STUDENTS
+  // =========================================================
+
   getStudents(
-    page = 0,
-    size = 10,
-    search = ''
+    query?: TeacherStudentQuery
   ): Observable<ApiResponse<TeacherStudentPage>> {
 
-    const params = new HttpParams()
-      .set('page', page)
-      .set('size', size)
-      .set('search', search)
-      .set('sortBy', 'firstName')
-      .set('sortDirection', 'asc');
+    let params = new HttpParams();
+
+    if (query?.page !== undefined) {
+      params = params.set(
+        'page',
+        query.page.toString()
+      );
+    }
+
+    if (query?.size !== undefined) {
+      params = params.set(
+        'size',
+        query.size.toString()
+      );
+    }
+
+    if (query?.search?.trim()) {
+      params = params.set(
+        'search',
+        query.search.trim()
+      );
+    }
+
+    if (query?.sortBy?.trim()) {
+      params = params.set(
+        'sortBy',
+        query.sortBy.trim()
+      );
+    }
+
+    if (query?.sortDirection) {
+      params = params.set(
+        'sortDirection',
+        query.sortDirection
+      );
+    }
 
     return this.api.get<ApiResponse<TeacherStudentPage>>(
       '/teacher/students',
@@ -36,12 +72,101 @@ export class TeacherStudentService {
     );
   }
 
+  // =========================================================
+  // GET STUDENT BY ID
+  // =========================================================
+
   getStudentById(
-    id: number
+    studentId: number
   ): Observable<ApiResponse<TeacherStudent>> {
 
     return this.api.get<ApiResponse<TeacherStudent>>(
-      `/teacher/students/${id}`
+      `/teacher/students/${studentId}`
+    );
+  }
+
+  // =========================================================
+  // GET SCOPE OPTIONS
+  // =========================================================
+
+  getScopeOptions(): Observable<
+    ApiResponse<TeacherStudentScopeOption[]>
+  > {
+
+    return this.api.get<
+      ApiResponse<TeacherStudentScopeOption[]>
+    >(
+      '/teacher/students/options'
+    );
+  }
+
+  // =========================================================
+  // CREATE STUDENT
+  // =========================================================
+
+  createStudent(
+    request: CreateStudentRequest
+  ): Observable<ApiResponse<TeacherStudent>> {
+
+    return this.api.post<
+      ApiResponse<TeacherStudent>
+    >(
+      '/teacher/students',
+      request
+    );
+  }
+
+  // =========================================================
+  // UPDATE STUDENT
+  // =========================================================
+
+  updateStudent(
+    studentId: number,
+    request: UpdateStudentRequest
+  ): Observable<ApiResponse<TeacherStudent>> {
+
+    return this.api.put<
+      ApiResponse<TeacherStudent>
+    >(
+      `/teacher/students/${studentId}`,
+      request
+    );
+  }
+
+  // =========================================================
+  // UPDATE STUDENT STATUS
+  // =========================================================
+
+  updateStudentStatus(
+    studentId: number,
+    isActive: boolean
+  ): Observable<ApiResponse<void>> {
+
+    const params = new HttpParams()
+      .set('isActive', isActive.toString());
+
+    const queryString = params.toString();
+
+    return this.api.patch<
+      ApiResponse<void>
+    >(
+      `/teacher/students/${studentId}/status?${queryString}`,
+      null
+    );
+  }
+
+  // =========================================================
+  // DELETE STUDENT
+  // =========================================================
+
+  deleteStudent(
+    studentId: number
+  ): Observable<ApiResponse<void>> {
+
+    return this.api.delete<
+      ApiResponse<void>
+    >(
+      `/teacher/students/${studentId}`
     );
   }
 }

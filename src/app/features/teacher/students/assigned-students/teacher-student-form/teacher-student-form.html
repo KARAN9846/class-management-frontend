@@ -1,0 +1,435 @@
+<div class="student-form-page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>
+        {{ isEditMode ? 'Edit Student' : 'Create Student' }}
+      </h1>
+
+      <p>
+        {{
+          isEditMode
+            ? 'Update student information within your assigned scope.'
+            : 'Create a student within your assigned classes and sections.'
+        }}
+      </p>
+    </div>
+
+  </div>
+
+
+  @if (errorMessage) {
+    <div class="error-box">
+
+      <span>{{ errorMessage }}</span>
+
+    </div>
+  }
+
+
+  @if (errorMessages.length > 0) {
+    <div class="error-list">
+
+      @for (
+        message of errorMessages;
+        track $index
+      ) {
+        <div>{{ message }}</div>
+      }
+
+    </div>
+  }
+
+
+  @if (successMessage) {
+    <div class="success-box">
+
+      {{ successMessage }}
+
+    </div>
+  }
+
+
+  @if (loading) {
+
+    <div class="loading-box">
+      Loading student...
+    </div>
+
+  } @else {
+
+    <form
+      [formGroup]="studentForm"
+      (ngSubmit)="onSubmit()"
+      novalidate
+    >
+
+      <div class="form-card">
+
+        <div class="card-header">
+
+          <h2>
+            Student Information
+          </h2>
+
+          <p>
+            Enter the student's basic information.
+          </p>
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <!-- FIRST NAME -->
+
+          <div class="form-field">
+
+            <label for="firstName">
+              First Name
+            </label>
+
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              placeholder="Enter first name"
+            />
+
+            @if (isFieldInvalid('firstName')) {
+              <small class="field-error">
+                {{ getFieldError('firstName') }}
+              </small>
+            }
+
+          </div>
+
+
+          <!-- LAST NAME -->
+
+          <div class="form-field">
+
+            <label for="lastName">
+              Last Name
+            </label>
+
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              placeholder="Enter last name"
+            />
+
+            @if (isFieldInvalid('lastName')) {
+              <small class="field-error">
+                {{ getFieldError('lastName') }}
+              </small>
+            }
+
+          </div>
+
+
+          <!-- EMAIL -->
+
+          <div class="form-field">
+
+            <label for="email">
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="Enter email"
+            />
+
+            @if (isFieldInvalid('email')) {
+              <small class="field-error">
+                {{ getFieldError('email') }}
+              </small>
+            }
+
+          </div>
+
+
+          <!-- PHONE -->
+
+          <div class="form-field">
+
+            <label for="phone">
+              Phone
+            </label>
+
+            <input
+              id="phone"
+              type="text"
+              formControlName="phone"
+              placeholder="Enter phone number"
+            />
+
+          </div>
+
+
+          <!-- PASSWORD -->
+
+          @if (!isEditMode) {
+
+            <div class="form-field">
+
+              <label for="password">
+                Password
+              </label>
+
+              <input
+                id="password"
+                type="password"
+                formControlName="password"
+                placeholder="Enter password"
+              />
+
+              @if (isFieldInvalid('password')) {
+                <small class="field-error">
+                  {{ getFieldError('password') }}
+                </small>
+              }
+
+            </div>
+
+          }
+
+
+          <!-- ROLL NUMBER -->
+
+          @if (isEditMode) {
+
+            <div class="form-field">
+
+              <label for="rollNumber">
+                Roll Number
+              </label>
+
+              <input
+                id="rollNumber"
+                type="text"
+                formControlName="rollNumber"
+                placeholder="Enter roll number"
+              />
+
+              @if (isFieldInvalid('rollNumber')) {
+                <small class="field-error">
+                  {{ getFieldError('rollNumber') }}
+                </small>
+              }
+
+            </div>
+
+          }
+
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           ASSIGNED SCOPE
+           ===================================================== -->
+
+      <div class="form-card">
+
+        <div class="card-header">
+
+          <h2>
+            Academic Scope
+          </h2>
+
+          <p>
+            Select a class and section from your assigned scope.
+          </p>
+
+        </div>
+
+
+        @if (isLoadingScopeOptions) {
+
+          <div class="loading-box">
+            Loading available scope...
+          </div>
+
+        } @else if (scopeOptionsError) {
+
+          <div class="error-box">
+            {{ scopeOptionsError }}
+          </div>
+
+        } @else {
+
+          <div class="form-grid">
+
+            <!-- ACADEMIC YEAR -->
+
+            <div class="form-field">
+
+              <label for="academicYearId">
+                Academic Year
+              </label>
+
+              <select
+                id="academicYearId"
+                formControlName="academicYearId"
+              >
+
+                <option [ngValue]="null">
+                  Select academic year
+                </option>
+
+@for (
+  option of academicYearOptions;
+  track trackByScope($index, option)
+) {
+
+  <option
+    [ngValue]="option.academicYearId"
+  >
+    {{ option.academicYearName }}
+  </option>
+
+}
+
+              </select>
+
+              @if (isFieldInvalid('academicYearId')) {
+                <small class="field-error">
+                  {{ getFieldError('academicYearId') }}
+                </small>
+              }
+
+            </div>
+
+
+            <!-- CLASS -->
+
+            <div class="form-field">
+
+              <label for="classId">
+                Class
+              </label>
+
+              <select
+                id="classId"
+                formControlName="classId"
+              >
+
+                <option [ngValue]="null">
+                  Select class
+                </option>
+
+@for (
+  option of filteredClassOptions;
+  track trackByScope($index, option)
+) {
+
+  <option
+    [ngValue]="option.classId"
+  >
+    {{ option.className }}
+  </option>
+
+}
+
+              </select>
+
+              @if (isFieldInvalid('classId')) {
+                <small class="field-error">
+                  {{ getFieldError('classId') }}
+                </small>
+              }
+
+            </div>
+
+
+            <!-- SECTION -->
+
+            <div class="form-field">
+
+              <label for="sectionId">
+                Section
+              </label>
+
+              <select
+                id="sectionId"
+                formControlName="sectionId"
+              >
+
+                <option [ngValue]="null">
+                  Select section
+                </option>
+
+@for (
+  option of filteredSectionOptions;
+  track trackByScope($index, option)
+) {
+
+  <option
+    [ngValue]="option.sectionId"
+  >
+    {{ option.sectionName }}
+  </option>
+
+}
+
+              </select>
+
+              @if (isFieldInvalid('sectionId')) {
+                <small class="field-error">
+                  {{ getFieldError('sectionId') }}
+                </small>
+              }
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- =====================================================
+           ACTIONS
+           ===================================================== -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="cancel()"
+          [disabled]="saving"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="save-button"
+          [disabled]="saving || loading"
+        >
+
+          @if (saving) {
+            Saving...
+          } @else {
+            {{ isEditMode ? 'Update Student' : 'Create Student' }}
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>

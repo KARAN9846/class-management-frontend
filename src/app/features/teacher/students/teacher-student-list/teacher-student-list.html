@@ -1,5 +1,5 @@
-<div class="student-page">
 
+<div class="student-page">
   <app-page-header
     title="My Students"
     description="View students within your assigned classes and sections."
@@ -13,8 +13,15 @@
     ></app-search-input>
 
     <span class="student-count">
-      {{ totalElements }} Students
+      {{ totalElements }} {{ totalElements === 1 ? 'Student' : 'Students' }}
     </span>
+
+@if (canCreateStudent()) {
+  <button type="button" class="create-button" (click)="openCreateStudent()">
+    Create Student
+  </button>
+}
+
   </div>
 
   @if (errorMessage) {
@@ -25,7 +32,6 @@
   }
 
   <div class="students-card">
-
     <div class="card-header">
       <div>
         <h2>Student List</h2>
@@ -34,32 +40,24 @@
 
       @if (!isLoading && totalElements > 0) {
         <span class="record-count">
-          {{ getStartRecord() }}–{{ getEndRecord() }}
-          of {{ totalElements }}
+          {{ getStartRecord() }} – {{ getEndRecord() }} of {{ totalElements }}
         </span>
       }
     </div>
 
     @if (isLoading) {
-
       <app-loading message="Loading students..."></app-loading>
-
     } @else if (!errorMessage && students.length === 0) {
-
       <app-empty-state
         title="No students found"
         description="There are no students available in your assigned scope."
         [showAction]="!!searchTerm"
         actionLabel="Clear Search"
-        (actionClick)="clearSearch()">
-      </app-empty-state>
-
+        (actionClick)="clearSearch()"
+      ></app-empty-state>
     } @else {
-
       <div class="table-wrapper">
-
         <table>
-
           <thead>
             <tr>
               <th>Student</th>
@@ -73,31 +71,15 @@
           </thead>
 
           <tbody>
-
-            @for (
-              student of students;
-              track student.studentId
-            ) {
-
+            @for (student of students; track student.studentId) {
               <tr>
-
                 <td>
                   <div class="student-cell">
-
-                    <div class="avatar">
-                      {{ getInitials(student) }}
-                    </div>
-
+                    <div class="avatar">{{ getInitials(student) }}</div>
                     <div class="student-info">
-                      <strong>
-                        {{ getStudentName(student) }}
-                      </strong>
-
-                      <small>
-                        {{ student.enrollmentNumber }}
-                      </small>
+                      <strong>{{ getStudentName(student) }}</strong>
+                      <small>{{ student.enrollmentNumber }}</small>
                     </div>
-
                   </div>
                 </td>
 
@@ -109,85 +91,95 @@
 
                 <td>
                   <div class="contact">
-
                     @if (student.email) {
                       <span>{{ student.email }}</span>
                     }
-
                     @if (student.phone) {
                       <span>{{ student.phone }}</span>
                     }
-
                     @if (!student.email && !student.phone) {
                       <span>—</span>
                     }
-
                   </div>
                 </td>
 
                 <td>
-                  <span class="class-badge">
-                    {{ student.className }}
-                  </span>
+                  <span class="class-badge">{{ student.className }}</span>
                 </td>
 
                 <td>
-                  <span class="secondary-text">
-                    {{ student.sectionName }}
-                  </span>
+                  <span class="secondary-text">{{ student.sectionName }}</span>
                 </td>
 
                 <td>
-
                   @if (student.isActive !== null) {
-
                     <app-status-badge
                       [label]="student.isActive ? 'Active' : 'Inactive'"
                       [variant]="student.isActive ? 'success' : 'danger'"
                     ></app-status-badge>
-
                   } @else {
-
                     —
-
                   }
-
                 </td>
 
                 <td>
+  <div class="action-buttons">
+    <button
+      type="button"
+      class="view-button"
+      (click)="viewStudent(student)"
+    >
+      View
+    </button>
 
-                  <button
-                    type="button"
-                    class="view-button"
-                    (click)="viewStudent(student)"
-                  >
-                    View
-                  </button>
+    @if (canUpdateStudent()) {
+  <button
+    type="button"
+    class="edit-button"
+    (click)="openEditStudent(student)"
+  >
+    Edit
+  </button>
+}
 
-                </td>
+@if (canUpdateStudentStatus()) {
+  <button
+    type="button"
+    class="status-button"
+    (click)="openStatusChange(student)"
+  >
+    {{ student.isActive ? 'Deactivate' : 'Activate' }}
+  </button>
+}
 
+@if (canDeleteStudent()) {
+  <button
+    type="button"
+    class="delete-button"
+    (click)="confirmDelete(student)"
+  >
+    Delete
+  </button>
+}
+  </div>
+</td>
               </tr>
-
             }
-
           </tbody>
-
         </table>
-
       </div>
 
       @if (totalPages > 1) {
-
         <div class="pagination-row">
-
           <select
             [(ngModel)]="pageSize"
             (change)="changePageSize()"
+            aria-label="Students per page"
           >
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="20">20</option>
+            <option [ngValue]="50">50</option>
+            <option [ngValue]="100">100</option>
           </select>
 
           <app-pagination
@@ -197,182 +189,111 @@
             [maxVisiblePages]="5"
             (pageChange)="onPageChange($event)"
           ></app-pagination>
-
         </div>
-
       }
-
     }
-
   </div>
-
 </div>
 
-
 @if (selectedStudent || isLoadingStudent) {
-
   <div
     class="drawer-overlay"
     (click)="closeStudentDetails()"
   >
-
     <aside
       class="student-drawer"
       (click)="$event.stopPropagation()"
     >
-
       <div class="drawer-header">
-
         <div>
-
           <small>STUDENT DETAILS</small>
 
           @if (selectedStudent) {
-
-            <h2>
-              {{ getStudentName(selectedStudent) }}
-            </h2>
-
+            <h2>{{ getStudentName(selectedStudent) }}</h2>
           }
-
         </div>
 
         <button
           type="button"
           class="close-button"
+          aria-label="Close student details"
           (click)="closeStudentDetails()"
         >
           ×
         </button>
-
       </div>
 
       @if (isLoadingStudent) {
-
-        <app-loading
-          message="Loading student details..."
-        ></app-loading>
-
+        <app-loading message="Loading student details..."></app-loading>
       } @else if (selectedStudent) {
-
         <div class="drawer-content">
-
           <div class="profile">
-
             <div class="large-avatar">
               {{ getInitials(selectedStudent) }}
             </div>
 
             <div>
-
-              <h3>
-                {{ getStudentName(selectedStudent) }}
-              </h3>
-
-              <span>
-                {{ selectedStudent.enrollmentNumber }}
-              </span>
-
+              <h3>{{ getStudentName(selectedStudent) }}</h3>
+              <span>{{ selectedStudent.enrollmentNumber }}</span>
             </div>
-
           </div>
 
-
           <section>
-
             <h3>Academic Information</h3>
 
             <div class="details">
-
               <div>
                 <small>Academic Year</small>
-
-                <strong>
-                  {{ selectedStudent.academicYearName }}
-                </strong>
+                <strong>{{ selectedStudent.academicYearName }}</strong>
               </div>
 
               <div>
                 <small>Class</small>
-
-                <strong>
-                  {{ selectedStudent.className }}
-                </strong>
+                <strong>{{ selectedStudent.className }}</strong>
               </div>
 
               <div>
                 <small>Section</small>
-
-                <strong>
-                  {{ selectedStudent.sectionName }}
-                </strong>
+                <strong>{{ selectedStudent.sectionName }}</strong>
               </div>
 
               <div>
                 <small>Roll Number</small>
-
-                <strong>
-                  {{ displayValue(selectedStudent.rollNumber) }}
-                </strong>
+                <strong>{{ displayValue(selectedStudent.rollNumber) }}</strong>
               </div>
-
             </div>
-
           </section>
 
-
           <section>
-
             <h3>Contact Information</h3>
 
             <div class="contact-details">
-
               <div>
                 <small>Email</small>
-
-                <strong>
-                  {{ displayValue(selectedStudent.email) }}
-                </strong>
+                <strong>{{ displayValue(selectedStudent.email) }}</strong>
               </div>
 
               <div>
                 <small>Phone</small>
-
-                <strong>
-                  {{ displayValue(selectedStudent.phone) }}
-                </strong>
+                <strong>{{ displayValue(selectedStudent.phone) }}</strong>
               </div>
-
             </div>
-
           </section>
 
-
           <section>
-
             <h3>Account Status</h3>
 
             @if (selectedStudent.isActive !== null) {
-
               <app-status-badge
                 [label]="selectedStudent.isActive ? 'Active' : 'Inactive'"
                 [variant]="selectedStudent.isActive ? 'success' : 'danger'"
               ></app-status-badge>
-
             } @else {
-
               <span>Not available</span>
-
             }
-
           </section>
-
         </div>
-
       }
-
     </aside>
-
   </div>
-
 }

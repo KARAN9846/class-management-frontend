@@ -1,0 +1,1109 @@
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
+
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+
+import {
+  ActivatedRoute,
+  Router
+} from '@angular/router';
+
+import { TeacherStudentService } from '../../services/teacher-student.service';
+
+import {
+  TeacherStudent,
+  TeacherStudentScopeOption,
+  CreateStudentRequest,
+  UpdateStudentRequest
+} from '../../models/teacher-student.model';
+
+
+@Component({
+  selector: 'app-teacher-student-form',
+  standalone: true,
+
+  imports: [
+    CommonModule,
+    ReactiveFormsModule
+  ],
+
+  templateUrl: './teacher-student-form.html',
+  styleUrl: './teacher-student-form.scss'
+})
+export class TeacherStudentFormComponent implements OnInit {
+
+  // =========================================================
+  // DEPENDENCIES
+  // =========================================================
+
+  private readonly fb =
+    inject(FormBuilder);
+
+  private readonly route =
+    inject(ActivatedRoute);
+
+  private readonly router =
+    inject(Router);
+
+  private readonly studentService =
+    inject(TeacherStudentService);
+
+  private readonly cdr =
+    inject(ChangeDetectorRef);
+
+
+  // =========================================================
+  // MODE
+  // =========================================================
+
+  isEditMode = false;
+
+  studentId: number | null = null;
+
+
+  // =========================================================
+  // FORM
+  // =========================================================
+
+  studentForm =
+    this.fb.group({
+
+      rollNumber: [
+        '',
+        []
+      ],
+
+      firstName: [
+        '',
+        [
+          Validators.required
+        ]
+      ],
+
+      lastName: [
+        '',
+        [
+          Validators.required
+        ]
+      ],
+
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
+
+      password: [
+        '',
+        []
+      ],
+
+      phone: [
+        ''
+      ],
+
+      academicYearId: [
+        null as number | null,
+        [
+          Validators.required
+        ]
+      ],
+
+      classId: [
+        null as number | null,
+        [
+          Validators.required
+        ]
+      ],
+
+      sectionId: [
+        null as number | null,
+        [
+          Validators.required
+        ]
+      ]
+
+    });
+
+
+  // =========================================================
+  // SCOPE OPTIONS
+  // =========================================================
+
+  scopeOptions: TeacherStudentScopeOption[] = [];
+
+  isLoadingScopeOptions = false;
+
+  scopeOptionsError = '';
+
+
+  // =========================================================
+  // STATE
+  // =========================================================
+
+  loading = false;
+
+  saving = false;
+
+  errorMessage = '';
+
+  errorMessages: string[] = [];
+
+  successMessage = '';
+
+
+  // =========================================================
+  // INIT
+  // =========================================================
+
+  ngOnInit(): void {
+    this.setupScopeCascade();
+    const id =
+      this.route.snapshot.paramMap.get('id');
+
+
+    // -------------------------------------------------------
+    // CREATE MODE
+    // -------------------------------------------------------
+
+    if (!id) {
+
+      this.isEditMode = false;
+
+      this.studentId = null;
+
+
+      // Password IS required during CREATE.
+      this.studentForm
+        .get('password')
+        ?.setValidators([
+          Validators.required
+        ]);
+
+      this.studentForm
+        .get('password')
+        ?.updateValueAndValidity();
+
+
+      // Roll number is NOT required during CREATE.
+      // Backend generates it.
+      this.studentForm
+        .get('rollNumber')
+        ?.clearValidators();
+
+      this.studentForm
+        .get('rollNumber')
+        ?.updateValueAndValidity();
+
+
+      this.loadScopeOptions();
+
+      return;
+    }
+
+
+    // -------------------------------------------------------
+    // VALIDATE ID
+    // -------------------------------------------------------
+
+    const parsedId =
+      Number(id);
+
+
+    if (
+      !Number.isInteger(parsedId) ||
+      parsedId <= 0
+    ) {
+
+      this.errorMessage =
+        'Invalid student ID.';
+
+      this.cdr.markForCheck();
+
+      return;
+    }
+
+
+    // -------------------------------------------------------
+    // EDIT MODE
+    // -------------------------------------------------------
+
+    this.isEditMode = true;
+
+    this.studentId = parsedId;
+
+
+    // Password is NOT required during EDIT.
+    this.studentForm
+      .get('password')
+      ?.clearValidators();
+
+    this.studentForm
+      .get('password')
+      ?.updateValueAndValidity();
+
+
+    // Roll number IS required during EDIT.
+    this.studentForm
+      .get('rollNumber')
+      ?.setValidators([
+        Validators.required
+      ]);
+
+    this.studentForm
+      .get('rollNumber')
+      ?.updateValueAndValidity();
+
+
+    // Load scope options and existing student.
+    this.loadScopeOptions();
+
+    this.loadStudent(parsedId);
+  }
+
+
+  // =========================================================
+  // LOAD TEACHER SCOPE OPTIONS
+  // =========================================================
+
+  private loadScopeOptions(): void {
+
+    this.isLoadingScopeOptions = true;
+
+    this.scopeOptionsError = '';
+
+    this.cdr.markForCheck();
+
+
+    this.studentService
+      .getScopeOptions()
+      .subscribe({
+
+        next: (
+          response: {
+            success: boolean;
+            message?: string;
+            data?: TeacherStudentScopeOption[];
+          }
+        ) => {
+
+          if (response.success) {
+
+            this.scopeOptions =
+              response.data ?? [];
+
+          } else {
+
+            this.scopeOptions = [];
+
+            this.scopeOptionsError =
+              response.message ||
+              'Unable to load student scope options.';
+          }
+
+
+          this.isLoadingScopeOptions = false;
+
+          this.cdr.markForCheck();
+
+        },
+
+
+        error: (error: unknown) => {
+
+          console.error(
+            'Failed to load teacher student scope options:',
+            error
+          );
+
+
+          this.scopeOptions = [];
+
+
+          const httpError =
+            error as {
+              error?: {
+                message?: string;
+              };
+            };
+
+
+          this.scopeOptionsError =
+            httpError?.error?.message ||
+            'Unable to load student scope options.';
+
+
+          this.isLoadingScopeOptions = false;
+
+          this.cdr.markForCheck();
+
+        }
+
+      });
+
+  }
+
+
+  // =========================================================
+// CASCADING SCOPE OPTIONS
+// =========================================================
+
+/**
+ * Returns unique academic years available in the teacher's scope.
+ */
+get academicYearOptions(): TeacherStudentScopeOption[] {
+
+  const seen = new Set<number>();
+
+  return this.scopeOptions.filter(option => {
+
+    if (seen.has(option.academicYearId)) {
+      return false;
+    }
+
+    seen.add(option.academicYearId);
+
+    return true;
+  });
+
+}
+
+
+/**
+ * Returns unique classes belonging only to
+ * the selected academic year.
+ */
+get filteredClassOptions(): TeacherStudentScopeOption[] {
+
+  const academicYearId =
+    this.studentForm.get('academicYearId')?.value;
+
+  if (!academicYearId) {
+    return [];
+  }
+
+  const seen = new Set<number>();
+
+  return this.scopeOptions.filter(option => {
+
+    if (
+      option.academicYearId !==
+      Number(academicYearId)
+    ) {
+      return false;
+    }
+
+    if (seen.has(option.classId)) {
+      return false;
+    }
+
+    seen.add(option.classId);
+
+    return true;
+  });
+
+}
+
+
+/**
+ * Returns unique sections belonging only to
+ * the selected academic year + selected class.
+ */
+get filteredSectionOptions(): TeacherStudentScopeOption[] {
+
+  const academicYearId =
+    this.studentForm.get('academicYearId')?.value;
+
+  const classId =
+    this.studentForm.get('classId')?.value;
+
+  if (!academicYearId || !classId) {
+    return [];
+  }
+
+  const seen = new Set<number>();
+
+  return this.scopeOptions.filter(option => {
+
+    if (
+      option.academicYearId !==
+      Number(academicYearId)
+    ) {
+      return false;
+    }
+
+    if (
+      option.classId !==
+      Number(classId)
+    ) {
+      return false;
+    }
+
+    if (option.sectionId === null) {
+      return false;
+    }
+
+    if (seen.has(option.sectionId)) {
+      return false;
+    }
+
+    seen.add(option.sectionId);
+
+    return true;
+  });
+
+}
+
+
+/**
+ * Handles Academic Year changes.
+ *
+ * Changing the academic year invalidates the
+ * currently selected class and section.
+ */
+private setupScopeCascade(): void {
+
+  this.studentForm
+    .get('academicYearId')
+    ?.valueChanges
+    .subscribe(() => {
+
+      this.studentForm
+        .get('classId')
+        ?.setValue(null);
+
+      this.studentForm
+        .get('sectionId')
+        ?.setValue(null);
+
+      this.cdr.markForCheck();
+
+    });
+
+
+  /**
+   * Handles Class changes.
+   *
+   * Changing the class invalidates the
+   * currently selected section.
+   */
+  this.studentForm
+    .get('classId')
+    ?.valueChanges
+    .subscribe(() => {
+
+      this.studentForm
+        .get('sectionId')
+        ?.setValue(null);
+
+      this.cdr.markForCheck();
+
+    });
+
+}
+
+
+  // =========================================================
+  // LOAD STUDENT
+  // =========================================================
+
+  private loadStudent(
+    studentId: number
+  ): void {
+
+    this.loading = true;
+
+    this.errorMessage = '';
+
+    this.errorMessages = [];
+
+    this.cdr.markForCheck();
+
+
+    this.studentService
+      .getStudentById(studentId)
+      .subscribe({
+
+        next: (
+          response: {
+            success: boolean;
+            message?: string;
+            data?: TeacherStudent;
+          }
+        ) => {
+
+          if (
+            response.success &&
+            response.data
+          ) {
+
+            this.populateForm(
+              response.data
+            );
+
+          } else {
+
+            this.errorMessage =
+              response.message ||
+              'Unable to load student.';
+          }
+
+
+          this.loading = false;
+
+          this.cdr.markForCheck();
+
+        },
+
+
+        error: (error: unknown) => {
+
+          console.error(
+            'Failed to load student:',
+            error
+          );
+
+
+          const httpError =
+            error as {
+              error?: {
+                message?: string;
+                errors?: string[];
+              };
+            };
+
+
+          this.errorMessage =
+            httpError?.error?.message ||
+            'Unable to load student.';
+
+
+          this.errorMessages =
+            Array.isArray(
+              httpError?.error?.errors
+            )
+              ? httpError.error.errors
+              : [];
+
+
+          this.loading = false;
+
+          this.cdr.markForCheck();
+
+        }
+
+      });
+
+  }
+
+
+  // =========================================================
+  // POPULATE FORM
+  // =========================================================
+
+  private populateForm(
+    student: TeacherStudent
+  ): void {
+
+   this.studentForm.patchValue(
+  {
+
+    rollNumber:
+      student.rollNumber ?? '',
+
+    firstName:
+      student.firstName ?? '',
+
+    lastName:
+      student.lastName ?? '',
+
+    email:
+      student.email ?? '',
+
+    phone:
+      student.phone ?? '',
+
+    academicYearId:
+      student.academicYearId,
+
+    classId:
+      student.classId,
+
+    sectionId:
+      student.sectionId
+
+  },
+  {
+    emitEvent: false
+  }
+);
+
+
+    // Never populate password from backend.
+    this.studentForm
+      .get('password')
+      ?.setValue('');
+
+
+    this.cdr.markForCheck();
+
+  }
+
+
+  // =========================================================
+  // FORM SUBMIT
+  // =========================================================
+
+  onSubmit(): void {
+
+    this.clearMessages();
+
+
+    if (this.studentForm.invalid) {
+
+      this.studentForm.markAllAsTouched();
+
+      return;
+    }
+
+
+    if (
+      this.isEditMode &&
+      !this.studentId
+    ) {
+
+      this.errorMessage =
+        'Invalid student ID.';
+
+      this.cdr.markForCheck();
+
+      return;
+    }
+
+
+    this.saving = true;
+
+    this.cdr.markForCheck();
+
+
+    if (this.isEditMode) {
+
+      this.updateStudent();
+
+    } else {
+
+      this.createStudent();
+
+    }
+
+  }
+
+
+  // =========================================================
+  // CREATE STUDENT
+  // =========================================================
+
+  private createStudent(): void {
+
+    const formValue =
+      this.studentForm.getRawValue();
+
+
+    const request: CreateStudentRequest = {
+
+      firstName:
+        formValue.firstName!.trim(),
+
+      lastName:
+        formValue.lastName!.trim(),
+
+      email:
+        formValue.email!.trim(),
+
+      password:
+        formValue.password!,
+
+      phone:
+        formValue.phone?.trim() || '',
+
+      academicYearId:
+        Number(
+          formValue.academicYearId
+        ),
+
+      classId:
+        Number(
+          formValue.classId
+        ),
+
+      sectionId:
+        Number(
+          formValue.sectionId
+        )
+
+    };
+
+
+    this.studentService
+      .createStudent(request)
+      .subscribe({
+
+        next: (
+          response: {
+            success: boolean;
+            message?: string;
+          }
+        ) => {
+
+          if (!response.success) {
+
+            this.saving = false;
+
+            this.errorMessage =
+              response.message ||
+              'Unable to create student.';
+
+            this.cdr.markForCheck();
+
+            return;
+          }
+
+
+          this.saving = false;
+
+          this.successMessage =
+            'Student created successfully.';
+
+          this.cdr.markForCheck();
+
+
+          setTimeout(() => {
+
+            this.router.navigate([
+              '/teacher/students'
+            ]);
+
+          }, 800);
+
+        },
+
+
+        error: (error: unknown) => {
+
+          console.error(
+            'Failed to create student:',
+            error
+          );
+
+
+          this.handleError(
+            error,
+            'Failed to create student.'
+          );
+
+        }
+
+      });
+
+  }
+
+
+  // =========================================================
+  // UPDATE STUDENT
+  // =========================================================
+
+  private updateStudent(): void {
+
+    if (!this.studentId) {
+
+      this.saving = false;
+
+      this.errorMessage =
+        'Invalid student ID.';
+
+      this.cdr.markForCheck();
+
+      return;
+    }
+
+
+    const formValue =
+      this.studentForm.getRawValue();
+
+
+    const request: UpdateStudentRequest = {
+
+      rollNumber:
+        formValue.rollNumber!
+          .trim()
+          .toUpperCase(),
+
+      firstName:
+        formValue.firstName!.trim(),
+
+      lastName:
+        formValue.lastName!.trim(),
+
+      email:
+        formValue.email!.trim(),
+
+      phone:
+        formValue.phone?.trim() || '',
+
+      academicYearId:
+        Number(
+          formValue.academicYearId
+        ),
+
+      classId:
+        Number(
+          formValue.classId
+        ),
+
+      sectionId:
+        Number(
+          formValue.sectionId
+        )
+
+    };
+
+
+    this.studentService
+      .updateStudent(
+        this.studentId,
+        request
+      )
+      .subscribe({
+
+        next: (
+          response: {
+            success: boolean;
+            message?: string;
+          }
+        ) => {
+
+          if (!response.success) {
+
+            this.saving = false;
+
+            this.errorMessage =
+              response.message ||
+              'Unable to update student.';
+
+            this.cdr.markForCheck();
+
+            return;
+          }
+
+
+          this.saving = false;
+
+          this.successMessage =
+            'Student updated successfully.';
+
+          this.cdr.markForCheck();
+
+
+          setTimeout(() => {
+
+            this.router.navigate([
+              '/teacher/students'
+            ]);
+
+          }, 800);
+
+        },
+
+
+        error: (error: unknown) => {
+
+          console.error(
+            'Failed to update student:',
+            error
+          );
+
+
+          this.handleError(
+            error,
+            'Failed to update student.'
+          );
+
+        }
+
+      });
+
+  }
+
+
+  // =========================================================
+  // CANCEL
+  // =========================================================
+
+  cancel(): void {
+
+    this.router.navigate([
+      '/teacher/students'
+    ]);
+
+  }
+
+
+  // =========================================================
+  // ERROR HANDLING
+  // =========================================================
+
+  private handleError(
+    error: unknown,
+    fallbackMessage: string
+  ): void {
+
+    const httpError =
+      error as {
+        error?: {
+          message?: string;
+          errors?: string[];
+        };
+      };
+
+
+    const backendMessage =
+      httpError?.error?.message;
+
+    const backendErrors =
+      httpError?.error?.errors;
+
+
+    this.errorMessages =
+      Array.isArray(backendErrors)
+        ? backendErrors
+        : [];
+
+
+    this.errorMessage =
+      backendMessage ||
+      fallbackMessage;
+
+
+    this.saving = false;
+
+    this.cdr.markForCheck();
+
+  }
+
+
+  // =========================================================
+  // CLEAR MESSAGES
+  // =========================================================
+
+  private clearMessages(): void {
+
+    this.errorMessages = [];
+
+    this.errorMessage = '';
+
+    this.successMessage = '';
+
+  }
+
+
+  // =========================================================
+  // FORM HELPERS
+  // =========================================================
+
+  isFieldInvalid(
+    fieldName: string
+  ): boolean {
+
+    const control =
+      this.studentForm.get(fieldName);
+
+
+    return !!(
+      control &&
+      control.invalid &&
+      (
+        control.touched ||
+        control.dirty
+      )
+    );
+
+  }
+
+
+  getFieldError(
+    fieldName: string
+  ): string {
+
+    const control =
+      this.studentForm.get(fieldName);
+
+
+    if (
+      !control ||
+      !control.errors
+    ) {
+
+      return '';
+
+    }
+
+
+    if (control.errors['required']) {
+
+      return 'This field is required.';
+
+    }
+
+
+    if (control.errors['email']) {
+
+      return 'Enter a valid email address.';
+
+    }
+
+
+    return 'Invalid value.';
+
+  }
+
+
+  // =========================================================
+  // SCOPE HELPERS
+  // =========================================================
+
+  getScopeOptionLabel(
+    option: TeacherStudentScopeOption
+  ): string {
+
+    const section =
+      option.sectionName
+        ? ` - ${option.sectionName}`
+        : '';
+
+
+    return `${option.academicYearName} / ${option.className}${section}`;
+
+  }
+
+
+  trackByScope(
+    index: number,
+    option: TeacherStudentScopeOption
+  ): string {
+
+    return `${option.academicYearId}-${option.classId}-${option.sectionId ?? 'all'}`;
+
+  }
+
+}
