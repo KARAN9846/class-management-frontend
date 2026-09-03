@@ -1,0 +1,147 @@
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Edit Attendance</h1>
+      <p>
+        Update the attendance status
+      </p>
+    </div>
+
+    <a
+      class="back-button"
+      routerLink="/teacher/attendance">
+      ← Back to Attendance
+    </a>
+
+  </div>
+
+  @if (loading) {
+
+    <div class="loading-state">
+      Loading attendance...
+    </div>
+
+  } @else if (errorMessage) {
+
+    <div class="error-state">
+      {{ errorMessage }}
+    </div>
+
+  } @else if (attendance) {
+
+    <div class="form-card">
+
+      <div class="attendance-info">
+
+        <div class="info-item">
+          <span class="label">Student</span>
+          <span class="value">
+            {{ attendance.studentName }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">Class</span>
+          <span class="value">
+            {{ attendance.className }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">Section</span>
+          <span class="value">
+            {{ attendance.sectionName }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">Date</span>
+          <span class="value">
+            {{ attendance.attendanceDate }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">Marked By</span>
+          <span class="value">
+            {{ attendance.markedByTeacherName }}
+          </span>
+        </div>
+
+      </div>
+
+      <div class="status-section">
+
+        <label class="status-label">
+          Attendance Status
+        </label>
+
+        <div class="status-options">
+
+          <button
+            type="button"
+            class="status-button present"
+            [class.selected]="status === 'PRESENT'"
+            (click)="status = 'PRESENT'">
+            Present
+          </button>
+
+          <button
+            type="button"
+            class="status-button absent"
+            [class.selected]="status === 'ABSENT'"
+            (click)="status = 'ABSENT'">
+            Absent
+          </button>
+
+        </div>
+
+      </div>
+
+      @if (errorMessage) {
+
+        <div class="error-state">
+          {{ errorMessage }}
+        </div>
+
+      }
+
+      @if (successMessage) {
+
+        <div class="success-state">
+          {{ successMessage }}
+        </div>
+
+      }
+
+      <div class="form-actions">
+
+        <a
+          class="cancel-button"
+          routerLink="/teacher/attendance">
+          Cancel
+        </a>
+
+        <button
+          type="button"
+          class="save-button"
+          [disabled]="saving"
+          (click)="saveChanges()">
+
+          @if (saving) {
+            Saving...
+          } @else {
+            Save Changes
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

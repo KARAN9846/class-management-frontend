@@ -55,7 +55,6 @@ import { SubjectsComponent } from './features/admin/academic/subjects/subjects';
 import { TeacherList } from './features/admin/teachers/teacher-list/teacher-list';
 import { TeacherDetails } from './features/admin/teachers/teacher-details/teacher-details';
 import { TeacherForm } from './features/admin/teachers/teacher-form/teacher-form';
-
 import { StudentList } from './features/admin/students/student-list/student-list';
 import { StudentForm } from './features/admin/students/student-form/student-form';
 
@@ -72,6 +71,8 @@ import { TeacherAssignmentList } from './features/teacher/assignments/teacher-as
 import { TeacherAssignmentForm } from './features/teacher/assignments/teacher-assignment-form/teacher-assignment-form';
 
 import { TeacherStudentListComponent } from './features/teacher/students/teacher-student-list/teacher-student-list';
+import { TeacherAttendanceComponent } from './features/teacher/attendance/teacher-attendance/teacher-attendance';
+import { MarkAttendanceComponent } from './features/teacher/attendance/mark-attendance/mark-attendance';
 import {
   TeacherStudentFormComponent
 } from './features/teacher/students/assigned-students/teacher-student-form/teacher-student-form';
@@ -81,6 +82,13 @@ import {
 // =========================================================
 
 import { StudentDashboard } from './features/student/dashboard/student-dashboard/student-dashboard';
+import { StudentAttendanceComponent } from './features/student/attendance/student-attendance/student-attendance';
+
+// =======================================================
+// Attendance Overview
+// =======================================================
+import { AttendanceOverview } from './features/admin/attendance/attendance-overview/attendance-overview';
+import { EditAttendanceComponent } from './features/teacher/attendance/edit-attendance/edit-attendance';
 
 // =========================================================
 // ROUTES
@@ -389,7 +397,7 @@ export const routes: Routes = [
 
       {
         path: 'admin/attendance',
-        component: PagePlaceholderComponent,
+        component: AttendanceOverview,
 
         canActivate: [roleGuard],
 
@@ -409,6 +417,39 @@ export const routes: Routes = [
       {
         path: 'teacher/dashboard',
         component: TeacherDashboard,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['TEACHER']
+        }
+      },
+
+      // ------------------- ATTENDANCE ----------------------
+
+      {
+        path: 'teacher/attendance/mark',
+        component: MarkAttendanceComponent,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['TEACHER']
+        }
+      },
+
+      {
+        path: 'teacher/attendance/edit/:id',
+        component: EditAttendanceComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['TEACHER']
+        }
+      },
+
+      {
+        path: 'teacher/attendance',
+        component: TeacherAttendanceComponent,
 
         canActivate: [roleGuard],
 
@@ -497,7 +538,7 @@ export const routes: Routes = [
 
       {
         path: 'student/attendance',
-        component: PagePlaceholderComponent,
+        component: StudentAttendanceComponent,
 
         canActivate: [roleGuard],
 

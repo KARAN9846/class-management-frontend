@@ -1,0 +1,300 @@
+.page {
+  padding: 24px;
+}
+
+
+// =========================================================
+// HEADER
+// =========================================================
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+}
+
+
+// =========================================================
+// CARD
+// =========================================================
+
+.attendance-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+
+// =========================================================
+// FORM
+// =========================================================
+
+.form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+}
+
+.form-group select,
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+}
+
+.form-group select:focus,
+.form-group input:focus {
+  outline: none;
+  border-color: #6b7280;
+}
+
+.form-group small {
+  color: #6b7280;
+}
+
+
+// =========================================================
+// MESSAGES
+// =========================================================
+
+.success-message,
+.error-message {
+  margin-top: 20px;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.success-message {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.error-message {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+
+// =========================================================
+// STUDENTS
+// =========================================================
+
+.students-section {
+  margin-top: 32px;
+}
+
+.students-header {
+  margin-bottom: 16px;
+}
+
+.students-header h2 {
+  margin: 0;
+}
+
+.students-header p {
+  margin: 5px 0 0;
+  color: #6b7280;
+}
+
+
+// =========================================================
+// STUDENT LIST
+// =========================================================
+
+.student-list {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.student-header,
+.student-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 240px;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+}
+
+.student-header {
+  font-weight: 600;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.student-row {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.student-row:last-child {
+  border-bottom: none;
+}
+
+.roll-number {
+  color: #6b7280;
+}
+
+.student-name {
+  font-weight: 500;
+}
+
+
+// =========================================================
+// ATTENDANCE BUTTONS
+// =========================================================
+
+.attendance-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.attendance-button {
+  min-width: 80px;
+  padding: 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.attendance-button:hover {
+  background: #f9fafb;
+}
+
+.attendance-button.present {
+  border-color: #86efac;
+  background: #f0fdf4;
+  font-weight: 600;
+}
+
+.attendance-button.absent {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  font-weight: 600;
+}
+
+.attendance-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+// =========================================================
+// SUBMIT
+// =========================================================
+
+.submit-area {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.submit-button {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+// =========================================================
+// STATES
+// =========================================================
+
+.state,
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.empty-state {
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+
+// =========================================================
+// RESPONSIVE
+// =========================================================
+
+@media (max-width: 768px) {
+
+  .page {
+    padding: 16px;
+  }
+
+  .attendance-card {
+    padding: 16px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .student-header,
+  .student-row {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .student-header > div:last-child {
+    display: none;
+  }
+
+  .attendance-buttons {
+    grid-column: 1 / -1;
+  }
+
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: #d7d8da;
+  color: #374151;
+}
+
+.back-button:hover {
+  background: #e5e7eb;
+}

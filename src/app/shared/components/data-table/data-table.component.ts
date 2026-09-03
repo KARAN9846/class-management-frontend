@@ -14,7 +14,9 @@ export interface TableColumn {
   | 'sections'
   | 'permissions'
   | 'date-time'
-  | 'assignment-status';
+  | 'assignment-status'
+  | 'attendance-teacher'
+  | 'attendance-last-updated';
 }
 
 export interface TableAction {
@@ -82,18 +84,24 @@ getStatusVariant(
   }
 
   switch (value) {
-    case 'PUBLISHED':
-      return 'success';
+  case 'PUBLISHED':
+    return 'success';
 
-    case 'CLOSED':
-      return 'danger';
+  case 'CLOSED':
+    return 'danger';
 
-    case 'DRAFT':
-      return 'warning';
+  case 'DRAFT':
+    return 'warning';
 
-    default:
-      return 'warning';
-  }
+  case 'PRESENT':
+    return 'success';
+
+  case 'ABSENT':
+    return 'danger';
+
+  default:
+    return 'warning';
+}
 }
 
 formatDateTime(value: string | null | undefined): string {

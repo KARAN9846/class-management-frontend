@@ -1,0 +1,59 @@
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Attendance</h1>
+
+      <p>
+        View your attendance records
+      </p>
+    </div>
+
+  </div>
+
+  <div class="table-card">
+
+    <div class="filter-area">
+
+      <app-search-input
+        placeholder="Search attendance..."
+        (searchChange)="onSearchChange($event)">
+      </app-search-input>
+
+    </div>
+
+    @if (errorMessage) {
+
+      <div class="error-state">
+        {{ errorMessage }}
+      </div>
+
+    }
+
+    @if (!loading && attendance.length === 0) {
+
+      <div class="empty-state">
+
+        <h3>No attendance records found</h3>
+
+        <p>
+          Your attendance records will appear here.
+        </p>
+
+      </div>
+
+    } @else {
+
+      <app-data-table
+        [columns]="columns"
+        [data]="attendance"
+        [loading]="loading"
+        [showActions]="false">
+      </app-data-table>
+
+    }
+
+  </div>
+
+</div>

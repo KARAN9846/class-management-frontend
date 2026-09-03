@@ -66,6 +66,11 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+    "allowedHosts": [
+      "appropriations-unsigned-donations-findarticles.trycloudflare.com"
+    ]
+  },
           "configurations": {
             "production": {
               "buildTarget": "class-management-frontend:build:production"

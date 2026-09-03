@@ -1,0 +1,112 @@
+<div class="page">
+
+<div class="page-header">
+
+  <div>
+    <h1>Attendance</h1>
+
+    <p>
+      View student attendance records
+    </p>
+  </div>
+
+  <a
+    class="mark-attendance-button"
+    routerLink="/teacher/attendance/mark">
+    Mark Attendance
+  </a>
+
+</div>
+
+  <div class="table-card">
+
+<div class="filter-area">
+
+  <app-search-input
+    placeholder="Search attendance..."
+    (searchChange)="onSearchChange($event)">
+  </app-search-input>
+
+  <select
+    [value]="statusFilter"
+    (change)="onStatusChange($any($event.target).value)">
+    <option value="ALL">All Status</option>
+    <option value="PRESENT">Present</option>
+    <option value="ABSENT">Absent</option>
+  </select>
+
+  <input
+    type="date"
+    [value]="dateFilter"
+    (change)="onDateChange($any($event.target).value)"
+  />
+
+  <select
+    [value]="classFilter"
+    (change)="onClassChange($any($event.target).value)">
+    <option value="ALL">All Classes</option>
+
+    @for (className of classOptions; track className) {
+      <option [value]="className">
+        {{ className }}
+      </option>
+    }
+  </select>
+
+  <select
+    [value]="sectionFilter"
+    (change)="onSectionChange($any($event.target).value)">
+    <option value="ALL">All Sections</option>
+
+    @for (sectionName of sectionOptions; track sectionName) {
+      <option [value]="sectionName">
+        {{ sectionName }}
+      </option>
+    }
+  </select>
+
+  <button
+    type="button"
+    class="clear-filters-button"
+    (click)="clearFilters()">
+    Clear Filters
+  </button>
+
+</div>
+
+    @if (errorMessage) {
+
+      <div class="error-state">
+        {{ errorMessage }}
+      </div>
+
+    }
+
+    @if (!loading && attendance.length === 0) {
+
+      <div class="empty-state">
+
+        <h3>No attendance records found</h3>
+
+        <p>
+          No attendance records are available within your assigned scope.
+        </p>
+
+      </div>
+
+    } @else {
+
+<app-data-table
+  [columns]="columns"
+  [data]="attendance"
+  [loading]="loading"
+  [actions]="actions"
+  [showActions]="true"
+  (actionClick)="onActionClick($event)">
+</app-data-table>
+
+    }
+
+  </div>
+
+</div>

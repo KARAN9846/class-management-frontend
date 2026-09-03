@@ -1,0 +1,182 @@
+.page {
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+}
+
+.back-button,
+.cancel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.back-button,
+.cancel-button {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.back-button:hover,
+.cancel-button:hover {
+  background: #e5e7eb;
+}
+
+.form-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 800px;
+}
+
+.attendance-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.status-section {
+  margin-bottom: 28px;
+}
+
+.status-label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.status-options {
+  display: flex;
+  gap: 12px;
+}
+
+.status-button {
+  padding: 10px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.status-button:hover {
+  background: #f9fafb;
+}
+
+.status-button.selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.save-button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background: #1d4ed8;
+}
+
+.save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading-state,
+.error-state,
+.success-state {
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.loading-state {
+  background: #f9fafb;
+}
+
+.error-state {
+  margin-bottom: 16px;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.success-state {
+  margin-bottom: 16px;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    gap: 16px;
+    flex-direction: column;
+  }
+
+  .attendance-info {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-button,
+  .save-button {
+    width: 100%;
+  }
+}
