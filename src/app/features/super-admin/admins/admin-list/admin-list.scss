@@ -1,0 +1,404 @@
+.admin-list-page {
+  width: 100%;
+  height: calc(100dvh - 64px);
+
+  padding: 24px;
+  box-sizing: border-box;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.admin-list-page::-webkit-scrollbar {
+  width: 7px;
+}
+
+.admin-list-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-list-page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.admin-list-page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.summary-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin: 24px 0;
+}
+
+.summary-card {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 18px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+
+  box-sizing: border-box;
+}
+
+.summary-icon {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.summary-content {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.summary-content span {
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+.summary-content strong {
+  color: #0f172a;
+
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.admin-content {
+  width: 100%;
+  min-width: 0;
+}
+
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 16px;
+}
+
+.search-container {
+  width: 100%;
+  max-width: 420px;
+
+  min-width: 0;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 4px;
+
+  background: #f1f5f9;
+
+  border-radius: 10px;
+
+  flex-shrink: 0;
+}
+
+.filter-button {
+  border: 0;
+  border-radius: 7px;
+
+  padding: 8px 13px;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.filter-button:hover {
+  color: #334155;
+}
+
+.filter-button.active {
+  background: #ffffff;
+
+  color: #2563eb;
+
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-container {
+  width: 100%;
+  min-width: 0;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+
+  overflow-x: auto;
+}
+
+
+/*
+ * DataTable owns the actual table styling.
+ * This wrapper only handles horizontal overflow
+ * for smaller desktop/tablet widths.
+ */
+
+.table-container::-webkit-scrollbar {
+  height: 7px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-top: 16px;
+  padding-bottom: 8px;
+}
+
+
+/* =========================================================
+   LOADING / ERROR / EMPTY
+   ========================================================= */
+
+.state-container {
+  width: 100%;
+  min-height: 280px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .admin-list-page {
+    padding: 20px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+  .admin-list-page {
+    height: calc(100dvh - 64px);
+
+    padding: 16px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin: 20px 0;
+  }
+
+  .summary-card {
+    padding: 15px;
+
+    gap: 10px;
+  }
+
+  .summary-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .summary-content strong {
+    font-size: 21px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 10px;
+  }
+
+  .search-container {
+    max-width: none;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-button {
+    flex: 1;
+  }
+
+  /*
+   * DataTable remains available on mobile.
+   * It gets horizontal scrolling inside
+   * table-container instead of scrolling
+   * the complete Admin List page.
+   */
+
+  .table-container {
+    width: 100%;
+  }
+
+  .pagination-container {
+    justify-content: center;
+
+    overflow-x: auto;
+  }
+
+  .state-container {
+    min-height: 240px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .admin-list-page {
+    padding: 12px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+
+    margin: 16px 0;
+  }
+
+  .summary-card {
+    padding: 16px;
+  }
+
+  .filter-button {
+    padding: 8px 6px;
+
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL DEVICES
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+  .admin-list-page {
+    padding: 10px;
+  }
+
+  .filter-button {
+    padding: 7px 4px;
+  }
+}

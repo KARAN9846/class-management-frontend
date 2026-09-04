@@ -1,0 +1,256 @@
+<div class="admin-create-page">
+
+  <header class="page-header">
+
+    <div class="header-left">
+
+      <button
+        type="button"
+        class="back-button"
+        (click)="cancel()"
+        aria-label="Back to admins">
+        ←
+      </button>
+
+      <div>
+        <p class="eyebrow">CREATE ADMIN</p>
+
+        <h1>Create Admin</h1>
+
+        <p class="subtitle">
+          Create a new organization and administrator account
+        </p>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <section class="form-card">
+
+    <div class="form-header">
+      <h2>Administrator Information</h2>
+
+      <p>
+        Enter the administrator account and organization details.
+      </p>
+    </div>
+
+
+    @if (success) {
+      <div class="success-message">
+        {{ success }}
+      </div>
+    }
+
+
+    @if (error) {
+      <div class="error-message">
+        {{ error }}
+      </div>
+    }
+
+
+    <form
+      [formGroup]="adminForm"
+      (ngSubmit)="save()"
+      novalidate>
+
+      <div class="form-grid">
+
+        <!-- Organization Name -->
+
+        <div class="form-field">
+
+          <label for="organizationName">
+            Organization Name
+          </label>
+
+          <input
+            id="organizationName"
+            type="text"
+            formControlName="organizationName"
+            placeholder="Enter organization name"
+            autocomplete="organization"
+            [class.invalid]="
+              adminForm.controls.organizationName.invalid &&
+              adminForm.controls.organizationName.touched
+            ">
+
+          @if (
+            adminForm.controls.organizationName.invalid &&
+            adminForm.controls.organizationName.touched
+          ) {
+            <small class="field-error">
+              Organization name is required.
+            </small>
+          }
+
+        </div>
+
+
+        <!-- Email -->
+
+        <div class="form-field">
+
+          <label for="email">
+            Email
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Enter admin email"
+            autocomplete="email"
+            [class.invalid]="
+              adminForm.controls.email.invalid &&
+              adminForm.controls.email.touched
+            ">
+
+          @if (
+            adminForm.controls.email.invalid &&
+            adminForm.controls.email.touched
+          ) {
+            <small class="field-error">
+
+              @if (adminForm.controls.email.hasError('required')) {
+                Email is required.
+              }
+
+              @else if (adminForm.controls.email.hasError('email')) {
+                Enter a valid email address.
+              }
+
+            </small>
+          }
+
+        </div>
+
+
+        <!-- Password -->
+
+        <div class="form-field">
+
+          <label for="password">
+            Password
+          </label>
+
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="Minimum 6 characters"
+            autocomplete="new-password"
+            [class.invalid]="
+              adminForm.controls.password.invalid &&
+              adminForm.controls.password.touched
+            ">
+
+          @if (
+            adminForm.controls.password.invalid &&
+            adminForm.controls.password.touched
+          ) {
+            <small class="field-error">
+
+              @if (adminForm.controls.password.hasError('required')) {
+                Password is required.
+              }
+
+              @else if (adminForm.controls.password.hasError('minlength')) {
+                Password must be at least 6 characters.
+              }
+
+            </small>
+          }
+
+        </div>
+
+
+        <!-- Confirm Password -->
+
+        <div class="form-field">
+
+          <label for="confirmPassword">
+            Confirm Password
+          </label>
+
+          <input
+            id="confirmPassword"
+            type="password"
+            formControlName="confirmPassword"
+            placeholder="Re-enter password"
+            autocomplete="new-password"
+            [class.invalid]="
+              adminForm.controls.confirmPassword.invalid &&
+              adminForm.controls.confirmPassword.touched
+            ">
+
+          @if (
+            adminForm.controls.confirmPassword.invalid &&
+            adminForm.controls.confirmPassword.touched
+          ) {
+            <small class="field-error">
+
+              @if (
+                adminForm.controls.confirmPassword.hasError('required')
+              ) {
+                Confirm password is required.
+              }
+
+              @else if (
+                adminForm.controls.confirmPassword.hasError('passwordMismatch')
+              ) {
+                Passwords do not match.
+              }
+
+            </small>
+          }
+
+        </div>
+
+      </div>
+
+
+      <div class="info-note">
+        <strong>Admin Code</strong>
+
+        <span>
+          An admin code will be generated automatically after the
+          administrator is created.
+        </span>
+      </div>
+
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          [disabled]="saving"
+          (click)="cancel()">
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="saving">
+
+          @if (saving) {
+            Creating...
+          }
+          @else {
+            Create Admin
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+</div>

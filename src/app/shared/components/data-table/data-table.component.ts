@@ -37,8 +37,9 @@ export class DataTableComponent {
   @Input() columns: TableColumn[] = [];
   @Input() data: any[] = [];
   @Input() loading = false;
-  @Input() actions: TableAction[] = [];
-  @Input() showActions = false;
+@Input() actions: TableAction[] = [];
+@Input() rowActions?: (row: any) => TableAction[];
+@Input() showActions = false;
   @Input() currentField?: string;
 
   @Output() actionClick = new EventEmitter<any>();
@@ -130,6 +131,12 @@ formatDateTime(value: string | null | undefined): string {
       ? Boolean(row[this.currentField])
       : false;
   }
+
+  getRowActions(row: any): TableAction[] {
+  return this.rowActions
+    ? this.rowActions(row)
+    : this.actions;
+}
 
   onActionClick(action: TableAction, row: any): void {
     this.actionClick.emit({ action, row });

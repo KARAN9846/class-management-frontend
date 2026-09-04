@@ -1,0 +1,238 @@
+<div class="admin-edit-page">
+
+  @if (loading) {
+
+    <div class="state-container">
+      <app-loading
+        message="Loading admin details..."
+        size="medium">
+      </app-loading>
+    </div>
+
+  }
+
+  @else if (error && !admin) {
+
+    <div class="state-container">
+      <app-error-state
+        title="Unable to load admin"
+        [description]="error"
+        actionLabel="Back to Admins"
+        [showAction]="true"
+        (actionClick)="cancel()">
+      </app-error-state>
+    </div>
+
+  }
+
+  @else if (admin) {
+
+    <header class="page-header">
+
+      <div class="header-left">
+
+        <button
+          type="button"
+          class="back-button"
+          (click)="cancel()"
+          aria-label="Back to admin details">
+          ←
+        </button>
+
+        <div>
+          <p class="eyebrow">EDIT ADMIN</p>
+
+          <h1>Edit {{ admin.organizationName }}</h1>
+
+          <p class="subtitle">
+            Update administrator and organization information
+          </p>
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <section class="form-card">
+
+      <div class="form-header">
+        <div>
+          <h2>Administrator Information</h2>
+
+          <p>
+            Update the account email and organization name.
+          </p>
+        </div>
+      </div>
+
+
+      @if (success) {
+        <div class="success-message">
+          {{ success }}
+        </div>
+      }
+
+
+      @if (error) {
+        <div class="error-message">
+          {{ error }}
+        </div>
+      }
+
+
+      <form
+        [formGroup]="adminForm"
+        (ngSubmit)="save()"
+        novalidate>
+
+        <div class="form-grid">
+
+          <!-- Email -->
+
+          <div class="form-field">
+
+            <label for="email">
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="Enter admin email"
+              autocomplete="email"
+              [class.invalid]="
+                adminForm.controls.email.invalid &&
+                adminForm.controls.email.touched
+              ">
+
+            @if (
+              adminForm.controls.email.invalid &&
+              adminForm.controls.email.touched
+            ) {
+              <small class="field-error">
+                @if (adminForm.controls.email.hasError('required')) {
+                  Email is required.
+                }
+                @else if (adminForm.controls.email.hasError('email')) {
+                  Enter a valid email address.
+                }
+              </small>
+            }
+
+          </div>
+
+
+          <!-- Organization -->
+
+          <div class="form-field">
+
+            <label for="organizationName">
+              Organization Name
+            </label>
+
+            <input
+              id="organizationName"
+              type="text"
+              formControlName="organizationName"
+              placeholder="Enter organization name"
+              autocomplete="organization"
+              [class.invalid]="
+                adminForm.controls.organizationName.invalid &&
+                adminForm.controls.organizationName.touched
+              ">
+
+            @if (
+              adminForm.controls.organizationName.invalid &&
+              adminForm.controls.organizationName.touched
+            ) {
+              <small class="field-error">
+                Organization name is required.
+              </small>
+            }
+
+          </div>
+
+        </div>
+
+
+        <!-- Read-only information -->
+
+        <div class="readonly-section">
+
+          <div class="readonly-header">
+            <h3>Account Information</h3>
+
+            <p>
+              These values cannot be changed from this page.
+            </p>
+          </div>
+
+
+          <div class="readonly-grid">
+
+            <div class="readonly-item">
+              <span>Admin Code</span>
+              <strong>{{ admin.adminCode }}</strong>
+            </div>
+
+            <div class="readonly-item">
+              <span>Admin ID</span>
+              <strong>#{{ admin.id }}</strong>
+            </div>
+
+            <div class="readonly-item">
+              <span>Status</span>
+              <strong>
+                {{ admin.isActive ? 'Active' : 'Inactive' }}
+              </strong>
+            </div>
+
+            <div class="readonly-item">
+              <span>Current Academic Year</span>
+              <strong>
+                {{ admin.currentAcademicYear || 'Not assigned' }}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Actions -->
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            [disabled]="saving"
+            (click)="cancel()">
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="saving">
+
+            @if (saving) {
+              Saving...
+            }
+            @else {
+              Save Changes
+            }
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  }
+
+</div>

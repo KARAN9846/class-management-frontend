@@ -34,6 +34,10 @@ import { PagePlaceholderComponent } from './shared/components/page-placeholder/p
 // =========================================================
 
 import { SuperAdminDashboard } from './features/super-admin/dashboard/super-admin-dashboard/super-admin-dashboard';
+import { AdminDetailsComponent } from './features/super-admin/admins/admin-details/admin-details';
+import { AdminEditComponent } from './features/super-admin/admins/admin-edit/admin-edit';
+import { AdminCreateComponent } from './features/super-admin/admins/admin-create/admin-create';
+
 
 // =========================================================
 // ADMIN
@@ -89,6 +93,7 @@ import { StudentAttendanceComponent } from './features/student/attendance/studen
 // =======================================================
 import { AttendanceOverview } from './features/admin/attendance/attendance-overview/attendance-overview';
 import { EditAttendanceComponent } from './features/teacher/attendance/edit-attendance/edit-attendance';
+import { AdminListComponent } from './features/super-admin/admins/admin-list/admin-list';
 
 // =========================================================
 // ROUTES
@@ -130,8 +135,32 @@ export const routes: Routes = [
       // ===================================================
 
       {
+        path: 'super-admin/admins/create',
+        component: AdminCreateComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['SUPER_ADMIN'] }
+      },
+
+      {
+        path: 'super-admin/admins/:id/edit',
+        component: AdminEditComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['SUPER_ADMIN'] }
+      },
+
+      {
         path: 'super-admin/dashboard',
         component: SuperAdminDashboard,
+
+        canActivate: [roleGuard],
+
+        data: {
+          roles: ['SUPER_ADMIN']
+        }
+      },
+      {
+        path: 'super-admin/admins/:id/details',
+        component: AdminDetailsComponent,
 
         canActivate: [roleGuard],
 
@@ -142,14 +171,10 @@ export const routes: Routes = [
 
       {
         path: 'super-admin/admins',
-        component: PagePlaceholderComponent,
-
+        component: AdminListComponent,
         canActivate: [roleGuard],
-
         data: {
-          roles: ['SUPER_ADMIN'],
-          title: 'Admin Management',
-          description: 'Manage system administrators.'
+          roles: ['SUPER_ADMIN']
         }
       },
 

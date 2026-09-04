@@ -1,0 +1,321 @@
+<div class="admin-details-page">
+
+  <!-- Loading -->
+  @if (loading) {
+    <div class="state-card">
+      <div class="spinner"></div>
+      <p>Loading admin details...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @else if (error) {
+    <div class="state-card error-state">
+      <h3>Unable to load admin</h3>
+      <p>{{ error }}</p>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="goBack()">
+        Back to Admins
+      </button>
+    </div>
+  }
+
+  <!-- Content -->
+  @else if (admin) {
+
+    <!-- Page Header -->
+    <header class="page-header">
+
+      <div class="header-left">
+
+        <button
+          type="button"
+          class="back-button"
+          (click)="goBack()"
+          aria-label="Back to admins">
+          ←
+        </button>
+
+        <div>
+          <p class="eyebrow">ADMIN DETAILS</p>
+
+          <h1>{{ admin.organizationName }}</h1>
+
+          <p class="subtitle">
+            Administrator and organization overview
+          </p>
+        </div>
+
+      </div>
+
+      <div class="header-actions">
+
+        <span
+          class="status-badge"
+          [class.inactive]="!admin.isActive">
+          {{ admin.isActive ? 'Active' : 'Inactive' }}
+        </span>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="editAdmin()">
+          Edit Admin
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- Admin Information -->
+    <section class="info-card">
+
+      <div class="info-header">
+        <div>
+          <h2>Administrator Information</h2>
+          <p>Basic account and organization information</p>
+        </div>
+      </div>
+
+      <div class="info-grid">
+
+        <div class="info-item">
+          <span class="label">Organization</span>
+          <strong>{{ admin.organizationName }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span class="label">Email</span>
+          <strong>{{ admin.email }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span class="label">Admin Code</span>
+          <strong>{{ admin.adminCode }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span class="label">Current Academic Year</span>
+          <strong>
+            {{ admin.currentAcademicYear || 'Not assigned' }}
+          </strong>
+        </div>
+
+        <div class="info-item">
+          <span class="label">User ID</span>
+          <strong>#{{ admin.userId }}</strong>
+        </div>
+
+        <div class="info-item">
+          <span class="label">Created</span>
+          <strong>
+            {{ admin.createdAt | date:'dd MMM yyyy' }}
+          </strong>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Main Statistics -->
+    <section class="section">
+
+      <div class="section-heading">
+        <h2>Organization Overview</h2>
+        <p>Current data and activity across the organization</p>
+      </div>
+
+      <div class="stats-grid">
+
+        <!-- Teachers -->
+        <article class="stat-card">
+
+          <div class="stat-icon">T</div>
+
+          <div class="stat-content">
+            <span class="stat-label">Teachers</span>
+
+            <strong class="stat-value">
+              {{ admin.teacherCount }}
+            </strong>
+
+            <span class="stat-meta">
+              {{ admin.activeTeacherCount }} active
+            </span>
+          </div>
+
+        </article>
+
+
+        <!-- Students -->
+        <article class="stat-card">
+
+          <div class="stat-icon">S</div>
+
+          <div class="stat-content">
+            <span class="stat-label">Students</span>
+
+            <strong class="stat-value">
+              {{ admin.studentCount }}
+            </strong>
+
+            <span class="stat-meta">
+              {{ admin.activeStudentCount }} active
+            </span>
+          </div>
+
+        </article>
+
+
+        <!-- Classes -->
+        <article class="stat-card">
+
+          <div class="stat-icon">C</div>
+
+          <div class="stat-content">
+            <span class="stat-label">Classes</span>
+
+            <strong class="stat-value">
+              {{ admin.classCount }}
+            </strong>
+
+            <span class="stat-meta">
+              {{ admin.sectionCount }} sections
+            </span>
+          </div>
+
+        </article>
+
+
+        <!-- Subjects -->
+        <article class="stat-card">
+
+          <div class="stat-icon">Su</div>
+
+          <div class="stat-content">
+            <span class="stat-label">Subjects</span>
+
+            <strong class="stat-value">
+              {{ admin.subjectCount }}
+            </strong>
+
+            <span class="stat-meta">
+              {{ admin.assignedRoleCount }} assigned roles
+            </span>
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- Academic Statistics -->
+    <section class="section">
+
+      <div class="section-heading">
+        <h2>Academic Structure</h2>
+      </div>
+
+      <div class="metric-grid">
+
+        <div class="metric-card">
+          <span>Academic Years</span>
+          <strong>{{ admin.academicYearCount }}</strong>
+          <small>{{ admin.activeAcademicYearCount }} active</small>
+        </div>
+
+        <div class="metric-card">
+          <span>Classes</span>
+          <strong>{{ admin.classCount }}</strong>
+          <small>{{ admin.sectionCount }} sections</small>
+        </div>
+
+        <div class="metric-card">
+          <span>Subjects</span>
+          <strong>{{ admin.subjectCount }}</strong>
+          <small>Configured subjects</small>
+        </div>
+
+        <div class="metric-card">
+          <span>Teacher Roles</span>
+          <strong>{{ admin.assignedRoleCount }}</strong>
+          <small>Assigned role records</small>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Assignments & Attendance -->
+    <section class="section">
+
+      <div class="section-heading">
+        <h2>Activity Overview</h2>
+      </div>
+
+      <div class="activity-grid">
+
+        <!-- Assignments -->
+        <article class="activity-card">
+
+          <div class="activity-header">
+            <div>
+              <h3>Assignments</h3>
+              <p>Total assignment activity</p>
+            </div>
+
+            <strong>{{ admin.assignmentCount }}</strong>
+          </div>
+
+          <div class="activity-row">
+            <span>Published</span>
+            <strong>{{ admin.publishedAssignmentCount }}</strong>
+          </div>
+
+          <div class="activity-row">
+            <span>Draft</span>
+            <strong>{{ admin.draftAssignmentCount }}</strong>
+          </div>
+
+          <div class="activity-row">
+            <span>Closed</span>
+            <strong>{{ admin.closedAssignmentCount }}</strong>
+          </div>
+
+        </article>
+
+
+        <!-- Attendance -->
+        <article class="activity-card">
+
+          <div class="activity-header">
+            <div>
+              <h3>Attendance</h3>
+              <p>Total attendance records</p>
+            </div>
+
+            <strong>{{ admin.attendanceCount }}</strong>
+          </div>
+
+          <div class="attendance-summary">
+            <span>Attendance records recorded</span>
+            <strong>{{ admin.attendanceCount }}</strong>
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+  }
+
+</div>

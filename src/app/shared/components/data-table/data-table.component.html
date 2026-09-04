@@ -275,7 +275,7 @@
             <div class="row-actions">
 
               @for (
-              action of actions;
+              action of getRowActions(row);
               track trackAction($index, action)
               ) {
 

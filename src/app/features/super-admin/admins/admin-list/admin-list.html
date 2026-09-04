@@ -1,0 +1,214 @@
+<div class="admin-list-page">
+
+  <!-- PAGE HEADER -->
+  <app-page-header
+    title="Admins"
+    description="Manage organizations and their administrators"
+    breadcrumb="Super Admin / Admins"
+    actionLabel="Create Admin"
+    [showAction]="true"
+    (actionClick)="createAdmin()">
+  </app-page-header>
+
+
+  <!-- SUMMARY -->
+  @if (!loading && !error) {
+
+    <section class="summary-grid">
+
+      <article class="summary-card">
+        <div class="summary-icon">A</div>
+
+        <div class="summary-content">
+          <span>Total Admins</span>
+          <strong>{{ totalAdmins }}</strong>
+        </div>
+      </article>
+
+
+      <article class="summary-card">
+        <div class="summary-icon">✓</div>
+
+        <div class="summary-content">
+          <span>Active Admins</span>
+          <strong>{{ activeAdmins }}</strong>
+        </div>
+      </article>
+
+
+      <article class="summary-card">
+        <div class="summary-icon">I</div>
+
+        <div class="summary-content">
+          <span>Inactive Admins</span>
+          <strong>{{ inactiveAdmins }}</strong>
+        </div>
+      </article>
+
+
+      <article class="summary-card">
+        <div class="summary-icon">U</div>
+
+        <div class="summary-content">
+          <span>Admin Users</span>
+          <strong>{{ totalUsers }}</strong>
+        </div>
+      </article>
+
+    </section>
+
+  }
+
+
+  <!-- LOADING -->
+  @if (loading) {
+
+    <div class="state-container">
+      <app-loading
+        message="Loading admins..."
+        size="medium">
+      </app-loading>
+    </div>
+
+  }
+
+
+  <!-- ERROR -->
+  @else if (error) {
+
+    <div class="state-container">
+
+      <app-error-state
+        title="Unable to load admins"
+        [description]="error"
+        actionLabel="Try Again"
+        [showAction]="true"
+        (actionClick)="retry()">
+      </app-error-state>
+
+    </div>
+
+  }
+
+
+  <!-- CONTENT -->
+  @else {
+
+    <section class="admin-content">
+
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+
+        <div class="search-container">
+
+          <app-search-input
+            placeholder="Search organization, email or admin code..."
+            [disabled]="false"
+            (searchChange)="onSearchChange($event)">
+          </app-search-input>
+
+        </div>
+
+
+        <!-- STATUS FILTER -->
+        <div class="filter-group">
+
+          <button
+            type="button"
+            class="filter-button"
+            [class.active]="statusFilter === 'ALL'"
+            (click)="setStatusFilter('ALL')">
+            All
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            [class.active]="statusFilter === 'ACTIVE'"
+            (click)="setStatusFilter('ACTIVE')">
+            Active
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            [class.active]="statusFilter === 'INACTIVE'"
+            (click)="setStatusFilter('INACTIVE')">
+            Inactive
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- EMPTY -->
+      @if (filteredAdmins.length === 0) {
+
+        <div class="state-container">
+
+          <app-empty-state
+            title="No admins found"
+            description="No administrators match your current search or status filter.">
+          </app-empty-state>
+
+        </div>
+
+      }
+
+
+      <!-- TABLE -->
+      @else {
+
+        <div class="table-container">
+
+<app-data-table
+  [columns]="columns"
+  [data]="paginatedAdmins"
+  [loading]="loading"
+  [rowActions]="getRowActions"
+  [showActions]="true"
+  (actionClick)="onTableAction($event)">
+</app-data-table>
+
+        </div>
+
+
+        <!-- PAGINATION -->
+        @if (filteredAdmins.length > pageSize) {
+
+          <div class="pagination-container">
+
+            <app-pagination
+              [currentPage]="currentPage"
+              [totalItems]="filteredAdmins.length"
+              [pageSize]="pageSize"
+              [maxVisiblePages]="5"
+              (pageChange)="onPageChange($event)">
+            </app-pagination>
+
+          </div>
+
+        }
+
+      }
+
+    </section>
+
+  }
+
+  
+</div>
+
+<app-confirmation-dialog
+  [visible]="showStatusDialog"
+  [title]="selectedAdmin?.isActive ? 'Deactivate Admin' : 'Activate Admin'"
+  [message]="selectedAdmin?.isActive
+    ? 'Are you sure you want to deactivate this admin? The admin will no longer be able to access the system.'
+    : 'Are you sure you want to activate this admin? The admin will regain access to the system.'"
+  [confirmLabel]="selectedAdmin?.isActive ? 'Deactivate' : 'Activate'"
+  [cancelLabel]="'Cancel'"
+  [danger]="selectedAdmin?.isActive ?? true"
+  (confirmed)="confirmStatusChange()"
+  (cancelled)="cancelStatusChange()">
+</app-confirmation-dialog>

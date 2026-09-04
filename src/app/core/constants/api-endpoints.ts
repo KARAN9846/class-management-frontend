@@ -1,17 +1,34 @@
 export const API_ENDPOINTS = {
- TEACHERS:{
-  BASE:'/teachers',
-  BY_ID:(id:number)=>`/teachers/${id}`,
-  STATUS:(id:number)=>`/teachers/${id}/status`
- },
+  ADMINS: {
+    BASE: '/admins',
 
- STUDENTS: {
-  BASE: '/students',
+    BY_ID: (id: number) =>
+      `/admins/${id}`,
 
-  BY_ID: (id: number) =>
-    `/students/${id}`,
+    DETAILS: (id: number) =>
+      `/admins/${id}/details`,
 
-  STATUS: (id: number) =>
-    `/students/${id}/status`
-},
+    STATUS: (id: number) =>
+      `/admins/${id}/status`
+  },
+
+  TEACHERS: {
+    BASE: '/teachers',
+
+    BY_ID: (id: number) =>
+      `/teachers/${id}`,
+
+    STATUS: (id: number) =>
+      `/teachers/${id}/status`
+  },
+
+  STUDENTS: {
+    BASE: '/students',
+
+    BY_ID: (id: number) =>
+      `/students/${id}`,
+
+    STATUS: (id: number) =>
+      `/students/${id}/status`
+  }
 };
