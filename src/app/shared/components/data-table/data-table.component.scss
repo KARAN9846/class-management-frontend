@@ -306,12 +306,17 @@ color: #1e7efb;
 }
 
 .attendance-teacher-name {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  width: max-content;
+  max-width: none;
+
   color: #2563eb;
   font-weight: bold;
   border: 1px dashed #2563eb;
   padding: 3px 8px;
   border-radius: 10px;
-  
 }
 
 .attendance-last-updated-name {

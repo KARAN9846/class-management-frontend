@@ -6,7 +6,9 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { Router } from '@angular/router';
+
 
 import {
   DataTableComponent,
@@ -28,7 +30,8 @@ import { AssignmentService } from '../services/assignment.service';
   imports: [
     CommonModule,
     DataTableComponent,
-    SearchInputComponent
+    SearchInputComponent,
+ConfirmationDialogComponent
   ],
 
   templateUrl: './assignment-list.html',
@@ -55,6 +58,14 @@ private allAssignments: Assignment[] = [];
   errorMessage = '';
 
   search = '';
+
+  // =========================
+// CONFIRMATION DIALOG
+// =========================
+
+showDeleteDialog = false;
+
+pendingAssignment: Assignment | null = null;
 
 
   // =========================
@@ -314,21 +325,42 @@ this.allAssignments =
   // DELETE
   // =========================
 
+    // =========================
+  // DELETE
+  // =========================
+
   deleteAssignment(
     assignment: Assignment
   ): void {
 
-    const confirmed =
-      window.confirm(
-        `Are you sure you want to delete "${assignment.title}"?`
-      );
+    this.pendingAssignment =
+      assignment;
+
+    this.showDeleteDialog = true;
+
+  }
 
 
-    if (!confirmed) {
+  // =========================
+  // CONFIRM DELETE
+  // =========================
+
+  confirmDeleteAssignment(): void {
+
+    const assignment =
+      this.pendingAssignment;
+
+
+    if (!assignment) {
 
       return;
 
     }
+
+
+    this.showDeleteDialog = false;
+
+    this.pendingAssignment = null;
 
 
     this.assignmentService
@@ -339,13 +371,13 @@ this.allAssignments =
 
         next: () => {
 
-this.allAssignments =
-  this.allAssignments.filter(
-    item =>
-      item.id !== assignment.id
-  );
+          this.allAssignments =
+            this.allAssignments.filter(
+              item =>
+                item.id !== assignment.id
+            );
 
-this.applySearch();
+          this.applySearch();
 
           this.cdr.detectChanges();
 
@@ -370,4 +402,16 @@ this.applySearch();
 
   }
 
+
+  // =========================
+  // CANCEL DELETE
+  // =========================
+
+  cancelDeleteAssignment(): void {
+
+    this.showDeleteDialog = false;
+
+    this.pendingAssignment = null;
+
+  }
 }

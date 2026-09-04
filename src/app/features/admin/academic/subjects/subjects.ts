@@ -5,11 +5,13 @@ import { SubjectService, SubjectRequest } from './subject.service';
 import { Subject } from './subject.model';
 import { ClassService } from '../classes/class.service';
 import { AcademicClass } from '../classes/class.model';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-subjects',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,
+  ConfirmationDialogComponent],
   templateUrl: './subjects.html',
   styleUrl: './subjects.scss'
 })
@@ -30,6 +32,11 @@ export class SubjectsComponent implements OnInit {
   loading = false;
   saving = false;
   errorMessage = '';
+  // DELETE CONFIRMATION
+
+showDeleteDialog = false;
+
+subjectToDelete: Subject | null = null;
 
   form = {
     name: '',
@@ -69,6 +76,8 @@ export class SubjectsComponent implements OnInit {
   loadSubjects(): void {
     this.loading = true;
     this.errorMessage = '';
+
+    
 
     this.subjectService.getSubjects().subscribe({
       next: response => {
@@ -189,22 +198,50 @@ export class SubjectsComponent implements OnInit {
   }
 
   deleteSubject(subject: Subject): void {
-    if (!confirm(`Delete subject "${subject.name}"?`)) {
-      return;
-    }
+  this.subjectToDelete = subject;
+  this.showDeleteDialog = true;
 
-    this.errorMessage = '';
+  this.cdr.markForCheck();
+}
 
-    this.subjectService.deleteSubject(subject.id).subscribe({
+cancelDeleteSubject(): void {
+  this.showDeleteDialog = false;
+  this.subjectToDelete = null;
+
+  this.cdr.markForCheck();
+}
+
+confirmDeleteSubject(): void {
+  const subject = this.subjectToDelete;
+
+  if (!subject) {
+    return;
+  }
+
+  this.showDeleteDialog = false;
+  this.subjectToDelete = null;
+
+  this.errorMessage = '';
+
+  this.subjectService
+    .deleteSubject(subject.id)
+    .subscribe({
       next: () => {
         this.loadSubjects();
       },
+
       error: error => {
-        console.error('Failed to delete subject:', error);
+        console.error(
+          'Failed to delete subject:',
+          error
+        );
+
         this.errorMessage =
-          error?.error?.message || 'Failed to delete subject.';
+          error?.error?.message ||
+          'Failed to delete subject.';
+
         this.cdr.markForCheck();
       }
     });
-  }
+}
 }

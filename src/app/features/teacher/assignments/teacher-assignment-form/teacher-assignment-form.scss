@@ -1,9 +1,35 @@
 .page {
-  padding: 32px 40px;
+  width: 100%;
+  height: calc(100vh - 110px);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 32px 8px 40px 40px;
   background: #f8fafc;
-  min-height: 100%;
+
+  box-sizing: border-box;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
 }
 
+.page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
 
 // =========================
 // PAGE HEADER
@@ -344,9 +370,9 @@
 
 @media (max-width: 900px) {
 
-  .page {
-    padding: 24px;
-  }
+.page {
+  padding: 24px 6px 30px 24px;
+}
 
   .form-card {
     padding: 22px;
@@ -364,9 +390,9 @@
 
 @media (max-width: 600px) {
 
-  .page {
-    padding: 18px;
-  }
+.page {
+  padding: 18px 4px 30px 18px;
+}
 
   .page-header h1 {
     font-size: 24px;

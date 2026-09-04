@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { PermissionService } from '../../../../core/auth/permission.service';
 import { TeacherStudentService } from '../services/teacher-student.service';
 
@@ -36,7 +37,8 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
     PaginationComponent,
     StatusBadgeComponent,
     LoadingComponent,
-    EmptyStateComponent
+    EmptyStateComponent,
+    ConfirmationDialogComponent
   ],
   templateUrl: './teacher-student-list.html',
   styleUrl: './teacher-student-list.scss'
@@ -58,7 +60,6 @@ export class TeacherStudentListComponent implements OnInit {
 
   private readonly permissionService =
     inject(PermissionService);
-
 
   // =========================================================
   // PERMISSIONS
@@ -88,7 +89,6 @@ export class TeacherStudentListComponent implements OnInit {
     );
   }
 
-
   // =========================================================
   // DATA
   // =========================================================
@@ -96,7 +96,6 @@ export class TeacherStudentListComponent implements OnInit {
   students: TeacherStudent[] = [];
 
   selectedStudent: TeacherStudent | null = null;
-
 
   // =========================================================
   // TEACHER SCOPE OPTIONS
@@ -108,13 +107,11 @@ export class TeacherStudentListComponent implements OnInit {
 
   scopeOptionsError = '';
 
-
   // =========================================================
   // SEARCH
   // =========================================================
 
   searchTerm = '';
-
 
   // =========================================================
   // PAGINATION
@@ -128,7 +125,6 @@ export class TeacherStudentListComponent implements OnInit {
 
   totalPages = 0;
 
-
   // =========================================================
   // SORTING
   // =========================================================
@@ -136,7 +132,6 @@ export class TeacherStudentListComponent implements OnInit {
   sortBy = 'firstName';
 
   sortDirection: 'asc' | 'desc' = 'asc';
-
 
   // =========================================================
   // STATE
@@ -148,13 +143,29 @@ export class TeacherStudentListComponent implements OnInit {
 
   errorMessage = '';
 
+  // =========================================================
+  // CONFIRMATION DIALOG
+  // =========================================================
+
+  showConfirmationDialog = false;
+
+  confirmationTitle = '';
+
+  confirmationMessage = '';
+
+  confirmationConfirmLabel = 'Confirm';
+
+  pendingStudent: TeacherStudent | null = null;
+
+  pendingAction: 'status' | 'delete' | null = null;
+
+  pendingNewStatus: boolean | null = null;
 
   // =========================================================
   // INIT
   // =========================================================
 
   ngOnInit(): void {
-
     this.permissionService
       .loadMyPermissions()
       .subscribe({
@@ -182,22 +193,18 @@ export class TeacherStudentListComponent implements OnInit {
         }
 
       });
-
   }
-
 
   // =========================================================
   // LOAD STUDENTS
   // =========================================================
 
   loadStudents(): void {
-
     this.isLoading = true;
 
     this.errorMessage = '';
 
     this.cdr.markForCheck();
-
 
     this.service
       .getStudents({
@@ -268,7 +275,6 @@ export class TeacherStudentListComponent implements OnInit {
 
           this.totalPages = 0;
 
-
           const httpError =
             error as {
               error?: {
@@ -276,11 +282,9 @@ export class TeacherStudentListComponent implements OnInit {
               };
             };
 
-
           this.errorMessage =
             httpError?.error?.message ||
             'Unable to load students. Please try again.';
-
 
           this.isLoading = false;
 
@@ -288,22 +292,18 @@ export class TeacherStudentListComponent implements OnInit {
         }
 
       });
-
   }
-
 
   // =========================================================
   // LOAD TEACHER SCOPE OPTIONS
   // =========================================================
 
   loadScopeOptions(): void {
-
     this.isLoadingScopeOptions = true;
 
     this.scopeOptionsError = '';
 
     this.cdr.markForCheck();
-
 
     this.service
       .getScopeOptions()
@@ -325,12 +325,10 @@ export class TeacherStudentListComponent implements OnInit {
               'Unable to load student scope options.';
           }
 
-
           this.isLoadingScopeOptions = false;
 
           this.cdr.markForCheck();
         },
-
 
         error: (error: unknown) => {
 
@@ -339,9 +337,7 @@ export class TeacherStudentListComponent implements OnInit {
             error
           );
 
-
           this.scopeOptions = [];
-
 
           const httpError =
             error as {
@@ -350,11 +346,9 @@ export class TeacherStudentListComponent implements OnInit {
               };
             };
 
-
           this.scopeOptionsError =
             httpError?.error?.message ||
             'Unable to load student scope options.';
-
 
           this.isLoadingScopeOptions = false;
 
@@ -362,30 +356,24 @@ export class TeacherStudentListComponent implements OnInit {
         }
 
       });
-
   }
-
 
   // =========================================================
   // SEARCH
   // =========================================================
 
   searchStudents(value?: string): void {
-
     if (typeof value === 'string') {
 
       this.searchTerm = value;
     }
-
 
     this.currentPage = 0;
 
     this.loadStudents();
   }
 
-
   clearSearch(): void {
-
     this.searchTerm = '';
 
     this.currentPage = 0;
@@ -393,13 +381,11 @@ export class TeacherStudentListComponent implements OnInit {
     this.loadStudents();
   }
 
-
   // =========================================================
   // SORTING
   // =========================================================
 
   changeSort(sortBy: string): void {
-
     if (this.sortBy === sortBy) {
 
       this.sortDirection =
@@ -414,37 +400,31 @@ export class TeacherStudentListComponent implements OnInit {
       this.sortDirection = 'asc';
     }
 
-
     this.currentPage = 0;
 
     this.loadStudents();
   }
-
 
   // =========================================================
   // SORT ICON
   // =========================================================
 
   getSortIcon(column: string): string {
-
     if (this.sortBy !== column) {
 
       return '↕';
     }
-
 
     return this.sortDirection === 'asc'
       ? '↑'
       : '↓';
   }
 
-
   // =========================================================
   // PAGINATION
   // =========================================================
 
   goToPage(page: number): void {
-
     if (
       page < 0 ||
       page >= this.totalPages ||
@@ -454,29 +434,23 @@ export class TeacherStudentListComponent implements OnInit {
       return;
     }
 
-
     this.currentPage = page;
 
     this.loadStudents();
   }
 
-
   previousPage(): void {
-
     if (this.currentPage <= 0) {
 
       return;
     }
-
 
     this.currentPage--;
 
     this.loadStudents();
   }
 
-
   nextPage(): void {
-
     if (
       this.currentPage >=
       this.totalPages - 1
@@ -485,27 +459,22 @@ export class TeacherStudentListComponent implements OnInit {
       return;
     }
 
-
     this.currentPage++;
 
     this.loadStudents();
   }
-
 
   // =========================================================
   // PAGE NUMBERS
   // =========================================================
 
   get pageNumbers(): number[] {
-
     if (this.totalPages <= 0) {
 
       return [];
     }
 
-
     const pages: number[] = [];
-
 
     const start =
       Math.max(
@@ -513,13 +482,11 @@ export class TeacherStudentListComponent implements OnInit {
         this.currentPage - 2
       );
 
-
     const end =
       Math.min(
         this.totalPages - 1,
         this.currentPage + 2
       );
-
 
     for (
       let page = start;
@@ -530,29 +497,24 @@ export class TeacherStudentListComponent implements OnInit {
       pages.push(page);
     }
 
-
     return pages;
   }
-
 
   // =========================================================
   // PAGE SIZE
   // =========================================================
 
   changePageSize(): void {
-
     this.currentPage = 0;
 
     this.loadStudents();
   }
-
 
   // =========================================================
   // PAGINATION COMPONENT
   // =========================================================
 
   onPageChange(page: number): void {
-
     /*
      * PaginationComponent uses 1-based pages.
      * Spring Data uses 0-based pages.
@@ -560,7 +522,6 @@ export class TeacherStudentListComponent implements OnInit {
 
     const backendPage =
       page - 1;
-
 
     if (
       backendPage < 0 ||
@@ -571,13 +532,11 @@ export class TeacherStudentListComponent implements OnInit {
       return;
     }
 
-
     this.currentPage =
       backendPage;
 
     this.loadStudents();
   }
-
 
   // =========================================================
   // STUDENT DETAILS
@@ -586,7 +545,6 @@ export class TeacherStudentListComponent implements OnInit {
   viewStudent(
     student: TeacherStudent
   ): void {
-
     this.isLoadingStudent = true;
 
     this.selectedStudent = null;
@@ -594,7 +552,6 @@ export class TeacherStudentListComponent implements OnInit {
     this.errorMessage = '';
 
     this.cdr.markForCheck();
-
 
     this.service
       .getStudentById(
@@ -616,12 +573,10 @@ export class TeacherStudentListComponent implements OnInit {
               'Unable to load student details.';
           }
 
-
           this.isLoadingStudent = false;
 
           this.cdr.markForCheck();
         },
-
 
         error: (error: unknown) => {
 
@@ -630,7 +585,6 @@ export class TeacherStudentListComponent implements OnInit {
             error
           );
 
-
           const httpError =
             error as {
               error?: {
@@ -638,11 +592,9 @@ export class TeacherStudentListComponent implements OnInit {
               };
             };
 
-
           this.errorMessage =
             httpError?.error?.message ||
             'Unable to load student details.';
-
 
           this.isLoadingStudent = false;
 
@@ -650,12 +602,9 @@ export class TeacherStudentListComponent implements OnInit {
         }
 
       });
-
   }
 
-
   closeStudentDetails(): void {
-
     this.selectedStudent = null;
 
     this.isLoadingStudent = false;
@@ -663,44 +612,40 @@ export class TeacherStudentListComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-
   // =========================================================
   // STUDENT ACTIONS
   // =========================================================
 
-openCreateStudent(): void {
-  if (!this.canCreateStudent()) {
-    return;
+  openCreateStudent(): void {
+    if (!this.canCreateStudent()) {
+      return;
+    }
+
+    this.router.navigate([
+      '/teacher/students/create'
+    ]);
   }
 
-  this.router.navigate([
-    '/teacher/students/create'
-  ]);
-}
+  openEditStudent(
+    student: TeacherStudent
+  ): void {
+    if (!this.canUpdateStudent()) {
+      return;
+    }
 
-
-openEditStudent(student: TeacherStudent): void {
-  if (!this.canUpdateStudent()) {
-    return;
+    this.router.navigate([
+      '/teacher/students',
+      student.studentId,
+      'edit'
+    ]);
   }
-
-  this.router.navigate([
-    '/teacher/students',
-    student.studentId,
-    'edit'
-  ]);
-}
-
 
   openStatusChange(
     student: TeacherStudent
   ): void {
-
     if (!this.canUpdateStudentStatus()) {
-
       return;
     }
-
 
     if (student.isActive === null) {
 
@@ -712,155 +657,224 @@ openEditStudent(student: TeacherStudent): void {
       return;
     }
 
-
     const newStatus =
       !student.isActive;
 
+    this.pendingStudent =
+      student;
 
-    const action =
+    this.pendingAction =
+      'status';
+
+    this.pendingNewStatus =
+      newStatus;
+
+    this.confirmationTitle =
       newStatus
-        ? 'activate'
-        : 'deactivate';
+        ? 'Activate Student?'
+        : 'Deactivate Student?';
 
-
-    const confirmed =
-      window.confirm(
-        `Are you sure you want to ${action} ${this.getStudentName(student)}?`
-      );
-
-
-    if (!confirmed) {
-
-      return;
-    }
-
-
-    this.service
-      .updateStudentStatus(
-        student.studentId,
+    this.confirmationMessage =
+      `Are you sure you want to ${
         newStatus
-      )
-      .subscribe({
+          ? 'activate'
+          : 'deactivate'
+      } ${this.getStudentName(student)}?`;
 
-        next: (response) => {
+    this.confirmationConfirmLabel =
+      newStatus
+        ? 'Activate'
+        : 'Deactivate';
 
-          if (response.success) {
-
-            this.loadStudents();
-
-          } else {
-
-            this.errorMessage =
-              response.message ||
-              'Unable to update student status.';
-
-            this.cdr.markForCheck();
-          }
-        },
-
-
-        error: (error: unknown) => {
-
-          console.error(
-            'Failed to update student status:',
-            error
-          );
-
-
-          const httpError =
-            error as {
-              error?: {
-                message?: string;
-              };
-            };
-
-
-          this.errorMessage =
-            httpError?.error?.message ||
-            'Unable to update student status. Please try again.';
-
-
-          this.cdr.markForCheck();
-        }
-
-      });
-
+    this.showConfirmationDialog =
+      true;
   }
-
 
   confirmDelete(
     student: TeacherStudent
   ): void {
-
     if (!this.canDeleteStudent()) {
+      return;
+    }
+
+    this.pendingStudent =
+      student;
+
+    this.pendingAction =
+      'delete';
+
+    this.pendingNewStatus =
+      null;
+
+    this.confirmationTitle =
+      'Delete Student?';
+
+    this.confirmationMessage =
+      `Are you sure you want to delete ${
+        this.getStudentName(student)
+      }? This action cannot be undone.`;
+
+    this.confirmationConfirmLabel =
+      'Delete';
+
+    this.showConfirmationDialog =
+      true;
+  }
+
+  // =========================================================
+  // CONFIRMATION DIALOG ACTIONS
+  // =========================================================
+
+  confirmAction(): void {
+    if (
+      !this.pendingStudent ||
+      !this.pendingAction
+    ) {
+      this.cancelConfirmation();
 
       return;
     }
 
+    const student =
+      this.pendingStudent;
 
-    const confirmed =
-      window.confirm(
-        `Are you sure you want to delete ${this.getStudentName(student)}?`
-      );
+    const action =
+      this.pendingAction;
 
+    const newStatus =
+      this.pendingNewStatus;
 
-    if (!confirmed) {
+    this.closeConfirmationDialog();
 
-      return;
-    }
+    if (
+      action === 'status' &&
+      newStatus !== null
+    ) {
+      this.service
+        .updateStudentStatus(
+          student.studentId,
+          newStatus
+        )
+        .subscribe({
 
+          next: (response) => {
 
-    this.service
-      .deleteStudent(
-        student.studentId
-      )
-      .subscribe({
+            if (response.success) {
 
-        next: (response) => {
+              this.loadStudents();
 
-          if (response.success) {
+            } else {
 
-            this.loadStudents();
+              this.errorMessage =
+                response.message ||
+                'Unable to update student status.';
 
-          } else {
+              this.cdr.markForCheck();
+            }
+          },
+
+          error: (error: unknown) => {
+
+            console.error(
+              'Failed to update student status:',
+              error
+            );
+
+            const httpError =
+              error as {
+                error?: {
+                  message?: string;
+                };
+              };
 
             this.errorMessage =
-              response.message ||
-              'Unable to delete student.';
+              httpError?.error?.message ||
+              'Unable to update student status. Please try again.';
 
             this.cdr.markForCheck();
           }
-        },
 
+        });
 
-        error: (error: unknown) => {
+      return;
+    }
 
-          console.error(
-            'Failed to delete student:',
-            error
-          );
+    if (action === 'delete') {
+      this.service
+        .deleteStudent(
+          student.studentId
+        )
+        .subscribe({
 
+          next: (response) => {
 
-          const httpError =
-            error as {
-              error?: {
-                message?: string;
+            if (response.success) {
+
+              this.loadStudents();
+
+            } else {
+
+              this.errorMessage =
+                response.message ||
+                'Unable to delete student.';
+
+              this.cdr.markForCheck();
+            }
+          },
+
+          error: (error: unknown) => {
+
+            console.error(
+              'Failed to delete student:',
+              error
+            );
+
+            const httpError =
+              error as {
+                error?: {
+                  message?: string;
+                };
               };
-            };
 
+            this.errorMessage =
+              httpError?.error?.message ||
+              'Unable to delete student. Please try again.';
 
-          this.errorMessage =
-            httpError?.error?.message ||
-            'Unable to delete student. Please try again.';
+            this.cdr.markForCheck();
+          }
 
-
-          this.cdr.markForCheck();
-        }
-
-      });
-
+        });
+    }
   }
 
+  cancelConfirmation(): void {
+    this.closeConfirmationDialog();
+  }
+
+  private closeConfirmationDialog(): void {
+    this.showConfirmationDialog =
+      false;
+
+    this.confirmationTitle =
+      '';
+
+    this.confirmationMessage =
+      '';
+
+    this.confirmationConfirmLabel =
+      'Confirm';
+
+    this.pendingStudent =
+      null;
+
+    this.pendingAction =
+      null;
+
+    this.pendingNewStatus =
+      null;
+
+    this.cdr.markForCheck();
+  }
 
   // =========================================================
   // DISPLAY HELPERS
@@ -869,50 +883,40 @@ openEditStudent(student: TeacherStudent): void {
   getStudentName(
     student: TeacherStudent
   ): string {
-
     return `${student.firstName} ${student.lastName}`
       .trim();
   }
 
-
   getInitials(
     student: TeacherStudent
   ): string {
-
     const first =
       student.firstName?.charAt(0) ?? '';
 
-
     const last =
       student.lastName?.charAt(0) ?? '';
-
 
     return `${first}${last}`
       .toUpperCase();
   }
 
-
   displayValue(
     value: string | null | undefined
   ): string {
-
     return value?.trim()
       ? value
       : '—';
   }
-
 
   // =========================================================
   // RECORD RANGE
   // =========================================================
 
   getStartRecord(): number {
-
     if (this.totalElements === 0) {
 
       return 0;
     }
-
 
     return (
       this.currentPage *
@@ -920,9 +924,7 @@ openEditStudent(student: TeacherStudent): void {
     ) + 1;
   }
 
-
   getEndRecord(): number {
-
     return Math.min(
       (
         this.currentPage + 1
@@ -930,7 +932,6 @@ openEditStudent(student: TeacherStudent): void {
       this.totalElements
     );
   }
-
 
   // =========================================================
   // TRACKING
@@ -940,8 +941,6 @@ openEditStudent(student: TeacherStudent): void {
     _index: number,
     student: TeacherStudent
   ): number {
-
     return student.studentId;
   }
-
 }

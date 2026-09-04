@@ -461,4 +461,31 @@
 
   }
 
+  <app-confirmation-dialog
+  [visible]="showDeleteDialog"
+  [title]="
+    deleteType === 'class'
+      ? 'Delete Class?'
+      : 'Delete Section?'
+  "
+  [message]="
+    deleteType === 'class'
+      ? 'Are you sure you want to delete class &quot;' +
+        (classToDelete?.name ?? '') +
+        '&quot;?'
+      : 'Are you sure you want to delete section &quot;' +
+        (sectionToDelete?.name ?? '') +
+        '&quot;?'
+  "
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  [danger]="true"
+  (confirmed)="
+    deleteType === 'class'
+      ? confirmDeleteClass()
+      : confirmDeleteSection()
+  "
+  (cancelled)="cancelDelete()">
+</app-confirmation-dialog>
+
 </div>

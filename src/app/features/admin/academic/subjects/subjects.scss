@@ -3,11 +3,36 @@
 ========================================================= */
 
 .subjects-page {
-  padding: 28px;
+  width: 100%;
+  height: calc(100vh - 110px);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 28px 8px 40px 28px;
+
   max-width: 1400px;
   margin: 0 auto;
+
+  box-sizing: border-box;
 }
 
+.subjects-page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.subjects-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.subjects-page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.subjects-page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
 
 /* =========================================================
    PAGE HEADER
@@ -357,14 +382,33 @@ tbody tr {
 .modal {
   width: 100%;
   max-width: 520px;
+  max-height: calc(100vh - 40px);
 
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   background: #ffffff;
   border-radius: 14px;
 
   box-shadow:
     0 20px 50px rgba(0, 0, 0, 0.18);
+}
+
+.modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 
@@ -507,10 +551,9 @@ form {
 ========================================================= */
 
 @media (max-width: 768px) {
-
-  .subjects-page {
-    padding: 18px;
-  }
+.subjects-page {
+  padding: 18px 6px 30px 18px;
+}
 
   .page-header {
     flex-direction: column;
@@ -570,9 +613,9 @@ form {
 
 @media (max-width: 480px) {
 
-  .subjects-page {
-    padding: 14px;
-  }
+.subjects-page {
+  padding: 14px 4px 30px 14px;
+}
 
   .table-header {
     padding: 16px;

@@ -6,6 +6,7 @@ import { DataTableComponent, TableAction, TableColumn } from '../../../../shared
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { AcademicYearService } from './services/academic-year.service';
 import { AcademicYear, CreateAcademicYearRequest, UpdateAcademicYearRequest } from './academic-year.model';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-academic-years',
@@ -15,7 +16,8 @@ import { AcademicYear, CreateAcademicYearRequest, UpdateAcademicYearRequest } fr
     FormsModule,
     DataTableComponent,
     SearchInputComponent,
-    PageHeaderComponent
+    PageHeaderComponent,
+  ConfirmationDialogComponent
   ],
   templateUrl: './academic-years.html',
   styleUrl: './academic-years.scss'
@@ -29,7 +31,7 @@ export class AcademicYearsComponent implements OnInit {
     { key: 'name', label: 'Academic Year' },
     { key: 'startDate', label: 'Start Date' },
     { key: 'endDate', label: 'End Date' },
-    { key: 'isActive', label: 'Status' }
+    { key: 'isActive', label: 'Status', type: 'status' }
   ];
 
   actions: TableAction[] = [
@@ -52,6 +54,10 @@ export class AcademicYearsComponent implements OnInit {
   loading = false;
   saving = false;
   errorMessage = '';
+
+  // DELETE CONFIRMATION
+showDeleteDialog = false;
+academicYearToDelete: AcademicYear | null = null;
 
   form = {
     name: '',
@@ -247,23 +253,40 @@ export class AcademicYearsComponent implements OnInit {
 
   /* DELETE */
   deleteYear(year: AcademicYear): void {
-    if (!confirm(`Delete academic year "${year.name}"?`)) {
-      return;
-    }
+  this.academicYearToDelete = year;
+  this.showDeleteDialog = true;
+  this.cdr.markForCheck();
+}
 
-    this.academicYearService.delete(year.id).subscribe({
-      next: () => {
-        this.loadAcademicYears();
-      },
-      error: (error) => {
-        console.error(error);
+cancelDeleteYear(): void {
+  this.showDeleteDialog = false;
+  this.academicYearToDelete = null;
+  this.cdr.markForCheck();
+}
 
-        this.errorMessage =
-          error?.error?.message ||
-          'Failed to delete academic year.';
+confirmDeleteYear(): void {
+  const year = this.academicYearToDelete;
 
-        this.cdr.markForCheck();
-      }
-    });
+  if (!year) {
+    return;
   }
+
+  this.showDeleteDialog = false;
+  this.academicYearToDelete = null;
+
+  this.academicYearService.delete(year.id).subscribe({
+    next: () => {
+      this.loadAcademicYears();
+    },
+    error: (error) => {
+      console.error(error);
+
+      this.errorMessage =
+        error?.error?.message ||
+        'Failed to delete academic year.';
+
+      this.cdr.markForCheck();
+    }
+  });
+}
 }

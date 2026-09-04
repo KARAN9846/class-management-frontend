@@ -6,7 +6,9 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+
 import { Router } from '@angular/router';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 import {
   TeacherRoleAssignment,
@@ -24,7 +26,8 @@ import {
   standalone: true,
 
   imports: [
-    CommonModule
+    CommonModule,
+  ConfirmationDialogComponent
   ],
 
   templateUrl:
@@ -58,6 +61,14 @@ export class TeacherRoleAssignmentList
   assignments:
     TeacherRoleAssignment[] = [];
 
+
+   // =========================================================
+  // CONFIRMATION DIALOG
+  // =========================================================
+
+  showRemoveDialog = false;
+
+  pendingRemoveTeacherId: number | null = null;
 
   // =========================================================
   // STATE
@@ -160,7 +171,7 @@ editAssignment(teacherId: number): void {
 }
 
 
-  // =========================================================
+    // =========================================================
   // REMOVE ASSIGNMENT
   // =========================================================
 
@@ -174,19 +185,34 @@ editAssignment(teacherId: number): void {
 
     }
 
+    this.pendingRemoveTeacherId = teacherId;
 
-    const confirmed =
-      window.confirm(
-        'Are you sure you want to remove this teacher role assignment?'
-      );
+    this.showRemoveDialog = true;
+
+  }
 
 
-    if (!confirmed) {
+  // =========================================================
+  // CONFIRM REMOVE ASSIGNMENT
+  // =========================================================
+
+  confirmRemoveAssignment(): void {
+
+    if (
+      this.pendingRemoveTeacherId === null ||
+      this.deleting
+    ) {
 
       return;
 
     }
 
+    const teacherId =
+      this.pendingRemoveTeacherId;
+
+    this.showRemoveDialog = false;
+
+    this.pendingRemoveTeacherId = null;
 
     this.deleting = true;
 
@@ -230,6 +256,19 @@ editAssignment(teacherId: number): void {
         }
 
       });
+
+  }
+
+
+  // =========================================================
+  // CANCEL REMOVE ASSIGNMENT
+  // =========================================================
+
+  cancelRemoveAssignment(): void {
+
+    this.showRemoveDialog = false;
+
+    this.pendingRemoveTeacherId = null;
 
   }
 

@@ -257,4 +257,18 @@
 
   }
 
+  <app-confirmation-dialog
+  [visible]="showDeleteDialog"
+  title="Delete Subject?"
+  [message]="
+    'Are you sure you want to delete subject &quot;' +
+    (subjectToDelete?.name ?? '') +
+    '&quot;?'
+  "
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  [danger]="true"
+  (confirmed)="confirmDeleteSubject()"
+  (cancelled)="cancelDeleteSubject()">
+</app-confirmation-dialog>
 </div>

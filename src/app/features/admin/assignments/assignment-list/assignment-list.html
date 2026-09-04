@@ -66,4 +66,15 @@
 
   </div>
 
+  <app-confirmation-dialog
+  [visible]="showDeleteDialog"
+  title="Delete Assignment?"
+  [message]="'Are you sure you want to delete &quot;' + pendingAssignment?.title + '&quot;?'"
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  [danger]="true"
+  (confirmed)="confirmDeleteAssignment()"
+  (cancelled)="cancelDeleteAssignment()">
+</app-confirmation-dialog>
+
 </div>

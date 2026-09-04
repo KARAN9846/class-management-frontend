@@ -295,5 +295,17 @@
         </div>
       }
     </aside>
+
+   
   </div>
 }
+
+<app-confirmation-dialog
+  [visible]="showConfirmationDialog"
+  [title]="confirmationTitle"
+  [message]="confirmationMessage"
+  [confirmLabel]="confirmationConfirmLabel"
+  [danger]="pendingAction === 'delete'"
+  (confirmed)="confirmAction()"
+  (cancelled)="cancelConfirmation()">
+</app-confirmation-dialog>

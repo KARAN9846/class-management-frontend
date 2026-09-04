@@ -1,7 +1,31 @@
 .page {
-  padding: 24px;
+  width: 100%;
+  height: calc(100vh - 110px);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 24px 8px 40px 24px;
+
+  box-sizing: border-box;
 }
 
+.page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -26,6 +50,7 @@
 .filter-area {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 20px;
 }
@@ -102,4 +127,47 @@
 
 .empty-state p {
   margin: 0;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 18px 6px 30px 18px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .table-card {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .filter-area {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  app-search-input,
+  .status-filter,
+  .date-filter,
+  .class-filter,
+  .section-filter,
+  .clear-filter-button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 14px 4px 30px 14px;
+  }
+
+  .table-card {
+    padding: 12px;
+  }
 }

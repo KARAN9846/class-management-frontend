@@ -191,4 +191,19 @@
 
   }
 
+  <app-confirmation-dialog
+  [visible]="showDeleteDialog"
+  title="Delete Academic Year?"
+  [message]="
+    'Are you sure you want to delete academic year &quot;' +
+    (academicYearToDelete?.name ?? '') +
+    '&quot;?'
+  "
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  [danger]="true"
+  (confirmed)="confirmDeleteYear()"
+  (cancelled)="cancelDeleteYear()">
+</app-confirmation-dialog>
+
 </div>

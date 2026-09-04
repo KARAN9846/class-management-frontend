@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import {
   DataTableComponent,
   TableColumn,
@@ -21,7 +21,8 @@ import { StudentService } from '../services/student.service';
     CommonModule,
     DataTableComponent,
     PaginationComponent,
-    SearchInputComponent
+    SearchInputComponent,
+  ConfirmationDialogComponent
   ],
   templateUrl: './student-list.html',
   styleUrl: './student-list.scss'
@@ -43,6 +44,20 @@ export class StudentList implements OnInit {
   page = 0;
   size = 10;
   totalElements = 0;
+
+    // =========================
+  // CONFIRMATION DIALOG
+  // =========================
+
+  showConfirmationDialog = false;
+
+  confirmationTitle = '';
+  confirmationMessage = '';
+  confirmationConfirmLabel = 'Confirm';
+
+  pendingStudent: Student | null = null;
+  pendingAction: 'status' | 'delete' | null = null;
+  pendingNewStatus: boolean | null = null;
 
 
   // =========================
@@ -259,6 +274,10 @@ export class StudentList implements OnInit {
   // STATUS
   // =========================
 
+    // =========================
+  // STATUS
+  // =========================
+
   toggleStatus(student: Student): void {
 
     const newStatus =
@@ -269,88 +288,181 @@ export class StudentList implements OnInit {
         ? 'activate'
         : 'deactivate';
 
-    const confirmed =
-      window.confirm(
-        `Are you sure you want to ${action} ${student.firstName} ${student.lastName}?`
-      );
 
-    if (!confirmed) {
-      return;
-    }
+    this.pendingStudent = student;
 
+    this.pendingAction = 'status';
 
-    this.studentService
-      .updateStatus(
-        student.id,
-        newStatus
-      )
-      .subscribe({
+    this.pendingNewStatus =
+      newStatus;
 
-        next: () => {
+    this.confirmationTitle =
+      newStatus
+        ? 'Activate Student?'
+        : 'Deactivate Student?';
 
-          // Update screen immediately
-          student.isActive =
-            newStatus;
+    this.confirmationMessage =
+      `Are you sure you want to ${action} ${student.firstName} ${student.lastName}?`;
 
-          this.cdr.detectChanges();
+    this.confirmationConfirmLabel =
+      newStatus
+        ? 'Activate'
+        : 'Deactivate';
 
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Failed to update student status:',
-            error
-          );
-
-          this.errorMessage =
-            'Failed to update student status. Please try again.';
-
-          this.cdr.detectChanges();
-
-        }
-
-      });
+    this.showConfirmationDialog = true;
 
   }
+
+   // =========================
+  // DELETE
+  // =========================
 
   deleteStudent(student: Student): void {
 
-  const confirmed = window.confirm(
-    `Are you sure you want to delete ${student.firstName} ${student.lastName}?`
-  );
+    this.pendingStudent = student;
 
-  if (!confirmed) {
-    return;
+    this.pendingAction = 'delete';
+
+    this.pendingNewStatus = null;
+
+    this.confirmationTitle =
+      'Delete Student?';
+
+    this.confirmationMessage =
+      `Are you sure you want to delete ${student.firstName} ${student.lastName}?`;
+
+    this.confirmationConfirmLabel =
+      'Delete';
+
+    this.showConfirmationDialog = true;
+
   }
 
-  this.studentService
-    .deleteStudent(student.id)
-    .subscribe({
+    // =========================
+  // CONFIRM ACTION
+  // =========================
 
-      next: () => {
+  confirmAction(): void {
 
-        this.loadStudents();
+    const student = this.pendingStudent;
 
-      },
+    const action = this.pendingAction;
 
-      error: (error) => {
 
-        console.error(
-          'Failed to delete student:',
-          error
-        );
+    if (!student || !action) {
 
-        this.errorMessage =
-          error?.error?.message ||
-          error?.error?.error ||
-          error?.message ||
-          'Failed to delete student. Please try again.';
+      return;
 
-        this.cdr.detectChanges();
+    }
+
+
+    this.showConfirmationDialog = false;
+
+
+    if (action === 'status') {
+
+      const newStatus =
+        this.pendingNewStatus;
+
+      if (newStatus === null) {
+
+        return;
 
       }
 
-    });
-}
+
+      this.studentService
+        .updateStatus(
+          student.id,
+          newStatus
+        )
+        .subscribe({
+
+          next: () => {
+
+            // Update screen immediately
+            student.isActive =
+              newStatus;
+
+            this.cdr.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Failed to update student status:',
+              error
+            );
+
+            this.errorMessage =
+              'Failed to update student status. Please try again.';
+
+            this.cdr.detectChanges();
+
+          }
+
+        });
+
+    }
+
+
+    if (action === 'delete') {
+
+      this.studentService
+        .deleteStudent(student.id)
+        .subscribe({
+
+          next: () => {
+
+            this.loadStudents();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Failed to delete student:',
+              error
+            );
+
+            this.errorMessage =
+              error?.error?.message ||
+              error?.error?.error ||
+              error?.message ||
+              'Failed to delete student. Please try again.';
+
+            this.cdr.detectChanges();
+
+          }
+
+        });
+
+    }
+
+
+    this.pendingStudent = null;
+
+    this.pendingAction = null;
+
+    this.pendingNewStatus = null;
+
+  }
+
+
+  // =========================
+  // CANCEL CONFIRMATION
+  // =========================
+
+  cancelConfirmation(): void {
+
+    this.showConfirmationDialog = false;
+
+    this.pendingStudent = null;
+
+    this.pendingAction = null;
+
+    this.pendingNewStatus = null;
+
+  }
 }

@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AcademicClass } from './class.model';
 import {
   Section,
@@ -37,7 +37,8 @@ interface FormSection {
     CommonModule,
     FormsModule,
     PageHeaderComponent,
-    SearchInputComponent
+    SearchInputComponent,
+  ConfirmationDialogComponent
   ],
   templateUrl: './classes.html',
   styleUrl: './classes.scss'
@@ -87,6 +88,18 @@ export class ClassesComponent implements OnInit {
   saving = false;
 
   errorMessage = '';
+
+  // =========================
+// DELETE CONFIRMATION
+// =========================
+
+showDeleteDialog = false;
+
+deleteType: 'class' | 'section' | null = null;
+
+classToDelete: AcademicClass | null = null;
+
+sectionToDelete: Section | null = null;
 
 
   // =========================
@@ -735,97 +748,105 @@ export class ClassesComponent implements OnInit {
   // DELETE CLASS
   // =========================
 
-  deleteClass(
-    cls: AcademicClass
-  ): void {
+  deleteClass(cls: AcademicClass): void {
+  this.classToDelete = cls;
+  this.sectionToDelete = null;
+  this.deleteType = 'class';
+  this.showDeleteDialog = true;
 
-    if (
-      !confirm(
-        `Delete ${cls.name}?`
-      )
-    ) {
+  this.cdr.markForCheck();
+}
 
-      return;
-    }
+cancelDelete(): void {
+  this.showDeleteDialog = false;
+  this.classToDelete = null;
+  this.sectionToDelete = null;
+  this.deleteType = null;
 
+  this.cdr.markForCheck();
+}
 
-    this.errorMessage = '';
+confirmDeleteClass(): void {
+  const cls = this.classToDelete;
 
-
-    this.classService
-      .deleteClass(cls.id)
-      .subscribe({
-
-        next: () => {
-
-          this.loadClasses();
-        },
-
-
-        error: error => {
-
-          console.error(
-            'Failed to delete class:',
-            error
-          );
-
-          this.errorMessage =
-            error?.error?.message ||
-            'Failed to delete class.';
-
-          this.cdr.markForCheck();
-        }
-
-      });
+  if (!cls) {
+    return;
   }
 
+  this.showDeleteDialog = false;
+  this.classToDelete = null;
+  this.deleteType = null;
+
+  this.errorMessage = '';
+
+  this.classService
+    .deleteClass(cls.id)
+    .subscribe({
+      next: () => {
+        this.loadClasses();
+      },
+
+      error: error => {
+        console.error(
+          'Failed to delete class:',
+          error
+        );
+
+        this.errorMessage =
+          error?.error?.message ||
+          'Failed to delete class.';
+
+        this.cdr.markForCheck();
+      }
+    });
+}
 
   // =========================
   // DELETE SECTION
   // =========================
 
-  deleteSection(
-    section: Section
-  ): void {
+  deleteSection(section: Section): void {
+  this.sectionToDelete = section;
+  this.classToDelete = null;
+  this.deleteType = 'section';
+  this.showDeleteDialog = true;
 
-    if (
-      !confirm(
-        `Delete section ${section.name}?`
-      )
-    ) {
+  this.cdr.markForCheck();
+}
 
-      return;
-    }
+confirmDeleteSection(): void {
+  const section = this.sectionToDelete;
 
-
-    this.errorMessage = '';
-
-
-    this.sectionService
-      .deleteSection(section.id)
-      .subscribe({
-
-        next: () => {
-
-          this.loadClasses();
-        },
-
-
-        error: error => {
-
-          console.error(
-            'Failed to delete section:',
-            error
-          );
-
-          this.errorMessage =
-            error?.error?.message ||
-            'Failed to delete section.';
-
-          this.cdr.markForCheck();
-        }
-
-      });
+  if (!section) {
+    return;
   }
+
+  this.showDeleteDialog = false;
+  this.sectionToDelete = null;
+  this.deleteType = null;
+
+  this.errorMessage = '';
+
+  this.sectionService
+    .deleteSection(section.id)
+    .subscribe({
+      next: () => {
+        this.loadClasses();
+      },
+
+      error: error => {
+        console.error(
+          'Failed to delete section:',
+          error
+        );
+
+        this.errorMessage =
+          error?.error?.message ||
+          'Failed to delete section.';
+
+        this.cdr.markForCheck();
+      }
+    });
+}
 
 }

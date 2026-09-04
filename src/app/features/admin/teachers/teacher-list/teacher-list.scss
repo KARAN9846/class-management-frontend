@@ -1,7 +1,31 @@
-.page{
-padding:24px;
-background:#f8fafc;
-min-height:100%;
+.page {
+  width: 100%;
+  height: calc(100vh - 110px);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 24px 8px 40px 24px;
+
+  background: #f8fafc;
+
+  box-sizing: border-box;
+}
+.page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .page-header{
@@ -440,4 +464,55 @@ justify-content:flex-end;
     width: 100%;
   }
 
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 18px 6px 30px 18px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .add-btn {
+    width: 100%;
+  }
+
+  .table-card {
+    border-radius: 10px;
+  }
+
+  .filter-area {
+    padding: 16px;
+  }
+
+  .pagination-area {
+    padding: 14px 16px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 14px 4px 30px 14px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .table-card {
+    border-radius: 10px;
+  }
+
+  .filter-area {
+    padding: 12px;
+  }
+
+  .pagination-area {
+    padding: 12px;
+  }
 }

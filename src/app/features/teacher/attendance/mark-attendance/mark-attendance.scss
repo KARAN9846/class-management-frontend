@@ -1,5 +1,35 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 .page {
-  padding: 24px;
+  width: 100%;
+  height: calc(100vh - 110px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px 8px 40px 24px;
+  box-sizing: border-box;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 
@@ -122,18 +152,22 @@
 // =========================================================
 
 .student-list {
+  width: 100%;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .student-header,
 .student-row {
   display: grid;
-  grid-template-columns: 120px 1fr 240px;
+  grid-template-columns: 120px minmax(180px, 1fr) 240px;
   align-items: center;
   gap: 16px;
+  min-width: 600px;
   padding: 14px 16px;
+  box-sizing: border-box;
 }
 
 .student-header {
@@ -249,37 +283,8 @@
 
 
 // =========================================================
-// RESPONSIVE
+// BACK BUTTON
 // =========================================================
-
-@media (max-width: 768px) {
-
-  .page {
-    padding: 16px;
-  }
-
-  .attendance-card {
-    padding: 16px;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .student-header,
-  .student-row {
-    grid-template-columns: 80px 1fr;
-  }
-
-  .student-header > div:last-child {
-    display: none;
-  }
-
-  .attendance-buttons {
-    grid-column: 1 / -1;
-  }
-
-}
 
 .back-button {
   display: inline-flex;
@@ -297,4 +302,89 @@
 
 .back-button:hover {
   background: #e5e7eb;
+}
+
+
+// =========================================================
+// RESPONSIVE
+// =========================================================
+
+@media (max-width: 768px) {
+
+  .page {
+    padding: 18px 6px 30px 18px;
+  }
+
+  .attendance-card {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .back-button {
+    margin-top: 0;
+    width: 100%;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .student-list {
+    overflow-x: auto;
+  }
+
+  .student-header,
+  .student-row {
+    min-width: 560px;
+  }
+
+  .submit-area {
+    justify-content: stretch;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .page {
+    padding: 14px 4px 30px 14px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .attendance-card {
+    padding: 12px;
+  }
+
+  .students-section {
+    margin-top: 24px;
+  }
+
+  .student-header,
+  .student-row {
+    min-width: 520px;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .attendance-button {
+    min-width: 75px;
+    padding: 8px 10px;
+  }
+
+  .empty-state {
+    padding: 36px 16px;
+  }
 }

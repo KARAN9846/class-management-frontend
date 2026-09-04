@@ -1,3 +1,36 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.student-page {
+  width: 100%;
+  height: calc(100vh - 110px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px 8px 40px 24px;
+  box-sizing: border-box;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.student-page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.student-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.student-page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.student-page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
 
 // ======================================================
 // STUDENT PAGE
@@ -1048,7 +1081,7 @@ table {
 // RESPONSIVE — TABLET
 // ======================================================
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .student-page {
     padding: 16px;
   }

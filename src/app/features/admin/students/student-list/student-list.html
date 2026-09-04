@@ -83,4 +83,15 @@
 
   </div>
 
+  <app-confirmation-dialog
+  [visible]="showConfirmationDialog"
+  [title]="confirmationTitle"
+  [message]="confirmationMessage"
+  [confirmLabel]="confirmationConfirmLabel"
+  cancelLabel="Cancel"
+  [danger]="true"
+  (confirmed)="confirmAction()"
+  (cancelled)="cancelConfirmation()">
+</app-confirmation-dialog>
+
 </div>
