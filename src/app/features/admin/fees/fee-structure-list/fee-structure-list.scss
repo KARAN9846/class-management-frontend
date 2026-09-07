@@ -1,0 +1,431 @@
+// =====================================================
+// PAGE
+// =====================================================
+
+.fee-structure-page {
+  width: 100%;
+  height: calc(100vh - 110px);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 24px 8px 40px 24px;
+
+  box-sizing: border-box;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.fee-structure-page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fee-structure-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fee-structure-page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+
+// =====================================================
+// PAGE HEADER
+// =====================================================
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-bottom: 24px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-bottom: 8px;
+
+  color: #9ca3af;
+
+  font-size: 12px;
+}
+
+.breadcrumb strong {
+  color: #475569;
+}
+
+.page-header h1 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 7px 0 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+// =====================================================
+// PRIMARY BUTTON
+// =====================================================
+
+.primary-button {
+  flex-shrink: 0;
+
+  height: 42px;
+
+  padding: 0 18px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    background: #1d4ed8;
+
+    box-shadow:
+      0 4px 10px rgb(37 99 235 / 18%);
+  }
+}
+
+
+// =====================================================
+// ERROR
+// =====================================================
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 20px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+
+  background: #fef2f2;
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.error-content strong {
+  color: #991b1b;
+
+  font-size: 13px;
+}
+
+.error-content span {
+  color: #b91c1c;
+
+  font-size: 13px;
+}
+
+.retry-button {
+  flex-shrink: 0;
+
+  height: 34px;
+
+  padding: 0 13px;
+
+  border: 1px solid #fca5a5;
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #b91c1c;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  &:hover {
+    background: #fef2f2;
+  }
+}
+
+
+// =====================================================
+// MAIN CARD
+// =====================================================
+
+.fee-card {
+  width: 100%;
+
+  overflow: hidden;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 1px 3px rgb(15 23 42 / 5%);
+}
+
+
+// =====================================================
+// CARD HEADER
+// =====================================================
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.card-header h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.card-header p {
+  margin: 5px 0 0;
+
+  color: #94a3b8;
+
+  font-size: 13px;
+}
+
+.fee-count {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  gap: 2px;
+
+  flex-shrink: 0;
+}
+
+.fee-count strong {
+  color: #111827;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.fee-count span {
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+
+// =====================================================
+// FILTER
+// =====================================================
+
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  background: #f8fafc;
+}
+
+.filter-group {
+  width: 260px;
+}
+
+.filter-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.filter-select {
+  width: 100%;
+  height: 40px;
+
+  box-sizing: border-box;
+
+  padding: 0 12px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #374151;
+
+  font-size: 14px;
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: #9ca3af;
+  }
+
+  &:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+      0 0 0 3px #dbeafe;
+  }
+}
+
+
+// =====================================================
+// TABLE
+// =====================================================
+
+.table-container {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.table-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+
+  border-radius: 10px;
+}
+
+
+// =====================================================
+// RESPONSIVE
+// =====================================================
+
+@media (max-width: 700px) {
+
+  .fee-structure-page {
+    padding: 18px 6px 30px 18px;
+  }
+
+
+  .page-header {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 16px;
+  }
+
+
+  .page-header h1 {
+    font-size: 23px;
+  }
+
+
+  .page-header p {
+    font-size: 13px;
+  }
+
+
+  .primary-button {
+    width: 100%;
+  }
+
+
+  .error-banner {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+
+  .retry-button {
+    width: 100%;
+  }
+
+
+  .card-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+
+  .fee-count {
+    align-items: flex-start;
+  }
+
+
+  .filter-bar {
+    padding: 16px;
+  }
+
+
+  .filter-group {
+    width: 100%;
+  }
+
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+
+  // Keep enough width for the table
+  // and allow horizontal scrolling.
+  ::ng-deep table {
+    min-width: 760px;
+  }
+
+}

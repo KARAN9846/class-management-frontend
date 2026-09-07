@@ -1,0 +1,122 @@
+<main class="fee-structure-edit-page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Edit Fee Structure</h1>
+      <p>Update the fee amount for this class.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-back"
+      (click)="cancel()"
+    >
+      Back
+    </button>
+
+  </div>
+
+  @if (errorMessage) {
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (loading) {
+
+    <section class="state-card">
+      <p>Loading fee structure...</p>
+    </section>
+
+  } @else if (feeStructure) {
+
+    <section class="form-card">
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <span class="detail-label">Academic Year</span>
+          <strong>{{ feeStructure.academicYearName }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Class</span>
+          <strong>{{ feeStructure.className }}</strong>
+        </div>
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="feeAmount">
+          Fee Amount
+        </label>
+
+        <div class="amount-input">
+
+          <span>₹</span>
+
+          <input
+            id="feeAmount"
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="feeAmount"
+            [disabled]="saving"
+            placeholder="Enter fee amount"
+          />
+
+        </div>
+
+        <small>
+          Enter the total fee amount for this class.
+        </small>
+
+      </div>
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="cancel()"
+          [disabled]="saving"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="btn-save"
+          (click)="save()"
+          [disabled]="saving"
+        >
+          {{ saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+
+      </div>
+
+    </section>
+
+  } @else {
+
+    <section class="state-card">
+      <p>Fee structure not found.</p>
+    </section>
+
+  }
+
+  @if (showConfirmation) {
+    <app-confirmation-dialog
+      title="Update Fee Structure"
+      message="Are you sure you want to update this fee structure?"
+      confirmText="Update"
+      cancelText="Cancel"
+      (confirmed)="confirmSave()"
+      (cancelled)="cancelConfirmation()"
+    >
+    </app-confirmation-dialog>
+  }
+
+</main>

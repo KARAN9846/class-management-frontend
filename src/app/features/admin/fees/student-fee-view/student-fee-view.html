@@ -1,0 +1,549 @@
+<main class="student-fee-view-page">
+
+  <div class="page-header">
+    <div>
+      <button class="back-button" type="button" (click)="goBack()">
+        ← Back
+      </button>
+
+      <h1>Student Fee Details</h1>
+      <p>View complete fee and payment information.</p>
+    </div>
+
+    @if (studentFee && !isEditing) {
+
+      <div class="header-actions">
+
+        <button
+          class="secondary-button"
+          type="button"
+          (click)="startEdit()">
+          Edit
+        </button>
+
+        @if (studentFee.remainingAmount > 0) {
+          <button
+            class="primary-button"
+            type="button"
+            (click)="addPayment()">
+            + Add Payment
+          </button>
+        }
+
+      </div>
+
+    }
+  </div>
+
+
+  @if (loading) {
+    <div class="state-card">
+      Loading student fee...
+    </div>
+  }
+
+
+  @if (!loading && errorMessage) {
+    <div class="state-card error">
+      {{ errorMessage }}
+    </div>
+  }
+
+
+  @if (!loading && studentFee) {
+
+    <section class="card">
+
+      <div class="card-title">
+        <h2>Student Information</h2>
+      </div>
+
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <span class="label">Student Name</span>
+          <span class="value">
+            {{ studentFee.studentName }}
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Roll Number</span>
+          <span class="value">
+            {{ studentFee.rollNumber }}
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Academic Year</span>
+          <span class="value">
+            {{ studentFee.academicYearName }}
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Class</span>
+          <span class="value">
+            {{ studentFee.className }}
+          </span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Section</span>
+          <span class="value">
+            {{ studentFee.sectionName }}
+          </span>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card">
+
+      <div class="card-title">
+        <h2>Fee Summary</h2>
+      </div>
+
+      <div class="fee-summary">
+
+        <div class="amount-row">
+          <span>Original Fee</span>
+          <strong>
+            {{ formatCurrency(studentFee.originalAmount) }}
+          </strong>
+        </div>
+
+        <div class="amount-row">
+          <span>Discount</span>
+          <strong>
+            - {{ formatCurrency(studentFee.discountAmount) }}
+          </strong>
+        </div>
+
+        <div class="amount-row payable">
+          <span>Payable Amount</span>
+          <strong>
+            {{ formatCurrency(studentFee.payableAmount) }}
+          </strong>
+        </div>
+
+        <div class="amount-row">
+          <span>Paid Amount</span>
+          <strong>
+            {{ formatCurrency(studentFee.paidAmount) }}
+          </strong>
+        </div>
+
+        <div class="amount-row remaining">
+          <span>Remaining Amount</span>
+          <strong>
+            {{ formatCurrency(studentFee.remainingAmount) }}
+          </strong>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card">
+
+      <div class="card-title">
+        <h2>Fee Information</h2>
+      </div>
+
+
+      @if (!isEditing) {
+
+        <div class="details-grid">
+
+          <div class="detail-item">
+            <span class="label">Discount Type</span>
+            <span class="value">
+              {{ studentFee.discountType }}
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Discount Value</span>
+            <span class="value">
+              {{ studentFee.discountValue }}
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Fee Structure ID</span>
+            <span class="value">
+              {{ studentFee.feeStructureId }}
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Status</span>
+            <span
+              class="status"
+              [class.paid]="studentFee.status === 'PAID'"
+              [class.remaining]="studentFee.status === 'REMAINING'"
+              [class.unpaid]="studentFee.status === 'UNPAID'">
+              {{ studentFee.status }}
+            </span>
+          </div>
+
+        </div>
+
+      }
+
+
+@if (isEditing) {
+
+  <div class="edit-form">
+
+    <div class="edit-form-header">
+      <div>
+        <h3>Adjust Student Fee</h3>
+        <p>
+          Apply a discount and review the updated payable amount before saving.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="discount-type-section">
+
+      <label class="form-label">
+        Discount Type
+      </label>
+
+      <div class="discount-type-toggle">
+
+        <button
+          type="button"
+          class="discount-type-button"
+          [class.active]="editDiscountType === 'NONE'"
+          (click)="editDiscountType = 'NONE'; onDiscountTypeChange()">
+          No Discount
+        </button>
+
+        <button
+          type="button"
+          class="discount-type-button"
+          [class.active]="editDiscountType === 'PERCENTAGE'"
+          (click)="editDiscountType = 'PERCENTAGE'; onDiscountTypeChange()">
+          Percentage
+        </button>
+
+        <button
+          type="button"
+          class="discount-type-button"
+          [class.active]="editDiscountType === 'FIXED_AMOUNT'"
+          (click)="editDiscountType = 'FIXED_AMOUNT'; onDiscountTypeChange()">
+          Fixed Amount
+        </button>
+
+      </div>
+
+    </div>
+
+
+    @if (editDiscountType !== 'NONE') {
+
+      <div class="form-group">
+
+        <label for="discountValue">
+          Discount
+        </label>
+
+        <div class="discount-input-wrapper">
+
+          <input
+            id="discountValue"
+            type="number"
+            min="0"
+            [max]="editDiscountType === 'PERCENTAGE'
+              ? 100
+              : studentFee.originalAmount"
+            step="0.01"
+            [(ngModel)]="editDiscountValue"
+            placeholder="Enter discount value">
+
+          <span class="discount-unit">
+            @if (editDiscountType === 'PERCENTAGE') {
+              %
+            } @else {
+              ₹
+            }
+          </span>
+
+        </div>
+
+        @if (editDiscountType === 'PERCENTAGE') {
+          <small>
+            Enter a percentage between 0% and 100%.
+          </small>
+        }
+
+        @if (editDiscountType === 'FIXED_AMOUNT') {
+          <small>
+            Maximum discount:
+            {{ formatCurrency(studentFee.originalAmount) }}
+          </small>
+        }
+
+      </div>
+
+    }
+
+
+    @if (editDiscountType === 'NONE') {
+
+      <div class="no-discount-message">
+        No discount will be applied to this fee.
+      </div>
+
+    }
+
+
+    <div class="discount-calculation">
+
+      <div class="calculation-header">
+        <h3>Updated Fee Calculation</h3>
+        <span>Live Preview</span>
+      </div>
+
+
+      <div class="calculation-row">
+        <span>Original Fee</span>
+        <strong>
+          {{ formatCurrency(studentFee.originalAmount) }}
+        </strong>
+      </div>
+
+
+      <div class="calculation-row discount-row">
+        <span>
+          Discount
+          @if (editDiscountType === 'PERCENTAGE') {
+            ({{ editDiscountValue || 0 }}%)
+          }
+        </span>
+
+        <strong>
+          - {{ formatCurrency(calculatedDiscountAmount) }}
+        </strong>
+      </div>
+
+
+      <div class="calculation-divider"></div>
+
+
+      <div class="calculation-row payable-row">
+        <span>New Payable Amount</span>
+        <strong>
+          {{ formatCurrency(calculatedPayableAmount) }}
+        </strong>
+      </div>
+
+
+      <div class="calculation-row">
+        <span>Already Paid</span>
+        <strong>
+          {{ formatCurrency(studentFee.paidAmount) }}
+        </strong>
+      </div>
+
+
+      <div class="calculation-row remaining-row">
+        <span>New Remaining Amount</span>
+        <strong>
+          {{ formatCurrency(calculatedRemainingAmount) }}
+        </strong>
+      </div>
+
+    </div>
+
+
+    @if (
+      calculatedPayableAmount <
+      studentFee.paidAmount
+    ) {
+
+      <div class="edit-warning">
+        <strong>Discount cannot be applied.</strong>
+
+        <span>
+          The new payable amount cannot be less than the amount already paid
+          ({{ formatCurrency(studentFee.paidAmount) }}).
+        </span>
+      </div>
+
+    }
+
+
+    <div class="edit-actions">
+
+      <button
+        class="secondary-button"
+        type="button"
+        (click)="cancelEdit()"
+        [disabled]="saving">
+        Cancel
+      </button>
+
+      <button
+        class="primary-button"
+        type="button"
+        (click)="saveEdit()"
+        [disabled]="saving || calculatedPayableAmount < studentFee.paidAmount">
+
+        @if (saving) {
+          Saving...
+        } @else {
+          Save Changes
+        }
+
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+    </section>
+
+
+    @if (payments.length > 0 || paymentsLoading || paymentsErrorMessage) {
+
+      <section class="card payment-history-card">
+
+        <div class="payment-history-header">
+
+          <div>
+            <h2>Payment History</h2>
+
+            <p>
+              All payments made against this student fee.
+            </p>
+          </div>
+
+          <span class="payment-count">
+            {{ payments.length }} Payment{{ payments.length === 1 ? '' : 's' }}
+          </span>
+
+        </div>
+
+
+        @if (paymentsLoading) {
+
+          <div class="table-state">
+            Loading payment history...
+          </div>
+
+        }
+
+
+        @if (!paymentsLoading && paymentsErrorMessage) {
+
+          <div class="table-state error">
+            {{ paymentsErrorMessage }}
+          </div>
+
+        }
+
+
+        @if (!paymentsLoading && !paymentsErrorMessage && payments.length > 0) {
+
+          <div class="table-wrapper">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Payment Date</th>
+                  <th>Amount</th>
+                  <th>Payment Method</th>
+                  <th>Payment Type</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                @for (payment of payments; track payment.id) {
+
+                  <tr>
+
+                    <td>
+                      {{ formatDate(payment.paymentDate) }}
+                    </td>
+
+                    <td class="amount-cell">
+                      {{ formatCurrency(payment.amount) }}
+                    </td>
+
+                    <td>
+                      {{ formatPaymentMethod(payment.paymentMethod) }}
+                    </td>
+
+                    <td>
+                      <span class="payment-type">
+                        {{ formatPaymentType(payment.paymentType) }}
+                      </span>
+                    </td>
+
+                    <td class="notes-cell">
+                      {{ payment.notes || '-' }}
+                    </td>
+
+                  </tr>
+
+                }
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        }
+
+
+        @if (
+          !paymentsLoading &&
+          !paymentsErrorMessage &&
+          payments.length === 0
+        ) {
+
+          <div class="table-state">
+
+            <strong>No payment history found.</strong>
+
+            <span>
+              No payments have been recorded for this fee yet.
+            </span>
+
+          </div>
+
+        }
+
+      </section>
+
+    }
+
+  }
+
+
+  <app-confirmation-dialog
+    [visible]="showConfirmation"
+    title="Save Fee Changes?"
+    message="The discount and payable amount will be updated. Please confirm."
+    confirmLabel="Save Changes"
+    cancelLabel="Cancel"
+    [danger]="false"
+    (confirmed)="confirmEdit()"
+    (cancelled)="cancelConfirmation()">
+  </app-confirmation-dialog>
+
+</main>

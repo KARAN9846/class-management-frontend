@@ -151,6 +151,22 @@ export class AppLayoutComponent {
           },
 
           {
+  title: 'FEES',
+  items: [
+    {
+      label: 'Fee Structures',
+      route: '/admin/fees/fee-structures',
+      icon: '₹'
+    },
+    {
+      label: 'Student Fees',
+      route: '/admin/fees/student-fees',
+      icon: '₹'
+    }
+  ]
+},
+
+          {
             title: 'MANAGEMENT',
             items: [
               {

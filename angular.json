@@ -67,9 +67,7 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-    "allowedHosts": [
-      "appropriations-unsigned-donations-findarticles.trycloudflare.com"
-    ]
+    "allowedHosts":  ["plane-marsh-joan-instructors.trycloudflare.com"]
   },
           "configurations": {
             "production": {

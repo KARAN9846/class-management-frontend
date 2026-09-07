@@ -65,6 +65,11 @@ import { StudentForm } from './features/admin/students/student-form/student-form
 import { AssignmentList } from './features/admin/assignments/assignment-list/assignment-list';
 import { AssignmentForm } from './features/admin/assignments/assignment-form/assignment-form';
 
+import { FeeStructureList } from './features/admin/fees/fee-structure-list/fee-structure-list';
+import { FeeStructureCreateComponent } from './features/admin/fees/fee-structure-create/fee-structure-create';
+import { StudentFeeList } from './features/admin/fees/student-fee-list/student-fee-list';
+import { AddPayment } from './features/admin/fees/add-payment/add-payment';
+
 // =========================================================
 // TEACHER
 // =========================================================
@@ -94,6 +99,8 @@ import { StudentAttendanceComponent } from './features/student/attendance/studen
 import { AttendanceOverview } from './features/admin/attendance/attendance-overview/attendance-overview';
 import { EditAttendanceComponent } from './features/teacher/attendance/edit-attendance/edit-attendance';
 import { AdminListComponent } from './features/super-admin/admins/admin-list/admin-list';
+import { StudentFeeView } from './features/admin/fees/student-fee-view/student-fee-view';
+import { FeeStructureEdit } from './features/admin/fees/fee-structure-edit/fee-structure-edit';
 
 // =========================================================
 // ROUTES
@@ -432,6 +439,56 @@ export const routes: Routes = [
           description: 'Manage attendance.'
         }
       },
+
+
+      // ------------------- FEES -------------------------
+
+      {
+        path: 'admin/fees/fee-structures/create',
+        component: FeeStructureCreateComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+      {
+        path: 'admin/fees/fee-structures',
+        component: FeeStructureList,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+      {
+        path: 'admin/fees/student-fees',
+        component: StudentFeeList,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['ADMIN']
+        }
+      },
+
+{
+  path: 'admin/fees/student-fees/:id/payment',
+  component: AddPayment,
+  canActivate: [roleGuard],
+  data: { roles: ['ADMIN'] }
+},
+{
+  path: 'admin/fees/student-fees/:id/edit',
+  component: StudentFeeView,
+  canActivate: [roleGuard],
+  data: { roles: ['ADMIN'] }
+},
+{
+  path: 'admin/fees/student-fees/:id',
+  component: StudentFeeView,
+  canActivate: [roleGuard],
+  data: { roles: ['ADMIN'] }
+},
+
 
       // ===================================================
       // TEACHER

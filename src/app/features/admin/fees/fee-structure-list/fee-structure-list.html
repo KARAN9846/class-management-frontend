@@ -1,0 +1,215 @@
+<div class="fee-structure-page">
+
+  <!-- =====================================================
+       PAGE HEADER
+  ====================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        <span>Management</span>
+        <span>/</span>
+        <strong>Fees</strong>
+      </div>
+
+      <h1>
+        Fee Structures
+      </h1>
+
+      <p>
+        Manage class-wise fee structures for each academic year.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="primary-button"
+      (click)="createFeeStructure()">
+
+      Add Fee Structure
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  @if (errorMessage) {
+
+    <div class="error-banner">
+
+      <div class="error-content">
+
+        <strong>
+          Something went wrong
+        </strong>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadFeeStructures()">
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       MAIN CARD
+  ====================================================== -->
+
+  <section class="fee-card">
+
+
+    <!-- ===================================================
+         CARD HEADER
+    ===================================================== -->
+
+    <div class="card-header">
+
+      <div>
+
+        <h2>
+          Fee Structures
+        </h2>
+
+        <p>
+          Set the standard fee amount for each class and academic year.
+        </p>
+
+      </div>
+
+
+      <div class="fee-count">
+
+        <strong>
+          {{ filteredFeeStructures.length }}
+        </strong>
+
+        <span>
+          {{
+            statusFilter === 'ALL'
+              ? 'Structures'
+              : statusFilter === 'ACTIVE'
+                ? 'Active Structures'
+                : 'Inactive Structures'
+          }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         FILTERS
+    ===================================================== -->
+
+    <div class="filter-bar">
+
+
+      <!-- ACADEMIC YEAR -->
+
+      <div class="filter-group">
+
+        <label for="academicYear">
+          Academic Year
+        </label>
+
+        <select
+          id="academicYear"
+          class="filter-select"
+          [(ngModel)]="academicYearFilter"
+          (change)="onAcademicYearChange()">
+
+<option [ngValue]="'ALL'">All Academic Years</option>
+
+          @for (
+            year of academicYears;
+            track year.id
+          ) {
+
+            <option [ngValue]="year.id">
+              {{ year.name }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- STATUS -->
+
+      <div class="filter-group">
+
+        <label for="status">
+          Status
+        </label>
+
+        <select
+          id="status"
+          class="filter-select"
+          [(ngModel)]="statusFilter"
+          (change)="onStatusChange()">
+
+          <option value="ALL">
+            All
+          </option>
+
+          <option value="ACTIVE">
+            Active
+          </option>
+
+          <option value="INACTIVE">
+            Inactive
+          </option>
+
+        </select>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- ===================================================
+         TABLE
+    ===================================================== -->
+
+    <div class="table-container">
+
+      <app-data-table
+        [columns]="columns"
+        [data]="filteredFeeStructures"
+        [loading]="loading"
+        [rowActions]="getRowActions.bind(this)"
+        [showActions]="true"
+        (actionClick)="onActionClick($event)">
+      </app-data-table>
+
+    </div>
+
+
+  </section>
+
+
+</div>

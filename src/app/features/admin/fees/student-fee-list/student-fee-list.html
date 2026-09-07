@@ -1,0 +1,240 @@
+<main class="student-fee-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Student Fees</h1>
+      <p>Manage student fees and payment status.</p>
+    </div>
+  </div>
+
+  @if (errorMessage) {
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- FILTERS -->
+  <section class="filter-card">
+
+    <div class="filter-group">
+
+      <label for="academicYear">
+        Academic Year
+      </label>
+
+      <select
+        id="academicYear"
+        class="filter-select"
+        [(ngModel)]="academicYearFilter"
+        (change)="onAcademicYearChange()">
+
+        <option [ngValue]="'ALL'">
+          All Academic Years
+        </option>
+
+        @for (year of academicYears; track year.id) {
+          <option [ngValue]="year.id">
+            {{ year.name }}
+          </option>
+        }
+
+      </select>
+
+    </div>
+
+    <div class="filter-group">
+
+      <label for="class">
+        Class
+      </label>
+
+      <select
+        id="class"
+        class="filter-select"
+        [(ngModel)]="classFilter"
+        (change)="onClassChange()">
+
+        <option [ngValue]="'ALL'">
+          All Classes
+        </option>
+
+        @for (item of classes; track item.id) {
+          <option [ngValue]="item.id">
+            {{ item.name }}
+          </option>
+        }
+
+      </select>
+
+    </div>
+
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="summary-grid">
+
+    <div class="summary-card">
+      <span>Total Students</span>
+      <strong>{{ studentFees.length }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Total Payable</span>
+      <strong>₹{{ totalPayable | number:'1.0-2' }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Total Paid</span>
+      <strong>₹{{ totalPaid | number:'1.0-2' }}</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Total Remaining</span>
+      <strong>₹{{ totalRemaining | number:'1.0-2' }}</strong>
+    </div>
+
+  </section>
+
+  <!-- TABLE -->
+  <section class="table-card">
+
+    <div class="table-header">
+      <div>
+        <h2>Student Fee Records</h2>
+        <span>{{ studentFees.length }} records</span>
+      </div>
+    </div>
+
+    @if (loading) {
+
+      <div class="loading-state">
+        Loading student fees...
+      </div>
+
+    } @else if (studentFees.length === 0) {
+
+      <div class="empty-state">
+        No student fee records found.
+      </div>
+
+    } @else {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Roll No.</th>
+              <th>Student</th>
+              <th>Class</th>
+              <th>Original</th>
+              <th>Discount</th>
+              <th>Payable</th>
+              <th>Paid</th>
+              <th>Remaining</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (fee of studentFees; track fee.id) {
+
+              <tr>
+
+                <td>
+                  {{ fee.rollNumber }}
+                </td>
+
+                <td>
+                  <div class="student-name">
+                    {{ fee.studentName }}
+                  </div>
+                </td>
+
+                <td>
+                  {{ fee.className }} - {{ fee.sectionName }}
+                </td>
+
+                <td>
+                  ₹{{ fee.originalAmount | number:'1.0-2' }}
+                </td>
+
+                <td>
+                  ₹{{ fee.discountAmount | number:'1.0-2' }}
+                </td>
+
+                <td class="amount-strong">
+                  ₹{{ fee.payableAmount | number:'1.0-2' }}
+                </td>
+
+                <td>
+                  ₹{{ fee.paidAmount | number:'1.0-2' }}
+                </td>
+
+                <td>
+                  ₹{{ fee.remainingAmount | number:'1.0-2' }}
+                </td>
+
+                <td>
+
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusClass(fee.status)">
+
+                    {{ fee.status }}
+
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="action-buttons">
+
+                    <button
+                      type="button"
+                      class="btn-view"
+                      (click)="viewStudentFee(fee)">
+                      View
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn-edit"
+                      (click)="editStudentFee(fee)">
+                      Edit
+                    </button>
+
+                    @if (fee.remainingAmount > 0) {
+
+                      <button
+                        type="button"
+                        class="btn-add"
+                        (click)="addPayment(fee)">
+                        Add Payment
+                      </button>
+
+                    }
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </section>
+
+</main>

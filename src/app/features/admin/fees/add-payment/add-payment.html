@@ -1,0 +1,438 @@
+<main class="page-shell">
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div>
+      <h1>Add Payment</h1>
+      <p>Record a payment for the student's fee.</p>
+    </div>
+  </header>
+
+  <!-- Loading -->
+  @if (loading) {
+    <section class="state-card">
+      <p>Loading student fee...</p>
+    </section>
+  }
+
+  <!-- Error -->
+  @if (!loading && errorMessage && !studentFee) {
+    <section class="state-card error">
+      <p>{{ errorMessage }}</p>
+    </section>
+  }
+
+  @if (!loading && studentFee) {
+
+    <!-- Student + Fee Overview -->
+    <section class="fee-overview-card">
+
+      <div class="student-info">
+        <span class="section-label">STUDENT</span>
+
+        <h2>{{ studentFee.studentName }}</h2>
+
+        <p>
+          Roll No: {{ studentFee.rollNumber }}
+          <span>·</span>
+          {{ studentFee.className }}
+          <span>·</span>
+          Section {{ studentFee.sectionName }}
+        </p>
+      </div>
+
+      <div class="fee-status">
+        <span class="section-label">CURRENT STATUS</span>
+
+        <span
+          class="status-badge"
+          [class.status-paid]="studentFee.status === 'PAID'"
+          [class.status-remaining]="studentFee.status === 'REMAINING'"
+          [class.status-unpaid]="studentFee.status === 'UNPAID'"
+        >
+          {{ studentFee.status }}
+        </span>
+      </div>
+
+    </section>
+
+    @if (studentFee.remainingAmount > 0) {
+
+      <!-- Fee Summary -->
+      <section class="summary-card">
+
+        <div class="card-header">
+          <div>
+            <h2>Fee Summary</h2>
+            <p>Current fee position before this payment.</p>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+
+          <div class="summary-item">
+            <span>Original Fee</span>
+            <strong>
+              ₹{{ studentFee.originalAmount | number:'1.2-2' }}
+            </strong>
+          </div>
+
+          <div class="summary-item">
+            <span>Discount</span>
+            <strong>
+              ₹{{ studentFee.discountAmount | number:'1.2-2' }}
+            </strong>
+          </div>
+
+          <div class="summary-item">
+            <span>Payable Amount</span>
+            <strong>
+              ₹{{ studentFee.payableAmount | number:'1.2-2' }}
+            </strong>
+          </div>
+
+          <div class="summary-item paid">
+            <span>Already Paid</span>
+            <strong>
+              ₹{{ studentFee.paidAmount | number:'1.2-2' }}
+            </strong>
+          </div>
+
+          <div class="summary-item remaining">
+            <span>Remaining</span>
+            <strong>
+              ₹{{ remainingAmount | number:'1.2-2' }}
+            </strong>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Payment Form -->
+      <section class="form-card">
+
+        <div class="card-header">
+          <div>
+            <h2>Payment Details</h2>
+            <p>Enter the details for this payment.</p>
+          </div>
+        </div>
+
+   <!-- Payment Discount -->
+<div class="form-group compact-group">
+
+  <label>Payment Discount</label>
+
+  <div class="compact-toggle discount-toggle">
+
+    <button
+      type="button"
+      class="compact-toggle-button"
+      [class.active]="discountType === 'NONE'"
+      (click)="discountType = 'NONE'; onDiscountTypeChange()"
+      [disabled]="saving"
+    >
+      No Discount
+    </button>
+
+    <button
+      type="button"
+      class="compact-toggle-button"
+      [class.active]="discountType === 'PERCENTAGE'"
+      (click)="discountType = 'PERCENTAGE'; onDiscountTypeChange()"
+      [disabled]="saving"
+    >
+      Percentage
+    </button>
+
+    <button
+      type="button"
+      class="compact-toggle-button"
+      [class.active]="discountType === 'FIXED_AMOUNT'"
+      (click)="discountType = 'FIXED_AMOUNT'; onDiscountTypeChange()"
+      [disabled]="saving"
+    >
+      Fixed Amount
+    </button>
+
+  </div>
+
+</div>
+
+@if (discountType !== 'NONE') {
+
+  <div class="form-group discount-value-group">
+
+    <label for="discountValue">
+      Discount
+      @if (discountType === 'PERCENTAGE') {
+        (%)
+      } @else {
+        (₹)
+      }
+    </label>
+
+    <div class="amount-input-wrapper">
+
+      <span class="currency-symbol">
+        @if (discountType === 'PERCENTAGE') {
+          %
+        } @else {
+          ₹
+        }
+      </span>
+
+      <input
+        id="discountValue"
+        type="number"
+        min="0"
+        [max]="discountType === 'PERCENTAGE' ? 100 : paymentAmount"
+        step="0.01"
+        [(ngModel)]="discountValue"
+        (input)="onDiscountValueChange()"
+        placeholder="Enter discount"
+        [disabled]="saving"
+      />
+
+    </div>
+
+    <small>
+      Discount amount:
+      ₹{{ calculatedDiscountAmount | number:'1.2-2' }}
+    </small>
+
+  </div>
+
+}
+
+      <!-- Payment Type -->
+<div class="form-group compact-group">
+
+  <label>Payment Type</label>
+
+  <div class="compact-toggle payment-toggle">
+
+    <button
+      type="button"
+      class="compact-toggle-button"
+      [class.active]="paymentType === 'INSTALLMENT'"
+      (click)="paymentType = 'INSTALLMENT'; onPaymentTypeChange()"
+      [disabled]="saving"
+    >
+      Installment
+    </button>
+
+    <button
+      type="button"
+      class="compact-toggle-button"
+      [class.active]="paymentType === 'FULL_PAYMENT'"
+      (click)="paymentType = 'FULL_PAYMENT'; onPaymentTypeChange()"
+      [disabled]="saving"
+    >
+      Full Payment
+    </button>
+
+  </div>
+
+</div>
+        <!-- Payment Result Preview -->
+        <div class="payment-preview">
+
+          <div class="preview-header">
+            <div>
+              <h3>Payment Summary</h3>
+              <p>See how this payment will affect the fee.</p>
+            </div>
+
+            @if (willBeFullyPaid) {
+              <span class="paid-preview-badge">
+                Fee will be fully paid
+              </span>
+            }
+          </div>
+
+          <div class="preview-grid">
+
+            <div class="preview-item">
+              <span>Remaining Before</span>
+              <strong>
+                ₹{{ remainingAmount | number:'1.2-2' }}
+              </strong>
+            </div>
+
+            <div class="preview-arrow">
+              →
+            </div>
+
+            <div class="preview-item payment">
+              <span>Payment</span>
+              <strong>
+                ₹{{ paymentAmount | number:'1.2-2' }}
+              </strong>
+            </div>
+
+            <div class="preview-arrow">
+              →
+            </div>
+
+            <div class="preview-item remaining-after">
+              <span>Remaining After</span>
+              <strong>
+                ₹{{ remainingAfterPayment | number:'1.2-2' }}
+              </strong>
+            </div>
+
+          </div>
+
+          <div class="preview-total">
+            <span>Total Paid After Payment</span>
+            <strong>
+              ₹{{ totalPaidAfterPayment | number:'1.2-2' }}
+            </strong>
+          </div>
+
+        </div>
+
+        <!-- Date + Method -->
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label for="paymentDate">
+              Payment Date
+            </label>
+
+            <input
+              id="paymentDate"
+              type="date"
+              [(ngModel)]="paymentDate"
+              [disabled]="saving"
+            />
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="paymentMethod">
+              Payment Method
+            </label>
+
+            <select
+              id="paymentMethod"
+              [(ngModel)]="paymentMethod"
+              [disabled]="saving"
+            >
+              <option value="CASH">Cash</option>
+              <option value="UPI">UPI</option>
+              <option value="BANK_TRANSFER">Bank Transfer</option>
+              <option value="CARD">Card</option>
+              <option value="CHEQUE">Cheque</option>
+            </select>
+
+          </div>
+
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+
+          <div class="label-row">
+            <label for="notes">Notes</label>
+            <span>{{ notes.length }}/500</span>
+          </div>
+
+          <textarea
+            id="notes"
+            rows="4"
+            maxlength="500"
+            [(ngModel)]="notes"
+            placeholder="Optional payment note"
+            [disabled]="saving"
+          ></textarea>
+
+        </div>
+
+        <!-- Error -->
+        @if (errorMessage) {
+          <div class="form-error">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <!-- Actions -->
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="cancel()"
+            [disabled]="saving"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="savePayment()"
+            [disabled]="
+              saving ||
+              !amount ||
+              amount <= 0 ||
+              exceedsRemainingAmount
+            "
+          >
+            {{ saving ? 'Saving...' : 'Save Payment' }}
+          </button>
+
+        </div>
+
+      </section>
+
+    } @else {
+
+      <!-- Fully Paid -->
+      <section class="state-card">
+
+        <h2>Fee Fully Paid</h2>
+
+        <p>
+          This student's fee has already been paid in full.
+        </p>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="cancel()"
+        >
+          Back to Fee
+        </button>
+
+      </section>
+
+    }
+
+  }
+
+  <!-- Confirmation Dialog -->
+  <app-confirmation-dialog
+    [visible]="showConfirmation"
+    title="Confirm Payment"
+    [message]="
+      'Student: ' + studentFee?.studentName +
+      ' | Amount: ₹' + (amount ?? 0).toFixed(2) +
+      ' | Date: ' + paymentDate +
+      ' | Method: ' + paymentMethod +
+      ' | Type: ' + paymentType +
+      '. Are you sure you want to record this payment?'
+    "
+    confirmLabel="Confirm Payment"
+    cancelLabel="Cancel"
+    [danger]="false"
+    (confirmed)="confirmPayment()"
+    (cancelled)="cancelConfirmation()"
+  >
+  </app-confirmation-dialog>
+
+</main>
