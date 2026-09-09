@@ -1,0 +1,607 @@
+<main class="receipt-list-page">
+
+  <!-- HEADER -->
+  <header class="page-header">
+
+    <div>
+      <h1>Receipt History</h1>
+      <p>View all receipts generated for this student fee.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="goBack()">
+      Back to Student Fee
+    </button>
+
+  </header>
+
+
+  <!-- ERROR -->
+  @if (errorMessage) {
+    <section class="alert alert-error">
+      {{ errorMessage }}
+    </section>
+  }
+
+
+  <!-- LOADING -->
+  @if (loading) {
+
+    <section class="state-card">
+
+      <div class="loader"></div>
+
+      <p>Loading receipt history...</p>
+
+    </section>
+
+  }
+
+
+  <!-- EMPTY -->
+  @if (!loading && !errorMessage && receipts.length === 0) {
+
+    <section class="state-card">
+
+      <div class="empty-icon">🧾</div>
+
+      <h3>No Receipts Found</h3>
+
+      <p>
+        No payment receipts have been generated
+        for this student fee yet.
+      </p>
+
+    </section>
+
+  }
+
+
+  <!-- RECEIPTS -->
+  @if (!loading && receipts.length > 0) {
+
+    <section class="table-card">
+
+      <div class="table-header">
+
+        <div>
+
+          <h2>Payment Receipts</h2>
+
+          <span>
+            {{ receipts.length }} receipt(s)
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Receipt No.</th>
+              <th>Date</th>
+              <th>Student</th>
+              <th>Payment</th>
+              <th>Method</th>
+              <th>Total Paid</th>
+              <th>Remaining</th>
+              <th>Actions</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (receipt of receipts; track receipt.id) {
+
+              <tr>
+
+                <td>
+                  <span class="receipt-number">
+                    {{ receipt.receiptNumber }}
+                  </span>
+                </td>
+
+
+                <td>
+                  {{ receipt.issuedAt | date:'dd MMM yyyy, hh:mm a' }}
+                </td>
+
+
+                <td>
+
+                  <div class="student-cell">
+
+                    <strong>
+                      {{ receipt.studentName }}
+                    </strong>
+
+                    @if (receipt.studentRollNumber) {
+                      <span>
+                        Roll {{ receipt.studentRollNumber }}
+                      </span>
+                    }
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <strong>
+                    ₹{{ receipt.paymentAmount | number:'1.2-2' }}
+                  </strong>
+
+                </td>
+
+
+                <td>
+
+                  <span class="method-badge">
+                    {{ receipt.paymentMethod }}
+                  </span>
+
+                </td>
+
+
+                <td>
+                  ₹{{ receipt.totalPaidAmount | number:'1.2-2' }}
+                </td>
+
+
+                <td>
+                  ₹{{ receipt.remainingAmount | number:'1.2-2' }}
+                </td>
+
+
+                <td>
+
+                  <div class="actions">
+
+                    <!-- VIEW -->
+                    <button
+                      type="button"
+                      class="action-btn view"
+                      (click)="viewReceipt(receipt)">
+                      View
+                    </button>
+
+
+                    <!-- DOWNLOAD -->
+                    <button
+                      type="button"
+                      class="action-btn download"
+                      (click)="downloadReceipt(receipt)">
+                      Download
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- RECEIPT POPUP -->
+  @if (selectedReceipt; as receipt) {
+
+    <div
+      class="receipt-overlay"
+      (click)="closeReceipt()">
+
+      <div
+        class="receipt-modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- POPUP HEADER -->
+        <div class="receipt-modal-header">
+
+          <div>
+
+            <h2>Receipt</h2>
+
+            <span>
+              {{ receipt.receiptNumber }}
+            </span>
+
+          </div>
+
+          <button
+            type="button"
+            class="close-button"
+            (click)="closeReceipt()">
+            ×
+          </button>
+
+        </div>
+
+
+        <!-- RECEIPT CARD -->
+        <div class="receipt-card">
+
+
+          <!-- BRANDING -->
+          <div class="receipt-branding">
+
+            <div class="receipt-branding-left">
+
+              @if (getReceiptImageUrl(receipt.logoPath); as logoUrl) {
+
+                <img
+                  [src]="logoUrl"
+                  alt="Institution Logo"
+                  class="receipt-logo">
+
+              }
+
+
+              <div class="receipt-institution">
+
+                <h2>
+                  {{ receipt.institutionName }}
+                </h2>
+
+                @if (receipt.institutionTagline) {
+
+                  <p>
+                    {{ receipt.institutionTagline }}
+                  </p>
+
+                }
+
+              </div>
+
+            </div>
+
+
+            @if (getReceiptImageUrl(receipt.badgePath); as badgeUrl) {
+
+              <img
+                [src]="badgeUrl"
+                alt="Receipt Badge"
+                class="receipt-badge">
+
+            }
+
+          </div>
+
+
+          <!-- RECEIPT TITLE -->
+          <div class="receipt-title">
+
+            {{ receipt.receiptTitle }}
+
+          </div>
+
+
+          <!-- RECEIPT HEADER -->
+          <div class="receipt-card-header">
+
+            <div>
+
+              <span>Receipt Number</span>
+
+              <strong>
+                {{ receipt.receiptNumber }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>Issued</span>
+
+              <strong>
+                {{ receipt.issuedAt | date:'dd MMM yyyy, hh:mm a' }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- STUDENT INFORMATION -->
+          <div class="receipt-section">
+
+            <h3>
+              Student Information
+            </h3>
+
+
+            <div class="receipt-grid">
+
+              <div>
+
+                <span>Student</span>
+
+                <strong>
+                  {{ receipt.studentName }}
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>Roll No.</span>
+
+                <strong>
+                  {{ receipt.studentRollNumber || '-' }}
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>Academic Year</span>
+
+                <strong>
+                  {{ receipt.academicYear }}
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>Class</span>
+
+                <strong>
+                  {{ receipt.className }}
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>Section</span>
+
+                <strong>
+                  {{ receipt.sectionName }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- FEE SUMMARY -->
+          <div class="receipt-section">
+
+            <h3>
+              Fee Summary
+            </h3>
+
+
+            <div class="receipt-amount-list">
+
+              <div>
+                <span>Original Fee</span>
+
+                <strong>
+                  ₹{{ receipt.originalFee | number:'1.2-2' }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Student Discount</span>
+
+                <strong>
+                  ₹{{ receipt.studentDiscount | number:'1.2-2' }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Payable Amount</span>
+
+                <strong>
+                  ₹{{ receipt.payableAmount | number:'1.2-2' }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Previous Paid</span>
+
+                <strong>
+                  ₹{{ receipt.previousPaidAmount | number:'1.2-2' }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Current Payment</span>
+
+                <strong>
+                  ₹{{ receipt.paymentAmount | number:'1.2-2' }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Total Paid</span>
+
+                <strong>
+                  ₹{{ receipt.totalPaidAmount | number:'1.2-2' }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>Remaining</span>
+
+                <strong>
+                  ₹{{ receipt.remainingAmount | number:'1.2-2' }}
+                </strong>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- PAYMENT INFORMATION -->
+          <div class="receipt-section">
+
+            <h3>
+              Payment Information
+            </h3>
+
+
+            <div class="receipt-grid">
+
+              <div>
+
+                <span>Payment Method</span>
+
+                <strong>
+                  {{ receipt.paymentMethod }}
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>Payment Type</span>
+
+                <strong>
+                  {{ receipt.paymentType }}
+                </strong>
+
+              </div>
+
+
+              @if (receipt.notes) {
+
+                <div class="receipt-notes">
+
+                  <span>Notes</span>
+
+                  <p>
+                    {{ receipt.notes }}
+                  </p>
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- SIGNATURE + STAMP -->
+          <div class="receipt-signature-area">
+
+
+            @if (getReceiptImageUrl(receipt.signaturePath); as signatureUrl) {
+
+              <div class="signature-block">
+
+                <img
+                  [src]="signatureUrl"
+                  alt="Authorized Signature"
+                  class="receipt-signature">
+
+
+                @if (receipt.signatureName) {
+
+                  <strong>
+                    {{ receipt.signatureName }}
+                  </strong>
+
+                }
+
+
+                @if (receipt.signatureDesignation) {
+
+                  <span>
+                    {{ receipt.signatureDesignation }}
+                  </span>
+
+                }
+
+              </div>
+
+            }
+
+
+            @if (getReceiptImageUrl(receipt.stampPath); as stampUrl) {
+
+              <img
+                [src]="stampUrl"
+                alt="Official Stamp"
+                class="receipt-stamp">
+
+            }
+
+          </div>
+
+
+          <!-- FOOTER TEXT -->
+          @if (receipt.footerText) {
+
+            <div class="receipt-footer-text">
+
+              {{ receipt.footerText }}
+
+            </div>
+
+          }
+
+        </div>
+
+
+        <!-- POPUP FOOTER -->
+        <div class="receipt-modal-footer">
+
+          <button
+            type="button"
+            class="download-button"
+            (click)="downloadReceipt(receipt)">
+
+            Download
+
+          </button>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  }
+
+</main>

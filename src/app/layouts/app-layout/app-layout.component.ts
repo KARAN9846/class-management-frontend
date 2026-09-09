@@ -151,20 +151,25 @@ export class AppLayoutComponent {
           },
 
           {
-  title: 'FEES',
-  items: [
-    {
-      label: 'Fee Structures',
-      route: '/admin/fees/fee-structures',
-      icon: '₹'
-    },
-    {
-      label: 'Student Fees',
-      route: '/admin/fees/student-fees',
-      icon: '₹'
-    }
-  ]
-},
+            title: 'FEES',
+            items: [
+              {
+                label: 'Fee Structures',
+                route: '/admin/fees/fee-structures',
+                icon: '₹'
+              },
+              {
+                label: 'Student Fees',
+                route: '/admin/fees/student-fees',
+                icon: '₹'
+              },
+              {
+                label: 'Receipt Settings',
+                route: '/admin/fees/receipt-settings',
+                icon: '₹'
+              }
+            ]
+          },
 
           {
             title: 'MANAGEMENT',
@@ -176,7 +181,7 @@ export class AppLayoutComponent {
               },
 
               {
-              
+
                 label: 'Teacher Roles',
                 route: '/admin/teacher-roles',
                 icon: '♙'
@@ -186,7 +191,7 @@ export class AppLayoutComponent {
                 label: 'Teacher Role Assignments',
                 route: '/admin/teacher-role-assignments',
                 icon: '♙'
-},
+              },
 
               {
                 label: 'Students',
@@ -276,11 +281,19 @@ export class AppLayoutComponent {
                 icon: '♙'
               },
 
+
+
               {
                 label: 'Attendance',
                 route: '/student/attendance',
                 icon: '✓'
-              }
+              },
+
+                            {
+                label: 'Fees',
+                route: '/student/fees',
+                icon: '₹'
+              },
             ]
           }
         ];

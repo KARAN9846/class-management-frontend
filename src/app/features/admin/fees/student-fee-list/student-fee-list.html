@@ -191,37 +191,40 @@
                 </td>
 
                 <td>
+  <div class="action-buttons">
 
-                  <div class="action-buttons">
+    <button
+      type="button"
+      class="btn-view"
+      (click)="viewStudentFee(fee)">
+      View
+    </button>
 
-                    <button
-                      type="button"
-                      class="btn-view"
-                      (click)="viewStudentFee(fee)">
-                      View
-                    </button>
+    <button
+      type="button"
+      class="btn-edit"
+      (click)="editStudentFee(fee)">
+      Edit
+    </button>
 
-                    <button
-                      type="button"
-                      class="btn-edit"
-                      (click)="editStudentFee(fee)">
-                      Edit
-                    </button>
+    @if (fee.remainingAmount > 0) {
+      <button
+        type="button"
+        class="btn-add"
+        (click)="addPayment(fee)">
+        Add Payment
+      </button>
+    }
 
-                    @if (fee.remainingAmount > 0) {
+    <button
+      type="button"
+      class="btn-receipt"
+      (click)="viewReceipts(fee)">
+      Receipt
+    </button>
 
-                      <button
-                        type="button"
-                        class="btn-add"
-                        (click)="addPayment(fee)">
-                        Add Payment
-                      </button>
-
-                    }
-
-                  </div>
-
-                </td>
+  </div>
+</td>
 
               </tr>
 

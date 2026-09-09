@@ -1,0 +1,631 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: #6b7280;
+  }
+}
+
+.fee-list {
+  display: grid;
+  gap: 16px;
+}
+
+.fee-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.fee-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  p {
+    margin: 5px 0 0;
+    color: #6b7280;
+  }
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.paid {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  &.remaining {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  &.unpaid {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+.fee-summary {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.summary-item {
+  padding: 14px;
+  background: #f9fafb;
+  border-radius: 8px;
+
+  span {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 5px;
+  }
+
+  strong {
+    font-size: 16px;
+  }
+}
+
+.fee-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+
+  span {
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  button {
+    border: 0;
+    border-radius: 7px;
+    padding: 9px 14px;
+    cursor: pointer;
+  }
+}
+
+.state {
+  padding: 40px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.state.error {
+  color: #b91c1c;
+}
+
+.payments-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  p {
+    margin: 5px 0 0;
+    color: #6b7280;
+  }
+}
+
+.close-button {
+  border: 0;
+  background: transparent;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.payment-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 1fr 1fr 1.3fr auto;
+  gap: 20px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  span,
+  small {
+    color: #6b7280;
+    font-size: 13px;
+  }
+
+  .payment-status-info {
+    min-width: 0;
+  }
+
+  .payment-status {
+    width: fit-content;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .payment-status.verified {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .payment-status.invalid {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .revision-reason {
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .receipt-action {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .payment-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .fee-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .fee-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .payment-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================================
+   RECEIPT BUTTON
+   ===================================================== */
+
+.receipt-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.receipt-button {
+  border: 1px solid var(--primary-color, #2563eb);
+  background: transparent;
+  color: var(--primary-color, #2563eb);
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.receipt-button:hover {
+  background: var(--primary-color, #2563eb);
+  color: #ffffff;
+}
+
+
+/* =====================================================
+   RECEIPT POPUP OVERLAY
+   ===================================================== */
+
+.receipt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(0, 0, 0, 0.55);
+}
+
+
+/* =====================================================
+   RECEIPT POPUP
+   ===================================================== */
+
+.receipt-modal {
+  width: min(720px, 100%);
+  max-height: 90vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+  border-radius: 12px;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.25);
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   RECEIPT CONTENT
+   ===================================================== */
+
+.receipt-card {
+  padding: 24px;
+
+  overflow-y: auto;
+}
+
+
+/* =====================================================
+   RECEIPT HEADER
+   ===================================================== */
+
+.receipt-card-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.receipt-status {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px !important;
+  font-weight: 700;
+}
+
+.receipt-status.valid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.receipt-status.invalid {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.receipt-card-header div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.receipt-card-header span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.receipt-card-header strong {
+  font-size: 14px;
+  color: #111827;
+}
+
+
+/* =====================================================
+   RECEIPT SECTION
+   ===================================================== */
+
+.receipt-section {
+  padding: 18px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.receipt-section:last-child {
+  border-bottom: none;
+}
+
+.receipt-section h3 {
+  margin: 0 0 14px;
+
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+
+/* =====================================================
+   RECEIPT GRID
+   ===================================================== */
+
+.receipt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 24px;
+}
+
+.receipt-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.receipt-grid span {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.receipt-grid strong {
+  font-size: 13px;
+  color: #111827;
+}
+
+
+/* =====================================================
+   RECEIPT AMOUNTS
+   ===================================================== */
+
+.receipt-amount-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.receipt-amount-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 7px 0;
+}
+
+.receipt-amount-list span {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.receipt-amount-list strong {
+  font-size: 13px;
+  color: #111827;
+}
+
+
+/* =====================================================
+   RECEIPT NOTES
+   ===================================================== */
+
+.receipt-notes {
+  margin-top: 14px;
+  padding: 10px 12px;
+
+  background: #f9fafb;
+  border-radius: 6px;
+}
+
+.receipt-notes span {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.receipt-notes p {
+  margin: 5px 0 0;
+
+  font-size: 13px;
+  color: #374151;
+}
+
+
+/* =====================================================
+   POPUP FOOTER
+   ===================================================== */
+
+.receipt-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  padding: 14px 24px;
+
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+
+/* =====================================================
+   DOWNLOAD BUTTON
+   ===================================================== */
+
+.download-button {
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+
+  padding: 9px 18px;
+  border-radius: 6px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.download-button:hover {
+  background: #1d4ed8;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 640px) {
+  .receipt-branding {
+    align-items: flex-start;
+  }
+
+  .receipt-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .receipt-badge {
+    width: 36px;
+    height: 36px;
+  }
+
+  .receipt-signature-area {
+    align-items: flex-start;
+  }
+}
+
+.receipt-branding {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.receipt-branding-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.receipt-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.receipt-institution h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #111827;
+}
+
+.receipt-institution p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.receipt-badge {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.receipt-title {
+  padding: 14px 0;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  color: #374151;
+  text-transform: uppercase;
+}
+
+.receipt-signature-area {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 24px;
+}
+
+.signature-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.receipt-signature {
+  width: 110px;
+  height: 45px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
+.signature-block strong {
+  font-size: 12px;
+  color: #111827;
+}
+
+.signature-block span {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.receipt-stamp {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}

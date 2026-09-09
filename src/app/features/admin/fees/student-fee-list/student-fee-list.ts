@@ -380,4 +380,12 @@ editStudentFee(fee: StudentFee): void {
       'payment'
     ]);
   }
+
+  viewReceipts(fee: StudentFee): void {
+  this.router.navigate([
+    '/admin/fees/student-fees',
+    fee.id,
+    'receipts'
+  ]);
+}
 }

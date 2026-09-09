@@ -235,6 +235,42 @@
 
   </div>
 
+  <!-- Payment Amount -->
+<div class="form-group amount-group">
+
+  <label for="paymentAmount">
+    @if (paymentType === 'INSTALLMENT') {
+      Installment Amount
+    } @else {
+      Payment Amount
+    }
+  </label>
+
+  <div class="amount-input-wrapper">
+
+    <span class="currency-symbol">₹</span>
+
+    <input
+      id="paymentAmount"
+      type="number"
+      min="0.01"
+      [max]="remainingAmount"
+      step="0.01"
+      [(ngModel)]="amount"
+      (input)="onAmountChange()"
+      placeholder="Enter amount"
+      [disabled]="saving"
+    />
+
+  </div>
+
+  <small>
+    Maximum payable now:
+    ₹{{ remainingAmount | number:'1.2-2' }}
+  </small>
+
+</div>
+
 </div>
         <!-- Payment Result Preview -->
         <div class="payment-preview">

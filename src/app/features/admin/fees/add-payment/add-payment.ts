@@ -368,6 +368,33 @@ export class AddPayment implements OnInit {
     this.cdr.detectChanges();
   }
 
+onAmountChange(): void {
+  this.errorMessage = '';
+
+  if (this.amount === null || this.amount === undefined) {
+    this.cdr.detectChanges();
+    return;
+  }
+
+  const value = Number(this.amount);
+
+  if (Number.isNaN(value)) {
+    this.amount = null;
+    this.cdr.detectChanges();
+    return;
+  }
+
+  if (value <= 0) {
+    this.amount = value;
+  } else if (value > this.remainingAmount) {
+    this.amount = this.remainingAmount;
+  } else {
+    this.amount = this.roundMoney(value);
+  }
+
+  this.cdr.detectChanges();
+}
+
   /**
    * For Full Payment, calculate the collected amount
    * needed to completely clear the remaining fee.
@@ -427,26 +454,6 @@ export class AddPayment implements OnInit {
   // PAYMENT AMOUNT
   // ==================================================
 
-  onAmountChange(): void {
-
-    this.errorMessage = '';
-
-    if (
-      this.amount === null ||
-      this.amount === undefined
-    ) {
-
-      this.cdr.detectChanges();
-      return;
-    }
-
-    this.amount =
-      this.roundMoney(
-        Number(this.amount)
-      );
-
-    this.cdr.detectChanges();
-  }
 
   // ==================================================
   // SAVE PAYMENT

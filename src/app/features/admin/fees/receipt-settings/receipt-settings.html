@@ -1,0 +1,543 @@
+<main class="receipt-settings-page">
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div>
+      <h1>Receipt Settings</h1>
+      <p>Configure how fee receipts appear for your institution.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="saving || loading || !settings"
+      (click)="saveSettings()"
+    >
+      {{ saving ? 'Saving...' : 'Save Changes' }}
+    </button>
+  </header>
+
+
+  <!-- LOADING -->
+  @if (loading) {
+    <section class="state-card">
+      <div class="loader"></div>
+      <p>Loading receipt settings...</p>
+    </section>
+  }
+
+
+  <!-- ERROR -->
+  @if (!loading && errorMessage) {
+    <section class="alert alert-error">
+      {{ errorMessage }}
+    </section>
+  }
+
+
+  <!-- SUCCESS -->
+  @if (successMessage) {
+    <section class="alert alert-success">
+      {{ successMessage }}
+    </section>
+  }
+
+
+  @if (!loading && settings) {
+
+    <!-- INSTITUTION INFORMATION -->
+    <section class="settings-card">
+
+      <div class="card-header">
+        <div>
+          <h2>Institution Information</h2>
+          <p>Basic information displayed on the receipt.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Institution Name *</label>
+          <input
+            type="text"
+            [(ngModel)]="settings.institutionName"
+            placeholder="Institution name"
+            [disabled]="saving"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Tagline</label>
+          <input
+            type="text"
+            [(ngModel)]="settings.institutionTagline"
+            placeholder="Institution tagline"
+            [disabled]="saving"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label>Address</label>
+          <textarea
+            rows="3"
+            [(ngModel)]="settings.institutionAddress"
+            placeholder="Institution address"
+            [disabled]="saving"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Phone</label>
+          <input
+            type="text"
+            [(ngModel)]="settings.institutionPhone"
+            placeholder="Phone number"
+            [disabled]="saving"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            [(ngModel)]="settings.institutionEmail"
+            placeholder="Email address"
+            [disabled]="saving"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Website</label>
+          <input
+            type="text"
+            [(ngModel)]="settings.institutionWebsite"
+            placeholder="Website"
+            [disabled]="saving"
+          />
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- RECEIPT INFORMATION -->
+    <section class="settings-card">
+
+      <div class="card-header">
+        <div>
+          <h2>Receipt Information</h2>
+          <p>Customize the receipt title and footer.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Receipt Title *</label>
+          <input
+            type="text"
+            [(ngModel)]="settings.receiptTitle"
+            placeholder="Fee Payment Receipt"
+            [disabled]="saving"
+          />
+        </div>
+
+        <div class="form-group full-width">
+          <label>Footer Text</label>
+          <textarea
+            rows="3"
+            [(ngModel)]="settings.footerText"
+            placeholder="Thank you for your payment."
+            [disabled]="saving"
+          ></textarea>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CONTACT VISIBILITY -->
+    <section class="settings-card">
+
+      <div class="card-header">
+        <div>
+          <h2>Contact Information</h2>
+          <p>Choose which contact details appear on receipts.</p>
+        </div>
+      </div>
+
+      <div class="checkbox-grid">
+
+        <label class="checkbox-item">
+          <input
+            type="checkbox"
+            [(ngModel)]="settings.showAddress"
+            [disabled]="saving"
+          />
+          <span>Show Address</span>
+        </label>
+
+        <label class="checkbox-item">
+          <input
+            type="checkbox"
+            [(ngModel)]="settings.showPhone"
+            [disabled]="saving"
+          />
+          <span>Show Phone</span>
+        </label>
+
+        <label class="checkbox-item">
+          <input
+            type="checkbox"
+            [(ngModel)]="settings.showEmail"
+            [disabled]="saving"
+          />
+          <span>Show Email</span>
+        </label>
+
+        <label class="checkbox-item">
+          <input
+            type="checkbox"
+            [(ngModel)]="settings.showWebsite"
+            [disabled]="saving"
+          />
+          <span>Show Website</span>
+        </label>
+
+      </div>
+
+    </section>
+
+
+    <!-- RECEIPT BRANDING -->
+    <section class="settings-card">
+
+      <div class="card-header">
+        <div>
+          <h2>Receipt Branding</h2>
+          <p>
+            Upload images used on the fee receipt.
+            PNG or JPG/JPEG images only, maximum 5 MB.
+          </p>
+        </div>
+      </div>
+
+      <div class="media-grid">
+
+
+        <!-- LOGO -->
+        <div class="media-box">
+
+          <div class="media-preview">
+            @if (settings.logoPath) {
+              <img
+                [src]="getMediaUrl(settings.logoPath)"
+                alt="Institution Logo"
+              />
+            } @else {
+              <span>No logo</span>
+            }
+          </div>
+
+          <h3>Institution Logo</h3>
+
+          <label
+            class="upload-button"
+            [class.disabled]="isUploading('logo')"
+          >
+            {{ isUploading('logo') ? 'Uploading...' : 'Choose Logo' }}
+
+            <input
+              type="file"
+              accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+              [disabled]="isUploading('logo')"
+              (change)="uploadLogo($event)"
+            />
+          </label>
+
+          <small class="media-help">
+            PNG or JPG/JPEG • Max 5 MB
+          </small>
+
+        </div>
+
+
+        <!-- SIGNATURE -->
+        <div class="media-box">
+
+          <div class="media-preview">
+            @if (settings.signaturePath) {
+              <img
+                [src]="getMediaUrl(settings.signaturePath)"
+                alt="Signature"
+              />
+            } @else {
+              <span>No signature</span>
+            }
+          </div>
+
+          <h3>Signature</h3>
+
+          <label
+            class="upload-button"
+            [class.disabled]="isUploading('signature')"
+          >
+            {{
+              isUploading('signature')
+                ? 'Uploading...'
+                : 'Choose Signature'
+            }}
+
+            <input
+              type="file"
+              accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+              [disabled]="isUploading('signature')"
+              (change)="uploadSignature($event)"
+            />
+          </label>
+
+          <small class="media-help">
+            PNG or JPG/JPEG • Max 5 MB
+          </small>
+
+        </div>
+
+
+        <!-- STAMP -->
+        <div class="media-box">
+
+          <div class="media-preview">
+            @if (settings.stampPath) {
+              <img
+                [src]="getMediaUrl(settings.stampPath)"
+                alt="Stamp"
+              />
+            } @else {
+              <span>No stamp</span>
+            }
+          </div>
+
+          <h3>Stamp / Seal</h3>
+
+          <label
+            class="upload-button"
+            [class.disabled]="isUploading('stamp')"
+          >
+            {{
+              isUploading('stamp')
+                ? 'Uploading...'
+                : 'Choose Stamp'
+            }}
+
+            <input
+              type="file"
+              accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+              [disabled]="isUploading('stamp')"
+              (change)="uploadStamp($event)"
+            />
+          </label>
+
+          <small class="media-help">
+            PNG or JPG/JPEG • Max 5 MB
+          </small>
+
+        </div>
+
+
+        <!-- BADGE -->
+        <div class="media-box">
+
+          <div class="media-preview">
+            @if (settings.badgePath) {
+              <img
+                [src]="getMediaUrl(settings.badgePath)"
+                alt="Badge"
+              />
+            } @else {
+              <span>No badge</span>
+            }
+          </div>
+
+          <h3>Badge</h3>
+
+          <label
+            class="upload-button"
+            [class.disabled]="isUploading('badge')"
+          >
+            {{
+              isUploading('badge')
+                ? 'Uploading...'
+                : 'Choose Badge'
+            }}
+
+            <input
+              type="file"
+              accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+              [disabled]="isUploading('badge')"
+              (change)="uploadBadge($event)"
+            />
+          </label>
+
+          <small class="media-help">
+            PNG or JPG/JPEG • Max 5 MB
+          </small>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SIGNATURE DETAILS -->
+    <section class="settings-card">
+
+      <div class="card-header">
+        <div>
+          <h2>Signature Details</h2>
+          <p>Information displayed below the signature.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Signature Name</label>
+          <input
+            type="text"
+            [(ngModel)]="settings.signatureName"
+            placeholder="Authorized Person"
+            [disabled]="saving"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Designation</label>
+          <input
+            type="text"
+            [(ngModel)]="settings.signatureDesignation"
+            placeholder="Administrator"
+            [disabled]="saving"
+          />
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- RECEIPT COLORS -->
+    <section class="settings-card">
+
+      <div class="card-header">
+        <div>
+          <h2>Receipt Colors</h2>
+          <p>
+            These colors affect the receipt only,
+            not the application theme.
+          </p>
+        </div>
+      </div>
+
+      <div class="color-grid">
+
+
+        <!-- PRIMARY COLOR -->
+        <div class="color-item">
+
+          <label>Primary Color</label>
+
+          <div class="color-control">
+
+            <input
+              type="color"
+              [(ngModel)]="settings.primaryColor"
+              [disabled]="saving"
+            />
+
+            <input
+              type="text"
+              [(ngModel)]="settings.primaryColor"
+              placeholder="#2563EB"
+              [disabled]="saving"
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- ACCENT COLOR -->
+        <div class="color-item">
+
+          <label>Accent Color</label>
+
+          <div class="color-control">
+
+            <input
+              type="color"
+              [(ngModel)]="settings.accentColor"
+              [disabled]="saving"
+            />
+
+            <input
+              type="text"
+              [(ngModel)]="settings.accentColor"
+              placeholder="#0EA5E9"
+              [disabled]="saving"
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- BACKGROUND COLOR -->
+        <div class="color-item">
+
+          <label>Background Color</label>
+
+          <div class="color-control">
+
+            <input
+              type="color"
+              [(ngModel)]="settings.backgroundColor"
+              [disabled]="saving"
+            />
+
+            <input
+              type="text"
+              [(ngModel)]="settings.backgroundColor"
+              placeholder="#FFFFFF"
+              [disabled]="saving"
+            />
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- BOTTOM SAVE -->
+    <div class="bottom-actions">
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="saving"
+        (click)="saveSettings()"
+      >
+        {{ saving ? 'Saving...' : 'Save Changes' }}
+      </button>
+
+    </div>
+
+  }
+
+</main>

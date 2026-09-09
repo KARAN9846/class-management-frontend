@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
-
 import { StudentFeeService } from '../services/student-fee.service';
 import { StudentFee } from '../models/student-fee.model';
 import { FeePayment } from '../models/fee-payment.model';
@@ -14,8 +12,7 @@ import { FeePayment } from '../models/fee-payment.model';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    ConfirmationDialogComponent
+    FormsModule
   ],
   templateUrl: './student-fee-view.html',
   styleUrl: './student-fee-view.scss'
@@ -33,16 +30,24 @@ export class StudentFeeView implements OnInit {
   loading = true;
   paymentsLoading = false;
 
-  saving = false;
-
   errorMessage = '';
   paymentsErrorMessage = '';
 
-  isEditing = false;
-  showConfirmation = false;
+  // Payment edit state
+  editingPayment: FeePayment | null = null;
+  showPaymentEdit = false;
+  paymentSaving = false;
+  paymentEditErrorMessage = '';
 
+  // Payment edit form
+  editPaymentType = 'INSTALLMENT';
+  editPaymentAmount: number | null = null;
   editDiscountType = 'NONE';
   editDiscountValue: number | null = 0;
+  editPaymentMethod = 'CASH';
+  editPaymentDate = '';
+  editPaymentNotes = '';
+  editRevisionReason = '';
 
   ngOnInit(): void {
     const id = Number(
@@ -69,15 +74,6 @@ export class StudentFeeView implements OnInit {
 
         this.studentFee = response?.data ?? response;
         this.loading = false;
-
-        const isEditRoute =
-          this.route.snapshot.url.some(
-            segment => segment.path === 'edit'
-          );
-
-        if (isEditRoute && this.studentFee) {
-          this.startEdit();
-        }
 
         this.loadPayments(id);
 
@@ -142,152 +138,105 @@ export class StudentFeeView implements OnInit {
       });
   }
 
-  startEdit(): void {
-    if (!this.studentFee) {
+  openPaymentEdit(payment: FeePayment): void {
+    if (payment.status !== 'VERIFIED') {
       return;
     }
 
+    this.editingPayment = payment;
+
+    this.editPaymentType =
+      payment.paymentType;
+
+    this.editPaymentAmount =
+      payment.amount;
+
     this.editDiscountType =
-      this.studentFee.discountType;
+      payment.discountType;
 
     this.editDiscountValue =
-      this.studentFee.discountValue;
+      payment.discountValue;
 
-    this.errorMessage = '';
-    this.isEditing = true;
+    this.editPaymentMethod =
+      payment.paymentMethod;
 
-    this.cdr.detectChanges();
-  }
+    this.editPaymentDate =
+      payment.paymentDate;
 
-  cancelEdit(): void {
-    if (this.studentFee) {
+    this.editPaymentNotes =
+      payment.notes ?? '';
 
-      this.editDiscountType =
-        this.studentFee.discountType;
+    this.editRevisionReason = '';
 
-      this.editDiscountValue =
-        this.studentFee.discountValue;
-    }
-
-    this.errorMessage = '';
-    this.isEditing = false;
+    this.paymentEditErrorMessage = '';
+    this.showPaymentEdit = true;
 
     this.cdr.detectChanges();
   }
 
-  onDiscountTypeChange(): void {
-    this.errorMessage = '';
-
-    if (this.editDiscountType === 'NONE') {
-      this.editDiscountValue = 0;
+  closePaymentEdit(): void {
+    if (this.paymentSaving) {
+      return;
     }
+
+    this.showPaymentEdit = false;
+    this.editingPayment = null;
+    this.paymentEditErrorMessage = '';
 
     this.cdr.detectChanges();
   }
 
-  get calculatedDiscountAmount(): number {
-    if (!this.studentFee) {
-      return 0;
+  savePaymentEdit(): void {
+    if (!this.editingPayment) {
+      return;
     }
 
-    const value = Number(this.editDiscountValue ?? 0);
+    this.paymentEditErrorMessage = '';
 
-    if (value <= 0) {
-      return 0;
+    if (
+      this.editPaymentAmount === null ||
+      this.editPaymentAmount === undefined ||
+      Number.isNaN(Number(this.editPaymentAmount))
+    ) {
+      this.paymentEditErrorMessage =
+        'Payment amount is required.';
+      this.cdr.detectChanges();
+      return;
     }
 
-    if (this.editDiscountType === 'PERCENTAGE') {
-      return this.roundMoney(
-        this.studentFee.originalAmount * value / 100
-      );
+    if (Number(this.editPaymentAmount) <= 0) {
+      this.paymentEditErrorMessage =
+        'Payment amount must be greater than 0.';
+      this.cdr.detectChanges();
+      return;
     }
 
-    if (this.editDiscountType === 'FIXED_AMOUNT') {
-      return this.roundMoney(value);
-    }
-
-    return 0;
-  }
-
-  get calculatedPayableAmount(): number {
-    if (!this.studentFee) {
-      return 0;
-    }
-
-    return this.roundMoney(
-      Math.max(
-        0,
-        this.studentFee.originalAmount -
-        this.calculatedDiscountAmount
-      )
-    );
-  }
-
-  get calculatedRemainingAmount(): number {
-    if (!this.studentFee) {
-      return 0;
-    }
-
-    return this.roundMoney(
-      Math.max(
-        0,
-        this.calculatedPayableAmount -
-        Number(this.studentFee.paidAmount ?? 0)
-      )
-    );
-  }
-
-  get calculatedDiscountPercentage(): number {
-    if (!this.studentFee || this.studentFee.originalAmount <= 0) {
-      return 0;
-    }
-
-    return this.roundMoney(
-      (this.calculatedDiscountAmount /
-        this.studentFee.originalAmount) *
-      100
-    );
-  }
-
-  private roundMoney(value: number): number {
-    return Math.round(
-      (Number(value) + Number.EPSILON) * 100
-    ) / 100;
-  }
-
-  saveEdit(): void {
-    this.errorMessage = '';
-
-    if (!this.studentFee) {
-      this.errorMessage =
-        'Student fee information is not available.';
+    if (!this.editPaymentType) {
+      this.paymentEditErrorMessage =
+        'Payment type is required.';
       this.cdr.detectChanges();
       return;
     }
 
     if (!this.editDiscountType) {
-      this.errorMessage =
+      this.paymentEditErrorMessage =
         'Discount type is required.';
       this.cdr.detectChanges();
       return;
     }
 
-    if (
-      this.editDiscountValue === null ||
-      this.editDiscountValue === undefined ||
-      Number.isNaN(Number(this.editDiscountValue))
-    ) {
-      this.errorMessage =
+    const discountValue =
+      Number(this.editDiscountValue ?? 0);
+
+    if (Number.isNaN(discountValue)) {
+      this.paymentEditErrorMessage =
         'Discount value is required.';
       this.cdr.detectChanges();
       return;
     }
 
-    const discountValue =
-      Number(this.editDiscountValue);
-
     if (discountValue < 0) {
-      this.errorMessage =
+      this.paymentEditErrorMessage =
         'Discount value cannot be negative.';
       this.cdr.detectChanges();
       return;
@@ -297,7 +246,7 @@ export class StudentFeeView implements OnInit {
       this.editDiscountType === 'NONE' &&
       discountValue !== 0
     ) {
-      this.errorMessage =
+      this.paymentEditErrorMessage =
         'Discount value must be 0 when discount type is NONE.';
       this.cdr.detectChanges();
       return;
@@ -307,75 +256,64 @@ export class StudentFeeView implements OnInit {
       this.editDiscountType === 'PERCENTAGE' &&
       discountValue > 100
     ) {
-      this.errorMessage =
+      this.paymentEditErrorMessage =
         'Percentage discount cannot exceed 100%.';
       this.cdr.detectChanges();
       return;
     }
 
     if (
-      this.editDiscountType === 'FIXED_AMOUNT' &&
-      discountValue > this.studentFee.originalAmount
+      !this.editPaymentMethod
     ) {
-      this.errorMessage =
-        'Fixed discount cannot exceed the original fee.';
+      this.paymentEditErrorMessage =
+        'Payment method is required.';
       this.cdr.detectChanges();
       return;
     }
 
-    const alreadyPaid =
-      Number(this.studentFee.paidAmount ?? 0);
-
-    if (this.calculatedPayableAmount < alreadyPaid) {
-      this.errorMessage =
-        `Payable amount cannot be less than the already paid amount of ${this.formatCurrency(alreadyPaid)}.`;
+    if (!this.editPaymentDate) {
+      this.paymentEditErrorMessage =
+        'Payment date is required.';
       this.cdr.detectChanges();
       return;
     }
 
-    this.editDiscountValue =
-      this.roundMoney(discountValue);
-
-    this.showConfirmation = true;
-
-    this.cdr.detectChanges();
-  }
-
-  confirmEdit(): void {
-    if (!this.studentFee) {
+    if (!this.editRevisionReason.trim()) {
+      this.paymentEditErrorMessage =
+        'Revision reason is required.';
+      this.cdr.detectChanges();
       return;
     }
 
-    if (
-      this.editDiscountValue === null ||
-      this.editDiscountValue === undefined
-    ) {
-      return;
-    }
-
-    this.showConfirmation = false;
-    this.saving = true;
-    this.errorMessage = '';
+    this.paymentSaving = true;
 
     const request = {
+      amount: Number(this.editPaymentAmount),
+      paymentDate: this.editPaymentDate,
+      paymentMethod: this.editPaymentMethod,
+      paymentType: this.editPaymentType,
       discountType: this.editDiscountType,
-      discountValue: this.editDiscountValue
+      discountValue: discountValue,
+      notes: this.editPaymentNotes.trim() || null,
+      revisionReason: this.editRevisionReason.trim()
     };
 
     this.studentFeeService
-      .update(
-        this.studentFee.id,
+      .updatePayment(
+        this.editingPayment.id,
         request
       )
       .subscribe({
 
-        next: (response: any) => {
+        next: () => {
 
-          this.studentFee =
-            response?.data ?? response;
+          this.paymentSaving = false;
+          this.showPaymentEdit = false;
+          this.editingPayment = null;
 
-          this.saving = false;
-          this.isEditing = false;
+          if (this.studentFee) {
+            this.loadStudentFee(this.studentFee.id);
+          }
 
           this.cdr.detectChanges();
         },
@@ -383,26 +321,20 @@ export class StudentFeeView implements OnInit {
         error: (error) => {
 
           console.error(
-            'Update student fee error:',
+            'Update payment error:',
             error
           );
 
-          this.saving = false;
+          this.paymentSaving = false;
 
-          this.errorMessage =
+          this.paymentEditErrorMessage =
             error?.error?.message ||
             error?.message ||
-            'Failed to update student fee.';
+            'Failed to update payment.';
 
           this.cdr.detectChanges();
         }
       });
-  }
-
-  cancelConfirmation(): void {
-    this.showConfirmation = false;
-
-    this.cdr.detectChanges();
   }
 
   goBack(): void {
