@@ -25,6 +25,11 @@
   background: #cbd5e1;
   border-radius: 10px;
 }
+
+/* =====================================================
+   PAGE HEADER
+   ===================================================== */
+
 .page-header {
   margin-bottom: 24px;
 
@@ -40,20 +45,33 @@
   }
 }
 
+/* =====================================================
+   ERROR
+   ===================================================== */
+
 .error-message {
   margin-bottom: 20px;
   padding: 12px 16px;
+
   border-radius: 8px;
+
   background: #fef2f2;
   color: #b91c1c;
 }
 
+/* =====================================================
+   FILTERS
+   ===================================================== */
+
 .filter-card {
   display: flex;
   gap: 20px;
+
   padding: 20px;
   margin-bottom: 24px;
+
   background: #ffffff;
+
   border: 1px solid #e5e7eb;
   border-radius: 12px;
 }
@@ -62,6 +80,7 @@
   display: flex;
   flex-direction: column;
   gap: 7px;
+
   min-width: 220px;
 
   label {
@@ -72,29 +91,43 @@
 
 .filter-select {
   height: 42px;
+
   padding: 0 12px;
+
   border: 1px solid #d1d5db;
   border-radius: 8px;
+
   background: #ffffff;
+
   font-size: 14px;
 }
+
+/* =====================================================
+   SUMMARY
+   ===================================================== */
 
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+
   gap: 16px;
+
   margin-bottom: 24px;
 }
 
 .summary-card {
   padding: 18px;
+
   background: #ffffff;
+
   border: 1px solid #e5e7eb;
   border-radius: 12px;
 
   span {
     display: block;
+
     margin-bottom: 8px;
+
     font-size: 13px;
     color: #6b7280;
   }
@@ -104,19 +137,27 @@
   }
 }
 
+/* =====================================================
+   TABLE CARD
+   ===================================================== */
+
 .table-card {
   background: #ffffff;
+
   border: 1px solid #e5e7eb;
   border-radius: 12px;
+
   overflow: hidden;
 }
 
 .table-header {
   padding: 20px;
+
   border-bottom: 1px solid #e5e7eb;
 
   h2 {
     margin: 0 0 4px;
+
     font-size: 18px;
   }
 
@@ -126,29 +167,40 @@
   }
 }
 
+/* =====================================================
+   TABLE
+   ===================================================== */
+
 .table-wrapper {
   width: 100%;
+
   overflow-x: auto;
 }
 
 table {
   width: 100%;
   min-width: 1100px;
+
   border-collapse: collapse;
 }
 
 th,
 td {
   padding: 14px 16px;
+
   text-align: left;
+
   border-bottom: 1px solid #f0f0f0;
+
   white-space: nowrap;
 }
 
 th {
   font-size: 12px;
   font-weight: 700;
+
   color: #6b7280;
+
   text-transform: uppercase;
 }
 
@@ -164,10 +216,17 @@ td {
   font-weight: 700;
 }
 
+/* =====================================================
+   FEE STATUS
+   ===================================================== */
+
 .status-badge {
   display: inline-flex;
+
   padding: 5px 9px;
+
   border-radius: 999px;
+
   font-size: 11px;
   font-weight: 700;
 }
@@ -187,50 +246,174 @@ td {
   color: #991b1b;
 }
 
+/* =====================================================
+   ACTION COLUMN
+   ===================================================== */
+
+.action-cell {
+  width: 330px;
+  min-width: 330px;
+
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* =====================================================
+   ACTION BUTTONS
+   ===================================================== */
+
 .action-buttons {
   display: flex;
-  gap: 8px;
+  align-items: center;
+
+  gap: 10px;
+
+  width: max-content;
+
+  flex-wrap: nowrap;
+
+  white-space: nowrap;
 }
 
-.action-buttons button {
-  padding: 7px 11px;
-  border-radius: 7px;
+.action-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  height: 40px;
+
+  padding: 0 16px;
+
   border: 1px solid transparent;
-  font-size: 12px;
+  border-radius: 8px;
+
+  font-size: 13px;
   font-weight: 600;
+  line-height: 1;
+
   cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: 2px;
+  }
 }
+
+/* =====================================================
+   VIEW
+   ===================================================== */
 
 .btn-view {
+  width: 78px;
+  min-width: 78px;
+
   background: #eff6ff;
+
+  border-color: #dbeafe;
+
   color: #1d4ed8;
+
+  &:hover {
+    background: #dbeafe;
+    border-color: #bfdbfe;
+  }
 }
 
+/* =====================================================
+   ADD PAYMENT
+   ===================================================== */
+
 .btn-add {
+  width: 132px;
+  min-width: 132px;
+
   background: #ecfdf5;
+
+  border-color: #d1fae5;
+
   color: #047857;
+
+  &:hover {
+    background: #d1fae5;
+    border-color: #a7f3d0;
+  }
 }
+
+/* =====================================================
+   EMPTY ADD PAYMENT PLACEHOLDER
+   ===================================================== */
+
+.action-placeholder {
+  width: 132px;
+  min-width: 132px;
+
+  background: transparent;
+
+  border-color: transparent;
+
+  color: #9ca3af;
+
+  cursor: default;
+
+  pointer-events: none;
+}
+
+/* =====================================================
+   RECEIPT
+   ===================================================== */
+
+.btn-receipt {
+  width: 92px;
+  min-width: 92px;
+
+  background: #f1f5f9;
+
+  border-color: #cbd5e1;
+
+  color: #475569;
+
+  &:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+  }
+}
+
+/* =====================================================
+   LOADING / EMPTY
+   ===================================================== */
 
 .loading-state,
 .empty-state {
   padding: 50px 20px;
+
   text-align: center;
+
   color: #6b7280;
 }
 
-.btn-edit {
-  padding: 8px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #111827;
-  cursor: pointer;
-  font-weight: 600;
-
-  &:hover {
-    background: #f9fafb;
-  }
-}
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
 
 @media (max-width: 900px) {
 
@@ -245,6 +428,11 @@ td {
   .filter-group {
     width: 100%;
   }
+
+  .action-cell {
+    width: 330px;
+    min-width: 330px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -256,15 +444,30 @@ td {
   .summary-grid {
     grid-template-columns: 1fr;
   }
-}
 
-.btn-receipt {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  .action-buttons {
+    gap: 8px;
+  }
 
-  &:hover {
-    background: #e2e8f0;
+  .action-button {
+    height: 38px;
+
+    padding: 0 14px;
+  }
+
+  .btn-view {
+    width: 78px;
+    min-width: 78px;
+  }
+
+  .btn-add,
+  .action-placeholder {
+    width: 132px;
+    min-width: 132px;
+  }
+
+  .btn-receipt {
+    width: 92px;
+    min-width: 92px;
   }
 }
-

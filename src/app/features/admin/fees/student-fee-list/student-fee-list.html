@@ -190,35 +190,32 @@
 
                 </td>
 
-                <td>
+<td class="action-cell">
   <div class="action-buttons">
 
     <button
       type="button"
-      class="btn-view"
+      class="action-button btn-view"
       (click)="viewStudentFee(fee)">
       View
     </button>
 
-    <button
-      type="button"
-      class="btn-edit"
-      (click)="editStudentFee(fee)">
-      Edit
-    </button>
-
-    @if (fee.remainingAmount > 0) {
-      <button
-        type="button"
-        class="btn-add"
-        (click)="addPayment(fee)">
-        Add Payment
-      </button>
-    }
+@if (fee.remainingAmount > 0) {
+  <button
+    type="button"
+    class="action-button btn-add"
+    (click)="addPayment(fee)">
+    Add Payment
+  </button>
+} @else {
+  <span class="action-button action-placeholder">
+    —
+  </span>
+}
 
     <button
       type="button"
-      class="btn-receipt"
+      class="action-button btn-receipt"
       (click)="viewReceipts(fee)">
       Receipt
     </button>

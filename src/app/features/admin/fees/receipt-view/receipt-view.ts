@@ -40,6 +40,10 @@ export class ReceiptViewComponent implements OnInit {
     this.loadReceipt(id);
   }
 
+    goBack(): void {
+    this.router.navigate(['/admin/fees/student-fees']);
+  }
+
   loadReceipt(id: number): void {
     this.loading = true;
     this.errorMessage = '';
@@ -126,7 +130,5 @@ error: async (error) => {
   });
 }
 
-  goBack(): void {
-    this.router.navigate(['/admin/fees/student-fees']);
-  }
+
 }

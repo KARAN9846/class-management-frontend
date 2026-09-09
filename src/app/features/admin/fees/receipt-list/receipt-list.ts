@@ -123,10 +123,7 @@ export class ReceiptListComponent implements OnInit {
     return `http://localhost:8080/${path.replace(/\\/g, '/')}`;
   }
 
-  goBack(): void {
-    this.router.navigate([
-      '/admin/fees/student-fees',
-      this.studentFeeId
-    ]);
-  }
+goBack(): void {
+  this.router.navigate(['/admin/fees/student-fees']);
+}
 }

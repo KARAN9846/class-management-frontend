@@ -779,23 +779,9 @@ onAmountChange(): void {
   // ==================================================
   // CANCEL
   // ==================================================
-
-  cancel(): void {
-
-    if (this.studentFee) {
-
-      this.router.navigate([
-        '/admin/fees/student-fees',
-        this.studentFee.id
-      ]);
-
-    } else {
-
-      this.router.navigate([
-        '/admin/fees/student-fees'
-      ]);
-    }
-  }
+cancel(): void {
+  this.router.navigate(['/admin/fees/student-fees']);
+}
 
   // ==================================================
   // MONEY
