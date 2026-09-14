@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ReceiptService } from '../services/receipt.service';
 import { FeeReceipt } from '../models/fee-receipt.model';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-receipt-list',
@@ -120,7 +121,7 @@ export class ReceiptListComponent implements OnInit {
       return null;
     }
 
-    return `http://localhost:8080/${path.replace(/\\/g, '/')}`;
+   return `${environment.apiBaseUrl.replace('/api/v1', '')}/${path.replace(/\\/g, '/')}`;
   }
 
 goBack(): void {

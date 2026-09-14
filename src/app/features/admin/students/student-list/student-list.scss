@@ -12,6 +12,10 @@
   box-sizing: border-box;
 }
 
+/* =========================
+   PAGE SCROLLBAR
+   ========================= */
+
 .page::-webkit-scrollbar {
   width: 6px;
 }
@@ -29,35 +33,56 @@
   background: #94a3b8;
 }
 
+
+/* =========================
+   PAGE HEADER
+   ========================= */
+
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   margin-bottom: 24px;
 }
 
 .page-header h1 {
   margin: 0;
+
   font-size: 28px;
   font-weight: 700;
+
   color: #111827;
 }
 
 .page-header p {
   margin: 6px 0 0;
+
   color: #64748b;
+
   font-size: 14px;
 }
+
+
+/* =========================
+   ADD STUDENT BUTTON
+   ========================= */
 
 .add-btn {
   background: #2563eb;
   color: white;
+
   border: none;
+
   padding: 12px 20px;
+
   border-radius: 10px;
+
   font-size: 14px;
   font-weight: 600;
+
   cursor: pointer;
+
   transition: 0.2s;
 }
 
@@ -65,81 +90,381 @@
   background: #1d4ed8;
 }
 
+
+/* =========================
+   TABLE CARD
+   ========================= */
+
 .table-card {
   background: white;
+
   border-radius: 16px;
+
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+
   overflow: hidden;
 }
 
+
+/* =========================
+   FILTER AREA
+   ========================= */
+
 .filter-area {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  flex-wrap: wrap;
+
   padding: 20px;
+
   border-bottom: 1px solid #e5e7eb;
+
+  box-sizing: border-box;
 }
+
+
+/* =========================
+   SEARCH
+   ========================= */
+
+.filter-area app-search-input {
+  flex: 1 1 260px;
+
+  min-width: 220px;
+}
+
+
+/* =========================
+   FILTER SELECTS
+   ========================= */
+
+.filter-select {
+  height: 42px;
+
+  min-width: 170px;
+
+  padding: 0 38px 0 12px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 8px;
+
+  background-color: #ffffff;
+
+  color: #111827;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  outline: none;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  appearance: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  /* Custom dropdown arrow */
+  background-image:
+    linear-gradient(45deg, transparent 50%, #64748b 50%),
+    linear-gradient(135deg, #64748b 50%, transparent 50%);
+
+  background-position:
+    calc(100% - 17px) 17px,
+    calc(100% - 12px) 17px;
+
+  background-size:
+    5px 5px,
+    5px 5px;
+
+  background-repeat: no-repeat;
+}
+
+
+/* Select hover */
+
+.filter-select:hover:not(:disabled) {
+  border-color: #94a3b8;
+}
+
+
+/* Select focus */
+
+.filter-select:focus {
+  border-color: #2563eb;
+
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+
+/* Disabled select */
+
+.filter-select:disabled {
+  background-color: #f8fafc;
+
+  color: #94a3b8;
+
+  border-color: #e2e8f0;
+
+  cursor: not-allowed;
+
+  opacity: 1;
+}
+
+
+/* =========================
+   CLEAR FILTER BUTTON
+   ========================= */
+
+.clear-filter-btn {
+  height: 42px;
+
+  padding: 0 16px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #475569;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  box-sizing: border-box;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.clear-filter-btn:hover {
+  background: #f8fafc;
+
+  border-color: #94a3b8;
+
+  color: #1e293b;
+}
+
+.clear-filter-btn:active {
+  background: #f1f5f9;
+}
+
+
+/* =========================
+   PAGINATION
+   ========================= */
 
 .pagination-area {
   padding: 16px 20px;
+
   border-top: 1px solid #e5e7eb;
+
   display: flex;
+
   justify-content: flex-end;
+
+  box-sizing: border-box;
 }
+
+
+/* =========================
+   ERROR STATE
+   ========================= */
 
 .error-state {
   margin: 16px 20px;
+
   padding: 14px 16px;
+
   background: #fef2f2;
+
   border: 1px solid #fecaca;
+
   border-radius: 8px;
+
   color: #dc2626;
+
   font-size: 14px;
   font-weight: 500;
 }
 
+
+/* =========================================================
+   TABLET / SMALL DESKTOP
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .filter-area {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+  }
+
+  .filter-area app-search-input {
+    grid-column: 1 / -1;
+
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .filter-select {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .clear-filter-btn {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
 @media (max-width: 700px) {
+
   .page {
     padding: 18px 6px 30px 18px;
   }
 
+
+  /* Header */
+
   .page-header {
     align-items: flex-start;
+
     flex-direction: column;
+
     gap: 15px;
   }
+
+
+  /* Add button */
 
   .add-btn {
     width: 100%;
   }
 
+
+  /* Card */
+
   .table-card {
     border-radius: 10px;
   }
 
+
+  /* Filters */
+
   .filter-area {
     padding: 16px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
   }
+
+
+  .filter-area app-search-input {
+    grid-column: 1 / -1;
+
+    width: 100%;
+
+    min-width: 0;
+  }
+
+
+  .filter-select {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+
+  .clear-filter-btn {
+    width: 100%;
+  }
+
+
+  /* Pagination */
 
   .pagination-area {
     padding: 14px 16px;
+
     justify-content: center;
   }
 }
 
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
 @media (max-width: 480px) {
+
   .page {
     padding: 14px 4px 30px 14px;
   }
+
 
   .page-header h1 {
     font-size: 22px;
   }
 
+
   .table-card {
     border-radius: 10px;
   }
 
+
+  /* Filters */
+
   .filter-area {
     padding: 12px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 10px;
   }
+
+
+  .filter-area app-search-input,
+  .filter-select,
+  .clear-filter-btn {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+
+  /* Pagination */
 
   .pagination-area {
     padding: 12px;

@@ -11,6 +11,7 @@ import { ReceiptService } from '../../admin/fees/services/receipt.service';
 import { StudentFeeService } from '../../admin/fees/services/student-fee.service';
 import { StudentFee } from '../../admin/fees/models/student-fee.model';
 import { FeePayment } from '../../admin/fees/models/fee-payment.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-student-fees',
@@ -23,12 +24,12 @@ import { FeePayment } from '../../admin/fees/models/fee-payment.model';
 export class StudentFeesComponent {
 
 
-  getReceiptImageUrl(path: string | null): string | null {
+getReceiptImageUrl(path: string | null): string | null {
   if (!path) {
     return null;
   }
 
-  return `http://localhost:8080/${path.replace(/\\/g, '/')}`;
+  return `${environment.apiBaseUrl.replace('/api/v1', '')}/${path.replace(/\\/g, '/')}`;
 }
 
   private readonly studentFeeService = inject(StudentFeeService);

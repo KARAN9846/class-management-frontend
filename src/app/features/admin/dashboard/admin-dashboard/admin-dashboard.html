@@ -1,1 +1,1722 @@
-<p>admin-dashboard works!</p>
+<div class="dashboard">
+
+    <!-- =========================================================
+       DASHBOARD HEADER
+       ========================================================= -->
+
+    <div class="dashboard-header">
+        <div>
+            <h1>Admin Dashboard</h1>
+            <p>Overview of your institution</p>
+        </div>
+    </div>
+
+
+    <!-- =========================================================
+       GLOBAL LOADING STATE
+       ========================================================= -->
+    @if (loading) {
+    <div class="dashboard-state">
+        <span class="loader"></span>
+        <span>Loading dashboard...</span>
+    </div>
+    }
+
+
+    <!-- =========================================================
+       GLOBAL ERROR STATE
+       ========================================================= -->
+
+    @if (!loading && error) {
+    <div class="dashboard-state error-state">
+        {{ error }}
+    </div>
+    }
+
+
+    <!-- =========================================================
+       DASHBOARD CONTENT
+       ========================================================= -->
+
+    @if (!loading && !error && studentDashboard && teacherDashboard) {
+
+    <section class="dashboard-grid">
+
+
+        <!-- =======================================================
+           STUDENTS CARD
+           ======================================================= -->
+
+        <div class="dashboard-section">
+
+            <!-- Card Header -->
+            <div class="section-header">
+
+                <div>
+                    <h2>Students</h2>
+                    <p>Current student enrollment overview</p>
+                </div>
+
+                <button type="button" class="view-all-button" (click)="viewAllStudents()">
+                    View All
+                    <span>→</span>
+                </button>
+
+            </div>
+
+
+            <!-- Student Statistics + Chart -->
+            <div class="student-card">
+
+                <!-- Statistics -->
+                <div class="student-stats">
+
+                    <div class="stat-item total-stat">
+                        <span class="stat-label">Total Students</span>
+
+                        <strong class="stat-value">
+                            {{ studentDashboard.totalStudents }}
+                        </strong>
+                    </div>
+
+
+                    <div class="stat-item active-stat">
+                        <span class="stat-label">Active Students</span>
+
+                        <strong class="stat-value">
+                            {{ studentDashboard.activeStudents }}
+                        </strong>
+                    </div>
+
+
+                    <div class="stat-item inactive-stat">
+                        <span class="stat-label">Inactive Students</span>
+
+                        <strong class="stat-value">
+                            {{ studentDashboard.inactiveStudents }}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Student Status Chart -->
+                <div class="student-chart">
+
+                    <div class="chart-container">
+
+                        <canvas baseChart [type]="doughnutChartType" [data]="doughnutChartData"
+                            [options]="doughnutChartOptions">
+                        </canvas>
+
+                        <div class="chart-center">
+                            <strong>
+                                {{ studentDashboard.totalStudents }}
+                            </strong>
+
+                            <span>Students</span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Chart Legend -->
+                    <div class="chart-legend">
+
+                        <div class="legend-item">
+
+                            <span class="legend-dot active-dot"></span>
+
+                            <div>
+                                <strong>Active</strong>
+                                <span>
+                                    {{ studentDashboard.activeStudents }}
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <span class="legend-dot inactive-dot"></span>
+
+                            <div>
+                                <strong>Inactive</strong>
+                                <span>
+                                    {{ studentDashboard.inactiveStudents }}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =======================================================
+           TEACHERS CARD
+           ======================================================= -->
+
+        <div class="dashboard-section">
+
+            <!-- Card Header -->
+            <div class="section-header">
+
+                <div>
+                    <h2>Teachers</h2>
+                    <p>Current teacher overview</p>
+                </div>
+
+                <button type="button" class="view-all-button" (click)="viewAllTeachers()">
+                    View All
+                    <span>→</span>
+                </button>
+
+            </div>
+
+
+            <!-- Teacher Statistics + Chart -->
+            <div class="teacher-card">
+
+                <!-- Statistics -->
+                <div class="teacher-stats">
+
+                    <div class="stat-item total-stat">
+                        <span class="stat-label">Total Teachers</span>
+
+                        <strong class="stat-value">
+                            {{ teacherDashboard.totalTeachers }}
+                        </strong>
+                    </div>
+
+
+                    <div class="stat-item active-stat">
+                        <span class="stat-label">Active Teachers</span>
+
+                        <strong class="stat-value">
+                            {{ teacherDashboard.activeTeachers }}
+                        </strong>
+                    </div>
+
+
+                    <div class="stat-item inactive-stat">
+                        <span class="stat-label">Inactive Teachers</span>
+
+                        <strong class="stat-value">
+                            {{ teacherDashboard.inactiveTeachers }}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Teacher Status Chart -->
+                <div class="teacher-chart">
+
+                    <div class="chart-container">
+
+                        <canvas baseChart [type]="teacherDoughnutChartType" [data]="teacherDoughnutChartData"
+                            [options]="teacherDoughnutChartOptions">
+                        </canvas>
+
+                        <div class="chart-center">
+                            <strong>
+                                {{ teacherDashboard.totalTeachers }}
+                            </strong>
+
+                            <span>Teachers</span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Chart Legend -->
+                    <div class="chart-legend">
+
+                        <div class="legend-item">
+
+                            <span class="legend-dot active-dot"></span>
+
+                            <div>
+                                <strong>Active</strong>
+                                <span>
+                                    {{ teacherDashboard.activeTeachers }}
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <span class="legend-dot inactive-dot"></span>
+
+                            <div>
+                                <strong>Inactive</strong>
+                                <span>
+                                    {{ teacherDashboard.inactiveTeachers }}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =======================================================
+           ACADEMIC STRUCTURE CARD
+           ======================================================= -->
+
+        @if (academicStructureDashboard; as academic) {
+
+        <div class="dashboard-section academic-structure-section">
+
+            <!-- Card Header -->
+            <div class="section-header">
+
+                <div>
+                    <h2>Academic Structure</h2>
+                    <p>Academic organization & curriculum overview</p>
+                </div>
+
+                <button type="button" class="view-all-button" (click)="viewAcademicStructure()">
+                    View All
+                    <span>→</span>
+                </button>
+
+            </div>
+
+
+            <!-- =====================================================
+               Academic Structure Main Card
+               ===================================================== -->
+
+            <div class="academic-structure-card">
+
+
+                <!-- ---------------------------------------------------
+                 Academic Summary Statistics
+                 --------------------------------------------------- -->
+
+                <div class="academic-stats">
+
+                    <div class="stat-item total-stat">
+                        <span class="stat-label">Academic Years</span>
+
+                        <strong class="stat-value">
+                            {{ academic.totalAcademicYears }}
+                        </strong>
+                    </div>
+
+
+                    <div class="stat-item total-stat">
+                        <span class="stat-label">Classes</span>
+
+                        <strong class="stat-value">
+                            {{ academic.totalClasses }}
+                        </strong>
+                    </div>
+
+
+                    <div class="stat-item total-stat">
+                        <span class="stat-label">Sections</span>
+
+                        <strong class="stat-value">
+                            {{ academic.totalSections }}
+                        </strong>
+                    </div>
+
+
+                    <div class="stat-item total-stat">
+                        <span class="stat-label">Subjects</span>
+
+                        <strong class="stat-value">
+                            {{ academic.totalSubjects }}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- ---------------------------------------------------
+                 Current Academic Year
+                 --------------------------------------------------- -->
+
+                <div class="current-academic-year">
+
+                    <div class="current-year-info">
+
+                        <span class="current-year-label">
+                            Current Academic Year
+                        </span>
+
+                        <strong>
+                            {{ academic.currentAcademicYear || 'Not set' }}
+                        </strong>
+
+                    </div>
+
+
+                    @if (academic.currentAcademicYear) {
+
+                    <span class="current-year-badge">
+
+                        <span class="status-dot"></span>
+
+                        Current
+
+                    </span>
+
+                    }
+
+                </div>
+
+
+                <!-- =================================================
+                 Academic Information Area
+                 ================================================= -->
+
+                <div class="academic-content">
+
+
+                    <!-- =================================================
+                    CLASS → SECTION → SUBJECT HIERARCHY
+                    ================================================= -->
+
+                    <div class="academic-hierarchy">
+
+                        <!-- Panel Header -->
+                        <div class="content-title">
+
+                            <div>
+                                <strong>Academic Hierarchy</strong>
+
+                                <span>
+                                    Classes, sections & subjects
+                                </span>
+                            </div>
+
+                            <small>
+                                {{ academic.classes.length }} classes
+                            </small>
+
+                        </div>
+
+
+                        <!-- Class List -->
+                        <div class="class-list">
+
+                            @if (academic.classes.length === 0) {
+
+                            <div class="empty-academic-state">
+                                No classes found for the current academic year.
+                            </div>
+
+                            } @else {
+
+                            @for (
+                            classItem of academic.classes;
+                            track classItem.id
+                            ) {
+
+                            <!-- =================================================
+                            SINGLE CLASS ACCORDION ITEM
+
+                            Only one class can remain expanded because
+                            expandedClassId is controlled by Angular.
+                            ================================================= -->
+
+                            <div class="class-item" [class.expanded]="expandedClassId === classItem.id">
+
+
+                                <!-- Class Header -->
+                                <button type="button" class="class-header" (click)="toggleClass(classItem.id)">
+
+                                    <div class="class-title">
+
+                                        <span class="expand-icon">
+                                            ›
+                                        </span>
+
+                                        <strong>
+                                            {{ classItem.name }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <!-- Class Statistics -->
+                                    <div class="class-meta">
+
+                                        <span>
+                                            {{ classItem.sectionCount }}
+                                            {{
+                                            classItem.sectionCount === 1
+                                            ? 'section'
+                                            : 'sections'
+                                            }}
+                                        </span>
+
+                                        <span>
+                                            {{ classItem.subjectCount }}
+                                            {{
+                                            classItem.subjectCount === 1
+                                            ? 'subject'
+                                            : 'subjects'
+                                            }}
+                                        </span>
+
+                                    </div>
+
+                                </button>
+
+
+                                <!-- =================================================
+                                EXPANDED CLASS DETAILS
+                                ================================================= -->
+
+                                @if (expandedClassId === classItem.id) {
+
+                                <div class="class-details">
+
+
+                                    <!-- ---------------------------------------------
+                                    Sections
+                                    --------------------------------------------- -->
+
+                                    <div class="detail-group">
+
+                                        <span class="detail-label">
+                                            Sections
+                                        </span>
+
+
+                                        @if (classItem.sections.length > 0) {
+
+                                        <div class="section-chips">
+
+                                            @for (
+                                            section of classItem.sections;
+                                            track section.id
+                                            ) {
+
+                                            <span class="section-chip">
+                                                {{ section.name }}
+                                            </span>
+
+                                            }
+
+                                        </div>
+
+                                        } @else {
+
+                                        <span class="detail-empty">
+                                            No sections
+                                        </span>
+
+                                        }
+
+                                    </div>
+
+
+                                    <!-- ---------------------------------------------
+                                    Subjects
+                                    --------------------------------------------- -->
+
+                                    <div class="detail-group">
+
+                                        <span class="detail-label">
+                                            Subjects
+                                        </span>
+
+
+                                        @if (classItem.subjects.length > 0) {
+
+                                        <div class="subject-chips">
+
+                                            @for (
+                                            subject of classItem.subjects;
+                                            track subject.id
+                                            ) {
+
+                                            <span class="subject-chip" [title]="subject.code">
+                                                {{ subject.name }}
+                                            </span>
+
+                                            }
+
+                                        </div>
+
+                                        } @else {
+
+                                        <span class="detail-empty">
+                                            No subjects
+                                        </span>
+
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                                }
+
+                            </div>
+
+                            }
+
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                    SUBJECT COVERAGE
+
+                    Shows how widely each subject is used across
+                    the current academic year's classes.
+                    ================================================= -->
+
+                    <div class="subject-coverage">
+
+                        <!-- Panel Header -->
+                        <div class="content-title">
+
+                            <div>
+                                <strong>Subject Coverage</strong>
+
+                                <span>
+                                    Across current classes
+                                </span>
+                            </div>
+
+                            <small>
+                                {{ subjectCoverage.length }} subjects
+                            </small>
+
+                        </div>
+
+
+                        @if (subjectCoverage.length === 0) {
+
+                        <div class="empty-academic-state">
+                            No subject coverage data available.
+                        </div>
+
+                        } @else {
+
+                        <!-- Subject Coverage List -->
+                        <div class="coverage-list">
+
+                            @for (
+                            subject of subjectCoverage;
+                            track subject.name
+                            ) {
+
+                            <div class="coverage-item">
+
+
+                                <!-- Subject Name + Class Count -->
+                                <div class="coverage-header">
+
+                                    <span>
+                                        {{ subject.name }}
+                                    </span>
+
+                                    <strong>
+                                        {{ subject.classCount }}/{{ academic.totalClasses }}
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- Coverage Progress Bar -->
+                                <div class="coverage-bar">
+
+                                    <div class="coverage-progress" [style.width.%]="subject.percentage"></div>
+
+                                </div>
+
+
+                                <!-- Coverage Percentage -->
+                                <span class="coverage-percentage">
+                                    {{ subject.percentage }}%
+                                </span>
+
+                            </div>
+
+                            }
+
+                        </div>
+
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        }
+
+
+        <!-- =========================================================
+             ASSIGNMENTS CARD
+             ========================================================= -->
+
+        <div class="dashboard-section teacher-assignment-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Assignments</h2>
+                    <p>Overview of assignments created by teachers</p>
+                </div>
+
+                <button type="button" class="view-all-button" (click)="viewAllAssignments()">
+                    View All
+                    <span>→</span>
+                </button>
+
+            </div>
+
+            <div class="teacher-assignment-card">
+
+                @if (assignmentDashboard) {
+
+                <div class="teacher-assignment-stats">
+
+                    <div class="stat-item">
+                        <span class="stat-label">Total Assignments</span>
+
+                        <strong class="stat-value">
+                            {{ assignmentDashboard.totalAssignments }}
+                        </strong>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Teachers</span>
+
+                        <strong class="stat-value">
+                            {{ assignmentDashboard.assignedTeachers }}
+                        </strong>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Classes Covered</span>
+
+                        <strong class="stat-value">
+                            {{ assignmentDashboard.coveredClasses }}
+                        </strong>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-label">Subjects Covered</span>
+
+                        <strong class="stat-value">
+                            {{ assignmentDashboard.coveredSubjects }}
+                        </strong>
+                    </div>
+
+                </div>
+
+                @if (assignmentDashboard.currentAcademicYear) {
+
+                <div class="assignment-year">
+
+                    <span>Current Academic Year</span>
+
+                    <strong>
+                        {{ assignmentDashboard.currentAcademicYear }}
+                    </strong>
+
+                </div>
+
+                }
+
+                <div class="assignment-breakdown">
+
+                    <div class="content-title">
+
+                        <div>
+                            <strong>Assignments by Teacher</strong>
+                            <span>Number of assignments created by each teacher</span>
+                        </div>
+
+                    </div>
+
+                    @if (assignmentDashboard.assignmentsByTeacher.length > 0) {
+
+                    <div class="assignment-list">
+
+                        @for (
+                        teacher of assignmentDashboard.assignmentsByTeacher;
+                        track teacher.teacherId
+                        ) {
+
+                        <div class="assignment-row">
+
+                            <div class="assignment-teacher">
+
+                                <span class="teacher-name">
+                                    {{ teacher.teacherName }}
+                                </span>
+
+                                <span class="teacher-count">
+                                    {{ teacher.assignmentCount }}
+                                    {{
+                                    teacher.assignmentCount === 1
+                                    ? 'assignment'
+                                    : 'assignments'
+                                    }}
+                                </span>
+
+                            </div>
+
+                            <div class="assignment-progress">
+
+                                <div class="assignment-progress-fill" [style.width.%]="
+                                        assignmentDashboard!.totalAssignments > 0
+                                            ? (teacher.assignmentCount /
+                                                assignmentDashboard!.totalAssignments) * 100
+                                            : 0
+                                    "></div>
+
+                            </div>
+
+                        </div>
+
+                        }
+
+                    </div>
+
+                    } @else {
+
+                    <div class="empty-state">
+                        <span>No assignments available.</span>
+                    </div>
+
+                    }
+
+                </div>
+
+                } @else {
+
+                <div class="assignment-loading">
+                    Loading assignment data...
+                </div>
+
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================================
+     ATTENDANCE OVERVIEW
+     ========================================================= -->
+        <!-- =========================================================
+     ATTENDANCE OVERVIEW
+     ========================================================= -->
+
+        <section class="dashboard-section attendance-dashboard-section">
+
+            <!-- Section Header -->
+            <div class="section-header">
+                <div>
+                    <h2>Attendance</h2>
+                    <p>Institution-wide attendance overview</p>
+                </div>
+
+                <button type="button" class="view-all-button" (click)="viewAllAttendance()">
+                    View All
+                    <span>→</span>
+                </button>
+            </div>
+
+            @if (attendanceDashboard) {
+
+            <div class="attendance-dashboard-card">
+
+                <!-- =====================================================
+           TODAY'S SUMMARY
+           ===================================================== -->
+
+                <div class="attendance-summary-grid">
+
+                    <div class="attendance-summary-item">
+                        <span class="summary-label">Total Marked</span>
+                        <strong>{{ attendanceDashboard.totalMarked }}</strong>
+                        <small>Today</small>
+                    </div>
+
+                    <div class="attendance-summary-item attendance-summary-present">
+                        <span class="summary-label">Present</span>
+                        <strong>{{ attendanceDashboard.present }}</strong>
+                        <small>Students present</small>
+                    </div>
+
+                    <div class="attendance-summary-item attendance-summary-absent">
+                        <span class="summary-label">Absent</span>
+                        <strong>{{ attendanceDashboard.absent }}</strong>
+                        <small>Students absent</small>
+                    </div>
+
+                    <div class="attendance-summary-item attendance-summary-rate">
+                        <span class="summary-label">Attendance Rate</span>
+                        <strong>
+                            {{ attendanceDashboard.attendanceRate | number:'1.0-2' }}%
+                        </strong>
+                        <small>Today's rate</small>
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================================
+           TODAY'S PROGRESS
+           ===================================================== -->
+
+                <div class="attendance-today-progress">
+
+                    <div class="attendance-today-progress-header">
+                        <div>
+                            <span>Today's Attendance</span>
+                            <small>
+                                {{ attendanceDashboard.present }}
+                                present out of
+                                {{ attendanceDashboard.totalMarked }}
+                                marked
+                            </small>
+                        </div>
+
+                        <strong>
+                            {{ attendanceDashboard.attendanceRate | number:'1.0-2' }}%
+                        </strong>
+                    </div>
+
+                    <div class="attendance-progress">
+                        <div class="attendance-progress-fill" [style.width.%]="attendanceDashboard.attendanceRate">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================================
+           MONTHLY ANALYTICS
+           ===================================================== -->
+
+                <div class="attendance-analytics-grid">
+
+                    <!-- MONTHLY ATTENDANCE TREND -->
+                    <div class="attendance-panel attendance-trend-panel">
+
+                        <div class="attendance-panel-header">
+                            <div>
+                                <h3>Monthly Attendance Trend</h3>
+                                <p>Daily present and absent students</p>
+                            </div>
+
+                            <span class="attendance-chart-badge">
+                                Line Chart
+                            </span>
+                        </div>
+
+                        @if (attendanceDashboard.monthlyTrend.length > 0) {
+
+                        <div class="attendance-chart-wrapper attendance-line-chart-wrapper">
+
+                            <canvas baseChart [type]="'line'" [data]="attendanceTrendChartData"
+                                [options]="attendanceTrendChartOptions">
+                            </canvas>
+
+                        </div>
+
+                        } @else {
+
+                        <div class="attendance-panel-empty">
+                            No attendance records available for this month.
+                        </div>
+
+                        }
+
+                    </div>
+
+
+                    <!-- CLASS-WISE ATTENDANCE -->
+                    <div class="attendance-panel attendance-class-panel">
+
+                        <div class="attendance-panel-header">
+
+                            <div>
+                                <h3>Class-wise Attendance</h3>
+                                <p>Monthly attendance rate by class</p>
+                            </div>
+
+                            <span class="attendance-chart-badge">
+                                Bar Chart
+                            </span>
+
+                        </div>
+
+                        @if (attendanceDashboard.classSummaries.length > 0) {
+
+                        <div class="attendance-chart-wrapper attendance-class-chart-wrapper">
+
+                            <canvas baseChart [type]="'bar'" [data]="attendanceClassChartData"
+                                [options]="attendanceClassChartOptions">
+                            </canvas>
+
+                        </div>
+
+                        } @else {
+
+                        <div class="attendance-panel-empty">
+                            No class-wise attendance available.
+                        </div>
+
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================================
+           TODAY BY CLASS + MONTHLY BREAKDOWN
+           ===================================================== -->
+
+                <div class="attendance-lower-grid">
+
+                    <!-- TODAY BY CLASS -->
+                    <div class="attendance-panel attendance-by-class-panel">
+
+                        <div class="attendance-panel-header">
+                            <div>
+                                <h3>Today's Attendance by Class</h3>
+                                <p>Class-level attendance breakdown</p>
+                            </div>
+
+                            <span class="attendance-chart-badge">
+                                Overview
+                            </span>
+                        </div>
+
+                        @if (attendanceDashboard.classSummaries.length > 0) {
+
+                        <div class="attendance-class-table">
+
+                            <div class="attendance-table-header">
+                                <span>Class</span>
+                                <span>Present</span>
+                                <span>Absent</span>
+                                <span>Rate</span>
+                            </div>
+
+                            @for (
+                            classSummary of attendanceDashboard.classSummaries;
+                            track classSummary.classId
+                            ) {
+
+                            <div class="attendance-table-row">
+
+                                <span class="attendance-class-name">
+                                    {{ classSummary.className }}
+                                </span>
+
+                                <span class="attendance-present-value">
+                                    {{ classSummary.present }}
+                                </span>
+
+                                <span class="attendance-absent-value">
+                                    {{ classSummary.absent }}
+                                </span>
+
+                                <div class="attendance-table-rate">
+
+                                    <div class="mini-progress">
+                                        <div class="mini-progress-fill" [style.width.%]="classSummary.attendanceRate">
+                                        </div>
+                                    </div>
+
+                                    <strong>
+                                        {{ classSummary.attendanceRate | number:'1.0-0' }}%
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                            }
+
+                        </div>
+
+                        } @else {
+
+                        <div class="attendance-panel-empty">
+                            No class attendance recorded today.
+                        </div>
+
+                        }
+
+                    </div>
+
+
+
+                    <!-- MONTHLY COMPOSITION -->
+                    <div class="attendance-panel attendance-monthly-panel">
+
+                        <div class="attendance-panel-header">
+
+                            <div>
+                                <h3>Monthly Attendance</h3>
+                                <p>Present vs absent composition</p>
+                            </div>
+
+                            <span class="attendance-chart-badge">
+                                Doughnut
+                            </span>
+
+                        </div>
+
+                        @if (attendanceDashboard.selectedClassMonthlySummary) {
+
+                        <div class="attendance-chart-wrapper attendance-doughnut-chart-wrapper">
+
+                            <canvas baseChart [type]="'doughnut'" [data]="attendanceCompositionChartData"
+                                [options]="attendanceCompositionChartOptions">
+                            </canvas>
+
+                        </div>
+
+                        <div class="attendance-doughnut-summary">
+
+                            <div class="doughnut-summary-item present-summary">
+                                <span class="summary-dot"></span>
+
+                                <div>
+                                    <strong>
+                                        {{ attendanceDashboard.selectedClassMonthlySummary.present }}
+                                    </strong>
+                                    <small>Present</small>
+                                </div>
+                            </div>
+
+                            <div class="doughnut-summary-item absent-summary">
+                                <span class="summary-dot"></span>
+
+                                <div>
+                                    <strong>
+                                        {{ attendanceDashboard.selectedClassMonthlySummary.absent }}
+                                    </strong>
+                                    <small>Absent</small>
+                                </div>
+                            </div>
+
+                            <div class="doughnut-summary-total">
+                                <span>Total Marked</span>
+
+                                <strong>
+                                    {{ attendanceDashboard.selectedClassMonthlySummary.total }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        } @else {
+
+                        <div class="attendance-panel-empty">
+                            No monthly attendance data available.
+                        </div>
+
+                        }
+
+                    </div>
+
+                </div>
+
+                <!-- =====================================================
+     MONTHLY ATTENDANCE BY CLASS
+     ===================================================== -->
+
+                <div class="attendance-panel attendance-monthly-class-chart-panel">
+
+                    <div class="attendance-panel-header">
+
+                        <div>
+                            <h3>Monthly Attendance by Class</h3>
+                            <p>Present and absent student comparison</p>
+                        </div>
+
+                        <span class="attendance-chart-badge">
+                            Grouped Bar
+                        </span>
+
+                    </div>
+
+                    @if (attendanceDashboard.classSummaries.length > 0) {
+
+                    <div class="attendance-chart-wrapper attendance-monthly-class-chart-wrapper">
+
+                        <canvas baseChart [type]="'bar'" [data]="attendanceMonthlyClassChartData"
+                            [options]="attendanceMonthlyClassChartOptions">
+                        </canvas>
+
+                    </div>
+
+                    } @else {
+
+                    <div class="attendance-panel-empty">
+                        No monthly class attendance data available.
+                    </div>
+
+                    }
+
+                </div>
+
+                <!-- =====================================================
+           RECENT ATTENDANCE
+           ===================================================== -->
+
+                <div class="attendance-panel attendance-recent-panel">
+
+                    <div class="attendance-panel-header">
+                        <div>
+                            <h3>Recent Attendance</h3>
+                            <p>Latest attendance records</p>
+                        </div>
+
+                        <span class="attendance-chart-badge">
+                            Records
+                        </span>
+                    </div>
+
+                    @if (attendanceDashboard.recentRecords.length > 0) {
+
+                    <div class="attendance-recent-table">
+
+                        <div class="recent-table-header">
+                            <span>Student</span>
+                            <span>Class</span>
+                            <span>Section</span>
+                            <span>Date</span>
+                            <span>Status</span>
+                        </div>
+
+                        @for (
+                        record of attendanceDashboard.recentRecords;
+                        track record.studentId + '-' + record.attendanceDate
+                        ) {
+
+                        <div class="recent-table-row">
+
+                            <span>{{ record.studentName }}</span>
+
+                            <span>{{ record.className }}</span>
+
+                            <span>{{ record.sectionName }}</span>
+
+                            <span>
+                                {{ record.attendanceDate | date:'dd MMM yyyy' }}
+                            </span>
+
+                            <span class="attendance-status" [class.status-present]="record.status === 'PRESENT'"
+                                [class.status-absent]="record.status === 'ABSENT'">
+                                {{ record.status }}
+                            </span>
+
+                        </div>
+
+                        }
+
+                    </div>
+
+                    } @else {
+
+                    <div class="attendance-panel-empty">
+                        Recent attendance records will appear here.
+                    </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+            } @else {
+
+            <div class="dashboard-empty">
+                No attendance data available for today.
+            </div>
+
+            }
+
+        </section>
+
+        <!-- ==================== FINANCE ==================== -->
+<section class="dashboard-section finance-section">
+
+  <!-- Section Header -->
+  <div class="section-header finance-section-header">
+
+    <div>
+      <span class="section-eyebrow">FINANCE</span>
+      <h2>Fee & Collection Overview</h2>
+      <p>
+        Monitor fee collection, pending payments and class-wise financial performance.
+      </p>
+    </div>
+
+    <!-- ONE View All button -->
+    <button
+      type="button"
+      class="view-all-button"
+     (click)="viewAllFinance()"
+    >
+      View All
+      <span>→</span>
+    </button>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (financeLoading) {
+
+    <div class="finance-loading">
+      <div class="finance-loading-spinner"></div>
+      <span>Loading finance data...</span>
+    </div>
+
+  }
+
+  <!-- Error -->
+  @else if (financeError) {
+
+    <div class="finance-empty-state">
+      <span class="material-symbols-rounded">error</span>
+      <h3>Unable to load finance data</h3>
+      <p>Please try again later.</p>
+    </div>
+
+  }
+
+  <!-- Finance Data -->
+  @else if (financeDashboard) {
+
+    <!-- ==================== KPI CARDS ==================== -->
+    <div class="finance-kpi-grid">
+
+      <!-- Expected -->
+      <article class="finance-kpi-card expected">
+
+        <div class="finance-kpi-icon">
+          <span class="material-symbols-rounded">account_balance_wallet</span>
+        </div>
+
+        <div class="finance-kpi-content">
+          <span class="finance-kpi-label">Expected Fee</span>
+
+          <strong>
+            ₹{{ financeDashboard.totalExpected | number:'1.0-0' }}
+          </strong>
+
+          <small>Current academic year</small>
+        </div>
+
+      </article>
+
+
+      <!-- Collected -->
+      <article class="finance-kpi-card collected">
+
+        <div class="finance-kpi-icon">
+          <span class="material-symbols-rounded">payments</span>
+        </div>
+
+        <div class="finance-kpi-content">
+          <span class="finance-kpi-label">Collected</span>
+
+          <strong>
+            ₹{{ financeDashboard.totalCollected | number:'1.0-0' }}
+          </strong>
+
+          <small>
+            {{ financeDashboard.collectionPercentage }}% collected
+          </small>
+        </div>
+
+      </article>
+
+
+      <!-- Pending -->
+      <article class="finance-kpi-card pending">
+
+        <div class="finance-kpi-icon">
+          <span class="material-symbols-rounded">pending_actions</span>
+        </div>
+
+        <div class="finance-kpi-content">
+          <span class="finance-kpi-label">Pending</span>
+
+          <strong>
+            ₹{{ financeDashboard.totalPending | number:'1.0-0' }}
+          </strong>
+
+          <small>
+            {{ financeDashboard.pendingStudents }} students
+          </small>
+        </div>
+
+      </article>
+
+
+      <!-- Discount -->
+      <article class="finance-kpi-card discount">
+
+        <div class="finance-kpi-icon">
+          <span class="material-symbols-rounded">local_offer</span>
+        </div>
+
+        <div class="finance-kpi-content">
+          <span class="finance-kpi-label">Discount Given</span>
+
+          <strong>
+            ₹{{ financeDashboard.totalDiscount | number:'1.0-0' }}
+          </strong>
+
+          <small>Payment discounts</small>
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <!-- ==================== MAIN FINANCE VISUALS ==================== -->
+    <div class="finance-main-grid">
+
+      <!-- Collection Progress -->
+      <article class="finance-chart-card finance-collection-card">
+
+        <div class="finance-card-header">
+          <div>
+            <span class="finance-card-label">COLLECTION STATUS</span>
+            <h3>Overall Collection</h3>
+          </div>
+
+          <span class="finance-status-badge">
+            {{ financeDashboard.collectionPercentage }}%
+          </span>
+        </div>
+
+
+        <div class="finance-progress-visual">
+
+          <div
+            class="finance-donut"
+            [style.--collection]="financeDashboard.collectionPercentage + '%'"
+          >
+            <div class="finance-donut-inner">
+              <strong>
+                {{ financeDashboard.collectionPercentage }}%
+              </strong>
+              <span>Collected</span>
+            </div>
+          </div>
+
+
+          <div class="finance-collection-details">
+
+            <div class="finance-detail-row">
+              <span>
+                <i class="legend-dot expected"></i>
+                Expected
+              </span>
+
+              <strong>
+                ₹{{ financeDashboard.totalExpected | number:'1.0-0' }}
+              </strong>
+            </div>
+
+            <div class="finance-detail-row">
+              <span>
+                <i class="legend-dot collected"></i>
+                Collected
+              </span>
+
+              <strong>
+                ₹{{ financeDashboard.totalCollected | number:'1.0-0' }}
+              </strong>
+            </div>
+
+            <div class="finance-detail-row">
+              <span>
+                <i class="legend-dot pending"></i>
+                Pending
+              </span>
+
+              <strong>
+                ₹{{ financeDashboard.totalPending | number:'1.0-0' }}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- Student Payment Status -->
+      <article class="finance-chart-card student-payment-card">
+
+        <div class="finance-card-header">
+          <div>
+            <span class="finance-card-label">STUDENT STATUS</span>
+            <h3>Fee Payment Status</h3>
+          </div>
+        </div>
+
+
+        <div class="student-status-summary">
+
+          <div class="student-status-total">
+            <strong>
+              {{ financeDashboard.totalStudents }}
+            </strong>
+            <span>Total Students</span>
+          </div>
+
+          <div class="student-status-list">
+
+            <div class="student-status-item paid">
+              <div class="student-status-item-top">
+                <span>
+                  <i></i>
+                  Fully Paid
+                </span>
+
+                <strong>
+                  {{ financeDashboard.fullyPaidStudents }}
+                </strong>
+              </div>
+
+              <div class="student-status-bar">
+                <span
+                  [style.width.%]="
+                    financeDashboard.totalStudents
+                      ? (financeDashboard.fullyPaidStudents /
+                         financeDashboard.totalStudents) * 100
+                      : 0
+                  "
+                ></span>
+              </div>
+            </div>
+
+
+            <div class="student-status-item pending">
+              <div class="student-status-item-top">
+                <span>
+                  <i></i>
+                  Pending
+                </span>
+
+                <strong>
+                  {{ financeDashboard.pendingStudents }}
+                </strong>
+              </div>
+
+              <div class="student-status-bar">
+                <span
+                  [style.width.%]="
+                    financeDashboard.totalStudents
+                      ? (financeDashboard.pendingStudents /
+                         financeDashboard.totalStudents) * 100
+                      : 0
+                  "
+                ></span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <!-- ==================== CLASS-WISE COLLECTION ==================== -->
+    <article class="finance-chart-card finance-class-card">
+
+      <div class="finance-card-header">
+
+        <div>
+          <span class="finance-card-label">CLASS PERFORMANCE</span>
+          <h3>Class-wise Fee Collection</h3>
+          <p>Compare collected and pending fees across classes.</p>
+        </div>
+
+      </div>
+
+
+      <div class="finance-class-chart">
+
+        @for (item of financeDashboard.classWiseSummary; track item.classId) {
+
+          <div class="class-finance-row">
+
+            <div class="class-finance-name">
+              <strong>{{ item.className }}</strong>
+              <span>{{ item.collectionPercentage }}% collected</span>
+            </div>
+
+
+            <div class="class-finance-values">
+
+              <div class="class-finance-value collected">
+                <span>Collected</span>
+                <strong>
+                  ₹{{ item.collectedAmount | number:'1.0-0' }}
+                </strong>
+              </div>
+
+              <div class="class-finance-value pending">
+                <span>Pending</span>
+                <strong>
+                  ₹{{ item.pendingAmount | number:'1.0-0' }}
+                </strong>
+              </div>
+
+            </div>
+
+
+            <div class="class-finance-progress">
+
+              <div class="class-finance-progress-track">
+
+                <span
+                  class="class-finance-progress-collected"
+                  [style.width.%]="item.collectionPercentage"
+                ></span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+        @if (financeDashboard.classWiseSummary.length === 0) {
+
+          <div class="finance-no-data">
+            No class-wise finance data available.
+          </div>
+
+        }
+
+      </div>
+
+    </article>
+
+
+    <!-- ==================== MONTHLY COLLECTION ==================== -->
+    <article class="finance-chart-card finance-monthly-card">
+
+      <div class="finance-card-header">
+
+        <div>
+          <span class="finance-card-label">COLLECTION TREND</span>
+          <h3>Monthly Collection</h3>
+          <p>Track how fee collection changes throughout the academic year.</p>
+        </div>
+
+        <div class="finance-monthly-total">
+          <span>Total Collected</span>
+          <strong>
+            ₹{{ financeDashboard.totalCollected | number:'1.0-0' }}
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="finance-monthly-chart">
+
+        @for (
+          item of financeDashboard.monthlySummary;
+          track item.month
+        ) {
+
+          <div class="monthly-column">
+
+            <div class="monthly-column-value">
+              ₹{{ item.collectedAmount | number:'1.0-0' }}
+            </div>
+
+            <div class="monthly-column-track">
+
+              <span
+                [style.height.%]="
+                  financeDashboard.totalCollected
+                    ? (item.collectedAmount /
+                       financeDashboard.totalCollected) * 100
+                    : 0
+                "
+              ></span>
+
+            </div>
+
+            <span class="monthly-column-label">
+              {{ item.monthName.substring(0, 3) }}
+            </span>
+
+          </div>
+
+        }
+
+        @if (financeDashboard.monthlySummary.length === 0) {
+
+          <div class="finance-no-data">
+            No monthly collection data available.
+          </div>
+
+        }
+
+      </div>
+
+    </article>
+
+  }
+
+</section>
+<!-- ==================== END FINANCE ==================== -->
+
+
+
+    </section>
+
+    }
+
+</div>

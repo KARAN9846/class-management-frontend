@@ -36,24 +36,48 @@ export class StudentService {
   // GET STUDENTS
   // =========================
 
-  getStudents(
-    page = 0,
-    size = 10,
-    search = ''
-  ): Observable<ApiResponse<StudentPage>> {
+getStudents(
+  page = 0,
+  size = 10,
+  search = '',
+  academicYearId?: number,
+  classId?: number,
+  sectionId?: number
+): Observable<ApiResponse<StudentPage>> {
 
-    const params = new HttpParams()
-      .set('page', page)
-      .set('size', size)
-      .set('search', search)
-      .set('sortBy', 'firstName')
-      .set('sortDirection', 'asc');
+  let params = new HttpParams()
+    .set('page', page)
+    .set('size', size)
+    .set('search', search)
+    .set('sortBy', 'firstName')
+    .set('sortDirection', 'asc');
 
-    return this.api.get<ApiResponse<StudentPage>>(
-      '/students',
-      params
+  if (academicYearId != null) {
+    params = params.set(
+      'academicYearId',
+      academicYearId
     );
   }
+
+  if (classId != null) {
+    params = params.set(
+      'classId',
+      classId
+    );
+  }
+
+  if (sectionId != null) {
+    params = params.set(
+      'sectionId',
+      sectionId
+    );
+  }
+
+  return this.api.get<ApiResponse<StudentPage>>(
+    '/students',
+    params
+  );
+}
 
 
   // =========================

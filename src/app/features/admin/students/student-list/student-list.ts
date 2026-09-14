@@ -14,6 +14,15 @@ import { SearchInputComponent } from '../../../../shared/components/search-input
 import { Student } from '../models/student.model';
 import { StudentService } from '../services/student.service';
 
+import { AcademicYearService } from '../../academic/academic-years/services/academic-year.service';
+import { AcademicYear } from '../../academic/academic-years/academic-year.model';
+
+import { ClassService } from '../../academic/classes/class.service';
+import { AcademicClass } from '../../academic/classes/class.model';
+
+import { SectionService } from '../../academic/classes/section.service';
+import { Section } from '../../academic/classes/section.model';
+
 @Component({
   selector: 'app-student-list',
   standalone: true,
@@ -33,6 +42,9 @@ export class StudentList implements OnInit {
 
   private readonly studentService = inject(StudentService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly academicYearService = inject(AcademicYearService);
+private readonly classService = inject(ClassService);
+private readonly sectionService = inject(SectionService);
 
   students: Student[] = [];
 
@@ -40,6 +52,18 @@ export class StudentList implements OnInit {
   errorMessage = '';
 
   search = '';
+
+  // =========================
+// FILTERS
+// =========================
+
+academicYears: AcademicYear[] = [];
+classes: AcademicClass[] = [];
+sections: Section[] = [];
+
+selectedAcademicYearId: number | null = null;
+selectedClassId: number | null = null;
+selectedSectionId: number | null = null;
 
   page = 0;
   size = 10;
@@ -65,36 +89,40 @@ export class StudentList implements OnInit {
   // =========================
 
   columns: TableColumn[] = [
-    {
-      key: 'id',
-      label: 'ID'
-    },
-      {
+  {
+    key: 'id',
+    label: 'ID'
+  },
+  {
     key: 'rollNumber',
     label: 'Roll No.'
   },
-    {
-      key: 'firstName',
-      label: 'First Name'
-    },
-    {
-      key: 'lastName',
-      label: 'Last Name'
-    },
-    {
-      key: 'email',
-      label: 'Email'
-    },
-    {
-      key: 'phone',
-      label: 'Phone'
-    },
-    {
-      key: 'isActive',
-      label: 'Status',
-      type: 'status'
-    }
-  ];
+  {
+    key: 'firstName',
+    label: 'First Name'
+  },
+  {
+    key: 'lastName',
+    label: 'Last Name'
+  },
+  {
+    key: 'academicYearName',
+    label: 'Academic Year'
+  },
+{
+  key: 'className',
+  label: 'Class'
+},
+{
+  key: 'sectionName',
+  label: 'Section'
+},
+  {
+    key: 'isActive',
+    label: 'Status',
+    type: 'status'
+  }
+];
 
 
   // =========================
@@ -121,13 +149,119 @@ export class StudentList implements OnInit {
   // INIT
   // =========================
 
-  ngOnInit(): void {
+ ngOnInit(): void {
 
-   
+  this.loadAcademicYears();
+  this.loadClasses();
+  this.loadStudents();
 
-    this.loadStudents();
+}
 
+// =========================
+// LOAD ACADEMIC YEARS
+// =========================
+
+loadAcademicYears(): void {
+
+  this.academicYearService
+    .getAll()
+    .subscribe({
+
+      next: (response) => {
+
+        this.academicYears =
+          response.data.content;
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to load academic years:',
+          error
+        );
+
+        this.academicYears = [];
+
+      }
+
+    });
+
+}
+
+
+// =========================
+// LOAD CLASSES
+// =========================
+
+loadClasses(): void {
+
+  this.classService
+    .getClasses()
+    .subscribe({
+
+      next: (response) => {
+
+        this.classes =
+          response.data;
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to load classes:',
+          error
+        );
+
+        this.classes = [];
+
+      }
+
+    });
+
+}
+
+
+// =========================
+// LOAD SECTIONS
+// =========================
+
+loadSections(): void {
+
+  this.sections = [];
+
+  this.selectedSectionId = null;
+
+  if (this.selectedClassId === null) {
+    return;
   }
+
+  this.sectionService
+    .getSections(this.selectedClassId)
+    .subscribe({
+
+      next: (response) => {
+
+        this.sections =
+          response.data;
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to load sections:',
+          error
+        );
+
+        this.sections = [];
+
+      }
+
+    });
+
+}
 
 
   // =========================
@@ -141,12 +275,15 @@ export class StudentList implements OnInit {
 
     this.cdr.detectChanges();
 
-    this.studentService
-      .getStudents(
-        this.page,
-        this.size,
-        this.search
-      )
+this.studentService
+  .getStudents(
+    this.page,
+    this.size,
+    this.search,
+    this.selectedAcademicYearId ?? undefined,
+    this.selectedClassId ?? undefined,
+    this.selectedSectionId ?? undefined
+  )
       .subscribe({
 
         next: (response) => {
@@ -201,6 +338,110 @@ export class StudentList implements OnInit {
     this.loadStudents();
 
   }
+
+  // =========================
+// ACADEMIC YEAR FILTER
+// =========================
+
+onAcademicYearChange(
+  value: string
+): void {
+
+  this.selectedAcademicYearId =
+    value
+      ? Number(value)
+      : null;
+
+  this.selectedClassId = null;
+  this.selectedSectionId = null;
+
+  this.sections = [];
+
+  this.page = 0;
+
+  this.loadStudents();
+
+}
+
+get filteredClasses(): AcademicClass[] {
+
+  if (this.selectedAcademicYearId === null) {
+    return this.classes;
+  }
+
+  return this.classes.filter(
+    classItem =>
+      classItem.academicYearId ===
+      this.selectedAcademicYearId
+  );
+
+}
+
+// =========================
+// CLASS FILTER
+// =========================
+
+onClassChange(
+  value: string
+): void {
+
+  this.selectedClassId =
+    value
+      ? Number(value)
+      : null;
+
+  this.selectedSectionId = null;
+
+  this.sections = [];
+
+  if (this.selectedClassId !== null) {
+    this.loadSections();
+  }
+
+  this.page = 0;
+
+  this.loadStudents();
+
+}
+
+
+// =========================
+// SECTION FILTER
+// =========================
+
+onSectionChange(
+  value: string
+): void {
+
+  this.selectedSectionId =
+    value
+      ? Number(value)
+      : null;
+
+  this.page = 0;
+
+  this.loadStudents();
+
+}
+
+
+// =========================
+// CLEAR FILTERS
+// =========================
+
+clearFilters(): void {
+
+  this.selectedAcademicYearId = null;
+  this.selectedClassId = null;
+  this.selectedSectionId = null;
+
+  this.sections = [];
+
+  this.page = 0;
+
+  this.loadStudents();
+
+}
 
 
   // =========================

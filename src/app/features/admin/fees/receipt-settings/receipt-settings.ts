@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../environments/environment';
 
 import { ReceiptSettingsService } from '../services/receipt-settings.service';
 import {
@@ -308,6 +309,6 @@ private uploadFile(
       ? path
       : `/${path}`;
 
-    return `http://localhost:8080${normalizedPath}`;
+    return `${environment.apiBaseUrl.replace('/api/v1', '')}${normalizedPath}`;
   }
 }

@@ -6,6 +6,15 @@ export interface Student {
   email: string;
   phone: string;
   isActive: boolean;
+
+  academicYearId: number;
+  academicYearName: string;
+
+  classId: number;
+  className: string;
+
+  sectionId: number;
+  sectionName: string;
 }
 
 export interface StudentDetails extends Student {

@@ -1,0 +1,1873 @@
+/* =========================================================
+   STUDENTS INSIDER
+   ========================================================= */
+
+.students-insider {
+  width: 100%;
+  max-width: 1600px;
+
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.insider-header {
+  margin-bottom: 28px;
+}
+
+.insider-header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+}
+
+.eyebrow,
+.section-eyebrow,
+.card-eyebrow {
+  display: block;
+
+  font-size: 10px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  color: #64748b;
+}
+
+.insider-header h1 {
+  margin: 6px 0;
+
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 700;
+
+  letter-spacing: -0.02em;
+
+  color: #0f172a;
+}
+
+.insider-header p {
+  margin: 0;
+
+  font-size: 14px;
+  line-height: 1.6;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   GLOBAL FILTER CARD
+   ========================================================= */
+
+.filter-card {
+  padding: 22px;
+
+  margin-bottom: 32px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.04);
+
+  box-sizing: border-box;
+}
+
+.filter-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+.filter-header h2 {
+  margin: 0 0 4px;
+
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+.filter-header p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #64748b;
+}
+
+.filter-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  min-width: 0;
+}
+
+.filter-field label {
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+
+  color: #475569;
+}
+
+.filter-field select {
+  width: 100%;
+  height: 42px;
+
+  padding: 0 12px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 13px;
+
+  color: #0f172a;
+
+  outline: none;
+
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.filter-field select:hover {
+  border-color: #94a3b8;
+}
+
+.filter-field select:focus {
+  border-color: #64748b;
+
+  box-shadow:
+    0 0 0 3px rgba(100, 116, 139, 0.08);
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.reset-button,
+.secondary-button,
+.primary-button {
+  height: 40px;
+
+  padding: 0 16px;
+
+  border-radius: 8px;
+
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.reset-button,
+.secondary-button {
+  border: 1px solid #cbd5e1;
+
+  background: #ffffff;
+
+  color: #334155;
+}
+
+.reset-button:hover,
+.secondary-button:hover {
+  background: #f8fafc;
+
+  border-color: #94a3b8;
+}
+
+.primary-button {
+  border: 1px solid #0f172a;
+
+  background: #0f172a;
+
+  color: #ffffff;
+}
+
+.primary-button:hover {
+  background: #1e293b;
+
+  border-color: #1e293b;
+
+  box-shadow:
+    0 2px 6px rgba(15, 23, 42, 0.12);
+}
+
+.reset-button:disabled,
+.secondary-button:disabled,
+.primary-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   ANALYTICS SECTION
+   ========================================================= */
+
+.analytics-section {
+  margin-bottom: 36px;
+}
+
+.section-heading {
+  margin-bottom: 18px;
+}
+
+.section-heading h2 {
+  margin: 5px 0;
+
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  letter-spacing: -0.01em;
+
+  color: #0f172a;
+}
+
+.section-heading p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   KPI GRID
+   ========================================================= */
+
+.kpi-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+
+/* =========================================================
+   KPI CARD
+   ========================================================= */
+
+.kpi-card {
+  position: relative;
+
+  min-width: 0;
+  min-height: 145px;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.04);
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.kpi-card:hover {
+  border-color: #cbd5e1;
+
+  box-shadow:
+    0 5px 16px rgba(15, 23, 42, 0.06);
+
+  transform: translateY(-1px);
+}
+
+.kpi-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.kpi-label {
+  min-width: 0;
+
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 600;
+
+  color: #64748b;
+}
+
+.kpi-icon {
+  width: 30px;
+  height: 30px;
+
+  flex: 0 0 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #f1f5f9;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #475569;
+}
+
+.kpi-value {
+  display: block;
+
+  margin-top: 14px;
+
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 700;
+
+  letter-spacing: -0.02em;
+
+  color: #0f172a;
+}
+
+.kpi-description {
+  display: block;
+
+  margin-top: 12px;
+
+  font-size: 12px;
+  line-height: 1.4;
+
+  color: #94a3b8;
+}
+
+
+/* =========================================================
+   POPULATION / GROWTH
+   ========================================================= */
+
+.population-kpis {
+  margin-top: 20px;
+}
+
+.population-kpis .mini-stat-card {
+  min-height: 150px;
+}
+
+.population-kpis .mini-stat-description {
+  display: block;
+
+  margin-top: 8px;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   STUDENT DISTRIBUTION
+   ========================================================= */
+
+.distribution-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   ANALYTICS CARD
+   ========================================================= */
+
+.analytics-card {
+  min-width: 0;
+
+  padding: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.04);
+
+  box-sizing: border-box;
+}
+
+.analytics-grid .analytics-card {
+  min-height: 260px;
+}
+
+
+/* =========================================================
+   ANALYTICS CARD HEADER
+   ========================================================= */
+
+.analytics-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 20px;
+}
+
+.analytics-card-eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 10px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  color: #64748b;
+}
+
+.analytics-card-header h3 {
+  margin: 0;
+
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 600;
+
+  color: #0f172a;
+}
+
+.analytics-card-value {
+  flex: 0 0 auto;
+
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+
+/* =========================================================
+   DISTRIBUTION LIST
+   ========================================================= */
+
+.distribution-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.distribution-row {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.distribution-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.distribution-name {
+  min-width: 0;
+
+  overflow: hidden;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  color: #334155;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.distribution-count,
+.distribution-value {
+  flex: 0 0 auto;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  color: #475569;
+}
+
+
+/* =========================================================
+   DISTRIBUTION BARS
+   ========================================================= */
+
+.distribution-bar {
+  width: 100%;
+  height: 7px;
+
+  overflow: hidden;
+
+  background: #e2e8f0;
+
+  border-radius: 999px;
+}
+
+.distribution-bar-fill {
+  display: block;
+
+  height: 100%;
+  min-width: 2px;
+
+  background: #2563eb;
+
+  border-radius: inherit;
+
+  transition:
+    width 0.3s ease;
+}
+
+
+/*
+ * These classes work when the corresponding class is
+ * applied to .distribution-bar-fill.
+ */
+
+.distribution-bar-fill.excellent {
+  background: #16a34a;
+}
+
+.distribution-bar-fill.good {
+  background: #2563eb;
+}
+
+.distribution-bar-fill.needs-attention {
+  background: #f59e0b;
+}
+
+.distribution-bar-fill.no-data {
+  background: #94a3b8;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+  min-height: 120px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  padding: 20px;
+
+  text-align: center;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #64748b;
+
+  background: #f8fafc;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+
+  box-sizing: border-box;
+}
+
+.empty-state strong {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #334155;
+}
+
+.empty-state span {
+  font-size: 12px;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   GENERAL CARD HEADER
+   ========================================================= */
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 18px;
+}
+
+.card-eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 10px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  color: #64748b;
+}
+
+.card-header h3 {
+  margin: 0;
+
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+
+/* =========================================================
+   ATTENDANCE KPI
+   ========================================================= */
+
+.attendance-kpis {
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+}
+
+.mini-stat-card {
+  min-width: 0;
+
+  padding: 18px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.035);
+
+  box-sizing: border-box;
+}
+
+.mini-stat-label {
+  display: block;
+
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 600;
+
+  color: #64748b;
+}
+
+.mini-stat-card strong {
+  display: block;
+
+  margin-top: 10px;
+
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+
+/* =========================================================
+   ATTENDANCE TREND CHART
+   ========================================================= */
+
+.attendance-trend-chart {
+  position: relative;
+
+  width: 100%;
+  height: 320px;
+
+  min-height: 260px;
+}
+
+.attendance-trend-chart canvas {
+  display: block;
+
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+/* =========================================================
+   FINANCE KPI
+   ========================================================= */
+
+.finance-kpis {
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  margin-bottom: 16px;
+}
+
+.finance-card {
+  min-width: 0;
+  min-height: 120px;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.035);
+
+  box-sizing: border-box;
+}
+
+.finance-label {
+  display: block;
+
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 600;
+
+  color: #64748b;
+}
+
+.finance-card strong {
+  display: block;
+
+  margin-top: 12px;
+
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 700;
+
+  color: #0f172a;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   CROSS ANALYSIS
+   ========================================================= */
+
+.cross-analysis-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+.cross-card {
+  min-width: 0;
+
+  padding: 18px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.035);
+
+  box-sizing: border-box;
+}
+
+.cross-card.high {
+  border-color: #fecaca;
+
+  background: #fffafa;
+}
+
+.cross-card.warning {
+  border-color: #fde68a;
+
+  background: #fffdf5;
+}
+
+.cross-label {
+  display: block;
+
+  min-height: 32px;
+
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 700;
+
+  color: #475569;
+}
+
+.cross-card strong {
+  display: block;
+
+  margin-top: 12px;
+
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+.cross-card.high strong {
+  color: #dc2626;
+}
+
+.cross-card.warning strong {
+  color: #b45309;
+}
+
+.cross-card p {
+  margin: 10px 0 0;
+
+  font-size: 11px;
+  line-height: 1.5;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   REPORT SECTION
+   ========================================================= */
+
+.report-section {
+  position: relative;
+
+  margin-top: 36px;
+}
+
+.report-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-bottom: 18px;
+}
+
+.report-header h2 {
+  margin: 5px 0;
+
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  letter-spacing: -0.01em;
+
+  color: #0f172a;
+}
+
+.report-header p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #64748b;
+}
+
+.report-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  flex: 0 0 auto;
+}
+
+
+/* =========================================================
+   COLUMN BUTTON
+   ========================================================= */
+
+.column-button {
+  height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 13px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #475569;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.column-button:hover {
+  background: #f8fafc;
+
+  border-color: #94a3b8;
+
+  color: #334155;
+}
+
+.column-button span {
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   FINANCE STATUS
+   ========================================================= */
+
+.finance-status-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+.finance-status-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  min-width: 0;
+
+  padding: 15px 16px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+
+  box-sizing: border-box;
+}
+
+.finance-status-card span {
+  min-width: 0;
+
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 600;
+
+  color: #64748b;
+}
+
+.finance-status-card strong {
+  flex: 0 0 auto;
+
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+
+/* =========================================================
+   REPORT FILTER CARD
+   ========================================================= */
+
+.report-filter-card {
+  display: grid;
+
+  grid-template-columns:
+    minmax(260px, 1.35fr)
+    minmax(0, 2fr)
+    auto;
+
+  align-items: end;
+
+  gap: 14px;
+
+  padding: 16px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.035);
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   REPORT SEARCH
+   ========================================================= */
+
+.report-search {
+  min-width: 0;
+}
+
+.report-search label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  font-size: 11px;
+  line-height: 1.3;
+  font-weight: 600;
+
+  color: #64748b;
+}
+
+.report-search input {
+  width: 100%;
+  height: 38px;
+
+  padding: 0 12px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 12px;
+
+  color: #0f172a;
+
+  outline: none;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.report-search input::placeholder {
+  color: #94a3b8;
+}
+
+.report-search input:hover {
+  border-color: #94a3b8;
+}
+
+.report-search input:focus {
+  border-color: #64748b;
+
+  box-shadow:
+    0 0 0 3px rgba(100, 116, 139, 0.08);
+}
+
+
+/* =========================================================
+   REPORT FILTER GRID
+   ========================================================= */
+
+.report-filter-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(130px, 1fr));
+
+  gap: 12px;
+
+  min-width: 0;
+}
+
+.report-filter-grid .filter-field {
+  gap: 6px;
+}
+
+.report-filter-grid .filter-field select {
+  height: 38px;
+
+  font-size: 12px;
+}
+
+.report-filter-actions {
+  display: flex;
+  align-items: flex-end;
+
+  min-width: max-content;
+}
+
+
+/* =========================================================
+   COLUMN MENU
+   ========================================================= */
+
+.column-menu {
+  position: absolute;
+
+  top: 62px;
+  right: 0;
+
+  z-index: 50;
+
+  width: 220px;
+
+  padding: 10px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.12);
+
+  box-sizing: border-box;
+}
+
+.column-menu-header {
+  padding: 6px 8px 9px;
+
+  margin-bottom: 4px;
+
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.column-menu-header strong {
+  font-size: 12px;
+  font-weight: 700;
+
+  color: #334155;
+}
+
+.column-option {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 8px;
+
+  border-radius: 6px;
+
+  font-size: 12px;
+
+  color: #334155;
+
+  cursor: pointer;
+
+  transition:
+    background 0.12s ease;
+}
+
+.column-option:hover {
+  background: #f8fafc;
+}
+
+.column-option input {
+  width: 14px;
+  height: 14px;
+
+  margin: 0;
+
+  cursor: pointer;
+}
+
+.column-option span {
+  min-width: 0;
+
+  line-height: 1.3;
+}
+
+
+/* =========================================================
+   REPORT TABLE CARD
+   ========================================================= */
+
+.report-table-card {
+  margin-top: 14px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.035);
+}
+
+
+/* =========================================================
+   REPORT LOADING
+   ========================================================= */
+
+.report-loading {
+  min-height: 260px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  font-size: 12px;
+
+  color: #64748b;
+}
+
+.loading-spinner {
+  width: 17px;
+  height: 17px;
+
+  flex: 0 0 17px;
+
+  border: 2px solid #e2e8f0;
+  border-top-color: #475569;
+
+  border-radius: 50%;
+
+  animation:
+    students-insider-spin 0.7s linear infinite;
+}
+
+@keyframes students-insider-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   TABLE WRAPPER
+   ========================================================= */
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+
+  box-sizing: border-box;
+
+  scrollbar-width: thin;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  height: 7px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+
+  border-radius: 999px;
+}
+
+
+/* =========================================================
+   REPORT TABLE
+   ========================================================= */
+
+.table-wrapper table {
+  width: 100%;
+
+  min-width: 950px;
+
+  border-collapse: collapse;
+
+  table-layout: auto;
+}
+
+.table-wrapper th {
+  padding: 12px 14px;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  background: #f8fafc;
+
+  font-size: 10px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  text-align: left;
+
+  white-space: nowrap;
+
+  color: #64748b;
+}
+
+.table-wrapper td {
+  padding: 12px 14px;
+
+  border-bottom: 1px solid #f1f5f9;
+
+  font-size: 12px;
+  line-height: 1.4;
+
+  white-space: nowrap;
+
+  color: #334155;
+}
+
+.table-wrapper tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table-wrapper tbody tr {
+  transition:
+    background 0.12s ease;
+}
+
+.table-wrapper tbody tr:hover {
+  background: #fafafa;
+}
+
+
+/* =========================================================
+   STUDENT CELL
+   ========================================================= */
+
+.student-cell {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 160px;
+
+  gap: 2px;
+}
+
+.student-cell strong {
+  display: block;
+
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 600;
+
+  color: #0f172a;
+}
+
+.student-cell span {
+  display: block;
+
+  font-size: 10px;
+  line-height: 1.4;
+
+  color: #94a3b8;
+}
+
+
+/* =========================================================
+   ATTENDANCE BADGE
+   ========================================================= */
+
+.attendance-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 54px;
+  min-height: 24px;
+
+  padding: 0 8px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 700;
+
+  box-sizing: border-box;
+}
+
+.attendance-badge.excellent {
+  background: #f0fdf4;
+
+  color: #15803d;
+}
+
+.attendance-badge.good {
+  background: #eff6ff;
+
+  color: #1d4ed8;
+}
+
+.attendance-badge.low {
+  background: #fffbeb;
+
+  color: #b45309;
+}
+
+.attendance-badge.no-data {
+  background: #f1f5f9;
+
+  color: #94a3b8;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.status-badge,
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 24px;
+
+  padding: 0 8px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 700;
+
+  letter-spacing: 0.02em;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   FEE STATUS
+   ========================================================= */
+
+.status-badge.paid {
+  background: #f0fdf4;
+
+  color: #15803d;
+}
+
+.status-badge.partially_paid {
+  background: #fffbeb;
+
+  color: #b45309;
+}
+
+.status-badge.unpaid {
+  background: #fef2f2;
+
+  color: #dc2626;
+}
+
+
+/* =========================================================
+   STUDENT STATUS
+   ========================================================= */
+
+.status-badge.active {
+  background: #f0fdf4;
+
+  color: #15803d;
+}
+
+.status-badge.inactive {
+  background: #f1f5f9;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   RISK BADGES
+   ========================================================= */
+
+.risk-badge.low {
+  background: #f0fdf4;
+
+  color: #15803d;
+}
+
+.risk-badge.medium {
+  background: #fffbeb;
+
+  color: #b45309;
+}
+
+.risk-badge.high {
+  background: #fef2f2;
+
+  color: #dc2626;
+}
+
+
+/* =========================================================
+   TABLE EMPTY
+   ========================================================= */
+
+.table-empty {
+  padding: 0 !important;
+
+  text-align: center;
+}
+
+.table-empty .empty-state {
+  min-height: 180px;
+
+  border: 0;
+
+  border-radius: 0;
+}
+
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding-top: 14px;
+
+  font-size: 12px;
+
+  color: #64748b;
+}
+
+.pagination-info {
+  white-space: nowrap;
+}
+
+.pagination-info strong {
+  font-weight: 700;
+
+  color: #334155;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.pagination-controls button {
+  height: 34px;
+
+  padding: 0 12px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #475569;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background: #f8fafc;
+
+  border-color: #94a3b8;
+
+  color: #334155;
+}
+
+.pagination-controls button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.45;
+}
+
+.page-number {
+  padding: 0 5px;
+
+  white-space: nowrap;
+
+  font-size: 12px;
+
+  color: #64748b;
+}
+
+.page-size {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  white-space: nowrap;
+}
+
+.page-size label {
+  font-size: 12px;
+
+  color: #64748b;
+}
+
+.page-size select {
+  height: 34px;
+
+  padding: 0 8px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 12px;
+
+  color: #475569;
+
+  outline: none;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   FOCUS / ACCESSIBILITY
+   ========================================================= */
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid #94a3b8;
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .students-insider {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .filter-grid,
+  .kpi-grid,
+  .attendance-kpis,
+  .finance-kpis {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .cross-analysis-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .report-filter-card {
+    grid-template-columns:
+      1fr;
+  }
+
+  .report-filter-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .report-filter-actions {
+    justify-content: flex-start;
+  }
+}
+
+
+@media (max-width: 900px) {
+
+  .distribution-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .finance-status-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .report-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .report-actions {
+    width: 100%;
+  }
+
+  .attendance-trend-chart {
+    height: 280px;
+  }
+}
+
+
+@media (max-width: 700px) {
+
+  .students-insider {
+    padding: 20px 16px 36px;
+  }
+
+  .insider-header-content {
+    flex-direction: column;
+  }
+
+  .insider-header h1 {
+    font-size: 26px;
+  }
+
+  .filter-card {
+    padding: 18px;
+  }
+
+  .filter-header {
+    flex-direction: column;
+  }
+
+  .filter-grid,
+  .kpi-grid,
+  .attendance-kpis,
+  .finance-kpis,
+  .cross-analysis-grid,
+  .report-filter-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .analytics-card {
+    padding: 18px;
+  }
+
+  .analytics-card-header {
+    gap: 12px;
+  }
+
+  .attendance-trend-chart {
+    height: 240px;
+    min-height: 220px;
+  }
+
+  .pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pagination-controls {
+    width: 100%;
+  }
+
+  .page-size {
+    width: 100%;
+  }
+}

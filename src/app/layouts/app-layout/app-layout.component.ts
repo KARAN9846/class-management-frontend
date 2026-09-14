@@ -128,6 +128,17 @@ export class AppLayoutComponent {
           },
 
           {
+            title: 'INSIDER',
+            items: [
+              {
+                label: 'Students Insider',
+                route: '/admin/insider/students',
+                icon: '◉'
+              }
+            ]
+          },
+
+          {
             title: 'ACADEMIC',
             items: [
               {
@@ -272,6 +283,7 @@ export class AppLayoutComponent {
             ]
           },
 
+
           {
             title: 'MY ACCOUNT',
             items: [
@@ -289,7 +301,7 @@ export class AppLayoutComponent {
                 icon: '✓'
               },
 
-                            {
+              {
                 label: 'Fees',
                 route: '/student/fees',
                 icon: '₹'

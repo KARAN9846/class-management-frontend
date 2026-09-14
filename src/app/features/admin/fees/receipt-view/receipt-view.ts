@@ -11,6 +11,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReceiptService } from '../services/receipt.service';
 import { FeeReceipt } from '../models/fee-receipt.model';
 
+import { environment } from '../../../../../environments/environment';
+
 @Component({
   selector: 'app-receipt-view',
   standalone: true,
@@ -76,7 +78,7 @@ export class ReceiptViewComponent implements OnInit {
       ? path
       : `/${path}`;
 
-    return `http://localhost:8080${normalizedPath}`;
+    return `${environment.apiBaseUrl.replace('/api/v1', '')}${normalizedPath}`;
   }
 
 downloadPdf(): void {

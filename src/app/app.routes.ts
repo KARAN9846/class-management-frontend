@@ -22,6 +22,7 @@ import { AdminDetailsComponent } from './features/super-admin/admins/admin-detai
 
 // ADMIN
 import { AdminDashboard } from './features/admin/dashboard/admin-dashboard/admin-dashboard';
+import { StudentsInsider } from './features/admin/insider/students-insider/students-insider';
 
 import { AcademicYearsComponent } from './features/admin/academic/academic-years/academic-years';
 import { ClassesComponent } from './features/admin/academic/classes/classes';
@@ -74,6 +75,7 @@ import { EditAttendanceComponent } from './features/teacher/attendance/edit-atte
 import { StudentDashboard } from './features/student/dashboard/student-dashboard/student-dashboard';
 import { StudentAttendanceComponent } from './features/student/attendance/student-attendance/student-attendance';
 import { StudentFeesComponent } from './features/student/fees/fees';
+
 
 export const routes: Routes = [
 
@@ -401,6 +403,13 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
 
+      {
+        path: 'admin/insider/students',
+        component: StudentsInsider,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+
       // =====================================================
       // TEACHER
       // =====================================================
@@ -486,11 +495,11 @@ export const routes: Routes = [
       },
 
       {
-  path: 'student/fees',
-  component: StudentFeesComponent,
-  canActivate: [roleGuard],
-  data: { roles: ['STUDENT'] }
-},
+        path: 'student/fees',
+        component: StudentFeesComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['STUDENT'] }
+      },
 
       {
         path: 'student/attendance',

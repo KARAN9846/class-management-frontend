@@ -27,14 +27,94 @@
 
   <div class="table-card">
 
-    <div class="filter-area">
+<div class="filter-area">
 
-      <app-search-input
-        placeholder="Search students..."
-        (searchChange)="onSearch($event)">
-      </app-search-input>
+  <app-search-input
+    placeholder="Search students..."
+    (searchChange)="onSearch($event)">
+  </app-search-input>
 
-    </div>
+
+  <!-- Academic Year -->
+
+  <select
+    class="filter-select"
+    [value]="selectedAcademicYearId ?? ''"
+    (change)="onAcademicYearChange($any($event.target).value)">
+
+    <option value="">
+      Academic Year
+    </option>
+
+    @for (academicYear of academicYears; track academicYear.id) {
+
+      <option [value]="academicYear.id">
+        {{ academicYear.name }}
+      </option>
+
+    }
+
+  </select>
+
+
+  <!-- Class -->
+
+  <select
+    class="filter-select"
+    [value]="selectedClassId ?? ''"
+    [disabled]="selectedAcademicYearId === null"
+    (change)="onClassChange($any($event.target).value)">
+
+    <option value="">
+      Class
+    </option>
+
+    @for (classItem of filteredClasses; track classItem.id) {
+
+      <option [value]="classItem.id">
+        {{ classItem.name }}
+      </option>
+
+    }
+
+  </select>
+
+
+  <!-- Section -->
+
+  <select
+    class="filter-select"
+    [value]="selectedSectionId ?? ''"
+    [disabled]="selectedClassId === null"
+    (change)="onSectionChange($any($event.target).value)">
+
+    <option value="">
+      Section
+    </option>
+
+    @for (section of sections; track section.id) {
+
+      <option [value]="section.id">
+        {{ section.name }}
+      </option>
+
+    }
+
+  </select>
+
+
+  <!-- Clear -->
+
+  <button
+    type="button"
+    class="clear-filter-btn"
+    (click)="clearFilters()">
+
+    Clear
+
+  </button>
+
+</div>
 
 
     @if (errorMessage) {

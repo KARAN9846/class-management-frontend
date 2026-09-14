@@ -1,0 +1,1781 @@
+<div class="students-insider">
+
+    <!-- =======================================================
+       PAGE HEADER
+       ======================================================= -->
+
+    <section class="insider-header">
+
+        <div class="insider-header-content">
+
+            <div>
+                <span class="eyebrow">STUDENT INTELLIGENCE</span>
+
+                <h1>Students Insider</h1>
+
+                <p>
+                    Complete student intelligence, attendance and fee analytics.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =======================================================
+       DASHBOARD FILTERS
+       ======================================================= -->
+
+    <section class="filter-card">
+
+        <div class="filter-header">
+
+            <div>
+                <h2>Student Overview</h2>
+
+                <p>
+                    Analyse the student population using academic, attendance
+                    and financial information.
+                </p>
+            </div>
+
+            <button type="button" class="reset-button" (click)="resetFilters()">
+                Reset
+            </button>
+
+        </div>
+
+
+        <div class="filter-grid">
+
+            <!-- Academic Year -->
+
+            <div class="filter-field">
+
+                <label for="academicYear">
+                    Academic Year
+                </label>
+
+                <select id="academicYear" [(ngModel)]="selectedAcademicYear" (ngModelChange)="onAcademicYearChange()">
+
+                    <option value="">
+                        All Academic Years
+                    </option>
+
+                    <option *ngFor="let academicYear of academicYears" [value]="academicYear.id">
+
+                        {{ academicYear.name }}
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Class -->
+
+            <div class="filter-field">
+
+                <label for="class">
+                    Class
+                </label>
+
+                <select id="class" [(ngModel)]="selectedClass" (ngModelChange)="onClassChange()">
+
+                    <option value="">
+                        All Classes
+                    </option>
+
+                    <option *ngFor="let classItem of classes" [value]="classItem.id">
+
+                        {{ classItem.name }}
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Section -->
+
+            <div class="filter-field">
+
+                <label for="section">
+                    Section
+                </label>
+
+                <select id="section" [(ngModel)]="selectedSection" (ngModelChange)="applyFilters()">
+
+                    <option value="">
+                        All Sections
+                    </option>
+
+                    <option *ngFor="let section of sections" [value]="section.id">
+
+                        {{ section.name }}
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Student Status -->
+
+            <div class="filter-field">
+
+                <label for="studentStatus">
+                    Student Status
+                </label>
+
+                <select id="studentStatus" [(ngModel)]="selectedStatus" (ngModelChange)="applyFilters()">
+
+                    <option value="ALL">
+                        All Students
+                    </option>
+
+                    <option value="ACTIVE">
+                        Active
+                    </option>
+
+                    <option value="INACTIVE">
+                        Inactive
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Attendance -->
+
+            <div class="filter-field">
+
+                <label for="attendanceFilter">
+                    Attendance
+                </label>
+
+                <select id="attendanceFilter" [(ngModel)]="selectedAttendanceFilter" (ngModelChange)="applyFilters()">
+
+                    <option value="ALL">
+                        All Attendance
+                    </option>
+
+                    <option value="EXCELLENT">
+                        Excellent · 90%+
+                    </option>
+
+                    <option value="GOOD">
+                        Good · 75–89%
+                    </option>
+
+                    <option value="LOW">
+                        Low · Below 75%
+                    </option>
+
+                    <option value="NO_DATA">
+                        No Data
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Fees -->
+
+            <div class="filter-field">
+
+                <label for="feeFilter">
+                    Fee Status
+                </label>
+
+                <select id="feeFilter" [(ngModel)]="selectedFeeFilter" (ngModelChange)="applyFilters()">
+
+                    <option value="ALL">
+                        All Fee Status
+                    </option>
+
+                    <option value="PAID">
+                        Paid
+                    </option>
+
+                    <option value="PARTIALLY_PAID">
+                        Partially Paid
+                    </option>
+
+                    <option value="UNPAID">
+                        Unpaid
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Date Range -->
+
+            <div class="filter-field">
+
+                <label for="dateRange">
+                    Date Range
+                </label>
+
+                <select id="dateRange" [(ngModel)]="selectedDateRange">
+
+                    <option value="ALL">
+                        All Time
+                    </option>
+
+                    <option value="THIS_MONTH">
+                        This Month
+                    </option>
+
+                    <option value="THIS_QUARTER">
+                        This Quarter
+                    </option>
+
+                    <option value="THIS_YEAR">
+                        This Year
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =======================================================
+       KPI OVERVIEW
+       ======================================================= -->
+
+    <section class="analytics-section">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    STUDENT POPULATION
+                </span>
+
+                <h2>Student Overview</h2>
+            </div>
+
+        </div>
+
+
+        <div class="kpi-grid">
+
+            <!-- Total Students -->
+
+            <article class="kpi-card">
+
+                <div class="kpi-card-header">
+
+                    <span class="kpi-label">
+                        Total Students
+                    </span>
+
+                    <span class="kpi-icon">
+                        👥
+                    </span>
+
+                </div>
+
+                <strong class="kpi-value">
+                    {{ totalStudents | number }}
+                </strong>
+
+                <span class="kpi-description">
+                    Students in the selected population
+                </span>
+
+            </article>
+
+
+            <!-- Active Students -->
+
+            <article class="kpi-card">
+
+                <div class="kpi-card-header">
+
+                    <span class="kpi-label">
+                        Active Students
+                    </span>
+
+                    <span class="kpi-icon">
+                        ✓
+                    </span>
+
+                </div>
+
+                <strong class="kpi-value">
+                    {{ activeStudents | number }}
+                </strong>
+
+                <span class="kpi-description">
+                    Currently active students
+                </span>
+
+            </article>
+
+
+            <!-- New Students -->
+
+            <article class="kpi-card">
+
+                <div class="kpi-card-header">
+
+                    <span class="kpi-label">
+                        New Students
+                    </span>
+
+                    <span class="kpi-icon">
+                        +
+                    </span>
+
+                </div>
+
+                <strong class="kpi-value">
+                    {{ newStudents | number }}
+                </strong>
+
+                <span class="kpi-description">
+                    Newly enrolled students
+                </span>
+
+            </article>
+
+
+            <!-- Attendance -->
+
+            <article class="kpi-card">
+
+                <div class="kpi-card-header">
+
+                    <span class="kpi-label">
+                        Average Attendance
+                    </span>
+
+                    <span class="kpi-icon">
+                        %
+                    </span>
+
+                </div>
+
+                <strong class="kpi-value">
+                    {{ averageAttendance | number:'1.1-1' }}%
+                </strong>
+
+                <span class="kpi-description">
+                    Overall attendance performance
+                </span>
+
+            </article>
+
+        </div>
+
+    </section>
+
+    <!-- =======================================================
+   POPULATION / GROWTH
+   ======================================================= -->
+
+    <section class="analytics-section">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    POPULATION &amp; GROWTH
+                </span>
+
+                <h2>Student Population</h2>
+
+                <p>
+                    Understand the current student population and activity status.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="kpi-grid population-kpis">
+
+            <!-- Total Population -->
+
+            <article class="mini-stat-card">
+
+                <span class="mini-stat-label">
+                    Total Population
+                </span>
+
+                <strong>
+                    {{ totalStudents | number }}
+                </strong>
+
+                <span class="mini-stat-description">
+                    Students in the selected population
+                </span>
+
+            </article>
+
+
+            <!-- Active Population -->
+
+            <article class="mini-stat-card">
+
+                <span class="mini-stat-label">
+                    Active Population
+                </span>
+
+                <strong>
+                    {{ activeStudents | number }}
+                </strong>
+
+                <span class="mini-stat-description">
+                    Currently active students
+                </span>
+
+            </article>
+
+
+            <!-- Inactive Population -->
+
+            <article class="mini-stat-card">
+
+                <span class="mini-stat-label">
+                    Inactive Population
+                </span>
+
+                <strong>
+                    {{ inactiveStudents | number }}
+                </strong>
+
+                <span class="mini-stat-description">
+                    Currently inactive students
+                </span>
+
+            </article>
+
+
+            <!-- Active Population Percentage -->
+
+            <article class="mini-stat-card">
+
+                <span class="mini-stat-label">
+                    Active Population %
+                </span>
+
+                <strong>
+                    {{ activeStudentPercentage | number:'1.1-1' }}%
+                </strong>
+
+                <span class="mini-stat-description">
+                    Active students as a percentage of population
+                </span>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =======================================================
+   STUDENT DISTRIBUTION
+   ======================================================= -->
+
+    <section class="analytics-section">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    STUDENT DISTRIBUTION
+                </span>
+
+                <h2>Class &amp; Section Analytics</h2>
+
+                <p>
+                    Understand how students are distributed across classes and sections.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="distribution-grid">
+
+            <!-- Class Distribution -->
+
+            <article class="analytics-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+                        <span class="analytics-card-eyebrow">
+                            CLASS
+                        </span>
+
+                        <h3>Class Distribution</h3>
+                    </div>
+
+                    <span class="analytics-card-value">
+                        {{ classDistribution.length | number }}
+                    </span>
+
+                </div>
+
+
+                <div class="chart-container class-bar-container">
+
+                    <canvas baseChart [type]="'bar'" [data]="classDistributionChartData"
+                        [options]="classDistributionChartOptions">
+                    </canvas>
+
+                </div>
+
+
+                <ng-template #noClassDistribution>
+
+                    <div class="empty-state">
+                        No class distribution data available.
+                    </div>
+
+                </ng-template>
+
+            </article>
+
+
+            <!-- Section Distribution -->
+
+            <article class="analytics-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+                        <span class="analytics-card-eyebrow">
+                            SECTION
+                        </span>
+
+                        <h3>Section Distribution</h3>
+                    </div>
+
+                    <span class="analytics-card-value">
+                        {{ sectionDistribution.length | number }}
+                    </span>
+
+                </div>
+
+
+                <div class="chart-container section-bar-container">
+
+                    <canvas baseChart [type]="'bar'" [data]="sectionDistributionChartData"
+                        [options]="sectionDistributionChartOptions">
+                    </canvas>
+
+                </div>
+
+
+                <ng-template #noSectionDistribution>
+
+                    <div class="empty-state">
+                        No section distribution data available.
+                    </div>
+
+                </ng-template>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =======================================================
+       ATTENDANCE ANALYTICS
+       ======================================================= -->
+
+    <section class="analytics-section">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    ATTENDANCE INTELLIGENCE
+                </span>
+
+                <h2>Attendance Analytics</h2>
+
+                <p>
+                    Understand attendance performance across the student population.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="kpi-grid attendance-kpis">
+
+            <article class="mini-stat-card">
+
+                <span class="mini-stat-label">
+                    Average Attendance
+                </span>
+
+                <strong>
+                    {{ averageAttendance | number:'1.1-1' }}%
+                </strong>
+
+            </article>
+
+
+            <article class="mini-stat-card">
+
+                <span class="mini-stat-label">
+                    Excellent
+                </span>
+
+                <strong>
+                    {{
+                    reportRows.filter(
+                    row => row.attendancePercentage >= 90
+                    ).length | number
+                    }}
+                </strong>
+
+            </article>
+
+
+            <article class="mini-stat-card">
+
+                <span class="mini-stat-label">
+                    Good
+                </span>
+
+                <strong>
+                    {{
+                    reportRows.filter(
+                    row =>
+                    row.attendancePercentage >= 75 &&
+                    row.attendancePercentage < 90 ).length | number }} </strong>
+
+            </article>
+
+
+            <article class="mini-stat-card">
+
+                <span class="mini-stat-label">
+                    Needs Attention
+                </span>
+
+                <strong>
+                    {{ studentsNeedingAttention | number }}
+                </strong>
+
+            </article>
+
+            <!-- Attendance Distribution -->
+
+            <div class="chart-card attendance-distribution-card">
+
+                <div class="chart-card-header">
+
+                    <div>
+                        <span class="card-eyebrow">
+                            ATTENDANCE DISTRIBUTION
+                        </span>
+
+                        <h3>Student Attendance Distribution</h3>
+
+                        <p>
+                            Distribution of students by attendance performance.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="chart-container attendance-doughnut-container">
+
+                    <canvas baseChart [type]="'doughnut'" [data]="attendanceDistributionChartData"
+                        [options]="attendanceDistributionChartOptions">
+                    </canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- =======================================================
+       ATTENDANCE DISTRIBUTION
+       ======================================================= -->
+
+    <section class="analytics-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    ATTENDANCE DISTRIBUTION
+                </span>
+
+                <h2>Attendance Distribution</h2>
+
+                <p>
+                    View how students are distributed across attendance performance levels.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="distribution-grid">
+
+            <!-- Excellent -->
+
+            <article class="analytics-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+
+                        <span class="analytics-card-eyebrow">
+                            90%+
+                        </span>
+
+                        <h3>Excellent</h3>
+
+                    </div>
+
+                    <span class="analytics-card-value">
+                        {{ attendanceDistribution.excellent | number }}
+                    </span>
+
+                </div>
+
+
+                <div class="distribution-bar">
+
+                    <span class="distribution-bar-fill excellent" [style.width.%]="
+            totalStudents > 0
+                ? (attendanceDistribution.excellent / totalStudents) * 100
+                : 0
+        "></span>
+
+                </div>
+
+            </article>
+
+
+            <!-- Good -->
+
+            <article class="analytics-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+
+                        <span class="analytics-card-eyebrow">
+                            75–89%
+                        </span>
+
+                        <h3>Good</h3>
+
+                    </div>
+
+                    <span class="analytics-card-value">
+                        {{ attendanceDistribution.good | number }}
+                    </span>
+
+                </div>
+
+
+                <div class="distribution-bar">
+
+                    <span class="distribution-bar-fill good" [style.width.%]="
+            totalStudents > 0
+                ? (attendanceDistribution.good / totalStudents) * 100
+                : 0
+        "></span>
+
+                </div>
+
+            </article>
+
+
+            <!-- Needs Attention -->
+
+            <article class="analytics-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+
+                        <span class="analytics-card-eyebrow">
+                            BELOW 75%
+                        </span>
+
+                        <h3>Needs Attention</h3>
+
+                    </div>
+
+                    <span class="analytics-card-value">
+                        {{ attendanceDistribution.needsAttention | number }}
+                    </span>
+
+                </div>
+
+
+                <div class="distribution-bar">
+
+                    <span class="distribution-bar-fill needs-attention" [style.width.%]="
+            totalStudents > 0
+                ? (attendanceDistribution.needsAttention / totalStudents) * 100
+                : 0
+        "></span>
+
+                </div>
+
+            </article>
+
+
+            <!-- No Data -->
+
+            <article class="analytics-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+
+                        <span class="analytics-card-eyebrow">
+                            NO RECORDS
+                        </span>
+
+                        <h3>No Data</h3>
+
+                    </div>
+
+                    <span class="analytics-card-value">
+                        {{ attendanceDistribution.noData | number }}
+                    </span>
+
+                </div>
+
+
+                <div class="distribution-bar">
+
+                    <span class="distribution-bar-fill no-data" [style.width.%]="
+            totalStudents > 0
+                ? (attendanceDistribution.noData / totalStudents) * 100
+                : 0
+        "></span>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+    <!-- =======================================================
+   ATTENDANCE TRENDS
+   ======================================================= -->
+
+    <section class="analytics-section">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    ATTENDANCE TRENDS
+                </span>
+
+                <h2>Attendance Trends</h2>
+
+                <p>
+                    Track attendance performance across the selected period.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="analytics-card">
+
+            <div class="attendance-trend-chart">
+                <canvas baseChart [data]="attendanceTrendChartData" [options]="attendanceTrendChartOptions"
+                    [type]="'line'">
+                </canvas>
+            </div>
+
+        </div>
+
+
+
+    </section>
+
+    <!-- =======================================================
+       FINANCE ANALYTICS
+       ======================================================= -->
+
+    <section class="analytics-section">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    FINANCIAL INTELLIGENCE
+                </span>
+
+                <h2>Fee Analytics</h2>
+
+                <p>
+                    Understand fee collection and outstanding student balances.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="kpi-grid finance-kpis">
+
+            <!-- Total Fees -->
+
+            <article class="finance-card">
+
+                <span class="finance-label">
+                    Total Fees
+                </span>
+
+                <strong>
+                    ₹{{ totalFees | number:'1.0-0' }}
+                </strong>
+
+            </article>
+
+
+            <!-- Collected -->
+
+            <article class="finance-card">
+
+                <span class="finance-label">
+                    Collected
+                </span>
+
+                <strong>
+                    ₹{{ totalCollected | number:'1.0-0' }}
+                </strong>
+
+            </article>
+
+
+            <!-- Outstanding -->
+
+            <article class="finance-card">
+
+                <span class="finance-label">
+                    Outstanding
+                </span>
+
+                <strong>
+                    ₹{{ totalOutstanding | number:'1.0-0' }}
+                </strong>
+
+            </article>
+
+
+            <!-- Collection Percentage -->
+
+            <article class="finance-card">
+
+                <span class="finance-label">
+                    Collection %
+                </span>
+
+                <strong>
+                    {{ feeCollectionPercentage | number:'1.1-1' }}%
+                </strong>
+
+            </article>
+
+        </div>
+
+
+        <div class="finance-status-grid">
+
+            <article class="finance-status-card">
+
+                <span>
+                    Fully Paid
+                </span>
+
+                <strong>
+                    {{ paidStudents | number }}
+                </strong>
+
+            </article>
+
+
+            <article class="finance-status-card">
+
+                <span>
+                    Partially Paid
+                </span>
+
+                <strong>
+                    {{ partiallyPaidStudents | number }}
+                </strong>
+
+            </article>
+
+
+            <article class="finance-status-card">
+
+                <span>
+                    Unpaid
+                </span>
+
+                <strong>
+                    {{ unpaidStudents | number }}
+                </strong>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =======================================================
+       CROSS ANALYSIS
+       ======================================================= -->
+
+    <section class="analytics-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    CROSS ANALYSIS
+                </span>
+
+                <h2>Student Attention Intelligence</h2>
+
+                <p>
+                    Identify students requiring administrative attention
+                    by combining attendance and fee information.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="cross-analysis-grid">
+
+            <article class="cross-card high">
+
+                <span class="cross-label">
+                    Low Attendance + Outstanding Fees
+                </span>
+
+                <strong>
+                    {{ lowAttendanceOutstanding | number }}
+                </strong>
+
+                <p>
+                    Students with attendance below 75% and unpaid balance.
+                </p>
+
+            </article>
+
+
+            <article class="cross-card warning">
+
+                <span class="cross-label">
+                    Low Attendance + Paid Fees
+                </span>
+
+                <strong>
+                    {{ lowAttendancePaid | number }}
+                </strong>
+
+                <p>
+                    Students with attendance concerns despite fee clearance.
+                </p>
+
+            </article>
+
+
+            <article class="cross-card">
+
+                <span class="cross-label">
+                    Good Attendance + Outstanding Fees
+                </span>
+
+                <strong>
+                    {{ goodAttendanceOutstanding | number }}
+                </strong>
+
+                <p>
+                    Students performing academically but carrying outstanding fees.
+                </p>
+
+            </article>
+
+
+            <article class="cross-card">
+
+                <span class="cross-label">
+                    Good Attendance + Paid Fees
+                </span>
+
+                <strong>
+                    {{ goodAttendancePaid | number }}
+                </strong>
+
+                <p>
+                    Students with good attendance and cleared fees.
+                </p>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =======================================================
+       STUDENT REPORT
+       ======================================================= -->
+
+    <section class="report-section">
+
+        <div class="report-header">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    OPERATIONAL REPORT
+                </span>
+
+                <h2>Student Report</h2>
+
+                <p>
+                    Search, filter and analyse individual student records.
+                </p>
+
+            </div>
+
+            <div class="report-actions">
+
+                <button type="button" class="column-button" (click)="toggleReportColumns()">
+
+                    Columns
+                    <span>⚙</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+         REPORT FILTERS
+         ===================================================== -->
+
+        <div class="report-filter-card">
+
+            <div class="report-search">
+
+                <label for="reportSearch">
+                    Search Students
+                </label>
+
+                <input id="reportSearch" type="text" placeholder="Search by name, roll number or email..."
+                    [(ngModel)]="reportSearch" (keyup.enter)="onReportSearch()" />
+
+            </div>
+
+
+            <div class="report-filter-grid">
+
+                <div class="filter-field">
+
+                    <label for="reportAcademicYear">
+                        Academic Year
+                    </label>
+
+                    <select id="reportAcademicYear" [(ngModel)]="reportAcademicYearId"
+                        (ngModelChange)="onReportFilterChange()">
+
+                        <option [ngValue]="null">
+                            All Academic Years
+                        </option>
+
+                        <option *ngFor="let academicYear of academicYears" [ngValue]="academicYear.id">
+
+                            {{ academicYear.name }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-field">
+
+                    <label for="reportClass">
+                        Class
+                    </label>
+
+                    <select id="reportClass" [(ngModel)]="reportClassId" (ngModelChange)="onReportFilterChange()">
+
+                        <option [ngValue]="null">
+                            All Classes
+                        </option>
+
+                        <option *ngFor="let classItem of classes" [ngValue]="classItem.id">
+
+                            {{ classItem.name }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-field">
+
+                    <label for="reportSection">
+                        Section
+                    </label>
+
+                    <select id="reportSection" [(ngModel)]="reportSectionId" (ngModelChange)="onReportFilterChange()">
+
+                        <option [ngValue]="null">
+                            All Sections
+                        </option>
+
+                        <option *ngFor="let section of sections" [ngValue]="section.id">
+
+                            {{ section.name }}
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-field">
+
+                    <label for="reportStatus">
+                        Student Status
+                    </label>
+
+                    <select id="reportStatus" [(ngModel)]="reportStudentStatus"
+                        (ngModelChange)="onReportFilterChange()">
+
+                        <option value="ALL">
+                            All
+                        </option>
+
+                        <option value="ACTIVE">
+                            Active
+                        </option>
+
+                        <option value="INACTIVE">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-field">
+
+                    <label for="reportAttendance">
+                        Attendance
+                    </label>
+
+                    <select id="reportAttendance" [(ngModel)]="reportAttendanceFilter"
+                        (ngModelChange)="onReportFilterChange()">
+
+                        <option value="ALL">
+                            All
+                        </option>
+
+                        <option value="EXCELLENT">
+                            Excellent · 90%+
+                        </option>
+
+                        <option value="GOOD">
+                            Good · 75–89%
+                        </option>
+
+                        <option value="NEEDS_ATTENTION">
+                            Needs Attention
+                        </option>
+
+                        <option value="CRITICAL">
+                            Critical
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-field">
+
+                    <label for="reportFee">
+                        Fee Status
+                    </label>
+
+                    <select id="reportFee" [(ngModel)]="reportFeeFilter" (ngModelChange)="onReportFilterChange()">
+
+                        <option value="ALL">
+                            All
+                        </option>
+
+                        <option value="PAID">
+                            Paid
+                        </option>
+
+                        <option value="REMAINING">
+                            Remaining
+                        </option>
+
+                        <option value="UNPAID">
+                            Unpaid
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="report-filter-actions">
+
+                <button type="button" class="reset-button" (click)="resetReportFilters()">
+
+                    Reset Filters
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+         COLUMN MENU
+         ===================================================== -->
+
+        <div class="column-menu" *ngIf="reportColumnsOpen">
+
+            <div class="column-menu-header">
+
+                <strong>
+                    Visible Columns
+                </strong>
+
+            </div>
+
+
+            <label class="column-option" *ngFor="let column of reportColumns">
+
+                <input type="checkbox" [checked]="column.visible" (change)="toggleReportColumn(column.key)" />
+
+                <span>
+                    {{ column.label }}
+                </span>
+
+            </label>
+
+        </div>
+
+
+        <!-- =====================================================
+         REPORT TABLE
+         ===================================================== -->
+
+        <div class="report-table-card">
+
+            <!-- Loading -->
+
+            <div class="report-loading" *ngIf="reportLoading">
+
+                <span class="loading-spinner"></span>
+
+                <span>
+                    Loading student report...
+                </span>
+
+            </div>
+
+
+            <!-- Table -->
+
+            <div class="table-wrapper" *ngIf="!reportLoading">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            @if (isReportColumnVisible('student')) {
+                            <th>
+                                Student
+                            </th>
+                            }
+
+                            @if (isReportColumnVisible('class')) {
+                            <th>
+                                class
+                            </th>
+                            }
+
+                            @if (isReportColumnVisible('section')) {
+                            <th>
+                                section
+                            </th>
+                            }
+
+                            @if (isReportColumnVisible('attendance')) {
+                            <th>
+                                attendance
+                            </th>
+                            }
+
+                            @if (isReportColumnVisible('present')) {
+                            <th>
+                                present
+                            </th>
+                            }
+
+                            <th *ngIf="isReportColumnVisible('absent')">
+                                Absent
+                            </th>
+
+                            <th *ngIf="isReportColumnVisible('totalFee')">
+                                Total Fee
+                            </th>
+
+                            <th *ngIf="isReportColumnVisible('paid')">
+                                Paid
+                            </th>
+
+                            <th *ngIf="isReportColumnVisible('outstanding')">
+                                Outstanding
+                            </th>
+
+                            <th *ngIf="isReportColumnVisible('feeStatus')">
+                                Fee Status
+                            </th>
+
+                            <th *ngIf="isReportColumnVisible('status')">
+                                Status
+                            </th>
+
+                            <th *ngIf="isReportColumnVisible('risk')">
+                                Risk
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr *ngFor="let row of reportPaginatedRows">
+
+                            <!-- Student -->
+
+                            <td *ngIf="isReportColumnVisible('student')">
+
+                                <div class="student-cell">
+
+                                    <strong>
+                                        {{ getStudentName(row.student) }}
+                                    </strong>
+
+                                    <span>
+                                        {{ row.student.email }}
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- Class -->
+
+                            <td *ngIf="isReportColumnVisible('class')">
+
+                                {{ row.student.className || '—' }}
+
+                            </td>
+
+
+                            <!-- Section -->
+
+                            <td *ngIf="isReportColumnVisible('section')">
+
+                                {{ row.student.sectionName || '—' }}
+
+                            </td>
+
+
+                            <!-- Attendance -->
+
+                            <td *ngIf="isReportColumnVisible('attendance')">
+
+                                <span class="attendance-badge" [ngClass]="
+                    getAttendanceClass(row.attendancePercentage)
+                  ">
+
+                                    {{ row.attendancePercentage | number:'1.1-1' }}%
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Present -->
+
+                            <td *ngIf="isReportColumnVisible('present')">
+
+                                {{ row.presentCount | number }}
+
+                            </td>
+
+
+                            <!-- Absent -->
+
+                            <td *ngIf="isReportColumnVisible('absent')">
+
+                                {{ row.absentCount | number }}
+
+                            </td>
+
+
+                            <!-- Total Fee -->
+
+                            <td *ngIf="isReportColumnVisible('totalFee')">
+
+                                ₹{{ row.totalFee | number:'1.0-0' }}
+
+                            </td>
+
+
+                            <!-- Paid -->
+
+                            <td *ngIf="isReportColumnVisible('paid')">
+
+                                ₹{{ row.paidAmount | number:'1.0-0' }}
+
+                            </td>
+
+
+                            <!-- Outstanding -->
+
+                            <td *ngIf="isReportColumnVisible('outstanding')">
+
+                                ₹{{ row.outstandingAmount | number:'1.0-0' }}
+
+                            </td>
+
+
+                            <!-- Fee Status -->
+
+                            <td *ngIf="isReportColumnVisible('feeStatus')">
+
+                                <span class="status-badge" [ngClass]="row.feeStatus.toLowerCase()">
+
+                                    {{ getFeeStatusLabel(row.feeStatus) }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Student Status -->
+
+                            <td *ngIf="isReportColumnVisible('status')">
+
+                                <span class="status-badge" [class.active]="row.student.isActive"
+                                    [class.inactive]="!row.student.isActive">
+
+                                    {{ row.student.isActive ? 'Active' : 'Inactive' }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Risk -->
+
+                            <td *ngIf="isReportColumnVisible('risk')">
+
+                                <span class="risk-badge" [ngClass]="row.risk.toLowerCase()">
+
+                                    {{ getRiskLabel(row.risk) }}
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- Empty -->
+
+                        <tr *ngIf="reportPaginatedRows.length === 0">
+
+                            <td [attr.colspan]="12" class="table-empty">
+
+                                <div class="empty-state">
+
+                                    <strong>
+                                        No students found
+                                    </strong>
+
+                                    <span>
+                                        Try changing your filters or search term.
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- =================================================
+           PAGINATION
+           ================================================= -->
+
+            <div class="pagination" *ngIf="!reportLoading && reportTotalElements > 0">
+
+                <div class="pagination-info">
+
+                    Showing
+
+                    <strong>
+                        {{ reportPage * reportPageSize + 1 }}
+                    </strong>
+
+                    –
+
+                    <strong>
+                        {{ getReportEndRecord() }}
+                    </strong>
+
+                    of
+
+                    <strong>
+                        {{ reportTotalElements | number }}
+                    </strong>
+
+                    students
+
+                </div>
+
+
+                <div class="pagination-controls">
+
+                    <button type="button" [disabled]="reportPage === 0" (click)="previousReportPage()">
+
+                        Previous
+
+                    </button>
+
+
+                    <span class="page-number">
+
+                        Page
+                        {{ reportPage + 1 }}
+                        of
+                        {{ reportTotalPages }}
+
+                    </span>
+
+
+                    <button type="button" [disabled]="
+              reportPage >= reportTotalPages - 1
+            " (click)="nextReportPage()">
+
+                        Next
+
+                    </button>
+
+                </div>
+
+
+                <div class="page-size">
+
+                    <label for="reportPageSize">
+                        Rows
+                    </label>
+
+                    <select id="reportPageSize" [(ngModel)]="reportPageSize" (ngModelChange)="onReportFilterChange()">
+
+                        <option [ngValue]="10">
+                            10
+                        </option>
+
+                        <option [ngValue]="25">
+                            25
+                        </option>
+
+                        <option [ngValue]="50">
+                            50
+                        </option>
+
+                        <option [ngValue]="100">
+                            100
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
