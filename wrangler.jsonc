@@ -1,0 +1,8 @@
+{
+  "name": "class-management-frontend",
+  "compatibility_date": "2026-09-14",
+  "assets": {
+    "directory": "./dist/class-management-frontend/browser",
+    "not_found_handling": "single-page-application"
+  }
+}
