@@ -9,13 +9,19 @@
         <div class="insider-header-content">
 
             <div>
-                <span class="eyebrow">STUDENT INTELLIGENCE</span>
 
-                <h1>Students Insider</h1>
+                <span class="eyebrow">
+                    STUDENT INTELLIGENCE
+                </span>
+
+                <h1>
+                    Students Insider
+                </h1>
 
                 <p>
                     Complete student intelligence, attendance and fee analytics.
                 </p>
+
             </div>
 
         </div>
@@ -32,16 +38,23 @@
         <div class="filter-header">
 
             <div>
-                <h2>Student Overview</h2>
+
+                <h2>
+                    Student Overview
+                </h2>
 
                 <p>
-                    Analyse the student population using academic, attendance
-                    and financial information.
+                    Analyse the student population using academic,
+                    attendance and financial information.
                 </p>
+
             </div>
 
+
             <button type="button" class="reset-button" (click)="resetFilters()">
+
                 Reset
+
             </button>
 
         </div>
@@ -216,37 +229,6 @@
 
             </div>
 
-
-            <!-- Date Range -->
-
-            <div class="filter-field">
-
-                <label for="dateRange">
-                    Date Range
-                </label>
-
-                <select id="dateRange" [(ngModel)]="selectedDateRange">
-
-                    <option value="ALL">
-                        All Time
-                    </option>
-
-                    <option value="THIS_MONTH">
-                        This Month
-                    </option>
-
-                    <option value="THIS_QUARTER">
-                        This Quarter
-                    </option>
-
-                    <option value="THIS_YEAR">
-                        This Year
-                    </option>
-
-                </select>
-
-            </div>
-
         </div>
 
     </section>
@@ -261,11 +243,19 @@
         <div class="section-heading">
 
             <div>
+
                 <span class="section-eyebrow">
-                    STUDENT POPULATION
+                    STUDENT OVERVIEW
                 </span>
 
-                <h2>Student Overview</h2>
+                <h2>
+                    Student Snapshot
+                </h2>
+
+                <p>
+                    Key metrics for the currently selected student population.
+                </p>
+
             </div>
 
         </div>
@@ -294,7 +284,7 @@
                 </strong>
 
                 <span class="kpi-description">
-                    Students in the selected population
+                    Selected student population
                 </span>
 
             </article>
@@ -354,7 +344,7 @@
             </article>
 
 
-            <!-- Attendance -->
+            <!-- Average Attendance -->
 
             <article class="kpi-card">
 
@@ -384,148 +374,57 @@
 
     </section>
 
+
     <!-- =======================================================
-   POPULATION / GROWTH
-   ======================================================= -->
+       STUDENT DISTRIBUTION
+       ======================================================= -->
 
     <section class="analytics-section">
 
         <div class="section-heading">
 
             <div>
-                <span class="section-eyebrow">
-                    POPULATION &amp; GROWTH
-                </span>
 
-                <h2>Student Population</h2>
-
-                <p>
-                    Understand the current student population and activity status.
-                </p>
-            </div>
-
-        </div>
-
-
-        <div class="kpi-grid population-kpis">
-
-            <!-- Total Population -->
-
-            <article class="mini-stat-card">
-
-                <span class="mini-stat-label">
-                    Total Population
-                </span>
-
-                <strong>
-                    {{ totalStudents | number }}
-                </strong>
-
-                <span class="mini-stat-description">
-                    Students in the selected population
-                </span>
-
-            </article>
-
-
-            <!-- Active Population -->
-
-            <article class="mini-stat-card">
-
-                <span class="mini-stat-label">
-                    Active Population
-                </span>
-
-                <strong>
-                    {{ activeStudents | number }}
-                </strong>
-
-                <span class="mini-stat-description">
-                    Currently active students
-                </span>
-
-            </article>
-
-
-            <!-- Inactive Population -->
-
-            <article class="mini-stat-card">
-
-                <span class="mini-stat-label">
-                    Inactive Population
-                </span>
-
-                <strong>
-                    {{ inactiveStudents | number }}
-                </strong>
-
-                <span class="mini-stat-description">
-                    Currently inactive students
-                </span>
-
-            </article>
-
-
-            <!-- Active Population Percentage -->
-
-            <article class="mini-stat-card">
-
-                <span class="mini-stat-label">
-                    Active Population %
-                </span>
-
-                <strong>
-                    {{ activeStudentPercentage | number:'1.1-1' }}%
-                </strong>
-
-                <span class="mini-stat-description">
-                    Active students as a percentage of population
-                </span>
-
-            </article>
-
-        </div>
-
-    </section>
-
-
-    <!-- =======================================================
-   STUDENT DISTRIBUTION
-   ======================================================= -->
-
-    <section class="analytics-section">
-
-        <div class="section-heading">
-
-            <div>
                 <span class="section-eyebrow">
                     STUDENT DISTRIBUTION
                 </span>
 
-                <h2>Class &amp; Section Analytics</h2>
+                <h2>
+                    Class &amp; Section Analytics
+                </h2>
 
                 <p>
-                    Understand how students are distributed across classes and sections.
+                    Understand how students are distributed across
+                    classes and sections.
                 </p>
+
             </div>
 
         </div>
 
 
+        <!-- Compact responsive chart grid -->
+
         <div class="distribution-grid">
 
-            <!-- Class Distribution -->
+            <!-- =================================================
+               CLASS DISTRIBUTION
+               ================================================= -->
 
             <article class="analytics-card">
 
                 <div class="analytics-card-header">
 
                     <div>
+
                         <span class="analytics-card-eyebrow">
                             CLASS
                         </span>
 
-                        <h3>Class Distribution</h3>
+                        <h3>
+                            Class Distribution
+                        </h3>
+
                     </div>
 
                     <span class="analytics-card-value">
@@ -537,36 +436,37 @@
 
                 <div class="chart-container class-bar-container">
 
-                    <canvas baseChart [type]="'bar'" [data]="classDistributionChartData"
-                        [options]="classDistributionChartOptions">
-                    </canvas>
+                    <div class="distribution-chart-container" [style.height.px]="classDistributionChartHeight">
 
-                </div>
+                        <canvas baseChart [type]="'bar'" [data]="classDistributionChartData"
+                            [options]="classDistributionChartOptions">
+                        </canvas>
 
-
-                <ng-template #noClassDistribution>
-
-                    <div class="empty-state">
-                        No class distribution data available.
                     </div>
 
-                </ng-template>
+                </div>
 
             </article>
 
 
-            <!-- Section Distribution -->
+            <!-- =================================================
+               SECTION DISTRIBUTION
+               ================================================= -->
 
             <article class="analytics-card">
 
                 <div class="analytics-card-header">
 
                     <div>
+
                         <span class="analytics-card-eyebrow">
                             SECTION
                         </span>
 
-                        <h3>Section Distribution</h3>
+                        <h3>
+                            Section Distribution
+                        </h3>
+
                     </div>
 
                     <span class="analytics-card-value">
@@ -578,20 +478,15 @@
 
                 <div class="chart-container section-bar-container">
 
-                    <canvas baseChart [type]="'bar'" [data]="sectionDistributionChartData"
-                        [options]="sectionDistributionChartOptions">
-                    </canvas>
+                    <div class="distribution-chart-container" [style.height.px]="sectionDistributionChartHeight">
 
-                </div>
+                        <canvas baseChart [type]="'bar'" [data]="sectionDistributionChartData"
+                            [options]="sectionDistributionChartOptions">
+                        </canvas>
 
-
-                <ng-template #noSectionDistribution>
-
-                    <div class="empty-state">
-                        No section distribution data available.
                     </div>
 
-                </ng-template>
+                </div>
 
             </article>
 
@@ -599,9 +494,8 @@
 
     </section>
 
-
     <!-- =======================================================
-       ATTENDANCE ANALYTICS
+       ATTENDANCE OVERVIEW
        ======================================================= -->
 
     <section class="analytics-section">
@@ -609,21 +503,30 @@
         <div class="section-heading">
 
             <div>
+
                 <span class="section-eyebrow">
                     ATTENDANCE INTELLIGENCE
                 </span>
 
-                <h2>Attendance Analytics</h2>
+                <h2>Attendance Overview</h2>
 
                 <p>
-                    Understand attendance performance across the student population.
+                    Monitor overall attendance performance and identify
+                    students requiring attention.
                 </p>
+
             </div>
 
         </div>
 
 
-        <div class="kpi-grid attendance-kpis">
+        <!-- =================================================
+           ATTENDANCE SUMMARY
+           ================================================= -->
+
+        <div class="mini-stat-grid">
+
+            <!-- Average Attendance -->
 
             <article class="mini-stat-card">
 
@@ -638,38 +541,37 @@
             </article>
 
 
+            <!-- Present -->
+
             <article class="mini-stat-card">
 
                 <span class="mini-stat-label">
-                    Excellent
+                    Present
                 </span>
 
                 <strong>
-                    {{
-                    reportRows.filter(
-                    row => row.attendancePercentage >= 90
-                    ).length | number
-                    }}
+                    {{ totalPresent | number }}
                 </strong>
 
             </article>
 
 
+            <!-- Absent -->
+
             <article class="mini-stat-card">
 
                 <span class="mini-stat-label">
-                    Good
+                    Absent
                 </span>
 
                 <strong>
-                    {{
-                    reportRows.filter(
-                    row =>
-                    row.attendancePercentage >= 75 &&
-                    row.attendancePercentage < 90 ).length | number }} </strong>
+                    {{ totalAbsent | number }}
+                </strong>
 
             </article>
 
+
+            <!-- Needs Attention -->
 
             <article class="mini-stat-card">
 
@@ -683,22 +585,37 @@
 
             </article>
 
-            <!-- Attendance Distribution -->
+        </div>
 
-            <div class="chart-card attendance-distribution-card">
+
+        <!-- =================================================
+           ATTENDANCE DISTRIBUTION + PERFORMANCE
+           ================================================= -->
+
+        <div class="attendance-analytics-grid">
+
+            <!-- =================================================
+               STUDENT ATTENDANCE DISTRIBUTION
+               ================================================= -->
+
+            <article class="chart-card attendance-distribution-card">
 
                 <div class="chart-card-header">
 
                     <div>
+
                         <span class="card-eyebrow">
-                            ATTENDANCE DISTRIBUTION
+                            PERFORMANCE
                         </span>
 
-                        <h3>Student Attendance Distribution</h3>
+                        <h3>
+                            Student Attendance Distribution
+                        </h3>
 
                         <p>
-                            Distribution of students by attendance performance.
+                            Students grouped by attendance performance.
                         </p>
+
                     </div>
 
                 </div>
@@ -712,14 +629,205 @@
 
                 </div>
 
-            </div>
+            </article>
+
+
+            <!-- =================================================
+               ATTENDANCE DISTRIBUTION
+               ================================================= -->
+
+            <article class="analytics-card attendance-level-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+
+                        <span class="analytics-card-eyebrow">
+                            BREAKDOWN
+                        </span>
+
+                        <h3>
+                            Attendance Distribution
+                        </h3>
+
+                    </div>
+
+                    <span class="analytics-card-value">
+                        {{ totalStudents | number }}
+                        <small>Students</small>
+                    </span>
+
+                </div>
+
+
+                <div class="attendance-distribution-list">
+
+                    <!-- Excellent -->
+
+                    <div class="attendance-distribution-item">
+
+                        <div class="attendance-distribution-info">
+
+                            <div>
+
+                                <span class="attendance-level">
+                                    Excellent
+                                </span>
+
+                                <span class="attendance-range">
+                                    90%+
+                                </span>
+
+                            </div>
+
+                            <strong>
+                                {{ attendanceDistribution.excellent | number }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="distribution-bar">
+
+                            <span class="distribution-bar-fill excellent" [style.width.%]="
+                                    totalStudents > 0
+                                        ? (attendanceDistribution.excellent / totalStudents) * 100
+                                        : 0
+                                ">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Good -->
+
+                    <div class="attendance-distribution-item">
+
+                        <div class="attendance-distribution-info">
+
+                            <div>
+
+                                <span class="attendance-level">
+                                    Good
+                                </span>
+
+                                <span class="attendance-range">
+                                    75–89%
+                                </span>
+
+                            </div>
+
+                            <strong>
+                                {{ attendanceDistribution.good | number }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="distribution-bar">
+
+                            <span class="distribution-bar-fill good" [style.width.%]="
+                                    totalStudents > 0
+                                        ? (attendanceDistribution.good / totalStudents) * 100
+                                        : 0
+                                ">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Needs Attention -->
+
+                    <div class="attendance-distribution-item">
+
+                        <div class="attendance-distribution-info">
+
+                            <div>
+
+                                <span class="attendance-level">
+                                    Needs Attention
+                                </span>
+
+                                <span class="attendance-range">
+                                    Below 75%
+                                </span>
+
+                            </div>
+
+                            <strong>
+                                {{ attendanceDistribution.needsAttention | number }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="distribution-bar">
+
+                            <span class="distribution-bar-fill needs-attention" [style.width.%]="
+                                    totalStudents > 0
+                                        ? (attendanceDistribution.needsAttention / totalStudents) * 100
+                                        : 0
+                                ">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- No Data -->
+
+                    <div class="attendance-distribution-item">
+
+                        <div class="attendance-distribution-info">
+
+                            <div>
+
+                                <span class="attendance-level">
+                                    No Data
+                                </span>
+
+                                <span class="attendance-range">
+                                    No Records
+                                </span>
+
+                            </div>
+
+                            <strong>
+                                {{ attendanceDistribution.noData | number }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="distribution-bar">
+
+                            <span class="distribution-bar-fill no-data" [style.width.%]="
+                                    totalStudents > 0
+                                        ? (attendanceDistribution.noData / totalStudents) * 100
+                                        : 0
+                                ">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
 
         </div>
 
     </section>
 
+
     <!-- =======================================================
-       ATTENDANCE DISTRIBUTION
+       ATTENDANCE TRENDS
        ======================================================= -->
 
     <section class="analytics-section">
@@ -729,205 +837,36 @@
             <div>
 
                 <span class="section-eyebrow">
-                    ATTENDANCE DISTRIBUTION
-                </span>
-
-                <h2>Attendance Distribution</h2>
-
-                <p>
-                    View how students are distributed across attendance performance levels.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="distribution-grid">
-
-            <!-- Excellent -->
-
-            <article class="analytics-card">
-
-                <div class="analytics-card-header">
-
-                    <div>
-
-                        <span class="analytics-card-eyebrow">
-                            90%+
-                        </span>
-
-                        <h3>Excellent</h3>
-
-                    </div>
-
-                    <span class="analytics-card-value">
-                        {{ attendanceDistribution.excellent | number }}
-                    </span>
-
-                </div>
-
-
-                <div class="distribution-bar">
-
-                    <span class="distribution-bar-fill excellent" [style.width.%]="
-            totalStudents > 0
-                ? (attendanceDistribution.excellent / totalStudents) * 100
-                : 0
-        "></span>
-
-                </div>
-
-            </article>
-
-
-            <!-- Good -->
-
-            <article class="analytics-card">
-
-                <div class="analytics-card-header">
-
-                    <div>
-
-                        <span class="analytics-card-eyebrow">
-                            75–89%
-                        </span>
-
-                        <h3>Good</h3>
-
-                    </div>
-
-                    <span class="analytics-card-value">
-                        {{ attendanceDistribution.good | number }}
-                    </span>
-
-                </div>
-
-
-                <div class="distribution-bar">
-
-                    <span class="distribution-bar-fill good" [style.width.%]="
-            totalStudents > 0
-                ? (attendanceDistribution.good / totalStudents) * 100
-                : 0
-        "></span>
-
-                </div>
-
-            </article>
-
-
-            <!-- Needs Attention -->
-
-            <article class="analytics-card">
-
-                <div class="analytics-card-header">
-
-                    <div>
-
-                        <span class="analytics-card-eyebrow">
-                            BELOW 75%
-                        </span>
-
-                        <h3>Needs Attention</h3>
-
-                    </div>
-
-                    <span class="analytics-card-value">
-                        {{ attendanceDistribution.needsAttention | number }}
-                    </span>
-
-                </div>
-
-
-                <div class="distribution-bar">
-
-                    <span class="distribution-bar-fill needs-attention" [style.width.%]="
-            totalStudents > 0
-                ? (attendanceDistribution.needsAttention / totalStudents) * 100
-                : 0
-        "></span>
-
-                </div>
-
-            </article>
-
-
-            <!-- No Data -->
-
-            <article class="analytics-card">
-
-                <div class="analytics-card-header">
-
-                    <div>
-
-                        <span class="analytics-card-eyebrow">
-                            NO RECORDS
-                        </span>
-
-                        <h3>No Data</h3>
-
-                    </div>
-
-                    <span class="analytics-card-value">
-                        {{ attendanceDistribution.noData | number }}
-                    </span>
-
-                </div>
-
-
-                <div class="distribution-bar">
-
-                    <span class="distribution-bar-fill no-data" [style.width.%]="
-            totalStudents > 0
-                ? (attendanceDistribution.noData / totalStudents) * 100
-                : 0
-        "></span>
-
-                </div>
-
-            </article>
-
-        </div>
-
-    </section>
-
-    <!-- =======================================================
-   ATTENDANCE TRENDS
-   ======================================================= -->
-
-    <section class="analytics-section">
-
-        <div class="section-heading">
-
-            <div>
-                <span class="section-eyebrow">
                     ATTENDANCE TRENDS
                 </span>
 
-                <h2>Attendance Trends</h2>
+                <h2>
+                    Attendance Trends
+                </h2>
 
                 <p>
                     Track attendance performance across the selected period.
                 </p>
+
             </div>
 
         </div>
 
 
-        <div class="analytics-card">
+        <article class="analytics-card">
 
             <div class="attendance-trend-chart">
+
                 <canvas baseChart [data]="attendanceTrendChartData" [options]="attendanceTrendChartOptions"
                     [type]="'line'">
                 </canvas>
+
             </div>
 
-        </div>
-
-
+        </article>
 
     </section>
+
 
     <!-- =======================================================
        FINANCE ANALYTICS
@@ -938,19 +877,27 @@
         <div class="section-heading">
 
             <div>
+
                 <span class="section-eyebrow">
                     FINANCIAL INTELLIGENCE
                 </span>
 
-                <h2>Fee Analytics</h2>
+                <h2>
+                    Fee Analytics
+                </h2>
 
                 <p>
                     Understand fee collection and outstanding student balances.
                 </p>
+
             </div>
 
         </div>
 
+
+        <!-- =================================================
+           FEE SUMMARY
+           ================================================= -->
 
         <div class="kpi-grid finance-kpis">
 
@@ -1016,6 +963,10 @@
         </div>
 
 
+        <!-- =================================================
+           FEE STATUS
+           ================================================= -->
+
         <div class="finance-status-grid">
 
             <article class="finance-status-card">
@@ -1060,7 +1011,6 @@
 
     </section>
 
-
     <!-- =======================================================
        CROSS ANALYSIS
        ======================================================= -->
@@ -1075,11 +1025,13 @@
                     CROSS ANALYSIS
                 </span>
 
-                <h2>Student Attention Intelligence</h2>
+                <h2>
+                    Student Attention Intelligence
+                </h2>
 
                 <p>
-                    Identify students requiring administrative attention
-                    by combining attendance and fee information.
+                    Identify students requiring attention by combining
+                    attendance and fee information.
                 </p>
 
             </div>
@@ -1088,6 +1040,8 @@
 
 
         <div class="cross-analysis-grid">
+
+            <!-- Low Attendance + Outstanding -->
 
             <article class="cross-card high">
 
@@ -1100,11 +1054,13 @@
                 </strong>
 
                 <p>
-                    Students with attendance below 75% and unpaid balance.
+                    Attendance below 75% with outstanding fees.
                 </p>
 
             </article>
 
+
+            <!-- Low Attendance + Paid -->
 
             <article class="cross-card warning">
 
@@ -1117,11 +1073,13 @@
                 </strong>
 
                 <p>
-                    Students with attendance concerns despite fee clearance.
+                    Attendance below 75% despite fee clearance.
                 </p>
 
             </article>
 
+
+            <!-- Good Attendance + Outstanding -->
 
             <article class="cross-card">
 
@@ -1134,11 +1092,13 @@
                 </strong>
 
                 <p>
-                    Students performing academically but carrying outstanding fees.
+                    Good attendance with outstanding fees.
                 </p>
 
             </article>
 
+
+            <!-- Good Attendance + Paid -->
 
             <article class="cross-card">
 
@@ -1151,7 +1111,7 @@
                 </strong>
 
                 <p>
-                    Students with good attendance and cleared fees.
+                    Good attendance and cleared fees.
                 </p>
 
             </article>
@@ -1175,7 +1135,9 @@
                     OPERATIONAL REPORT
                 </span>
 
-                <h2>Student Report</h2>
+                <h2>
+                    Student Report
+                </h2>
 
                 <p>
                     Search, filter and analyse individual student records.
@@ -1183,12 +1145,36 @@
 
             </div>
 
+
             <div class="report-actions">
+
+                <!-- Columns -->
 
                 <button type="button" class="column-button" (click)="toggleReportColumns()">
 
                     Columns
-                    <span>⚙</span>
+
+                    <span>
+                        ⚙
+                    </span>
+
+                </button>
+
+
+                <!-- Export Excel -->
+
+                <button type="button" class="export-button excel" (click)="exportStudentReportToExcel()">
+
+                    Excel
+
+                </button>
+
+
+                <!-- Export PDF -->
+
+                <button type="button" class="export-button pdf" (click)="exportStudentReportToPdf()">
+
+                    PDF
 
                 </button>
 
@@ -1198,8 +1184,8 @@
 
 
         <!-- =====================================================
-         REPORT FILTERS
-         ===================================================== -->
+           REPORT FILTERS
+           ===================================================== -->
 
         <div class="report-filter-card">
 
@@ -1210,36 +1196,14 @@
                 </label>
 
                 <input id="reportSearch" type="text" placeholder="Search by name, roll number or email..."
-                    [(ngModel)]="reportSearch" (keyup.enter)="onReportSearch()" />
+                    [(ngModel)]="reportSearch" (ngModelChange)="onReportSearch()" />
 
             </div>
 
 
             <div class="report-filter-grid">
 
-                <div class="filter-field">
-
-                    <label for="reportAcademicYear">
-                        Academic Year
-                    </label>
-
-                    <select id="reportAcademicYear" [(ngModel)]="reportAcademicYearId"
-                        (ngModelChange)="onReportFilterChange()">
-
-                        <option [ngValue]="null">
-                            All Academic Years
-                        </option>
-
-                        <option *ngFor="let academicYear of academicYears" [ngValue]="academicYear.id">
-
-                            {{ academicYear.name }}
-
-                        </option>
-
-                    </select>
-
-                </div>
-
+                <!-- Class -->
 
                 <div class="filter-field">
 
@@ -1264,6 +1228,8 @@
                 </div>
 
 
+                <!-- Section -->
+
                 <div class="filter-field">
 
                     <label for="reportSection">
@@ -1286,6 +1252,8 @@
 
                 </div>
 
+
+                <!-- Student Status -->
 
                 <div class="filter-field">
 
@@ -1313,6 +1281,8 @@
                 </div>
 
 
+                <!-- Attendance -->
+
                 <div class="filter-field">
 
                     <label for="reportAttendance">
@@ -1339,13 +1309,19 @@
                         </option>
 
                         <option value="CRITICAL">
-                            Critical
+                            Critical · 1–49%
+                        </option>
+
+                        <option value="NO_DATA">
+                            No Data · 0%
                         </option>
 
                     </select>
 
                 </div>
 
+
+                <!-- Fee Status -->
 
                 <div class="filter-field">
 
@@ -1392,8 +1368,8 @@
 
 
         <!-- =====================================================
-         COLUMN MENU
-         ===================================================== -->
+           COLUMN MENU
+           ===================================================== -->
 
         <div class="column-menu" *ngIf="reportColumnsOpen">
 
@@ -1420,8 +1396,8 @@
 
 
         <!-- =====================================================
-         REPORT TABLE
-         ===================================================== -->
+           REPORT TABLE
+           ===================================================== -->
 
         <div class="report-table-card">
 
@@ -1449,62 +1425,111 @@
                         <tr>
 
                             @if (isReportColumnVisible('student')) {
+
                             <th>
                                 Student
                             </th>
+
                             }
+
 
                             @if (isReportColumnVisible('class')) {
+
                             <th>
-                                class
+                                Class
                             </th>
+
                             }
+
 
                             @if (isReportColumnVisible('section')) {
+
                             <th>
-                                section
+                                Section
                             </th>
+
                             }
+
 
                             @if (isReportColumnVisible('attendance')) {
+
                             <th>
-                                attendance
+                                Attendance
                             </th>
+
                             }
+
 
                             @if (isReportColumnVisible('present')) {
+
                             <th>
-                                present
+                                Present
                             </th>
+
                             }
 
-                            <th *ngIf="isReportColumnVisible('absent')">
+
+                            @if (isReportColumnVisible('absent')) {
+
+                            <th>
                                 Absent
                             </th>
 
-                            <th *ngIf="isReportColumnVisible('totalFee')">
+                            }
+
+
+                            @if (isReportColumnVisible('totalFee')) {
+
+                            <th>
                                 Total Fee
                             </th>
 
-                            <th *ngIf="isReportColumnVisible('paid')">
+                            }
+
+
+                            @if (isReportColumnVisible('paid')) {
+
+                            <th>
                                 Paid
                             </th>
 
-                            <th *ngIf="isReportColumnVisible('outstanding')">
+                            }
+
+
+                            @if (isReportColumnVisible('outstanding')) {
+
+                            <th>
                                 Outstanding
                             </th>
 
-                            <th *ngIf="isReportColumnVisible('feeStatus')">
+                            }
+
+
+                            @if (isReportColumnVisible('feeStatus')) {
+
+                            <th>
                                 Fee Status
                             </th>
 
-                            <th *ngIf="isReportColumnVisible('status')">
+                            }
+
+
+                            @if (isReportColumnVisible('status')) {
+
+                            <th>
                                 Status
                             </th>
 
-                            <th *ngIf="isReportColumnVisible('risk')">
+                            }
+
+
+                            @if (isReportColumnVisible('risk')) {
+
+                            <th>
                                 Risk
                             </th>
+
+                            }
 
                         </tr>
 
@@ -1556,9 +1581,7 @@
 
                             <td *ngIf="isReportColumnVisible('attendance')">
 
-                                <span class="attendance-badge" [ngClass]="
-                    getAttendanceClass(row.attendancePercentage)
-                  ">
+                                <span class="attendance-badge" [ngClass]="getAttendanceClass(row.attendancePercentage)">
 
                                     {{ row.attendancePercentage | number:'1.1-1' }}%
 
@@ -1684,8 +1707,8 @@
 
 
             <!-- =================================================
-           PAGINATION
-           ================================================= -->
+               PAGINATION
+               ================================================= -->
 
             <div class="pagination" *ngIf="!reportLoading && reportTotalElements > 0">
 
@@ -1733,9 +1756,7 @@
                     </span>
 
 
-                    <button type="button" [disabled]="
-              reportPage >= reportTotalPages - 1
-            " (click)="nextReportPage()">
+                    <button type="button" [disabled]="reportPage >= reportTotalPages - 1" (click)="nextReportPage()">
 
                         Next
 

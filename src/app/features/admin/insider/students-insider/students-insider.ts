@@ -1,5 +1,10 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    inject
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { StudentService } from '../../students/services/student.service';
@@ -13,19 +18,17 @@ import { SectionService } from '../../academic/classes/section.service';
 import { Student } from '../../students/models/student.model';
 import { Attendance } from '../../attendance/models/attendance.model';
 import { StudentFee } from '../../fees/models/student-fee.model';
-import { AcademicClass } from '../../academic/classes/class.model';
-
-import { ChangeDetectorRef } from '@angular/core';
 
 import { BaseChartDirective } from 'ng2-charts';
 import {
     ChartConfiguration,
-    ChartData,
-    ChartType,
     ChartOptions
 } from 'chart.js';
 
+import * as XLSX from 'xlsx';
 
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 // =============================================================
 // REPORT ROW
 // =============================================================
@@ -47,14 +50,15 @@ interface StudentReportRow {
     outstandingAmount: number;
 
     feeStatus:
-    | 'PAID'
-    | 'PARTIALLY_PAID'
-    | 'UNPAID';
+        | 'PAID'
+        | 'PARTIALLY_PAID'
+        | 'UNPAID';
 
     risk:
-    | 'LOW'
-    | 'MEDIUM'
-    | 'HIGH';
+        | 'LOW'
+        | 'MEDIUM'
+        | 'HIGH';
+
 }
 
 
@@ -69,6 +73,7 @@ interface ColumnDefinition {
     label: string;
 
     visible: boolean;
+
 }
 
 
@@ -77,6 +82,7 @@ interface ColumnDefinition {
 // =============================================================
 
 @Component({
+
     selector: 'app-students-insider',
 
     standalone: true,
@@ -91,17 +97,18 @@ interface ColumnDefinition {
     templateUrl: './students-insider.html',
 
     styleUrl: './students-insider.scss'
+
 })
 export class StudentsInsider implements OnInit {
 
+
+    // =========================================================
+    // CONSTRUCTOR / SERVICES
+    // =========================================================
+
     constructor(
-        private cdr: ChangeDetectorRef
-    ) { }
-
-
-    // =========================================================
-    // SERVICES
-    // =========================================================
+        private readonly cdr: ChangeDetectorRef
+    ) {}
 
     private readonly studentService =
         inject(StudentService);
@@ -120,6 +127,7 @@ export class StudentsInsider implements OnInit {
 
     private readonly sectionService =
         inject(SectionService);
+
 
     // =========================================================
     // PAGE STATE
@@ -155,8 +163,6 @@ export class StudentsInsider implements OnInit {
 
     reportPaginatedRows: StudentReportRow[] = [];
 
-    
-
 
     // =========================================================
     // REPORT DATA
@@ -178,12 +184,10 @@ export class StudentsInsider implements OnInit {
 
     reportSectionId: number | null = null;
 
-
     reportStudentStatus:
         | 'ALL'
         | 'ACTIVE'
         | 'INACTIVE' = 'ALL';
-
 
     reportAttendanceFilter:
         | 'ALL'
@@ -194,14 +198,12 @@ export class StudentsInsider implements OnInit {
         | 'LOW'
         | 'NO_DATA' = 'ALL';
 
-
     reportFeeFilter:
         | 'ALL'
         | 'PAID'
         | 'PARTIALLY_PAID'
-        | 'UNPAID'
-        | 'REMAINING' = 'ALL';
-
+        | 'REMAINING'
+        | 'UNPAID' = 'ALL';
 
     reportPage = 0;
 
@@ -292,20 +294,14 @@ export class StudentsInsider implements OnInit {
 
     ];
 
-
     reportColumnsOpen = false;
-
-
-    // =========================================================
-    // DASHBOARD SEARCH
-    // =========================================================
-
-    searchTerm = '';
 
 
     // =========================================================
     // DASHBOARD FILTERS
     // =========================================================
+
+    searchTerm = '';
 
     selectedAcademicYear = '';
 
@@ -426,11 +422,21 @@ export class StudentsInsider implements OnInit {
     // =========================================================
 
     totalStudents = 0;
+
     activeStudents = 0;
-    newStudents = 0;
-    averageAttendance = 0;
+
     inactiveStudents = 0;
+
     activeStudentPercentage = 0;
+
+    newStudents = 0;
+
+    averageAttendance = 0;
+
+    totalPresent = 0;
+
+    totalAbsent = 0;
+
 
     // =========================================================
     // FEE SUMMARY
@@ -461,6 +467,7 @@ export class StudentsInsider implements OnInit {
     // =========================================================
     // ATTENDANCE DISTRIBUTION
     // =========================================================
+
     attendanceDistribution = {
 
         excellent: 0,
@@ -482,341 +489,6 @@ export class StudentsInsider implements OnInit {
         label: string;
         percentage: number;
     }[] = [];
-
-
-    attendanceTrendChartData: ChartConfiguration<'line'>['data'] = {
-        labels: [],
-        datasets: [
-            {
-                label: 'Attendance %',
-                data: [],
-                tension: 0.35,
-                fill: true,
-
-                borderColor: '#2563eb',
-                backgroundColor: 'rgba(37, 99, 235, 0.10)',
-
-                pointBackgroundColor: '#2563eb',
-                pointBorderColor: '#ffffff',
-                pointBorderWidth: 2
-            }
-        ]
-    };
-
-    attendanceTrendChartOptions: ChartOptions<'line'> = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        interaction: {
-            intersect: false,
-            mode: 'index'
-        },
-
-        scales: {
-
-            y: {
-                min: 0,
-                max: 100,
-
-                ticks: {
-                    callback: value => `${value}%`
-                },
-
-                grid: {
-                    display: true
-                }
-            },
-
-            x: {
-                grid: {
-                    display: false
-                }
-            }
-
-        },
-
-        plugins: {
-
-            legend: {
-                display: false
-            },
-
-            tooltip: {
-                callbacks: {
-                    label: context =>
-                        `Attendance: ${context.parsed.y}%`
-                }
-            }
-
-        },
-
-        elements: {
-
-            line: {
-                borderWidth: 3,
-                tension: 0.4
-            },
-
-            point: {
-                radius: 4,
-                hoverRadius: 7
-            }
-
-        }
-
-    };
-
-    attendanceDistributionChartData: ChartConfiguration<'doughnut'>['data'] = {
-
-        labels: [
-            'Excellent',
-            'Good',
-            'Needs Attention',
-            'No Data'
-        ],
-
-        datasets: [
-            {
-                data: [0, 0, 0, 0]
-            }
-        ]
-
-    };
-
-    attendanceDistributionChartOptions: ChartOptions<'doughnut'> = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        cutout: '65%',
-
-        plugins: {
-
-            legend: {
-                position: 'bottom',
-
-                labels: {
-                    padding: 18
-                }
-            },
-
-            tooltip: {
-                callbacks: {
-                    label: context => {
-                        const data =
-                            context.dataset.data as number[];
-
-                        const total =
-                            data.reduce(
-                                (sum, value) =>
-                                    sum + Number(value),
-                                0
-                            );
-
-                        const value =
-                            Number(context.raw);
-
-                        const percentage =
-                            total > 0
-                                ? ((value / total) * 100).toFixed(1)
-                                : '0.0';
-
-                        return `${context.label}: ${value} (${percentage}%)`;
-                    }
-                }
-            }
-
-        }
-
-    };
-
-    classDistributionChartData: ChartConfiguration<'bar'>['data'] = {
-
-        labels: [],
-
-        datasets: [
-            {
-                label: 'Students',
-                data: []
-            }
-        ]
-
-    };
-
-
-    classDistributionChartOptions: ChartOptions<'bar'> = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        scales: {
-
-            y: {
-                beginAtZero: true,
-
-                ticks: {
-                    precision: 0
-                },
-
-                grid: {
-                    display: true
-                }
-            },
-
-            x: {
-                grid: {
-                    display: false
-                }
-            }
-
-        },
-
-        plugins: {
-
-            legend: {
-                display: false
-            },
-
-            tooltip: {
-                callbacks: {
-                    label: context =>
-                        `Students: ${context.parsed.y}`
-                }
-            }
-
-        }
-
-    };
-
-    sectionDistributionChartData: ChartConfiguration<'bar'>['data'] = {
-
-        labels: [],
-
-        datasets: [
-            {
-                label: 'Students',
-                data: []
-            }
-        ]
-
-    };
-
-
-    sectionDistributionChartOptions: ChartOptions<'bar'> = {
-
-        indexAxis: 'y',
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        scales: {
-
-            x: {
-                beginAtZero: true,
-
-                ticks: {
-                    precision: 0
-                },
-
-                grid: {
-                    display: true
-                }
-            },
-
-            y: {
-                grid: {
-                    display: false
-                }
-            }
-
-        },
-
-        plugins: {
-
-            legend: {
-                display: false
-            },
-
-            tooltip: {
-                callbacks: {
-                    label: context =>
-                        `Students: ${context.parsed.x}`
-                }
-            }
-
-        }
-
-    };
-
-    feeStatusChartData: ChartConfiguration<'doughnut'>['data'] = {
-
-        labels: [
-            'Fully Paid',
-            'Partially Paid',
-            'Unpaid'
-        ],
-
-        datasets: [
-            {
-                data: [0, 0, 0]
-            }
-        ]
-
-    };
-
-
-    feeStatusChartOptions: ChartOptions<'doughnut'> = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        cutout: '60%',
-
-        plugins: {
-
-            legend: {
-                position: 'bottom',
-
-                labels: {
-                    padding: 18
-                }
-            },
-
-            tooltip: {
-                callbacks: {
-                    label: context => {
-                        const data =
-                            context.dataset.data as number[];
-
-                        const total =
-                            data.reduce(
-                                (sum, value) =>
-                                    sum + Number(value),
-                                0
-                            );
-
-                        const value =
-                            Number(context.raw);
-
-                        const percentage =
-                            total > 0
-                                ? ((value / total) * 100).toFixed(1)
-                                : '0.0';
-
-                        return `${context.label}: ${value} (${percentage}%)`;
-                    }
-                }
-            }
-
-        }
-
-    };
 
 
     // =========================================================
@@ -841,7 +513,6 @@ export class StudentsInsider implements OnInit {
         count: number;
     }[] = [];
 
-
     sectionDistribution: {
         name: string;
         count: number;
@@ -857,7 +528,6 @@ export class StudentsInsider implements OnInit {
         name: string;
     }[] = [];
 
-
     classes: {
         id: number;
         name: string;
@@ -869,7 +539,6 @@ export class StudentsInsider implements OnInit {
         academicYearId: number;
     }[] = [];
 
-
     sections: {
         id: number;
         name: string;
@@ -877,21 +546,719 @@ export class StudentsInsider implements OnInit {
 
 
     // =========================================================
+    // CHART DATA
+    // =========================================================
+
+    attendanceTrendChartData:
+        ChartConfiguration<'line'>['data'] = {
+
+        labels: [],
+
+        datasets: [
+
+            {
+                label: 'Attendance %',
+
+                data: [],
+
+                borderColor: '#2563eb',
+
+                backgroundColor:
+                    'rgba(37, 99, 235, 0.12)',
+
+                pointBackgroundColor:
+                    '#2563eb',
+
+                pointBorderColor:
+                    '#ffffff',
+
+                pointBorderWidth: 2,
+
+                pointRadius: 3,
+
+                pointHoverRadius: 5,
+
+                borderWidth: 2.5,
+
+                tension: 0.35,
+
+                fill: true
+            }
+
+        ]
+
+    };
+
+
+    attendanceTrendChartOptions:
+        ChartOptions<'line'> = {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        resizeDelay: 100,
+
+        interaction: {
+            intersect: false,
+            mode: 'index'
+        },
+
+        layout: {
+            padding: {
+                top: 6,
+                right: 8,
+                bottom: 4,
+                left: 4
+            }
+        },
+
+        scales: {
+
+            y: {
+
+                min: 0,
+
+                max: 100,
+
+                beginAtZero: true,
+
+                border: {
+                    display: false
+                },
+
+                ticks: {
+
+                    stepSize: 20,
+
+                    padding: 5,
+
+                    font: {
+                        size: 10
+                    },
+
+                    callback: value =>
+                        `${value}%`
+                },
+
+                grid: {
+                    color:
+                        'rgba(148, 163, 184, 0.16)',
+
+                    drawTicks: false
+                }
+
+            },
+
+            x: {
+
+                border: {
+                    display: false
+                },
+
+                ticks: {
+
+                    autoSkip: true,
+
+                    maxTicksLimit: 7,
+
+                    maxRotation: 0,
+
+                    minRotation: 0,
+
+                    padding: 5,
+
+                    font: {
+                        size: 10
+                    }
+
+                },
+
+                grid: {
+                    display: false
+                }
+
+            }
+
+        },
+
+        plugins: {
+
+            legend: {
+                display: false
+            },
+
+            tooltip: {
+
+                displayColors: false,
+
+                padding: 8,
+
+                callbacks: {
+
+                    label: context =>
+                        `Attendance: ${context.parsed.y}%`
+
+                }
+
+            }
+
+        }
+
+    };
+
+
+    attendanceDistributionChartData:
+        ChartConfiguration<'doughnut'>['data'] = {
+
+        labels: [
+            'Excellent',
+            'Good',
+            'Needs Attention',
+            'No Data'
+        ],
+
+        datasets: [
+
+            {
+
+                data: [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+
+                backgroundColor: [
+                    '#16a34a',
+                    '#2563eb',
+                    '#f59e0b',
+                    '#94a3b8'
+                ],
+
+                hoverBackgroundColor: [
+                    '#15803d',
+                    '#1d4ed8',
+                    '#d97706',
+                    '#64748b'
+                ],
+
+                borderColor: '#ffffff',
+
+                borderWidth: 2,
+
+                hoverOffset: 4
+            }
+
+        ]
+
+    };
+
+
+    attendanceDistributionChartOptions:
+        ChartOptions<'doughnut'> = {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        resizeDelay: 100,
+
+        cutout: '68%',
+
+        layout: {
+            padding: 4
+        },
+
+        plugins: {
+
+            legend: {
+
+                position: 'bottom',
+
+                align: 'center',
+
+                labels: {
+
+                    usePointStyle: true,
+
+                    pointStyle: 'circle',
+
+                    boxWidth: 7,
+
+                    boxHeight: 7,
+
+                    padding: 9,
+
+                    font: {
+                        size: 10
+                    }
+
+                }
+
+            },
+
+            tooltip: {
+
+                displayColors: true,
+
+                padding: 8,
+
+                callbacks: {
+
+                    label: context => {
+
+                        const values =
+                            context.dataset.data.map(
+                                value =>
+                                    Number(value ?? 0)
+                            );
+
+                        const total =
+                            values.reduce(
+                                (sum, value) =>
+                                    sum + value,
+                                0
+                            );
+
+                        const value =
+                            Number(context.raw ?? 0);
+
+                        const percentage =
+                            total > 0
+                                ? (
+                                    value / total * 100
+                                ).toFixed(1)
+                                : '0.0';
+
+                        return `${context.label}: ${value} (${percentage}%)`;
+                    }
+
+                }
+
+            }
+
+        }
+
+    };
+
+
+    classDistributionChartData:
+        ChartConfiguration<'bar'>['data'] = {
+
+        labels: [],
+
+        datasets: [
+
+            {
+
+                label: 'Students',
+
+                data: [],
+
+                backgroundColor: '#3b82f6',
+
+                hoverBackgroundColor: '#2563eb',
+
+                borderColor: '#2563eb',
+
+                borderWidth: 1,
+
+                borderRadius: 6,
+
+                borderSkipped: false,
+
+                barPercentage: 0.72,
+
+                categoryPercentage: 0.78,
+
+                maxBarThickness: 34
+            }
+
+        ]
+
+    };
+
+
+    classDistributionChartOptions:
+        ChartOptions<'bar'> = {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        resizeDelay: 100,
+
+        layout: {
+            padding: {
+                top: 4,
+                right: 6,
+                bottom: 4,
+                left: 4
+            }
+        },
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true,
+
+                border: {
+                    display: false
+                },
+
+                ticks: {
+
+                    precision: 0,
+
+                    padding: 5,
+
+                    font: {
+                        size: 10
+                    }
+
+                },
+
+                grid: {
+                    color:
+                        'rgba(148, 163, 184, 0.14)',
+
+                    drawTicks: false
+                }
+
+            },
+
+            x: {
+
+                border: {
+                    display: false
+                },
+
+                ticks: {
+
+                    autoSkip: true,
+
+                    maxTicksLimit: 8,
+
+                    maxRotation: 0,
+
+                    minRotation: 0,
+
+                    padding: 5,
+
+                    font: {
+                        size: 9
+                    }
+
+                },
+
+                grid: {
+                    display: false
+                }
+
+            }
+
+        },
+
+        plugins: {
+
+            legend: {
+                display: false
+            },
+
+            tooltip: {
+
+                displayColors: false,
+
+                padding: 8,
+
+                callbacks: {
+
+                    label: context =>
+                        `Students: ${context.parsed.y}`
+
+                }
+
+            }
+
+        }
+
+    };
+
+
+    sectionDistributionChartData:
+        ChartConfiguration<'bar'>['data'] = {
+
+        labels: [],
+
+        datasets: [
+
+            {
+
+                label: 'Students',
+
+                data: [],
+
+                backgroundColor: '#8b5cf6',
+
+                hoverBackgroundColor: '#7c3aed',
+
+                borderColor: '#7c3aed',
+
+                borderWidth: 1,
+
+                borderRadius: 6,
+
+                borderSkipped: false,
+
+                barPercentage: 0.68,
+
+                categoryPercentage: 0.76,
+
+                maxBarThickness: 24
+            }
+
+        ]
+
+    };
+
+
+    sectionDistributionChartOptions:
+        ChartOptions<'bar'> = {
+
+        indexAxis: 'y',
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        resizeDelay: 100,
+
+        layout: {
+            padding: {
+                top: 4,
+                right: 8,
+                bottom: 4,
+                left: 4
+            }
+        },
+
+        scales: {
+
+            x: {
+
+                beginAtZero: true,
+
+                border: {
+                    display: false
+                },
+
+                ticks: {
+
+                    precision: 0,
+
+                    padding: 5,
+
+                    font: {
+                        size: 10
+                    }
+
+                },
+
+                grid: {
+
+                    color:
+                        'rgba(148, 163, 184, 0.14)',
+
+                    drawTicks: false
+                }
+
+            },
+
+            y: {
+
+                border: {
+                    display: false
+                },
+
+                ticks: {
+
+                    autoSkip: true,
+
+                    padding: 5,
+
+                    font: {
+                        size: 9
+                    }
+
+                },
+
+                grid: {
+                    display: false
+                }
+
+            }
+
+        },
+
+        plugins: {
+
+            legend: {
+                display: false
+            },
+
+            tooltip: {
+
+                displayColors: false,
+
+                padding: 8,
+
+                callbacks: {
+
+                    label: context =>
+                        `Students: ${context.parsed.x}`
+
+                }
+
+            }
+
+        }
+
+    };
+
+
+    feeStatusChartData:
+        ChartConfiguration<'doughnut'>['data'] = {
+
+        labels: [
+            'Fully Paid',
+            'Partially Paid',
+            'Unpaid'
+        ],
+
+        datasets: [
+
+            {
+
+                data: [0, 0, 0],
+
+                backgroundColor: [
+                    '#16a34a',
+                    '#f59e0b',
+                    '#ef4444'
+                ],
+
+                hoverBackgroundColor: [
+                    '#15803d',
+                    '#d97706',
+                    '#dc2626'
+                ],
+
+                borderColor: '#ffffff',
+
+                borderWidth: 2,
+
+                hoverOffset: 4
+            }
+
+        ]
+
+    };
+
+
+    feeStatusChartOptions:
+        ChartOptions<'doughnut'> = {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        resizeDelay: 100,
+
+        cutout: '68%',
+
+        layout: {
+            padding: 4
+        },
+
+        plugins: {
+
+            legend: {
+
+                position: 'bottom',
+
+                align: 'center',
+
+                labels: {
+
+                    usePointStyle: true,
+
+                    pointStyle: 'circle',
+
+                    boxWidth: 7,
+
+                    boxHeight: 7,
+
+                    padding: 9,
+
+                    font: {
+                        size: 10
+                    }
+
+                }
+
+            }
+
+        }
+
+    };
+
+
+    // =========================================================
+    // CHART HEIGHT
+    // =========================================================
+
+    private getDistributionChartHeight(
+        itemCount: number
+    ): number {
+
+        if (itemCount <= 3) {
+            return 160;
+        }
+
+        if (itemCount <= 6) {
+            return 185;
+        }
+
+        if (itemCount <= 10) {
+            return 220;
+        }
+
+        if (itemCount <= 15) {
+            return 260;
+        }
+
+        return 300;
+    }
+
+    classDistributionChartHeight = 160;
+
+    sectionDistributionChartHeight = 160;
+
+
+    // =========================================================
     // LIFECYCLE
     // =========================================================
 
     ngOnInit(): void {
-
         this.loadData();
-
-
     }
 
 
     // =========================================================
     // INITIAL DATA LOAD
     // =========================================================
-
 
     private loadData(): void {
 
@@ -915,7 +1282,6 @@ export class StudentsInsider implements OnInit {
                         response.data?.content ?? [];
 
                     this.loadAttendance();
-
                 },
 
                 error: error => {
@@ -927,18 +1293,28 @@ export class StudentsInsider implements OnInit {
 
                     this.students = [];
 
+                    this.attendanceRecords = [];
+
+                    this.studentFees = [];
+
                     this.loading = false;
+
+                    this.reportLoading = false;
 
                     this.errorMessage =
                         'Unable to load student data.';
 
                     this.cdr.markForCheck();
-
                 }
 
             });
 
     }
+
+
+    // =========================================================
+    // LOAD ACADEMIC YEARS
+    // =========================================================
 
     private loadAcademicYears(): void {
 
@@ -952,7 +1328,6 @@ export class StudentsInsider implements OnInit {
                         response.data?.content ?? [];
 
                     this.cdr.markForCheck();
-
                 },
 
                 error: error => {
@@ -964,11 +1339,17 @@ export class StudentsInsider implements OnInit {
 
                     this.academicYears = [];
 
+                    this.cdr.markForCheck();
                 }
 
             });
 
     }
+
+
+    // =========================================================
+    // LOAD CLASSES
+    // =========================================================
 
     private loadClasses(): void {
 
@@ -983,6 +1364,7 @@ export class StudentsInsider implements OnInit {
 
                     this.updateClassOptions();
 
+                    this.cdr.markForCheck();
                 },
 
                 error: error => {
@@ -996,46 +1378,62 @@ export class StudentsInsider implements OnInit {
 
                     this.classes = [];
 
+                    this.cdr.markForCheck();
                 }
 
             });
 
     }
 
+
+    // =========================================================
+    // UPDATE CLASS OPTIONS
+    // =========================================================
+
     private updateClassOptions(): void {
 
         if (!this.selectedAcademicYear) {
 
             this.classes =
-                this.allClasses.map(classItem => ({
-                    id: classItem.id,
-                    name: classItem.name
-                }));
+                this.allClasses.map(
+                    classItem => ({
+                        id: classItem.id,
+                        name: classItem.name
+                    })
+                );
 
             return;
-
         }
 
         const academicYearId =
-            Number(this.selectedAcademicYear);
+            Number(
+                this.selectedAcademicYear
+            );
 
         this.classes =
             this.allClasses
-
                 .filter(
                     classItem =>
                         classItem.academicYearId ===
                         academicYearId
                 )
-
-                .map(classItem => ({
-                    id: classItem.id,
-                    name: classItem.name
-                }));
+                .map(
+                    classItem => ({
+                        id: classItem.id,
+                        name: classItem.name
+                    })
+                );
 
     }
 
-    private loadSections(classId: number): void {
+
+    // =========================================================
+    // LOAD SECTIONS
+    // =========================================================
+
+    private loadSections(
+        classId: number
+    ): void {
 
         this.sectionService
             .getSections(classId)
@@ -1046,6 +1444,7 @@ export class StudentsInsider implements OnInit {
                     this.sections =
                         response.data ?? [];
 
+                    this.cdr.markForCheck();
                 },
 
                 error: error => {
@@ -1057,11 +1456,17 @@ export class StudentsInsider implements OnInit {
 
                     this.sections = [];
 
+                    this.cdr.markForCheck();
                 }
 
             });
 
     }
+
+
+    // =========================================================
+    // ACADEMIC YEAR CHANGE
+    // =========================================================
 
     onAcademicYearChange(): void {
 
@@ -1073,9 +1478,14 @@ export class StudentsInsider implements OnInit {
 
         this.updateClassOptions();
 
-        this.applyReportFilters();
+        this.applyFilters();
 
     }
+
+
+    // =========================================================
+    // CLASS CHANGE
+    // =========================================================
 
     onClassChange(): void {
 
@@ -1085,19 +1495,19 @@ export class StudentsInsider implements OnInit {
 
         if (!this.selectedClass) {
 
-            this.applyReportFilters();
+            this.applyFilters();
 
             return;
-
         }
 
         this.loadSections(
             Number(this.selectedClass)
         );
 
-        this.applyReportFilters();
+        this.applyFilters();
 
     }
+
 
     // =========================================================
     // LOAD ATTENDANCE
@@ -1114,9 +1524,7 @@ export class StudentsInsider implements OnInit {
                     this.attendanceRecords =
                         response.data ?? [];
 
-
                     this.loadFees();
-
                 },
 
                 error: error => {
@@ -1126,11 +1534,9 @@ export class StudentsInsider implements OnInit {
                         error
                     );
 
-
                     this.attendanceRecords = [];
 
                     this.loadFees();
-
                 }
 
             });
@@ -1153,9 +1559,7 @@ export class StudentsInsider implements OnInit {
                     this.studentFees =
                         response.data ?? [];
 
-
                     this.buildReport();
-
                 },
 
                 error: error => {
@@ -1165,21 +1569,14 @@ export class StudentsInsider implements OnInit {
                         error
                     );
 
-
                     this.studentFees = [];
 
                     this.buildReport();
-
                 }
 
             });
 
     }
-
-
-    // =========================================================
-    // BUILD FILTER OPTIONS
-    // ========================================================
 
 
     // =========================================================
@@ -1189,80 +1586,90 @@ export class StudentsInsider implements OnInit {
     private buildReport(): void {
 
         this.reportRows =
-            this.students.map(student => {
+            this.students.map(
+                student => {
 
-                const attendance =
-                    this.calculateStudentAttendance(
-                        student.id
-                    );
+                    const attendance =
+                        this.calculateStudentAttendance(
+                            student.id
+                        );
 
+                    const fee =
+                        this.calculateStudentFee(
+                            student.id
+                        );
 
-                const fee =
-                    this.calculateStudentFee(
-                        student.id
-                    );
+                    const attendancePercentage =
+                        this.calculateAttendancePercentage(
+                            attendance.presentCount,
+                            attendance.absentCount
+                        );
 
+                    const feeStatus =
+                        this.calculateFeeStatus(
+                            fee.totalFee,
+                            fee.paidAmount
+                        );
 
-                const attendancePercentage =
-                    this.calculateAttendancePercentage(
-                        attendance.presentCount,
-                        attendance.absentCount
-                    );
+                    const risk =
+                        this.calculateRisk(
+                            attendancePercentage,
+                            fee.outstandingAmount
+                        );
 
+                    return {
 
-                const feeStatus =
-                    this.calculateFeeStatus(
-                        fee.totalFee,
-                        fee.paidAmount
-                    );
+                        student,
 
-
-                const risk =
-                    this.calculateRisk(
                         attendancePercentage,
-                        fee.outstandingAmount
-                    );
 
+                        presentCount:
+                            attendance.presentCount,
 
-                return {
+                        absentCount:
+                            attendance.absentCount,
 
-                    student,
+                        totalFee:
+                            fee.totalFee,
 
-                    attendancePercentage,
+                        paidAmount:
+                            fee.paidAmount,
 
-                    presentCount:
-                        attendance.presentCount,
+                        outstandingAmount:
+                            fee.outstandingAmount,
 
-                    absentCount:
-                        attendance.absentCount,
+                        feeStatus,
 
-                    totalFee:
-                        fee.totalFee,
+                        risk
 
-                    paidAmount:
-                        fee.paidAmount,
+                    };
+                }
+            );
 
-                    outstandingAmount:
-                        fee.outstandingAmount,
+        this.reportStudents = this.students;
 
-                    feeStatus,
+        this.reportAttendance =
+            this.attendanceRecords;
 
-                    risk
+        this.reportFees =
+            this.studentFees;
 
-                };
+        this.filteredRows =
+            [...this.reportRows];
 
-            });
+        this.currentPage = 1;
 
+        this.updatePagination();
 
-        this.calculateDashboardSummary();
+        this.applyFilters();
 
         this.applyReportFilters();
 
         this.loading = false;
 
         this.reportLoading = false;
-        this.cdr.markForCheck();
 
+        this.cdr.markForCheck();
 
     }
 
@@ -1284,40 +1691,25 @@ export class StudentsInsider implements OnInit {
                     record.studentId === studentId
             );
 
-
         let presentCount = 0;
 
         let absentCount = 0;
 
-
         for (const record of records) {
 
-            if (
-                record.status === 'PRESENT'
-            ) {
-
+            if (record.status === 'PRESENT') {
                 presentCount++;
-
             }
 
-
-            if (
-                record.status === 'ABSENT'
-            ) {
-
+            if (record.status === 'ABSENT') {
                 absentCount++;
-
             }
 
         }
 
-
         return {
-
             presentCount,
-
             absentCount
-
         };
 
     }
@@ -1335,17 +1727,14 @@ export class StudentsInsider implements OnInit {
         const total =
             present + absent;
 
-
         if (total === 0) {
-
             return 0;
-
         }
-
 
         return Number(
             (
-                (present / total) *
+                present /
+                total *
                 100
             ).toFixed(1)
         );
@@ -1371,7 +1760,6 @@ export class StudentsInsider implements OnInit {
                     fee.studentId === studentId
             );
 
-
         const totalFee =
             fees.reduce(
                 (sum, fee) =>
@@ -1381,7 +1769,6 @@ export class StudentsInsider implements OnInit {
                     ),
                 0
             );
-
 
         const paidAmount =
             fees.reduce(
@@ -1393,7 +1780,6 @@ export class StudentsInsider implements OnInit {
                 0
             );
 
-
         const outstandingAmount =
             Math.max(
                 totalFee -
@@ -1401,15 +1787,10 @@ export class StudentsInsider implements OnInit {
                 0
             );
 
-
         return {
-
             totalFee,
-
             paidAmount,
-
             outstandingAmount
-
         };
 
     }
@@ -1428,28 +1809,18 @@ export class StudentsInsider implements OnInit {
         | 'UNPAID' {
 
         if (totalFee <= 0) {
-
             return 'UNPAID';
-
         }
-
 
         if (paidAmount >= totalFee) {
-
             return 'PAID';
-
         }
-
 
         if (paidAmount > 0) {
-
             return 'PARTIALLY_PAID';
-
         }
 
-
         return 'UNPAID';
-
     }
 
 
@@ -1469,48 +1840,41 @@ export class StudentsInsider implements OnInit {
             attendancePercentage > 0 &&
             attendancePercentage < 75;
 
-
         const hasOutstanding =
             outstandingAmount > 0;
-
 
         if (
             lowAttendance &&
             hasOutstanding
         ) {
-
             return 'HIGH';
-
         }
-
 
         if (
             lowAttendance ||
             hasOutstanding
         ) {
-
             return 'MEDIUM';
-
         }
 
-
         return 'LOW';
-
     }
 
 
     // =========================================================
-    // DASHBOARD SUMMARY
+    // DASHBOARD SUMMARY + CHARTS
     // =========================================================
 
     private calculateDashboardSummary(): void {
 
-        this.totalStudents =
-            this.reportRows.length;
+        const rows =
+            this.filteredRows;
 
+        this.totalStudents =
+            rows.length;
 
         this.activeStudents =
-            this.reportRows.filter(
+            rows.filter(
                 row =>
                     row.student.isActive
             ).length;
@@ -1520,140 +1884,41 @@ export class StudentsInsider implements OnInit {
             this.activeStudents;
 
         this.activeStudentPercentage =
-            this.totalStudents === 0
-                ? 0
-                : Number(
+            this.totalStudents > 0
+                ? Number(
                     (
-                        (this.activeStudents /
-                            this.totalStudents) *
+                        this.activeStudents /
+                        this.totalStudents *
                         100
                     ).toFixed(1)
-                );
+                )
+                : 0;
 
-
-        // -----------------------------------------------------
-        // NEW STUDENTS
-        // -----------------------------------------------------
-        //
-        // New-student calculation is intentionally kept at zero
-        // until the actual enrollment/creation-date requirement
-        // is connected to the available backend data.
-        //
-
+        // No reliable enrollment-date field is assumed here.
         this.newStudents = 0;
 
-
-        // -----------------------------------------------------
-        // ATTENDANCE DISTRIBUTION
-        // -----------------------------------------------------
-
         this.attendanceDistribution = {
-
             excellent: 0,
-
             good: 0,
-
             needsAttention: 0,
-
             noData: 0
-
         };
 
+        this.totalPresent = 0;
+
+        this.totalAbsent = 0;
 
         const attendanceValues: number[] = [];
 
-        this.attendanceTrends = [];
+        for (const row of rows) {
 
-        const attendanceByDate = new Map<
-            string,
-            { present: number; total: number }
-        >();
+            this.totalPresent +=
+                row.presentCount;
 
-        for (const record of this.attendanceRecords) {
+            this.totalAbsent +=
+                row.absentCount;
 
-            const date = record.attendanceDate;
-
-            if (!attendanceByDate.has(date)) {
-                attendanceByDate.set(date, {
-                    present: 0,
-                    total: 0
-                });
-            }
-
-            const data = attendanceByDate.get(date)!;
-
-            data.total++;
-
-            if (record.status === 'PRESENT') {
-                data.present++;
-            }
-
-        }
-
-        const sortedDates =
-            Array.from(attendanceByDate.keys())
-                .sort()
-                .slice(-7);
-
-        for (const date of sortedDates) {
-
-            const data = attendanceByDate.get(date)!;
-
-            const percentage =
-                data.total > 0
-                    ? Number(
-                        ((data.present / data.total) * 100)
-                            .toFixed(1)
-                    )
-                    : 0;
-
-            this.attendanceTrends.push({
-                label: new Date(date + 'T00:00:00').toLocaleDateString(
-                    'en-IN',
-                    {
-                        day: '2-digit',
-                        month: 'short'
-                    }
-                ),
-                percentage
-            });
-
-        }
-
-        this.attendanceTrendChartData = {
-            labels: this.attendanceTrends.map(
-                trend => trend.label
-            ),
-            datasets: [
-                {
-                    label: 'Attendance %',
-                    data: this.attendanceTrends.map(
-                        trend => trend.percentage
-                    ),
-                    tension: 0.35,
-                    fill: true,
-
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37, 99, 235, 0.10)',
-
-                    pointBackgroundColor: '#2563eb',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2
-                }
-            ]
-        };
-
-
-        // Update chart AFTER all trend data is prepared
-
-
-
-
-        for (const row of this.reportRows) {
-
-            if (
-                row.attendancePercentage >= 90
-            ) {
+            if (row.attendancePercentage >= 90) {
 
                 this.attendanceDistribution.excellent++;
 
@@ -1672,62 +1937,19 @@ export class StudentsInsider implements OnInit {
             } else {
 
                 this.attendanceDistribution.noData++;
-
             }
 
-
-            if (
-                row.attendancePercentage > 0
-            ) {
-
+            if (row.attendancePercentage > 0) {
                 attendanceValues.push(
                     row.attendancePercentage
                 );
-
             }
 
         }
 
-        this.attendanceDistributionChartData = {
-            labels: [
-                'Excellent',
-                'Good',
-                'Needs Attention',
-                'No Data'
-            ],
-            datasets: [
-                {
-                    data: [
-                        this.attendanceDistribution.excellent,
-                        this.attendanceDistribution.good,
-                        this.attendanceDistribution.needsAttention,
-                        this.attendanceDistribution.noData
-                    ],
-
-                    backgroundColor: [
-                        '#16a34a',
-                        '#2563eb',
-                        '#f59e0b',
-                        '#94a3b8'
-                    ],
-
-                    borderColor: '#ffffff',
-                    borderWidth: 2
-                }
-            ]
-        };
-
-
-        // -----------------------------------------------------
-        // AVERAGE ATTENDANCE
-        // -----------------------------------------------------
-
-        if (
+        this.averageAttendance =
             attendanceValues.length > 0
-        ) {
-
-            this.averageAttendance =
-                Number(
+                ? Number(
                     (
                         attendanceValues.reduce(
                             (sum, value) =>
@@ -1736,106 +1958,64 @@ export class StudentsInsider implements OnInit {
                         ) /
                         attendanceValues.length
                     ).toFixed(1)
-                );
-
-        } else {
-
-            this.averageAttendance = 0;
-
-        }
+                )
+                : 0;
 
 
         // -----------------------------------------------------
-        // FEES
+        // FEE SUMMARY
         // -----------------------------------------------------
 
         this.totalFees =
-            this.reportRows.reduce(
+            rows.reduce(
                 (sum, row) =>
                     sum + row.totalFee,
                 0
             );
 
-
         this.totalCollected =
-            this.reportRows.reduce(
+            rows.reduce(
                 (sum, row) =>
                     sum + row.paidAmount,
                 0
             );
 
-
         this.totalOutstanding =
-            this.reportRows.reduce(
+            rows.reduce(
                 (sum, row) =>
                     sum + row.outstandingAmount,
                 0
             );
 
-
         this.paidStudents =
-            this.reportRows.filter(
+            rows.filter(
                 row =>
                     row.feeStatus === 'PAID'
             ).length;
 
-
         this.partiallyPaidStudents =
-            this.reportRows.filter(
+            rows.filter(
                 row =>
-                    row.feeStatus === 'PARTIALLY_PAID'
+                    row.feeStatus ===
+                    'PARTIALLY_PAID'
             ).length;
 
-
         this.unpaidStudents =
-            this.reportRows.filter(
+            rows.filter(
                 row =>
                     row.feeStatus === 'UNPAID'
             ).length;
 
-        this.feeStatusChartData = {
-
-            labels: [
-                'Fully Paid',
-                'Partially Paid',
-                'Unpaid'
-            ],
-
-            datasets: [
-                {
-                    data: [
-                        this.paidStudents,
-                        this.partiallyPaidStudents,
-                        this.unpaidStudents
-                    ]
-                }
-            ]
-
-        };
-
-
-        // -----------------------------------------------------
-        // FEE COLLECTION %
-        // -----------------------------------------------------
-
-        if (this.totalFees > 0) {
-
-            this.feeCollectionPercentage =
-                Number(
+        this.feeCollectionPercentage =
+            this.totalFees > 0
+                ? Number(
                     (
-                        (
-                            this.totalCollected /
-                            this.totalFees
-                        ) *
+                        this.totalCollected /
+                        this.totalFees *
                         100
                     ).toFixed(1)
-                );
-
-        } else {
-
-            this.feeCollectionPercentage = 0;
-
-        }
+                )
+                : 0;
 
 
         // -----------------------------------------------------
@@ -1843,7 +2023,7 @@ export class StudentsInsider implements OnInit {
         // -----------------------------------------------------
 
         this.studentsNeedingAttention =
-            this.reportRows.filter(
+            rows.filter(
                 row =>
                     row.risk !== 'LOW'
             ).length;
@@ -1861,59 +2041,44 @@ export class StudentsInsider implements OnInit {
 
         this.goodAttendancePaid = 0;
 
-
-        for (const row of this.reportRows) {
+        for (const row of rows) {
 
             const lowAttendance =
                 row.attendancePercentage > 0 &&
                 row.attendancePercentage < 75;
 
-
             const goodAttendance =
                 row.attendancePercentage >= 75;
-
 
             const hasOutstanding =
                 row.outstandingAmount > 0;
 
-
             if (
                 lowAttendance &&
                 hasOutstanding
             ) {
-
                 this.lowAttendanceOutstanding++;
-
             }
-
 
             if (
                 lowAttendance &&
                 !hasOutstanding
             ) {
-
                 this.lowAttendancePaid++;
-
             }
-
 
             if (
                 goodAttendance &&
                 hasOutstanding
             ) {
-
                 this.goodAttendanceOutstanding++;
-
             }
-
 
             if (
                 goodAttendance &&
                 !hasOutstanding
             ) {
-
                 this.goodAttendancePaid++;
-
             }
 
         }
@@ -1926,13 +2091,11 @@ export class StudentsInsider implements OnInit {
         const classMap =
             new Map<string, number>();
 
-
-        for (const row of this.reportRows) {
+        for (const row of rows) {
 
             const className =
                 row.student.className ||
                 'Unknown';
-
 
             classMap.set(
                 className,
@@ -1944,15 +2107,16 @@ export class StudentsInsider implements OnInit {
 
         }
 
-
         this.classDistribution =
             Array.from(
                 classMap.entries()
             )
-                .map(([name, count]) => ({
-                    name,
-                    count
-                }))
+                .map(
+                    ([name, count]) => ({
+                        name,
+                        count
+                    })
+                )
                 .sort(
                     (a, b) =>
                         a.name.localeCompare(
@@ -1961,24 +2125,6 @@ export class StudentsInsider implements OnInit {
                 );
 
 
-        this.classDistributionChartData = {
-
-            labels: this.classDistribution.map(
-                item => item.name
-            ),
-
-            datasets: [
-                {
-                    label: 'Students',
-
-                    data: this.classDistribution.map(
-                        item => item.count
-                    )
-                }
-            ]
-
-        };
-
         // -----------------------------------------------------
         // SECTION DISTRIBUTION
         // -----------------------------------------------------
@@ -1986,13 +2132,11 @@ export class StudentsInsider implements OnInit {
         const sectionMap =
             new Map<string, number>();
 
-
-        for (const row of this.reportRows) {
+        for (const row of rows) {
 
             const sectionName =
                 row.student.sectionName ||
                 'Unknown';
-
 
             sectionMap.set(
                 sectionName,
@@ -2004,15 +2148,16 @@ export class StudentsInsider implements OnInit {
 
         }
 
-
         this.sectionDistribution =
             Array.from(
                 sectionMap.entries()
             )
-                .map(([name, count]) => ({
-                    name,
-                    count
-                }))
+                .map(
+                    ([name, count]) => ({
+                        name,
+                        count
+                    })
+                )
                 .sort(
                     (a, b) =>
                         a.name.localeCompare(
@@ -2020,23 +2165,429 @@ export class StudentsInsider implements OnInit {
                         )
                 );
 
-        this.sectionDistributionChartData = {
-            labels: this.sectionDistribution.map(
-                item => item.name
-            ),
+
+        // -----------------------------------------------------
+        // CHART DATA
+        // -----------------------------------------------------
+
+        this.updateChartData();
+
+    }
+
+
+    // =========================================================
+    // UPDATE CHART DATA
+    // =========================================================
+
+    private updateChartData(): void {
+
+        this.classDistributionChartHeight =
+            this.getDistributionChartHeight(
+                this.classDistribution.length
+            );
+
+        this.sectionDistributionChartHeight =
+            this.getDistributionChartHeight(
+                this.sectionDistribution.length
+            );
+
+
+        this.classDistributionChartData = {
+
+            labels:
+                this.classDistribution.map(
+                    item => item.name
+                ),
+
             datasets: [
+
                 {
+
                     label: 'Students',
-                    data: this.sectionDistribution.map(
-                        item => item.count
-                    )
+
+                    data:
+                        this.classDistribution.map(
+                            item => item.count
+                        ),
+
+                    backgroundColor: '#3b82f6',
+
+                    hoverBackgroundColor:
+                        '#2563eb',
+
+                    borderColor: '#2563eb',
+
+                    borderWidth: 1,
+
+                    borderRadius: 6,
+
+                    borderSkipped: false,
+
+                    barPercentage: 0.72,
+
+                    categoryPercentage: 0.78,
+
+                    maxBarThickness: 34
+
                 }
+
             ]
+
+        };
+
+
+        this.sectionDistributionChartData = {
+
+            labels:
+                this.sectionDistribution.map(
+                    item => item.name
+                ),
+
+            datasets: [
+
+                {
+
+                    label: 'Students',
+
+                    data:
+                        this.sectionDistribution.map(
+                            item => item.count
+                        ),
+
+                    backgroundColor: '#8b5cf6',
+
+                    hoverBackgroundColor:
+                        '#7c3aed',
+
+                    borderColor: '#7c3aed',
+
+                    borderWidth: 1,
+
+                    borderRadius: 6,
+
+                    borderSkipped: false,
+
+                    barPercentage: 0.68,
+
+                    categoryPercentage: 0.76,
+
+                    maxBarThickness: 24
+
+                }
+
+            ]
+
+        };
+
+
+        this.attendanceDistributionChartData = {
+
+            labels: [
+                'Excellent',
+                'Good',
+                'Needs Attention',
+                'No Data'
+            ],
+
+            datasets: [
+
+                {
+
+                    data: [
+
+                        this.attendanceDistribution
+                            .excellent,
+
+                        this.attendanceDistribution
+                            .good,
+
+                        this.attendanceDistribution
+                            .needsAttention,
+
+                        this.attendanceDistribution
+                            .noData
+
+                    ],
+
+                    backgroundColor: [
+                        '#16a34a',
+                        '#2563eb',
+                        '#f59e0b',
+                        '#94a3b8'
+                    ],
+
+                    hoverBackgroundColor: [
+                        '#15803d',
+                        '#1d4ed8',
+                        '#d97706',
+                        '#64748b'
+                    ],
+
+                    borderColor: '#ffffff',
+
+                    borderWidth: 2,
+
+                    hoverOffset: 4
+
+                }
+
+            ]
+
+        };
+
+
+        this.feeStatusChartData = {
+
+            labels: [
+                'Fully Paid',
+                'Partially Paid',
+                'Unpaid'
+            ],
+
+            datasets: [
+
+                {
+
+                    data: [
+
+                        this.paidStudents,
+
+                        this.partiallyPaidStudents,
+
+                        this.unpaidStudents
+
+                    ],
+
+                    backgroundColor: [
+                        '#16a34a',
+                        '#f59e0b',
+                        '#ef4444'
+                    ],
+
+                    hoverBackgroundColor: [
+                        '#15803d',
+                        '#d97706',
+                        '#dc2626'
+                    ],
+
+                    borderColor: '#ffffff',
+
+                    borderWidth: 2,
+
+                    hoverOffset: 4
+
+                }
+
+            ]
+
+        };
+
+
+        this.updateAttendanceTrendChart();
+
+    }
+
+
+    // =========================================================
+    // ATTENDANCE TREND CHART
+    // =========================================================
+
+    private updateAttendanceTrendChart(): void {
+
+        const allowedStudentIds =
+            new Set(
+                this.filteredRows.map(
+                    row =>
+                        row.student.id
+                )
+            );
+
+        const dateMap =
+            new Map<
+                string,
+                {
+                    present: number;
+                    total: number;
+                }
+            >();
+
+
+        for (
+            const record
+            of this.attendanceRecords
+        ) {
+
+            if (
+                !allowedStudentIds.has(
+                    record.studentId
+                )
+            ) {
+                continue;
+            }
+
+            const date =
+                String(
+                    record.attendanceDate
+                );
+
+            if (!date) {
+                continue;
+            }
+
+            const entry =
+                dateMap.get(date) ?? {
+                    present: 0,
+                    total: 0
+                };
+
+            if (
+                record.status ===
+                'PRESENT'
+            ) {
+                entry.present++;
+            }
+
+            if (
+                record.status ===
+                'PRESENT' ||
+                record.status ===
+                'ABSENT'
+            ) {
+                entry.total++;
+            }
+
+            dateMap.set(
+                date,
+                entry
+            );
+
+        }
+
+
+        const sortedDates =
+            Array.from(
+                dateMap.keys()
+            ).sort();
+
+
+        this.attendanceTrends =
+            sortedDates.map(
+                date => {
+
+                    const data =
+                        dateMap.get(
+                            date
+                        )!;
+
+                    const percentage =
+                        data.total > 0
+                            ? Number(
+                                (
+                                    data.present /
+                                    data.total *
+                                    100
+                                ).toFixed(1)
+                            )
+                            : 0;
+
+                    return {
+
+                        label:
+                            this.formatAttendanceTrendDate(
+                                date
+                            ),
+
+                        percentage
+
+                    };
+
+                }
+            );
+
+
+        this.attendanceTrendChartData = {
+
+            labels:
+                this.attendanceTrends.map(
+                    trend =>
+                        trend.label
+                ),
+
+            datasets: [
+
+                {
+
+                    label: 'Attendance %',
+
+                    data:
+                        this.attendanceTrends.map(
+                            trend =>
+                                trend.percentage
+                        ),
+
+                    borderColor:
+                        '#2563eb',
+
+                    backgroundColor:
+                        'rgba(37, 99, 235, 0.12)',
+
+                    pointBackgroundColor:
+                        '#2563eb',
+
+                    pointBorderColor:
+                        '#ffffff',
+
+                    pointBorderWidth: 2,
+
+                    pointRadius: 3,
+
+                    pointHoverRadius: 5,
+
+                    borderWidth: 2.5,
+
+                    tension: 0.35,
+
+                    fill: true
+
+                }
+
+            ]
+
         };
 
     }
 
 
+    // =========================================================
+    // ATTENDANCE TREND DATE FORMAT
+    // =========================================================
+
+    private formatAttendanceTrendDate(
+        date: string
+    ): string {
+
+        const parsed =
+            new Date(
+                `${date}T00:00:00`
+            );
+
+        if (
+            Number.isNaN(
+                parsed.getTime()
+            )
+        ) {
+            return date;
+        }
+
+        return parsed.toLocaleDateString(
+            'en-IN',
+            {
+                day: '2-digit',
+                month: 'short'
+            }
+        );
+
+    }
 
 
     // =========================================================
@@ -2050,185 +2601,133 @@ export class StudentsInsider implements OnInit {
                 .trim()
                 .toLowerCase();
 
-
         this.filteredRows =
-            this.reportRows.filter(row => {
+            this.reportRows.filter(
+                row => {
 
-                const student =
-                    row.student;
+                    const student =
+                        row.student;
 
+                    const studentName =
+                        this.getStudentName(
+                            student
+                        ).toLowerCase();
 
-                // ------------------------------------------------
-                // SEARCH
-                // ------------------------------------------------
-
-                const studentName =
-                    this.getStudentName(
-                        student
-                    ).toLowerCase();
-
-
-                const matchesSearch =
-                    !search ||
-
-                    studentName.includes(
-                        search
-                    ) ||
-
-                    (
+                    const rollNumber =
                         student.rollNumber
-                            ?.toLowerCase()
-                            .includes(search)
-                        ?? false
-                    ) ||
+                            ?.toLowerCase() ??
+                        '';
 
-                    (
+                    const email =
                         student.email
-                            ?.toLowerCase()
-                            .includes(search)
-                        ?? false
-                    );
+                            ?.toLowerCase() ??
+                        '';
+
+                    const matchesSearch =
+                        !search ||
+                        studentName.includes(
+                            search
+                        ) ||
+                        rollNumber.includes(
+                            search
+                        ) ||
+                        email.includes(
+                            search
+                        );
+
+                    if (!matchesSearch) {
+                        return false;
+                    }
 
 
-                if (!matchesSearch) {
-
-                    return false;
-
-                }
-
-
-                // ------------------------------------------------
-                // ACADEMIC YEAR
-                // ------------------------------------------------
-
-                const matchesAcademicYear =
-                    !this.selectedAcademicYear ||
-
-                    student.academicYearId ===
-                    Number(
-                        this.selectedAcademicYear
-                    );
+                    if (
+                        this.selectedAcademicYear &&
+                        student.academicYearId !==
+                        Number(
+                            this.selectedAcademicYear
+                        )
+                    ) {
+                        return false;
+                    }
 
 
-                if (!matchesAcademicYear) {
-
-                    return false;
-
-                }
-
-
-                // ------------------------------------------------
-                // CLASS
-                // ------------------------------------------------
-
-                const matchesClass =
-                    !this.selectedClass ||
-
-                    student.classId ===
-                    Number(
-                        this.selectedClass
-                    );
+                    if (
+                        this.selectedClass &&
+                        student.classId !==
+                        Number(
+                            this.selectedClass
+                        )
+                    ) {
+                        return false;
+                    }
 
 
-                if (!matchesClass) {
-
-                    return false;
-
-                }
-
-
-                // ------------------------------------------------
-                // SECTION
-                // ------------------------------------------------
-
-                const matchesSection =
-                    !this.selectedSection ||
-
-                    student.sectionId ===
-                    Number(
-                        this.selectedSection
-                    );
+                    if (
+                        this.selectedSection &&
+                        student.sectionId !==
+                        Number(
+                            this.selectedSection
+                        )
+                    ) {
+                        return false;
+                    }
 
 
-                if (!matchesSection) {
-
-                    return false;
-
-                }
-
-
-                // ------------------------------------------------
-                // STATUS
-                // ------------------------------------------------
-
-                const matchesStatus =
-                    this.selectedStatus ===
-                    'ALL' ||
-
-                    (
+                    if (
                         this.selectedStatus ===
                         'ACTIVE' &&
-                        student.isActive
-                    ) ||
+                        !student.isActive
+                    ) {
+                        return false;
+                    }
 
-                    (
+
+                    if (
                         this.selectedStatus ===
                         'INACTIVE' &&
-                        !student.isActive
-                    );
+                        student.isActive
+                    ) {
+                        return false;
+                    }
 
 
-                if (!matchesStatus) {
-
-                    return false;
-
-                }
-
-
-                // ------------------------------------------------
-                // ATTENDANCE
-                // ------------------------------------------------
-
-                if (
-                    !this.matchesAttendanceFilter(
-                        row.attendancePercentage
-                    )
-                ) {
-
-                    return false;
-
-                }
+                    if (
+                        !this.matchesAttendanceFilter(
+                            row.attendancePercentage
+                        )
+                    ) {
+                        return false;
+                    }
 
 
-                // ------------------------------------------------
-                // FEE
-                // ------------------------------------------------
+                    if (
+                        !this.matchesFeeFilter(
+                            row.feeStatus
+                        )
+                    ) {
+                        return false;
+                    }
 
-                if (
-                    !this.matchesFeeFilter(
-                        row.feeStatus
-                    )
-                ) {
 
-                    return false;
+                    return true;
 
                 }
-
-
-                return true;
-
-            });
+            );
 
 
         this.currentPage = 1;
 
         this.updatePagination();
 
+        this.calculateDashboardSummary();
+
+        this.cdr.markForCheck();
+
     }
 
 
     // =========================================================
-    // ATTENDANCE FILTER
+    // DASHBOARD ATTENDANCE FILTER
     // =========================================================
 
     private matchesAttendanceFilter(
@@ -2236,46 +2735,37 @@ export class StudentsInsider implements OnInit {
     ): boolean {
 
         switch (
-        this.selectedAttendanceFilter
+            this.selectedAttendanceFilter
         ) {
 
             case 'EXCELLENT':
-
                 return percentage >= 90;
 
-
             case 'GOOD':
-
                 return (
                     percentage >= 75 &&
                     percentage < 90
                 );
 
-
             case 'LOW':
-
                 return (
                     percentage > 0 &&
                     percentage < 75
                 );
 
-
             case 'NO_DATA':
-
                 return percentage === 0;
 
-
+            case 'ALL':
             default:
-
                 return true;
-
         }
 
     }
 
 
     // =========================================================
-    // FEE FILTER
+    // DASHBOARD FEE FILTER
     // =========================================================
 
     private matchesFeeFilter(
@@ -2286,31 +2776,24 @@ export class StudentsInsider implements OnInit {
     ): boolean {
 
         switch (
-        this.selectedFeeFilter
+            this.selectedFeeFilter
         ) {
 
             case 'PAID':
-
                 return status === 'PAID';
 
-
             case 'PARTIALLY_PAID':
-
                 return (
                     status ===
                     'PARTIALLY_PAID'
                 );
 
-
             case 'UNPAID':
-
                 return status === 'UNPAID';
 
-
+            case 'ALL':
             default:
-
                 return true;
-
         }
 
     }
@@ -2341,9 +2824,14 @@ export class StudentsInsider implements OnInit {
         this.selectedDateRange =
             'ALL';
 
-        this.applyReportFilters();
+        this.sections = [];
+
+        this.updateClassOptions();
+
+        this.applyFilters();
 
     }
+
 
     // =========================================================
     // DASHBOARD PAGINATION
@@ -2357,11 +2845,9 @@ export class StudentsInsider implements OnInit {
             ) *
             this.pageSize;
 
-
         const endIndex =
             startIndex +
             this.pageSize;
-
 
         this.paginatedRows =
             this.filteredRows.slice(
@@ -2377,11 +2863,8 @@ export class StudentsInsider implements OnInit {
         if (
             this.filteredRows.length === 0
         ) {
-
             return 1;
-
         }
-
 
         return Math.ceil(
             this.filteredRows.length /
@@ -2396,11 +2879,8 @@ export class StudentsInsider implements OnInit {
         if (
             this.filteredRows.length === 0
         ) {
-
             return 0;
-
         }
-
 
         return (
             (
@@ -2431,11 +2911,8 @@ export class StudentsInsider implements OnInit {
             page < 1 ||
             page > this.totalPages
         ) {
-
             return;
-
         }
-
 
         this.currentPage = page;
 
@@ -2446,18 +2923,27 @@ export class StudentsInsider implements OnInit {
 
     nextPage(): void {
 
-        this.changePage(
-            this.currentPage + 1
-        );
+        if (
+            this.currentPage <
+            this.totalPages
+        ) {
+            this.changePage(
+                this.currentPage + 1
+            );
+        }
 
     }
 
 
     previousPage(): void {
 
-        this.changePage(
-            this.currentPage - 1
-        );
+        if (
+            this.currentPage > 1
+        ) {
+            this.changePage(
+                this.currentPage - 1
+            );
+        }
 
     }
 
@@ -2475,17 +2961,13 @@ export class StudentsInsider implements OnInit {
 
         const pages: number[] = [];
 
-
         for (
             let page = 1;
             page <= this.totalPages;
             page++
         ) {
-
             pages.push(page);
-
         }
-
 
         return pages;
 
@@ -2527,13 +3009,9 @@ export class StudentsInsider implements OnInit {
                     item.key === key
             );
 
-
         if (!column) {
-
             return;
-
         }
-
 
         column.visible =
             !column.visible;
@@ -2550,7 +3028,7 @@ export class StudentsInsider implements OnInit {
     ): string {
 
         return (
-            `${student.firstName} ${student.lastName}`
+            `${student.firstName ?? ''} ${student.lastName ?? ''}`
         ).trim();
 
     }
@@ -2561,25 +3039,16 @@ export class StudentsInsider implements OnInit {
     ): string {
 
         if (percentage >= 90) {
-
             return 'excellent';
-
         }
-
 
         if (percentage >= 75) {
-
             return 'good';
-
         }
-
 
         if (percentage > 0) {
-
             return 'low';
-
         }
-
 
         return 'no-data';
 
@@ -2596,19 +3065,13 @@ export class StudentsInsider implements OnInit {
         switch (risk) {
 
             case 'HIGH':
-
                 return 'High';
 
-
             case 'MEDIUM':
-
                 return 'Medium';
 
-
             default:
-
                 return 'Low';
-
         }
 
     }
@@ -2624,19 +3087,13 @@ export class StudentsInsider implements OnInit {
         switch (status) {
 
             case 'PAID':
-
                 return 'Paid';
 
-
             case 'PARTIALLY_PAID':
-
                 return 'Partially Paid';
 
-
             default:
-
                 return 'Unpaid';
-
         }
 
     }
@@ -2645,100 +3102,25 @@ export class StudentsInsider implements OnInit {
     // =========================================================
     // STUDENT REPORT
     // =========================================================
-    //
-    // IMPORTANT:
-    // The report uses the already-loaded combined student data.
-    // We do NOT maintain a second independent data-loading
-    // implementation here.
-    //
-    // =========================================================
 
     loadStudentReport(): void {
 
         this.reportLoading = true;
 
-
         this.reportStudents =
             this.students;
-
 
         this.reportAttendance =
             this.attendanceRecords;
 
-
         this.reportFees =
             this.studentFees;
-
-
-        this.reportRows =
-            this.students.map(student => {
-
-                const attendance =
-                    this.calculateStudentAttendanceForReport(
-                        student.id
-                    );
-
-
-                const fee =
-                    this.calculateStudentFeeForReport(
-                        student.id
-                    );
-
-
-                const attendancePercentage =
-                    this.calculateAttendancePercentage(
-                        attendance.present,
-                        attendance.absent
-                    );
-
-
-                const feeStatus =
-                    this.calculateFeeStatus(
-                        fee.totalFee,
-                        fee.paidAmount
-                    );
-
-
-                const risk =
-                    this.calculateRisk(
-                        attendancePercentage,
-                        fee.outstandingAmount
-                    );
-
-
-                return {
-
-                    student,
-
-                    attendancePercentage,
-
-                    presentCount:
-                        attendance.present,
-
-                    absentCount:
-                        attendance.absent,
-
-                    totalFee:
-                        fee.totalFee,
-
-                    paidAmount:
-                        fee.paidAmount,
-
-                    outstandingAmount:
-                        fee.outstandingAmount,
-
-                    feeStatus,
-
-                    risk
-
-                };
-
-            });
-
 
         this.applyReportFilters();
 
         this.reportLoading = false;
+
+        this.cdr.markForCheck();
 
     }
 
@@ -2757,30 +3139,35 @@ export class StudentsInsider implements OnInit {
         const records =
             this.reportAttendance.filter(
                 record =>
-                    record.studentId === studentId
+                    record.studentId ===
+                    studentId
             );
 
+        let present = 0;
 
-        const present =
-            records.filter(
-                record =>
-                    record.status === 'PRESENT'
-            ).length;
+        let absent = 0;
 
+        for (const record of records) {
 
-        const absent =
-            records.filter(
-                record =>
-                    record.status === 'ABSENT'
-            ).length;
+            if (
+                record.status ===
+                'PRESENT'
+            ) {
+                present++;
+            }
 
+            if (
+                record.status ===
+                'ABSENT'
+            ) {
+                absent++;
+            }
+
+        }
 
         return {
-
             present,
-
             absent
-
         };
 
     }
@@ -2801,9 +3188,9 @@ export class StudentsInsider implements OnInit {
         const fees =
             this.reportFees.filter(
                 fee =>
-                    fee.studentId === studentId
+                    fee.studentId ===
+                    studentId
             );
-
 
         const totalFee =
             fees.reduce(
@@ -2815,7 +3202,6 @@ export class StudentsInsider implements OnInit {
                 0
             );
 
-
         const paidAmount =
             fees.reduce(
                 (sum, fee) =>
@@ -2825,7 +3211,6 @@ export class StudentsInsider implements OnInit {
                     ),
                 0
             );
-
 
         return {
 
@@ -2856,142 +3241,120 @@ export class StudentsInsider implements OnInit {
                 .trim()
                 .toLowerCase();
 
+        this.reportFilteredRows =
+            this.reportRows.filter(
+                row => {
 
- this.reportFilteredRows =
-    this.reportRows.filter(row => {
+                    const student =
+                        row.student;
 
-                const student =
-                    row.student;
+                    const studentName =
+                        this.getStudentName(
+                            student
+                        ).toLowerCase();
 
-
-                const studentName =
-                    this.getStudentName(
-                        student
-                    ).toLowerCase();
-
-
-                const matchesSearch =
-                    !search ||
-
-                    studentName.includes(
-                        search
-                    ) ||
-
-                    (
+                    const rollNumber =
                         student.rollNumber
-                            ?.toLowerCase()
-                            .includes(search)
-                        ?? false
-                    ) ||
+                            ?.toLowerCase() ??
+                        '';
 
-                    (
+                    const email =
                         student.email
-                            ?.toLowerCase()
-                            .includes(search)
-                        ?? false
-                    );
+                            ?.toLowerCase() ??
+                        '';
+
+                    const matchesSearch =
+                        !search ||
+                        studentName.includes(
+                            search
+                        ) ||
+                        rollNumber.includes(
+                            search
+                        ) ||
+                        email.includes(
+                            search
+                        );
+
+                    if (!matchesSearch) {
+                        return false;
+                    }
 
 
-                if (!matchesSearch) {
-
-                    return false;
-
-                }
-
-
-                const matchesAcademicYear =
-                    this.reportAcademicYearId ===
-                    null ||
-
-                    student.academicYearId ===
-                    this.reportAcademicYearId;
+                    if (
+                        this.reportAcademicYearId !==
+                        null &&
+                        student.academicYearId !==
+                        this.reportAcademicYearId
+                    ) {
+                        return false;
+                    }
 
 
-                if (!matchesAcademicYear) {
-
-                    return false;
-
-                }
-
-
-                const matchesClass =
-                    this.reportClassId === null ||
-
-                    student.classId ===
-                    this.reportClassId;
+                    if (
+                        this.reportClassId !==
+                        null &&
+                        student.classId !==
+                        this.reportClassId
+                    ) {
+                        return false;
+                    }
 
 
-                if (!matchesClass) {
-
-                    return false;
-
-                }
-
-
-                const matchesSection =
-                    this.reportSectionId === null ||
-
-                    student.sectionId ===
-                    this.reportSectionId;
+                    if (
+                        this.reportSectionId !==
+                        null &&
+                        student.sectionId !==
+                        this.reportSectionId
+                    ) {
+                        return false;
+                    }
 
 
-                if (!matchesSection) {
-
-                    return false;
-
-                }
-
-
-                const matchesStatus =
-                    this.reportStudentStatus ===
-                    'ALL' ||
-
-                    (
+                    const matchesStatus =
                         this.reportStudentStatus ===
-                        'ACTIVE' &&
-                        student.isActive
-                    ) ||
+                        'ALL' ||
 
-                    (
-                        this.reportStudentStatus ===
-                        'INACTIVE' &&
-                        !student.isActive
-                    );
+                        (
+                            this.reportStudentStatus ===
+                            'ACTIVE' &&
+                            student.isActive
+                        ) ||
+
+                        (
+                            this.reportStudentStatus ===
+                            'INACTIVE' &&
+                            !student.isActive
+                        );
+
+                    if (!matchesStatus) {
+                        return false;
+                    }
 
 
-                if (!matchesStatus) {
+                    if (
+                        !this.matchesReportAttendanceFilter(
+                            row.attendancePercentage
+                        )
+                    ) {
+                        return false;
+                    }
 
-                    return false;
+
+                    if (
+                        !this.matchesReportFeeFilter(
+                            row.feeStatus
+                        )
+                    ) {
+                        return false;
+                    }
+
+
+                    return true;
 
                 }
+            );
 
-
-                if (
-                    !this.matchesReportAttendanceFilter(
-                        row.attendancePercentage
-                    )
-                ) {
-
-                    return false;
-
-                }
-
-
-                if (
-                    !this.matchesReportFeeFilter(
-                        row.feeStatus
-                    )
-                ) {
-
-                    return false;
-
-                }
-
-
-                return true;
-
-            });
-
+        this.reportPage = 0;
 
         this.updateReportPagination();
 
@@ -3006,7 +3369,9 @@ export class StudentsInsider implements OnInit {
         percentage: number
     ): boolean {
 
-        switch (this.reportAttendanceFilter) {
+        switch (
+            this.reportAttendanceFilter
+        ) {
 
             case 'EXCELLENT':
                 return percentage >= 90;
@@ -3019,7 +3384,7 @@ export class StudentsInsider implements OnInit {
 
             case 'NEEDS_ATTENTION':
                 return (
-                    percentage > 0 &&
+                    percentage >= 50 &&
                     percentage < 75
                 );
 
@@ -3044,6 +3409,8 @@ export class StudentsInsider implements OnInit {
         }
 
     }
+
+
     // =========================================================
     // REPORT FEE FILTER
     // =========================================================
@@ -3055,14 +3422,23 @@ export class StudentsInsider implements OnInit {
             | 'UNPAID'
     ): boolean {
 
-        switch (this.reportFeeFilter) {
+        switch (
+            this.reportFeeFilter
+        ) {
 
             case 'PAID':
                 return status === 'PAID';
 
+            case 'PARTIALLY_PAID':
+                return (
+                    status ===
+                    'PARTIALLY_PAID'
+                );
+
             case 'REMAINING':
                 return (
-                    status === 'PARTIALLY_PAID' ||
+                    status ===
+                    'PARTIALLY_PAID' ||
                     status === 'UNPAID'
                 );
 
@@ -3075,6 +3451,7 @@ export class StudentsInsider implements OnInit {
         }
 
     }
+
 
     // =========================================================
     // REPORT SEARCH
@@ -3141,43 +3518,36 @@ export class StudentsInsider implements OnInit {
 
     private updateReportPagination(): void {
 
-this.reportTotalElements =
-    this.reportFilteredRows.length;
-
+        this.reportTotalElements =
+            this.reportFilteredRows.length;
 
         this.reportTotalPages =
             Math.max(
                 1,
-Math.ceil(
-    this.reportFilteredRows.length /
-    this.reportPageSize
-)
+                Math.ceil(
+                    this.reportTotalElements /
+                    this.reportPageSize
+                )
             );
-
 
         if (
             this.reportPage >=
             this.reportTotalPages
         ) {
-
             this.reportPage =
                 this.reportTotalPages - 1;
-
         }
-
 
         const startIndex =
             this.reportPage *
             this.reportPageSize;
 
-
         const endIndex =
             startIndex +
             this.reportPageSize;
 
-
-this.reportPaginatedRows =
-    this.reportFilteredRows.slice(
+        this.reportPaginatedRows =
+            this.reportFilteredRows.slice(
                 startIndex,
                 endIndex
             );
@@ -3186,7 +3556,7 @@ this.reportPaginatedRows =
 
 
     // =========================================================
-    // REPORT PAGE
+    // REPORT PAGE NAVIGATION
     // =========================================================
 
     goToReportPage(
@@ -3197,20 +3567,14 @@ this.reportPaginatedRows =
             page < 0 ||
             page >= this.reportTotalPages
         ) {
-
             return;
-
         }
-
 
         if (
             page === this.reportPage
         ) {
-
             return;
-
         }
-
 
         this.reportPage = page;
 
@@ -3285,13 +3649,9 @@ this.reportPaginatedRows =
                     item.key === key
             );
 
-
         if (!column) {
-
             return;
-
         }
-
 
         column.visible =
             !column.visible;
@@ -3318,14 +3678,12 @@ this.reportPaginatedRows =
                     studentId
             );
 
-
         const present =
             records.filter(
                 record =>
                     record.status ===
                     'PRESENT'
             ).length;
-
 
         const absent =
             records.filter(
@@ -3334,30 +3692,24 @@ this.reportPaginatedRows =
                     'ABSENT'
             ).length;
 
-
         const total =
             present + absent;
-
 
         const percentage =
             total === 0
                 ? 0
                 : Number(
                     (
-                        (present / total) *
+                        present /
+                        total *
                         100
                     ).toFixed(1)
                 );
 
-
         return {
-
             percentage,
-
             present,
-
             absent
-
         };
 
     }
@@ -3395,44 +3747,15 @@ this.reportPaginatedRows =
                 studentId
             );
 
-
         const fee =
-            this.getStudentFee(
+            this.calculateStudentFeeForReport(
                 studentId
             );
 
-
-        const lowAttendance =
-            attendance.percentage > 0 &&
-            attendance.percentage < 75;
-
-
-        const outstandingFees =
-            !!fee &&
-            fee.remainingAmount > 0;
-
-
-        if (
-            lowAttendance &&
-            outstandingFees
-        ) {
-
-            return 'HIGH';
-
-        }
-
-
-        if (
-            lowAttendance ||
-            outstandingFees
-        ) {
-
-            return 'MEDIUM';
-
-        }
-
-
-        return 'LOW';
+        return this.calculateRisk(
+            attendance.percentage,
+            fee.outstandingAmount
+        );
 
     }
 
@@ -3446,28 +3769,513 @@ this.reportPaginatedRows =
     ): string {
 
         const fee =
-            this.getStudentFee(
+            this.calculateStudentFeeForReport(
                 studentId
             );
 
-
-        if (!fee) {
-
-            return 'N/A';
-
-        }
-
-
-        return fee.status;
+        return this.calculateFeeStatus(
+            fee.totalFee,
+            fee.paidAmount
+        );
 
     }
+
+
+    // =========================================================
+    // REPORT END RECORD
+    // =========================================================
 
     getReportEndRecord(): number {
 
         return Math.min(
-            (this.reportPage + 1) * this.reportPageSize,
+
+            (
+                this.reportPage + 1
+            ) *
+            this.reportPageSize,
+
             this.reportTotalElements
+
         );
+
+    }
+
+        // =========================================================
+    // STUDENT REPORT EXPORT
+    // =========================================================
+
+    private getVisibleReportColumns(): ColumnDefinition[] {
+
+        return this.reportColumns.filter(
+            column => column.visible
+        );
+
+    }
+
+
+    // =========================================================
+    // EXPORT VALUE
+    // =========================================================
+
+    private getReportExportValue(
+        row: StudentReportRow,
+        key: string
+    ): string | number {
+
+        switch (key) {
+
+            case 'student':
+
+                return (
+                    `${this.getStudentName(row.student)}`
+                    +
+                    (
+                        row.student.email
+                            ? ` (${row.student.email})`
+                            : ''
+                    )
+                );
+
+
+            case 'class':
+
+                return row.student.className || '—';
+
+
+            case 'section':
+
+                return row.student.sectionName || '—';
+
+
+            case 'attendance':
+
+                return `${row.attendancePercentage.toFixed(1)}%`;
+
+
+            case 'present':
+
+                return row.presentCount;
+
+
+            case 'absent':
+
+                return row.absentCount;
+
+
+            case 'totalFee':
+
+                return row.totalFee;
+
+
+            case 'paid':
+
+                return row.paidAmount;
+
+
+            case 'outstanding':
+
+                return row.outstandingAmount;
+
+
+            case 'feeStatus':
+
+                return this.getFeeStatusLabel(
+                    row.feeStatus
+                );
+
+
+            case 'status':
+
+                return row.student.isActive
+                    ? 'Active'
+                    : 'Inactive';
+
+
+            case 'risk':
+
+                return this.getRiskLabel(
+                    row.risk
+                );
+
+
+            default:
+
+                return '';
+
+        }
+
+    }
+
+
+    // =========================================================
+    // BUILD EXPORT DATA
+    // =========================================================
+
+    private buildStudentReportExportData(): {
+
+        headers: string[];
+
+        rows: (string | number)[][];
+
+    } {
+
+        const visibleColumns =
+            this.getVisibleReportColumns();
+
+
+        const headers =
+            visibleColumns.map(
+                column =>
+                    column.label
+            );
+
+
+        const rows =
+            this.reportFilteredRows.map(
+                row =>
+
+                    visibleColumns.map(
+                        column =>
+
+                            this.getReportExportValue(
+                                row,
+                                column.key
+                            )
+
+                    )
+            );
+
+
+        return {
+            headers,
+            rows
+        };
+
+    }
+
+
+    // =========================================================
+    // EXPORT EXCEL
+    // =========================================================
+
+    exportStudentReportToExcel(): void {
+
+        const visibleColumns =
+            this.getVisibleReportColumns();
+
+
+        if (visibleColumns.length === 0) {
+
+            alert(
+                'Please select at least one column to export.'
+            );
+
+            return;
+
+        }
+
+
+        if (
+            this.reportFilteredRows.length === 0
+        ) {
+
+            alert(
+                'There are no students to export.'
+            );
+
+            return;
+
+        }
+
+
+        const exportData =
+            this.buildStudentReportExportData();
+
+
+        const worksheetData = [
+
+            exportData.headers,
+
+            ...exportData.rows
+
+        ];
+
+
+        const worksheet =
+            XLSX.utils.aoa_to_sheet(
+                worksheetData
+            );
+
+
+        // -----------------------------------------------------
+        // Column widths
+        // -----------------------------------------------------
+
+        worksheet['!cols'] =
+            exportData.headers.map(
+                (header, index) => {
+
+                    const values =
+                        exportData.rows.map(
+                            row =>
+                                String(
+                                    row[index] ?? ''
+                                ).length
+                        );
+
+
+                    const maxLength =
+                        Math.max(
+                            header.length,
+                            ...values,
+                            10
+                        );
+
+
+                    return {
+                        wch: Math.min(
+                            maxLength + 2,
+                            35
+                        )
+                    };
+
+                }
+            );
+
+
+        const workbook =
+            XLSX.utils.book_new();
+
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            'Student Report'
+        );
+
+
+        const fileName =
+            this.getExportFileName(
+                'student-report',
+                'xlsx'
+            );
+
+
+        XLSX.writeFile(
+            workbook,
+            fileName
+        );
+
+    }
+
+
+    // =========================================================
+    // EXPORT PDF
+    // =========================================================
+
+    exportStudentReportToPdf(): void {
+
+        const visibleColumns =
+            this.getVisibleReportColumns();
+
+
+        if (visibleColumns.length === 0) {
+
+            alert(
+                'Please select at least one column to export.'
+            );
+
+            return;
+
+        }
+
+
+        if (
+            this.reportFilteredRows.length === 0
+        ) {
+
+            alert(
+                'There are no students to export.'
+            );
+
+            return;
+
+        }
+
+
+        const exportData =
+            this.buildStudentReportExportData();
+
+
+        const pdf =
+            new jsPDF({
+
+                orientation:
+                    exportData.headers.length > 6
+                        ? 'landscape'
+                        : 'portrait',
+
+                unit: 'mm',
+
+                format: 'a4'
+
+            });
+
+
+        // -----------------------------------------------------
+        // TITLE
+        // -----------------------------------------------------
+
+        pdf.setFontSize(16);
+
+        pdf.text(
+            'Student Report',
+            14,
+            15
+        );
+
+
+        // -----------------------------------------------------
+        // SUBTITLE
+        // -----------------------------------------------------
+
+        pdf.setFontSize(9);
+
+        pdf.text(
+            `Students: ${this.reportFilteredRows.length}`,
+            14,
+            21
+        );
+
+
+        // -----------------------------------------------------
+        // TABLE
+        // -----------------------------------------------------
+
+        autoTable(
+            pdf,
+            {
+
+                head: [
+                    exportData.headers
+                ],
+
+                body:
+                    exportData.rows.map(
+                        row =>
+                            row.map(
+                                value =>
+                                    String(
+                                        value ?? ''
+                                    )
+                            )
+                    ),
+
+                startY: 26,
+
+                theme: 'grid',
+
+                styles: {
+
+                    fontSize: 7,
+
+                    cellPadding: 2,
+
+                    overflow: 'linebreak',
+
+                    valign: 'middle'
+
+                },
+
+                headStyles: {
+
+                    fontSize: 7,
+
+                    fontStyle: 'bold'
+
+                },
+
+                alternateRowStyles: {
+
+                    fillColor: [
+                        248,
+                        250,
+                        252
+                    ]
+
+                },
+
+                margin: {
+
+                    top: 26,
+
+                    right: 8,
+
+                    bottom: 12,
+
+                    left: 8
+
+                }
+
+            }
+        );
+
+
+        // -----------------------------------------------------
+        // SAVE
+        // -----------------------------------------------------
+
+        const fileName =
+            this.getExportFileName(
+                'student-report',
+                'pdf'
+            );
+
+
+        pdf.save(
+            fileName
+        );
+
+    }
+
+
+    // =========================================================
+    // EXPORT FILE NAME
+    // =========================================================
+
+    private getExportFileName(
+        prefix: string,
+        extension: string
+    ): string {
+
+        const date =
+            new Date();
+
+
+        const year =
+            date.getFullYear();
+
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(
+                2,
+                '0'
+            );
+
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(
+                2,
+                '0'
+            );
+
+
+        return `${prefix}-${year}-${month}-${day}.${extension}`;
+
     }
 
 }
