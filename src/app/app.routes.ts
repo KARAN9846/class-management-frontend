@@ -23,6 +23,7 @@ import { AdminDetailsComponent } from './features/super-admin/admins/admin-detai
 // ADMIN
 import { AdminDashboard } from './features/admin/dashboard/admin-dashboard/admin-dashboard';
 import { StudentsInsider } from './features/admin/insider/students-insider/students-insider';
+import { FeesInsider } from './features/admin/insider/fees-insider/fees-insider';
 
 import { AcademicYearsComponent } from './features/admin/academic/academic-years/academic-years';
 import { ClassesComponent } from './features/admin/academic/classes/classes';
@@ -57,6 +58,7 @@ import { AddPayment } from './features/admin/fees/add-payment/add-payment';
 import { ReceiptSettingsComponent } from './features/admin/fees/receipt-settings/receipt-settings';
 import { ReceiptListComponent } from './features/admin/fees/receipt-list/receipt-list';
 import { ReceiptViewComponent } from './features/admin/fees/receipt-view/receipt-view';
+
 
 // TEACHER
 import { TeacherDashboard } from './features/teacher/dashboard/teacher-dashboard/teacher-dashboard';
@@ -406,6 +408,13 @@ export const routes: Routes = [
       {
         path: 'admin/insider/students',
         component: StudentsInsider,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+
+      {
+        path: 'admin/fees-insider',
+        component: FeesInsider,
         canActivate: [roleGuard],
         data: { roles: ['ADMIN'] }
       },

@@ -1,0 +1,515 @@
+<div class="fees-insider">
+
+    <section class="page-header">
+        <div>
+            <div class="eyebrow">FEES INSIDER</div>
+            <h1>Fee Intelligence & Collection Analysis</h1>
+            <p>
+                Understand where money is collected, where it is stuck,
+                and which students or classes need attention.
+            </p>
+        </div>
+
+        <div class="header-actions">
+            <select
+                [(ngModel)]="selectedAcademicYear"
+                (change)="onAcademicYearChange()"
+                class="year-select"
+            >
+                <option value="ALL">All Academic Years</option>
+                <option
+                    *ngFor="let year of academicYears"
+                    [value]="year"
+                >
+                    {{ year }}
+                </option>
+            </select>
+
+            <button
+                type="button"
+                class="refresh-button"
+                (click)="loadFees()"
+                [disabled]="loading"
+            >
+                <span class="material-symbols-outlined fee-icon refresh-icon" aria-hidden="true">refresh</span>
+                Refresh
+            </button>
+        </div>
+    </section>
+
+    <div *ngIf="loading" class="state-card">
+        <span class="material-symbols-outlined fee-icon loading-icon spin" aria-hidden="true">progress_activity</span>
+        Loading fee intelligence...
+    </div>
+
+    <div *ngIf="!loading && errorMessage" class="state-card error">
+        <span class="material-symbols-outlined fee-icon error-icon" aria-hidden="true">error</span>
+        {{ errorMessage }}
+        <button type="button" (click)="loadFees()">Retry</button>
+    </div>
+
+    <ng-container *ngIf="!loading && !errorMessage">
+
+        <!-- KPI ROW -->
+        <section class="kpi-grid">
+
+            <article class="kpi-card expected">
+                <div class="kpi-icon">
+                    <span class="material-symbols-outlined fee-icon wallet-icon" aria-hidden="true">account_balance_wallet</span>
+                </div>
+                <div>
+                    <span class="kpi-label">Payable Fee</span>
+                    <strong>{{ formatCurrency(expectedAmount) }}</strong>
+                    <small>{{ totalStudents }} student fee records</small>
+                </div>
+            </article>
+
+            <article class="kpi-card collected">
+                <div class="kpi-icon">
+                    <span class="material-symbols-outlined fee-icon payments-icon" aria-hidden="true">payments</span>
+                </div>
+                <div>
+                    <span class="kpi-label">Collected</span>
+                    <strong>{{ formatCurrency(collectedAmount) }}</strong>
+                    <small>{{ collectionRate | number:'1.1-1' }}% collection rate</small>
+                </div>
+            </article>
+
+            <article class="kpi-card outstanding">
+                <div class="kpi-icon">
+                    <span class="material-symbols-outlined fee-icon pending-icon" aria-hidden="true">pending_actions</span>
+                </div>
+                <div>
+                    <span class="kpi-label">Outstanding</span>
+                    <strong>{{ formatCurrency(outstandingAmount) }}</strong>
+                    <small>{{ formatCurrency(averageOutstanding) }} average/student</small>
+                </div>
+            </article>
+
+            <article class="kpi-card attention">
+                <div class="kpi-icon">
+                    <span class="material-symbols-outlined fee-icon attention-icon" aria-hidden="true">notification_important</span>
+                </div>
+                <div>
+                    <span class="kpi-label">Needs Attention</span>
+                    <strong>{{ unpaidStudents + partialStudents }}</strong>
+                    <small>{{ unpaidStudents }} have made no payment</small>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- HEALTH + PAYMENT MIX -->
+        <section class="analysis-grid two-column">
+
+            <article class="panel collection-health">
+                <div class="panel-header">
+                    <div>
+                        <span class="section-label">COLLECTION HEALTH</span>
+                        <h2>How healthy is fee collection?</h2>
+                    </div>
+                    <span class="health-badge"
+                          [class.good]="collectionRate >= 75"
+                          [class.medium]="collectionRate >= 50 && collectionRate < 75"
+                          [class.low]="collectionRate < 50">
+                        {{ collectionRate | number:'1.1-1' }}%
+                    </span>
+                </div>
+
+                <div class="health-content">
+                    <div class="gauge" [style.background]="collectionGaugeStyle()">
+                        <div class="gauge-inner">
+                            <strong>{{ collectionRate | number:'1.1-1' }}%</strong>
+                            <span>collected</span>
+                        </div>
+                    </div>
+
+                    <div class="health-stats">
+                        <div class="health-stat">
+                            <span class="dot green"></span>
+                            <div>
+                                <span>Collected</span>
+                                <strong>{{ formatCurrency(collectedAmount) }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="health-stat">
+                            <span class="dot orange"></span>
+                            <div>
+                                <span>Outstanding</span>
+                                <strong>{{ formatCurrency(outstandingAmount) }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="health-stat">
+                            <span class="dot blue"></span>
+                            <div>
+                                <span>Payment coverage</span>
+                                <strong>{{ paymentCoverage | number:'1.0-0' }}%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-strip">
+                    <span class="material-symbols-outlined fee-icon insights-icon" aria-hidden="true">insights</span>
+                    <span *ngIf="collectionRate >= 75">
+                        Collection is strong. Focus on the remaining outstanding balance.
+                    </span>
+                    <span *ngIf="collectionRate >= 50 && collectionRate < 75">
+                        Collection is moderate. Follow-up on partial and unpaid students can improve cash flow.
+                    </span>
+                    <span *ngIf="collectionRate < 50">
+                        Collection is below 50%. Prioritize unpaid students and low-performing classes.
+                    </span>
+                </div>
+            </article>
+
+            <article class="panel payment-mix">
+                <div class="panel-header">
+                    <div>
+                        <span class="section-label">STUDENT PAYMENT MIX</span>
+                        <h2>Where students stand</h2>
+                    </div>
+                </div>
+
+                <div class="mix-visual">
+                    <div class="mix-bar">
+                        <div
+                            class="mix-paid"
+                            [style.width.%]="totalStudents ? (fullyPaidStudents / totalStudents) * 100 : 0"
+                        ></div>
+                        <div
+                            class="mix-partial"
+                            [style.width.%]="totalStudents ? (partialStudents / totalStudents) * 100 : 0"
+                        ></div>
+                        <div
+                            class="mix-unpaid"
+                            [style.width.%]="totalStudents ? (unpaidStudents / totalStudents) * 100 : 0"
+                        ></div>
+                    </div>
+
+                    <div class="mix-legend">
+                        <div>
+                            <span class="dot green"></span>
+                            <span>Fully paid</span>
+                            <strong>{{ fullyPaidStudents }}</strong>
+                        </div>
+                        <div>
+                            <span class="dot amber"></span>
+                            <span>Partial</span>
+                            <strong>{{ partialStudents }}</strong>
+                        </div>
+                        <div>
+                            <span class="dot red"></span>
+                            <span>No payment</span>
+                            <strong>{{ unpaidStudents }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mini-metrics">
+                    <div>
+                        <span>Average fee</span>
+                        <strong>{{ formatCurrency(averageFee) }}</strong>
+                    </div>
+                    <div>
+                        <span>Discount given</span>
+                        <strong>{{ formatCurrency(totalDiscount) }}</strong>
+                    </div>
+                    <div>
+                        <span>Discount rate</span>
+                        <strong>{{ discountRate | number:'1.1-1' }}%</strong>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- ALERT CENTER -->
+        <section class="panel alert-center">
+            <div class="panel-header">
+                <div>
+                    <span class="section-label">ALERT CENTER</span>
+                    <h2>What needs action?</h2>
+                    <p>These alerts are generated from the current fee position.</p>
+                </div>
+                <span class="alert-count">{{ alerts.length }} signals</span>
+            </div>
+
+            <div class="alerts-grid">
+                <article
+                    *ngFor="let alert of alerts"
+                    class="alert-card"
+                    [class.critical]="alert.type === 'critical'"
+                    [class.warning]="alert.type === 'warning'"
+                    [class.info]="alert.type === 'info'"
+                >
+                    <div class="alert-icon">
+                        <span class="material-symbols-outlined fee-icon alert-type-icon" aria-hidden="true">
+                            {{ alert.type === 'critical' ? 'priority_high' :
+                               alert.type === 'warning' ? 'warning' : 'info' }}
+                        </span>
+                    </div>
+
+                    <div class="alert-body">
+                        <div class="alert-title-row">
+                            <h3>{{ alert.title }}</h3>
+                            <strong *ngIf="alert.count !== undefined">
+                                {{ alert.count }}
+                            </strong>
+                        </div>
+
+                        <p>{{ alert.description }}</p>
+
+                        <small *ngIf="alert.amount !== undefined">
+                            Exposure: {{ formatCurrency(alert.amount) }}
+                        </small>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- CLASS ANALYSIS -->
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <span class="section-label">CLASS ANALYSIS</span>
+                    <h2>Where is outstanding money concentrated?</h2>
+                    <p>
+                        Ranked by outstanding amount instead of repeating the Master Dashboard graph.
+                    </p>
+                </div>
+            </div>
+
+            <div *ngIf="classAnalysis.length === 0" class="empty-inline">
+                No class-wise fee data available.
+            </div>
+
+            <div *ngIf="classAnalysis.length > 0" class="class-list">
+
+                <article
+                    *ngFor="let item of classAnalysis"
+                    class="class-row"
+                >
+                    <div class="class-main">
+                        <div class="class-name">
+                            <strong>{{ item.className }}</strong>
+                            <span>{{ item.students }} students</span>
+                        </div>
+
+                        <div class="class-rate"
+                             [class.good]="item.collectionRate >= 75"
+                             [class.medium]="item.collectionRate >= 50 && item.collectionRate < 75"
+                             [class.low]="item.collectionRate < 50">
+                            {{ item.collectionRate | number:'1.0-0' }}%
+                        </div>
+                    </div>
+
+                    <div class="class-financials">
+                        <div>
+                            <span>Collected</span>
+                            <strong>{{ formatCurrency(item.collected) }}</strong>
+                        </div>
+                        <div>
+                            <span>Outstanding</span>
+                            <strong>{{ formatCurrency(item.outstanding) }}</strong>
+                        </div>
+                        <div>
+                            <span>No payment</span>
+                            <strong>{{ item.unpaid }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="outstanding-track">
+                        <div
+                            class="outstanding-fill"
+                            [style.width.%]="classOutstandingWidth(item)"
+                        ></div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ACTION QUEUE + TOP OUTSTANDING -->
+        <section class="analysis-grid two-column">
+
+            <article class="panel action-queue">
+                <div class="panel-header">
+                    <div>
+                        <span class="section-label">ACTION QUEUE</span>
+                        <h2>Students requiring follow-up</h2>
+                    </div>
+
+                    <div class="search-box">
+                        <span class="material-symbols-outlined fee-icon search-icon" aria-hidden="true">search</span>
+                        <input
+                            type="text"
+                            [(ngModel)]="searchTerm"
+                            (input)="onSearchChange()"
+                            placeholder="Search student..."
+                        />
+                    </div>
+                </div>
+
+                <div *ngIf="actionRows.length === 0" class="empty-inline">
+                    No outstanding student requires follow-up.
+                </div>
+
+                <div *ngIf="actionRows.length > 0" class="student-list">
+                    <article
+                        *ngFor="let row of actionRows"
+                        class="student-row"
+                    >
+                        <div class="student-identity">
+                            <div class="avatar">
+                                {{ row.studentName.charAt(0) }}
+                            </div>
+                            <div>
+                                <strong>{{ row.studentName }}</strong>
+                                <span>
+                                    {{ row.rollNumber || 'No roll no.' }}
+                                    · {{ row.className }} · {{ row.sectionName }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="student-status">
+                            <span
+                                class="status-badge"
+                                [class.no-payment]="statusLabel(row) === 'NO PAYMENT'"
+                                [class.partial]="statusLabel(row) === 'PARTIAL'"
+                            >
+                                {{ statusLabel(row) }}
+                            </span>
+
+                            <span
+                                class="risk-badge"
+                                [class.high]="row.risk === 'HIGH'"
+                                [class.medium]="row.risk === 'MEDIUM'"
+                                [class.low]="row.risk === 'LOW'"
+                            >
+                                {{ row.risk }}
+                            </span>
+                        </div>
+
+                        <div class="student-money">
+                            <strong>{{ formatCurrency(row.remainingAmount) }}</strong>
+                            <span>outstanding</span>
+                        </div>
+
+                        <div class="student-progress">
+                            <div class="progress-track">
+                                <div
+                                    class="progress-fill"
+                                    [style.width.%]="row.collectionRate"
+                                ></div>
+                            </div>
+                            <span>{{ row.collectionRate | number:'1.0-0' }}% paid</span>
+                        </div>
+
+                        <a
+                            class="view-link"
+                            [routerLink]="['/admin/fees/student-fees', row.id]"
+                        >
+                            View
+                            <span class="material-symbols-outlined fee-icon arrow-icon" aria-hidden="true">arrow_forward</span>
+                        </a>
+                    </article>
+                </div>
+            </article>
+
+            <article class="panel concentration">
+                <div class="panel-header">
+                    <div>
+                        <span class="section-label">OUTSTANDING CONCENTRATION</span>
+                        <h2>Top 5 balances</h2>
+                    </div>
+                </div>
+
+                <div *ngIf="topOutstanding.length === 0" class="empty-inline">
+                    No outstanding balances.
+                </div>
+
+                <div *ngIf="topOutstanding.length > 0" class="ranking-list">
+                    <div
+                        *ngFor="let row of topOutstanding; let i = index"
+                        class="ranking-item"
+                    >
+                        <span class="rank">{{ i + 1 }}</span>
+
+                        <div class="rank-body">
+                            <div class="rank-header">
+                                <strong>{{ row.studentName }}</strong>
+                                <span>{{ formatCurrency(row.remainingAmount) }}</span>
+                            </div>
+
+                            <div class="rank-meta">
+                                {{ row.className }} · {{ row.sectionName }}
+                            </div>
+
+                            <div class="ranking-track">
+                                <div
+                                    class="ranking-fill"
+                                    [style.width.%]="studentOutstandingWidth(row)"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concentration-footer">
+                    <span>Total outstanding</span>
+                    <strong>{{ formatCurrency(outstandingAmount) }}</strong>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- ANALYTICS SUMMARY -->
+        <section class="panel analytics-summary">
+            <div class="panel-header">
+                <div>
+                    <span class="section-label">MANAGEMENT INSIGHTS</span>
+                    <h2>What the numbers are telling you</h2>
+                </div>
+            </div>
+
+            <div class="insight-grid">
+                <article>
+                    <span class="material-symbols-outlined fee-icon groups-icon" aria-hidden="true">groups</span>
+                    <div>
+                        <strong>{{ paymentCoverage | number:'1.0-0' }}%</strong>
+                        <span>of students have made at least one payment.</span>
+                    </div>
+                </article>
+
+                <article>
+                    <span class="material-symbols-outlined fee-icon balance-icon" aria-hidden="true">account_balance</span>
+                    <div>
+                        <strong>{{ formatCurrency(outstandingAmount) }}</strong>
+                        <span>is still exposed as outstanding receivables.</span>
+                    </div>
+                </article>
+
+                <article>
+                    <span class="material-symbols-outlined fee-icon discount-icon" aria-hidden="true">discount</span>
+                    <div>
+                        <strong>{{ discountRate | number:'1.1-1' }}%</strong>
+                        <span>of original fee value is represented by student-level discounts.</span>
+                    </div>
+                </article>
+
+                <article>
+                    <span class="material-symbols-outlined fee-icon priority-icon" aria-hidden="true">priority_high</span>
+                    <div>
+                        <strong>{{ unpaidStudents }}</strong>
+                        <span>students have zero recorded payment and deserve first contact.</span>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+    </ng-container>
+</div>

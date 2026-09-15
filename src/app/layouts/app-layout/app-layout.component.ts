@@ -134,9 +134,16 @@ export class AppLayoutComponent {
                 label: 'Students Insider',
                 route: '/admin/insider/students',
                 icon: '◉'
+              },
+              {
+                label: 'Fees Insider',
+                route: '/admin/fees-insider',
+                icon: '₹'
               }
             ]
           },
+
+
 
           {
             title: 'ACADEMIC',

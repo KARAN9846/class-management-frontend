@@ -60,70 +60,83 @@ export class StudentFeeService {
     );
   }
 
-  getById(
-    id: number
-  ): Observable<StudentFee> {
+getById(
+  id: number
+): Observable<StudentFee> {
 
-    return this.api.get<StudentFee>(
+  return this.api
+    .get<ApiResponse<StudentFee>>(
       API_ENDPOINTS.STUDENT_FEES.BY_ID(id)
+    )
+    .pipe(
+      map(response => response.data)
     );
+}
+
+update(
+  id: number,
+  request: {
+    discountType: string;
+    discountValue: number;
   }
+): Observable<StudentFee> {
 
-  update(
-    id: number,
-    request: {
-      discountType: string;
-      discountValue: number;
-    }
-  ): Observable<StudentFee> {
-
-    return this.api.put<StudentFee>(
+  return this.api
+    .put<ApiResponse<StudentFee>>(
       API_ENDPOINTS.STUDENT_FEES.BY_ID(id),
       request
+    )
+    .pipe(
+      map(response => response.data)
     );
-  }
+}
 
   // =========================================================
   // ADMIN PAYMENT HISTORY
   // =========================================================
 
-  getPayments(
-    studentFeeId: number
-  ): Observable<FeePayment[]> {
+getPayments(
+  studentFeeId: number
+): Observable<FeePayment[]> {
 
-    return this.api.get<FeePayment[]>(
+  return this.api
+    .get<ApiResponse<FeePayment[]>>(
       API_ENDPOINTS.FEE_PAYMENTS.BY_STUDENT_FEE(
         studentFeeId
       )
+    )
+    .pipe(
+      map(response => response.data)
     );
-  }
+}
 
   // =========================================================
   // EDIT / REVISE PAYMENT
   // =========================================================
 
-  updatePayment(
-    paymentId: number,
-    request: {
-      amount: number;
-      paymentDate: string;
-      paymentMethod: string;
-      paymentType: string;
-      discountType: string;
-      discountValue: number;
-      notes: string | null;
-      revisionReason: string;
-    }
-  ): Observable<FeePayment> {
-
-    return this.api.put<FeePayment>(
-      API_ENDPOINTS.FEE_PAYMENTS.BY_ID(
-        paymentId
-      ),
-      request
-    );
+updatePayment(
+  paymentId: number,
+  request: {
+    amount: number;
+    paymentDate: string;
+    paymentMethod: string;
+    paymentType: string;
+    discountType: string;
+    discountValue: number;
+    notes: string | null;
+    revisionReason: string;
   }
+): Observable<FeePayment> {
 
+  return this.api
+    .put<ApiResponse<FeePayment>>(
+      API_ENDPOINTS.FEE_PAYMENTS.BY_ID(paymentId),
+      request
+    )
+    .pipe(
+      map(response => response.data)
+    );
+}
   // =========================================================
   // STUDENT - MY FEES
   // =========================================================
