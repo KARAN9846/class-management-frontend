@@ -2,13 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  inject
+  inject,
+  output
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
 import {
   ProfileService,
   Profile,
@@ -34,6 +34,8 @@ export class ProfileComponent {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
   private readonly tokenService = inject(TokenService);
+
+  readonly closeProfile = output<void>();
 
   profile: Profile | null = null;
 
@@ -212,12 +214,6 @@ export class ProfileComponent {
     return 'U';
   }
 
-  getRoleInitial(): string {
-  return (this.profile?.role || 'U')
-    .charAt(0)
-    .toUpperCase();
-}
-
   formatRole(role: string): string {
 
     return role
@@ -236,5 +232,9 @@ export class ProfileComponent {
     this.tokenService.removeToken();
 
     this.router.navigate(['/login']);
+  }
+
+  close(): void {
+    this.closeProfile.emit();
   }
 }

@@ -6,6 +6,8 @@ import {
   RouterOutlet
 } from '@angular/router';
 
+import { ProfileComponent } from '../../features/profile/profile/profile';
+
 import { TokenService } from '../../core/auth/token.service';
 
 interface NavigationItem {
@@ -25,7 +27,8 @@ interface NavigationSection {
   imports: [
     RouterOutlet,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    ProfileComponent
   ],
   templateUrl: './app-layout.component.html',
   styleUrl: './app-layout.component.scss'
@@ -33,6 +36,7 @@ interface NavigationSection {
 export class AppLayoutComponent {
 
   sidebarOpen = false;
+  profileOpen = false;
 
   userName = 'User';
   userRole = 'User';
@@ -363,6 +367,7 @@ export class AppLayoutComponent {
   }
 
   goToProfile(): void {
-  this.router.navigate(['/profile']);
-}
+    this.sidebarOpen = false;
+    this.profileOpen = true;
+  }
 }

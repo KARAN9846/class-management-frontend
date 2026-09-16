@@ -192,4 +192,8 @@
 
   </div>
 
+  @if (profileOpen) {
+    <app-profile (closeProfile)="profileOpen = false"></app-profile>
+  }
+
 </div>

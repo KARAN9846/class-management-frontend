@@ -1,496 +1,944 @@
-<main class="profile-page">
+<!-- =========================================================
+     PROFILE MODAL OVERLAY
+     ========================================================= -->
 
-  <!-- =========================
-       PAGE HEADER
-       ========================= -->
-  <header class="profile-page-header">
+<div
+  class="profile-overlay">
 
-    <div>
-      <span class="eyebrow">ACCOUNT</span>
+  <section
+    class="profile-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="profile-title">
 
-      <h1>My Profile</h1>
+    <!-- =====================================================
+         MODAL HEADER
+         ===================================================== -->
 
-      <p>
-        Manage your personal information, account security and preferences.
-      </p>
-    </div>
+    <header class="profile-modal-header">
 
-  </header>
+      <div class="modal-header-left">
 
+        <div class="modal-header-icon">
 
-  @if (loading) {
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true">
 
-    <section class="state-card loading-state">
-      <div class="loading-spinner"></div>
-      <p>Loading your profile...</p>
-    </section>
+            <circle
+              cx="12"
+              cy="8"
+              r="4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            />
 
-  }
+            <path
+              d="M4 21a8 8 0 0 1 16 0"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+            />
 
-
-  @if (!loading && profile) {
-
-    <!-- =========================
-         PROFILE HERO
-         ========================= -->
-    <section class="profile-hero">
-
-      <div class="profile-identity">
-
-        <div class="profile-avatar">
-
-          @if (profile.firstName || profile.lastName) {
-            <span>
-              {{ getInitials() }}
-            </span>
-          } @else {
-            <span>
-              {{ getRoleInitial() }}
-            </span>
-          }
+          </svg>
 
         </div>
 
+        <div class="modal-title-content">
 
-        <div class="identity-content">
+          <h1 id="profile-title">
+            My Profile
+          </h1>
 
-          <div class="identity-name-row">
-
-            <h2>
-              {{ getFullName() }}
-            </h2>
-
-            <span
-              class="account-status"
-              [class.inactive]="!profile.isActive">
-
-              <span class="status-dot"></span>
-
-              {{ profile.isActive ? 'Active' : 'Inactive' }}
-
-            </span>
-
-          </div>
-
-
-          <p class="identity-email">
-            {{ profile.email }}
+          <p>
+            Account information and security settings
           </p>
 
-
-          <span class="role-badge">
-            {{ formatRole(profile.role) }}
-          </span>
-
         </div>
 
       </div>
 
 
-      <div class="profile-hero-action">
+      <!-- Close -->
 
-        <button
-          type="button"
-          class="logout-button"
-          (click)="logout()">
+      <button
+        type="button"
+        class="close-button"
+        aria-label="Close profile"
+        (click)="close()">
 
-          <span class="logout-icon">↪</span>
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true">
 
-          <span>Logout</span>
+          <path
+            d="M6 6l12 12M18 6L6 18"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
 
-        </button>
+        </svg>
 
-      </div>
+      </button>
 
-    </section>
+    </header>
 
 
-    <!-- =========================
-         PERSONAL INFORMATION
-         ========================= -->
-    <section class="profile-card">
+    <!-- =====================================================
+         SCROLLABLE MODAL BODY
+         ===================================================== -->
 
-      <div class="card-header">
+    <div class="profile-modal-body">
 
-        <div class="card-title-wrapper">
+      <!-- ===================================================
+           LOADING
+           =================================================== -->
 
-          <div class="section-icon">
-            👤
-          </div>
+      @if (loading) {
 
-          <div>
-            <h2>Personal Information</h2>
+        <div class="state-card">
 
-            <p>
-              Your basic account and personal details.
-            </p>
-          </div>
+          <div class="loading-spinner"></div>
 
-        </div>
+          <p>
+            Loading profile...
+          </p>
 
-      </div>
-
-
-      <div class="details-grid">
-
-        <!-- Full Name -->
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Full Name
-          </span>
-
-          <strong class="detail-value">
-            {{ getFullName() }}
-          </strong>
-
-        </div>
-
-
-        <!-- Email -->
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Email Address
-          </span>
-
-          <strong class="detail-value">
-            {{ profile.email }}
-          </strong>
-
-        </div>
-
-
-        <!-- Phone -->
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Phone Number
-          </span>
-
-          <strong class="detail-value">
-            {{ profile.phone || 'Not provided' }}
-          </strong>
-
-        </div>
-
-
-        <!-- Student Roll Number -->
-        @if (profile.role === 'STUDENT') {
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Roll Number
-            </span>
-
-            <strong class="detail-value">
-              {{ profile.rollNumber || 'Not assigned' }}
-            </strong>
-
-          </div>
-
-        }
-
-
-        <!-- Teacher Number -->
-        @if (profile.role === 'TEACHER') {
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Teacher Number
-            </span>
-
-            <strong class="detail-value">
-              {{ profile.teacherNumber || 'Not assigned' }}
-            </strong>
-
-          </div>
-
-        }
-
-
-        <!-- Role -->
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Account Role
-          </span>
-
-          <strong class="detail-value">
-            {{ formatRole(profile.role) }}
-          </strong>
-
-        </div>
-
-
-        <!-- Account Status -->
-        <div class="detail-item">
-
-          <span class="detail-label">
-            Account Status
-          </span>
-
-          <strong
-            class="detail-value status-value"
-            [class.inactive]="!profile.isActive">
-
-            <span class="status-indicator"></span>
-
-            {{ profile.isActive ? 'Active' : 'Inactive' }}
-
-          </strong>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         ACADEMIC INFORMATION
-         STUDENT ONLY
-         ========================= -->
-    @if (profile.role === 'STUDENT') {
-
-      <section class="profile-card">
-
-        <div class="card-header">
-
-          <div class="card-title-wrapper">
-
-            <div class="section-icon">
-              🎓
-            </div>
-
-            <div>
-              <h2>Academic Information</h2>
-
-              <p>
-                Your current academic enrollment details.
-              </p>
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="details-grid academic-grid">
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Enrollment Number
-            </span>
-
-            <strong class="detail-value">
-              {{ profile.enrollmentNumber || 'Not assigned' }}
-            </strong>
-
-          </div>
-
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Academic Year
-            </span>
-
-            <strong class="detail-value">
-              {{ profile.academicYear || 'Not assigned' }}
-            </strong>
-
-          </div>
-
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Class
-            </span>
-
-            <strong class="detail-value">
-              {{ profile.className || 'Not assigned' }}
-            </strong>
-
-          </div>
-
-
-          <div class="detail-item">
-
-            <span class="detail-label">
-              Section
-            </span>
-
-            <strong class="detail-value">
-              {{ profile.section || 'Not assigned' }}
-            </strong>
-
-          </div>
-
-        </div>
-
-      </section>
-
-    }
-
-
-    <!-- =========================
-         CHANGE PASSWORD
-         ========================= -->
-    <section class="profile-card security-card">
-
-      <div class="card-header">
-
-        <div class="card-title-wrapper">
-
-          <div class="section-icon security-icon">
-            🔒
-          </div>
-
-          <div>
-            <h2>Change Password</h2>
-
-            <p>
-              Keep your account secure by using a strong password.
-            </p>
-          </div>
-
-        </div>
-
-      </div>
-
-
-      @if (successMessage) {
-
-        <div class="message success-message">
-          <span>✓</span>
-          {{ successMessage }}
         </div>
 
       }
 
 
-      @if (errorMessage) {
+      <!-- ===================================================
+           ERROR
+           =================================================== -->
 
-        <div class="message error-message">
-          <span>!</span>
-          {{ errorMessage }}
-        </div>
+      @else if (errorMessage && !profile) {
 
-      }
+        <div class="state-card error-state">
 
+          <div class="error-state-icon">
 
-      <div class="password-form">
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true">
 
-        <div class="form-group">
+              <circle
+                cx="12"
+                cy="12"
+                r="9"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              />
 
-          <label for="currentPassword">
-            Current Password
-          </label>
+              <path
+                d="M12 7v6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              />
 
-          <input
-            id="currentPassword"
-            type="password"
-            [(ngModel)]="currentPassword"
-            placeholder="Enter your current password"
-            [disabled]="saving"
-          />
+              <circle
+                cx="12"
+                cy="16.5"
+                r="1"
+                fill="currentColor"
+              />
 
-        </div>
+            </svg>
 
+          </div>
 
-        <div class="form-group">
+          <h2>
+            Unable to load profile
+          </h2>
 
-          <label for="newPassword">
-            New Password
-          </label>
-
-          <input
-            id="newPassword"
-            type="password"
-            [(ngModel)]="newPassword"
-            placeholder="Enter your new password"
-            [disabled]="saving"
-          />
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label for="confirmPassword">
-            Confirm New Password
-          </label>
-
-          <input
-            id="confirmPassword"
-            type="password"
-            [(ngModel)]="confirmPassword"
-            placeholder="Confirm your new password"
-            [disabled]="saving"
-          />
-
-        </div>
-
-
-        <div class="form-actions">
+          <p>
+            {{ errorMessage }}
+          </p>
 
           <button
             type="button"
-            class="btn-primary"
-            (click)="changePassword()"
-            [disabled]="
-              saving ||
-              !currentPassword ||
-              !newPassword ||
-              !confirmPassword
-            ">
+            class="retry-button"
+            (click)="loadProfile()">
 
-            @if (saving) {
-              <span class="button-spinner"></span>
-              Changing...
-            } @else {
-              Change Password
-            }
+            Try Again
 
           </button>
 
         </div>
 
-      </div>
-
-    </section>
-
-  }
+      }
 
 
-  @if (!loading && !profile && errorMessage) {
+      <!-- ===================================================
+           PROFILE CONTENT
+           =================================================== -->
 
-    <section class="state-card error-state">
+      @else if (profile) {
 
-      <div class="error-state-icon">!</div>
+        <!-- =================================================
+             PROFILE HERO
+             ================================================= -->
 
-      <h2>Unable to load profile</h2>
+        <section class="profile-hero">
 
-      <p>
-        {{ errorMessage }}
-      </p>
+          <div class="profile-identity">
 
-      <button
-        type="button"
-        class="retry-button"
-        (click)="loadProfile()">
+            <!-- Avatar -->
 
-        Try Again
+            <div class="profile-avatar">
 
-      </button>
+              @if (getInitials()) {
 
-    </section>
+                <span>
+                  {{ getInitials() }}
+                </span>
 
-  }
+              }
 
-</main>
+              @else {
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true">
+
+                  <circle
+                    cx="12"
+                    cy="8"
+                    r="4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  />
+
+                  <path
+                    d="M4 21a8 8 0 0 1 16 0"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+
+                </svg>
+
+              }
+
+            </div>
+
+
+            <!-- Identity -->
+
+            <div class="identity-content">
+
+              <div class="identity-name-row">
+
+                <h2>
+                  {{ getFullName() }}
+                </h2>
+
+                <span class="role-badge">
+
+                  {{ formatRole(profile.role) }}
+
+                </span>
+
+              </div>
+
+
+              <p class="identity-email">
+
+                {{ profile.email }}
+
+              </p>
+
+
+              <span
+                class="account-status"
+                [class.inactive]="!profile.isActive">
+
+                <span class="status-dot"></span>
+
+                {{
+                  profile.isActive
+                    ? 'Active Account'
+                    : 'Inactive Account'
+                }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- Logout -->
+
+          <div class="profile-hero-action">
+
+            <button
+              type="button"
+              class="logout-button"
+              (click)="logout()">
+
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true">
+
+                <path
+                  d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+
+                <path
+                  d="M14 8l4 4-4 4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+
+                <path
+                  d="M10 12h8"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+
+              </svg>
+
+              <span>
+                Logout
+              </span>
+
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PERSONAL INFORMATION
+             ================================================= -->
+
+        <section class="profile-card">
+
+          <div class="card-header">
+
+            <div class="card-title-wrapper">
+
+              <div class="section-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true">
+
+                  <circle
+                    cx="12"
+                    cy="8"
+                    r="4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  />
+
+                  <path
+                    d="M4 21a8 8 0 0 1 16 0"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+
+                </svg>
+
+              </div>
+
+              <div>
+
+                <h2>
+                  Personal Information
+                </h2>
+
+                <p>
+                  Basic information associated with your account
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="details-grid">
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                First Name
+              </span>
+
+              <span class="detail-value">
+                {{ profile.firstName || 'Not provided' }}
+              </span>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                Last Name
+              </span>
+
+              <span class="detail-value">
+                {{ profile.lastName || 'Not provided' }}
+              </span>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                Email Address
+              </span>
+
+              <span class="detail-value">
+                {{ profile.email }}
+              </span>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                Phone Number
+              </span>
+
+              <span class="detail-value">
+                {{ profile.phone || 'Not provided' }}
+              </span>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                Account Role
+              </span>
+
+              <span class="detail-value">
+                {{ formatRole(profile.role) }}
+              </span>
+
+            </div>
+
+
+            <div class="detail-item">
+
+              <span class="detail-label">
+                Account Status
+              </span>
+
+              <span
+                class="status-value"
+                [class.inactive]="!profile.isActive">
+
+                <span class="status-indicator"></span>
+
+                {{
+                  profile.isActive
+                    ? 'Active'
+                    : 'Inactive'
+                }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- =================================================
+             STUDENT INFORMATION
+             ================================================= -->
+
+        @if (profile.role === 'STUDENT') {
+
+          <section class="profile-card">
+
+            <div class="card-header">
+
+              <div class="card-title-wrapper">
+
+                <div class="section-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+
+                    <path
+                      d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v15H6.5A2.5 2.5 0 0 0 4 21V6.5Z"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linejoin="round"
+                    />
+
+                    <path
+                      d="M4 6.5V21"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                    />
+
+                  </svg>
+
+                </div>
+
+                <div>
+
+                  <h2>
+                    Student Information
+                  </h2>
+
+                  <p>
+                    Academic and student identification details
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="details-grid academic-grid">
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Roll Number
+                </span>
+
+                <span class="detail-value">
+                  {{ profile.rollNumber || 'Not assigned' }}
+                </span>
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Enrollment Number
+                </span>
+
+                <span class="detail-value">
+                  {{ profile.enrollmentNumber || 'Not assigned' }}
+                </span>
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Academic Year
+                </span>
+
+                <span class="detail-value">
+                  {{ profile.academicYear || 'Not assigned' }}
+                </span>
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Class
+                </span>
+
+                <span class="detail-value">
+                  {{ profile.className || 'Not assigned' }}
+                </span>
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Section
+                </span>
+
+                <span class="detail-value">
+                  {{ profile.section || 'Not assigned' }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        }
+
+
+        <!-- =================================================
+             TEACHER INFORMATION
+             ================================================= -->
+
+        @if (profile.role === 'TEACHER') {
+
+          <section class="profile-card">
+
+            <div class="card-header">
+
+              <div class="card-title-wrapper">
+
+                <div class="section-icon">
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+
+                    <circle
+                      cx="12"
+                      cy="7"
+                      r="4"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                    />
+
+                    <path
+                      d="M4 19a8 8 0 0 1 16 0"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linecap="round"
+                    />
+
+                  </svg>
+
+                </div>
+
+                <div>
+
+                  <h2>
+                    Teacher Information
+                  </h2>
+
+                  <p>
+                    Teacher identification and account details
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="details-grid">
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Teacher Number
+                </span>
+
+                <span class="detail-value">
+                  {{ profile.teacherNumber || 'Not assigned' }}
+                </span>
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Phone Number
+                </span>
+
+                <span class="detail-value">
+                  {{ profile.phone || 'Not provided' }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        }
+
+
+        <!-- =================================================
+             SECURITY
+             ================================================= -->
+
+        <section class="profile-card security-card">
+
+          <div class="card-header">
+
+            <div class="card-title-wrapper">
+
+              <div class="section-icon security-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true">
+
+                  <rect
+                    x="5"
+                    y="10"
+                    width="14"
+                    height="10"
+                    rx="2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  />
+
+                  <path
+                    d="M8 10V7a4 4 0 0 1 8 0v3"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                  />
+
+                </svg>
+
+              </div>
+
+              <div>
+
+                <h2>
+                  Security
+                </h2>
+
+                <p>
+                  Update your account password
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- Success -->
+
+          @if (successMessage) {
+
+            <div class="message success-message">
+
+              <span class="message-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true">
+
+                  <path
+                    d="M5 12.5l4 4L19 7"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+
+                </svg>
+
+              </span>
+
+              <span>
+                {{ successMessage }}
+              </span>
+
+            </div>
+
+          }
+
+
+          <!-- Error -->
+
+          @if (errorMessage) {
+
+            <div class="message error-message">
+
+              <span class="message-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true">
+
+                  <path
+                    d="M12 7v6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+
+                  <circle
+                    cx="12"
+                    cy="16.5"
+                    r="1"
+                    fill="currentColor"
+                  />
+
+                </svg>
+
+              </span>
+
+              <span>
+                {{ errorMessage }}
+              </span>
+
+            </div>
+
+          }
+
+
+          <!-- Password Form -->
+
+          <form
+            class="password-form"
+            (ngSubmit)="changePassword()">
+
+            <div class="form-group">
+
+              <label for="currentPassword">
+                Current Password
+              </label>
+
+              <input
+                id="currentPassword"
+                name="currentPassword"
+                type="password"
+                [(ngModel)]="currentPassword"
+                [disabled]="saving"
+                autocomplete="current-password"
+                placeholder="Enter current password"
+              />
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="newPassword">
+                New Password
+              </label>
+
+              <input
+                id="newPassword"
+                name="newPassword"
+                type="password"
+                [(ngModel)]="newPassword"
+                [disabled]="saving"
+                autocomplete="new-password"
+                placeholder="Enter new password"
+              />
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="confirmPassword">
+                Confirm New Password
+              </label>
+
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                [(ngModel)]="confirmPassword"
+                [disabled]="saving"
+                autocomplete="new-password"
+                placeholder="Confirm new password"
+              />
+
+            </div>
+
+
+            <div class="form-actions">
+
+              <button
+                type="submit"
+                class="btn-primary"
+                [disabled]="saving">
+
+                @if (saving) {
+
+                  <span class="button-spinner"></span>
+
+                  <span>
+                    Updating...
+                  </span>
+
+                }
+
+                @else {
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+
+                    <path
+                      d="M5 12h14M13 6l6 6-6 6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+
+                  </svg>
+
+                  <span>
+                    Update Password
+                  </span>
+
+                }
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </section>
+
+      }
+
+    </div>
+
+  </section>
+
+</div>
