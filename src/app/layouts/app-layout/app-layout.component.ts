@@ -294,14 +294,7 @@ export class AppLayoutComponent {
           {
             title: 'MY ACCOUNT',
             items: [
-              {
-                label: 'Profile',
-                route: '/student/profile',
-                icon: '♙'
-              },
-
-
-
+ 
               {
                 label: 'Attendance',
                 route: '/student/attendance',
@@ -368,4 +361,8 @@ export class AppLayoutComponent {
 
     this.router.navigate(['/login']);
   }
+
+  goToProfile(): void {
+  this.router.navigate(['/profile']);
+}
 }

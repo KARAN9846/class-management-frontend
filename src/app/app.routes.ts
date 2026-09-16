@@ -78,6 +78,8 @@ import { StudentDashboard } from './features/student/dashboard/student-dashboard
 import { StudentAttendanceComponent } from './features/student/attendance/student-attendance/student-attendance';
 import { StudentFeesComponent } from './features/student/fees/fees';
 
+//PROFILE
+import { ProfileComponent } from './features/profile/profile/profile';
 
 export const routes: Routes = [
 
@@ -523,6 +525,15 @@ export const routes: Routes = [
     ]
   },
 
+  // -------------------- Profile --------------------
+
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [authGuard]
+  },
+
+
   // =========================================================
   // DEFAULT
   // =========================================================
@@ -541,4 +552,6 @@ export const routes: Routes = [
     path: '**',
     redirectTo: 'not-found'
   }
+
+
 ];

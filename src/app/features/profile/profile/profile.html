@@ -1,0 +1,496 @@
+<main class="profile-page">
+
+  <!-- =========================
+       PAGE HEADER
+       ========================= -->
+  <header class="profile-page-header">
+
+    <div>
+      <span class="eyebrow">ACCOUNT</span>
+
+      <h1>My Profile</h1>
+
+      <p>
+        Manage your personal information, account security and preferences.
+      </p>
+    </div>
+
+  </header>
+
+
+  @if (loading) {
+
+    <section class="state-card loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading your profile...</p>
+    </section>
+
+  }
+
+
+  @if (!loading && profile) {
+
+    <!-- =========================
+         PROFILE HERO
+         ========================= -->
+    <section class="profile-hero">
+
+      <div class="profile-identity">
+
+        <div class="profile-avatar">
+
+          @if (profile.firstName || profile.lastName) {
+            <span>
+              {{ getInitials() }}
+            </span>
+          } @else {
+            <span>
+              {{ getRoleInitial() }}
+            </span>
+          }
+
+        </div>
+
+
+        <div class="identity-content">
+
+          <div class="identity-name-row">
+
+            <h2>
+              {{ getFullName() }}
+            </h2>
+
+            <span
+              class="account-status"
+              [class.inactive]="!profile.isActive">
+
+              <span class="status-dot"></span>
+
+              {{ profile.isActive ? 'Active' : 'Inactive' }}
+
+            </span>
+
+          </div>
+
+
+          <p class="identity-email">
+            {{ profile.email }}
+          </p>
+
+
+          <span class="role-badge">
+            {{ formatRole(profile.role) }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="profile-hero-action">
+
+        <button
+          type="button"
+          class="logout-button"
+          (click)="logout()">
+
+          <span class="logout-icon">↪</span>
+
+          <span>Logout</span>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         PERSONAL INFORMATION
+         ========================= -->
+    <section class="profile-card">
+
+      <div class="card-header">
+
+        <div class="card-title-wrapper">
+
+          <div class="section-icon">
+            👤
+          </div>
+
+          <div>
+            <h2>Personal Information</h2>
+
+            <p>
+              Your basic account and personal details.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="details-grid">
+
+        <!-- Full Name -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Full Name
+          </span>
+
+          <strong class="detail-value">
+            {{ getFullName() }}
+          </strong>
+
+        </div>
+
+
+        <!-- Email -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Email Address
+          </span>
+
+          <strong class="detail-value">
+            {{ profile.email }}
+          </strong>
+
+        </div>
+
+
+        <!-- Phone -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Phone Number
+          </span>
+
+          <strong class="detail-value">
+            {{ profile.phone || 'Not provided' }}
+          </strong>
+
+        </div>
+
+
+        <!-- Student Roll Number -->
+        @if (profile.role === 'STUDENT') {
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Roll Number
+            </span>
+
+            <strong class="detail-value">
+              {{ profile.rollNumber || 'Not assigned' }}
+            </strong>
+
+          </div>
+
+        }
+
+
+        <!-- Teacher Number -->
+        @if (profile.role === 'TEACHER') {
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Teacher Number
+            </span>
+
+            <strong class="detail-value">
+              {{ profile.teacherNumber || 'Not assigned' }}
+            </strong>
+
+          </div>
+
+        }
+
+
+        <!-- Role -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Account Role
+          </span>
+
+          <strong class="detail-value">
+            {{ formatRole(profile.role) }}
+          </strong>
+
+        </div>
+
+
+        <!-- Account Status -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Account Status
+          </span>
+
+          <strong
+            class="detail-value status-value"
+            [class.inactive]="!profile.isActive">
+
+            <span class="status-indicator"></span>
+
+            {{ profile.isActive ? 'Active' : 'Inactive' }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         ACADEMIC INFORMATION
+         STUDENT ONLY
+         ========================= -->
+    @if (profile.role === 'STUDENT') {
+
+      <section class="profile-card">
+
+        <div class="card-header">
+
+          <div class="card-title-wrapper">
+
+            <div class="section-icon">
+              🎓
+            </div>
+
+            <div>
+              <h2>Academic Information</h2>
+
+              <p>
+                Your current academic enrollment details.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="details-grid academic-grid">
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Enrollment Number
+            </span>
+
+            <strong class="detail-value">
+              {{ profile.enrollmentNumber || 'Not assigned' }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Academic Year
+            </span>
+
+            <strong class="detail-value">
+              {{ profile.academicYear || 'Not assigned' }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Class
+            </span>
+
+            <strong class="detail-value">
+              {{ profile.className || 'Not assigned' }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Section
+            </span>
+
+            <strong class="detail-value">
+              {{ profile.section || 'Not assigned' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- =========================
+         CHANGE PASSWORD
+         ========================= -->
+    <section class="profile-card security-card">
+
+      <div class="card-header">
+
+        <div class="card-title-wrapper">
+
+          <div class="section-icon security-icon">
+            🔒
+          </div>
+
+          <div>
+            <h2>Change Password</h2>
+
+            <p>
+              Keep your account secure by using a strong password.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      @if (successMessage) {
+
+        <div class="message success-message">
+          <span>✓</span>
+          {{ successMessage }}
+        </div>
+
+      }
+
+
+      @if (errorMessage) {
+
+        <div class="message error-message">
+          <span>!</span>
+          {{ errorMessage }}
+        </div>
+
+      }
+
+
+      <div class="password-form">
+
+        <div class="form-group">
+
+          <label for="currentPassword">
+            Current Password
+          </label>
+
+          <input
+            id="currentPassword"
+            type="password"
+            [(ngModel)]="currentPassword"
+            placeholder="Enter your current password"
+            [disabled]="saving"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="newPassword">
+            New Password
+          </label>
+
+          <input
+            id="newPassword"
+            type="password"
+            [(ngModel)]="newPassword"
+            placeholder="Enter your new password"
+            [disabled]="saving"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="confirmPassword">
+            Confirm New Password
+          </label>
+
+          <input
+            id="confirmPassword"
+            type="password"
+            [(ngModel)]="confirmPassword"
+            placeholder="Confirm your new password"
+            [disabled]="saving"
+          />
+
+        </div>
+
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="changePassword()"
+            [disabled]="
+              saving ||
+              !currentPassword ||
+              !newPassword ||
+              !confirmPassword
+            ">
+
+            @if (saving) {
+              <span class="button-spinner"></span>
+              Changing...
+            } @else {
+              Change Password
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  }
+
+
+  @if (!loading && !profile && errorMessage) {
+
+    <section class="state-card error-state">
+
+      <div class="error-state-icon">!</div>
+
+      <h2>Unable to load profile</h2>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadProfile()">
+
+        Try Again
+
+      </button>
+
+    </section>
+
+  }
+
+</main>

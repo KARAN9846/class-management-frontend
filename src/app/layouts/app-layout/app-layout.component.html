@@ -77,7 +77,9 @@
     <!-- Sidebar Bottom -->
     <div class="sidebar-bottom">
 
-      <div class="user-card">
+      <div
+  class="user-card"
+  (click)="goToProfile()">
 
         <div class="user-avatar">
           {{ userInitial }}
@@ -97,17 +99,6 @@
 
       </div>
 
-
-      <button
-        type="button"
-        class="logout-button"
-        (click)="logout()">
-
-        <span class="logout-icon">↪</span>
-
-        <span>Logout</span>
-
-      </button>
 
     </div>
 

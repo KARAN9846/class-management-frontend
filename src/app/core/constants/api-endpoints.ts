@@ -88,5 +88,10 @@ FEE_PAYMENTS: {
 
     MY_PDF: (receiptId: number) =>
       `/student/fee-receipts/${receiptId}/pdf`
-  }
+  },
+
+  PROFILE: {
+  BASE: '/profile',
+  CHANGE_PASSWORD: '/profile/password'
+},
 };
