@@ -3,33 +3,29 @@
   width: 100%;
 }
 
+
+/* =========================================================
+   PAGE
+========================================================= */
+
 .teacher-role-form-page {
   width: 100%;
-  height: calc(100vh - 110px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 8px;
-  padding-bottom: 40px;
+
   box-sizing: border-box;
 }
 
 
-.teacher-role-form-page::-webkit-scrollbar {
-  width: 6px;
+/*
+ * Normal route/page mode.
+ *
+ * The parent page handles the normal page scroll.
+ */
+
+.teacher-role-form-page:not(:has(.role-drawer)) {
+  min-height: 100%;
 }
 
-.teacher-role-form-page::-webkit-scrollbar-track {
-  background: transparent;
-}
 
-.teacher-role-form-page::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 10px;
-}
-
-.teacher-role-form-page::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
 /* =========================================================
    PAGE HEADER
 ========================================================= */
@@ -41,10 +37,12 @@
 .breadcrumb {
   display: flex;
   align-items: center;
+
   gap: 8px;
   margin-bottom: 8px;
 
   color: var(--text-muted);
+
   font-size: 11px;
 }
 
@@ -57,8 +55,10 @@
   margin: 0 0 5px;
 
   color: var(--text-primary);
+
   font-size: 24px;
   font-weight: 700;
+
   letter-spacing: -0.02em;
 }
 
@@ -66,8 +66,11 @@
   margin: 0;
 
   color: var(--text-muted);
+
   font-size: 13px;
+  line-height: 1.5;
 }
+
 
 /* =========================================================
    ERROR
@@ -75,44 +78,214 @@
 
 .error-banner {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
 
-  margin-bottom: 20px;
-  padding: 14px 16px;
+  gap: 12px;
+
+  margin-bottom: 16px;
+  padding: 12px 14px;
 
   border: 1px solid #fecaca;
-  border-radius: 10px;
+  border-radius: 9px;
 
   background: #fef2f2;
   color: #991b1b;
+
+  box-sizing: border-box;
 }
 
-.error-banner strong {
-  display: block;
-  margin-bottom: 3px;
+.error-content {
+  min-width: 0;
 
-  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.error-content strong {
+  color: #991b1b;
+
+  font-size: 12px;
   font-weight: 700;
 }
 
-.error-banner span {
+.error-content span {
   color: #b91c1c;
-  font-size: 12px;
+
+  font-size: 11px;
+  line-height: 1.5;
 }
+
+.error-close {
+  width: 26px;
+  height: 26px;
+
+  flex: 0 0 26px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #991b1b;
+
+  font-size: 17px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.error-close:hover {
+  background: rgba(185, 28, 28, 0.08);
+}
+
+
+/* =========================================================
+   DEPENDENCY MESSAGE
+========================================================= */
+
+.dependency-banner {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  margin-bottom: 16px;
+  padding: 12px 14px;
+
+  border: 1px solid #bfdbfe;
+  border-radius: 9px;
+
+  background: #eff6ff;
+
+  box-sizing: border-box;
+}
+
+.dependency-icon {
+  width: 22px;
+  height: 22px;
+
+  flex: 0 0 22px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #dbeafe;
+  color: #2563eb;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.dependency-content {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.dependency-content strong {
+  color: #1e40af;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.dependency-content span {
+  color: #1d4ed8;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.dependency-close {
+  width: 26px;
+  height: 26px;
+
+  flex: 0 0 26px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #2563eb;
+
+  font-size: 17px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.dependency-close:hover {
+  background: rgba(37, 99, 235, 0.08);
+}
+
 
 /* =========================================================
    FORM CARD
 ========================================================= */
 
 .form-card {
+  width: 100%;
+
   overflow: hidden;
 
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
 
   background: var(--surface);
+
   box-shadow: var(--shadow-sm);
+
+  box-sizing: border-box;
 }
+
+
+/*
+ * IMPORTANT:
+ *
+ * When this component is inside the parent role popup,
+ * remove the child's visual "card" appearance.
+ *
+ * The parent popup is the actual card/container.
+ */
+
+:host-context(.role-drawer) .form-card {
+  overflow: visible;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   FORM SECTION
+========================================================= */
+
+.form-section {
+  width: 100%;
+}
+
 
 /* =========================================================
    SECTION HEADER
@@ -122,27 +295,46 @@
   padding: 20px 22px;
 
   border-bottom: 1px solid var(--border);
+
+  box-sizing: border-box;
 }
 
-.section-header h2 {
+.section-eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--primary);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.section-header h2,
+.permissions-title-row h2 {
   margin: 0 0 4px;
 
   color: var(--text-primary);
+
   font-size: 15px;
   font-weight: 700;
+
+  letter-spacing: -0.01em;
 }
 
-.section-header p {
+.section-header p,
+.permissions-title-row p {
   margin: 0;
 
   color: var(--text-muted);
-  font-size: 12px;
+
+  font-size: 11px;
   line-height: 1.5;
 }
 
-.permissions-header {
-  margin-top: 8px;
-}
 
 /* =========================================================
    FORM GRID
@@ -150,10 +342,14 @@
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
 
-  padding: 22px;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 18px;
+
+  padding: 20px 22px;
+
+  box-sizing: border-box;
 }
 
 .full-width {
@@ -163,12 +359,14 @@
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+
+  gap: 6px;
 }
 
 .form-field label {
   color: var(--text-primary);
-  font-size: 12px;
+
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -179,9 +377,10 @@
 .form-field input,
 .form-field textarea {
   width: 100%;
+
   box-sizing: border-box;
 
-  padding: 11px 12px;
+  padding: 10px 11px;
 
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -192,20 +391,22 @@
   color: var(--text-primary);
 
   font: inherit;
-  font-size: 13px;
+  font-size: 12px;
 
   transition:
     border-color 150ms ease,
-    box-shadow 150ms ease;
+    box-shadow 150ms ease,
+    background 150ms ease;
 }
 
 .form-field input {
-  height: 42px;
+  height: 40px;
 }
 
 .form-field textarea {
+  min-height: 82px;
+
   resize: vertical;
-  min-height: 90px;
 }
 
 .form-field input::placeholder,
@@ -217,7 +418,10 @@
 .form-field textarea:focus {
   border-color: var(--primary);
 
-  box-shadow: 0 0 0 3px var(--primary-light);
+  background: var(--surface);
+
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.10);
 }
 
 .form-field input.ng-invalid.ng-touched,
@@ -227,34 +431,314 @@
 
 .field-error {
   color: #dc2626;
-  font-size: 11px;
+
+  font-size: 10px;
 }
+
 
 /* =========================================================
-   PERMISSIONS
+   PERMISSIONS SECTION
 ========================================================= */
 
-.permissions-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+.permissions-section {
+  width: 100%;
 
-  padding: 22px;
+  border-top: 1px solid var(--border);
 }
+
+
+/* =========================================================
+   PERMISSIONS TITLE
+========================================================= */
+
+.permissions-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 20px 22px;
+
+  border-bottom: 1px solid var(--border);
+
+  box-sizing: border-box;
+}
+
+.permissions-title-row > div:first-child {
+  min-width: 0;
+}
+
+.permission-total {
+  min-width: 82px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  gap: 2px;
+
+  padding: 7px 10px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  background: var(--background);
+
+  white-space: nowrap;
+}
+
+.permission-total strong {
+  color: var(--primary);
+
+  font-size: 16px;
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+.permission-total span {
+  color: var(--text-muted);
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   PERMISSION GROUPS
+========================================================= */
+
+.permission-groups {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+
+  padding: 16px 22px 20px;
+}
+
+
+/* =========================================================
+   PERMISSION GROUP
+========================================================= */
+
+.permission-group {
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: var(--background);
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   GROUP HEADER
+========================================================= */
+
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 13px 14px;
+
+  border-bottom: 1px solid var(--border);
+
+  background: var(--surface);
+}
+
+.group-title {
+  min-width: 0;
+}
+
+.group-title h3 {
+  margin: 0 0 3px;
+
+  color: var(--text-primary);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.group-title p {
+  margin: 0;
+
+  color: var(--text-muted);
+
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.group-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  flex: 0 0 auto;
+}
+
+.group-count {
+  min-width: 34px;
+
+  color: var(--text-muted);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-align: right;
+}
+
+.group-toggle-button {
+  height: 28px;
+
+  padding: 0 9px;
+
+  border: 1px solid var(--border);
+  border-radius: 6px;
+
+  background: var(--surface);
+  color: var(--text-secondary);
+
+  font: inherit;
+  font-size: 9px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease;
+}
+
+.group-toggle-button:hover {
+  border-color: var(--primary);
+
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+
+/* =========================================================
+   GROUP PERMISSIONS
+========================================================= */
+
+.group-permissions {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  padding: 10px;
+}
+
+
+/* =========================================================
+   PERMISSION ITEM
+========================================================= */
 
 .permission-item {
   position: relative;
 
   display: flex;
   align-items: flex-start;
-  gap: 11px;
 
-  padding: 13px;
+  gap: 10px;
 
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  min-width: 0;
 
-  background: var(--background);
+  padding: 11px 12px;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  background: var(--surface);
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.permission-item:hover {
+  border-color: var(--border);
+
+  background: var(--surface-hover);
+}
+
+.permission-item.selected {
+  border-color: var(--primary-light);
+
+  background: var(--primary-light);
+}
+
+.permission-item.required {
+  border-color: #bfdbfe;
+}
+
+.permission-item.dependency-error-highlight {
+  border-color: #ef4444;
+
+  background: #fef2f2;
+
+  box-shadow:
+    0 0 0 3px rgba(239, 68, 68, 0.12);
+
+  animation: dependency-error-pulse 600ms ease-in-out 2;
+}
+
+@keyframes dependency-error-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 3px rgba(239, 68, 68, 0.12);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 6px rgba(239, 68, 68, 0.18);
+  }
+}
+
+
+/* =========================================================
+   PERMISSION SELECT BUTTON
+========================================================= */
+
+.permission-select {
+  width: 19px;
+  height: 19px;
+
+  flex: 0 0 19px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 1px;
+
+  padding: 0;
+
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+
+  background: var(--surface);
+
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
 
   cursor: pointer;
 
@@ -264,77 +748,291 @@
     box-shadow 150ms ease;
 }
 
-.permission-item:hover {
+.permission-select:hover {
   border-color: var(--primary);
-  background: var(--surface-hover);
 }
 
-.permission-item.selected {
+.permission-select.checked {
   border-color: var(--primary);
-  background: var(--primary-light);
-}
 
-.permission-item input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.checkbox {
-  width: 18px;
-  height: 18px;
-
-  flex: 0 0 18px;
-
-  margin-top: 1px;
-
-  border: 1.5px solid var(--border);
-  border-radius: 5px;
-
-  background: var(--surface);
-
-  transition: all 150ms ease;
-}
-
-.permission-item.selected .checkbox {
-  border-color: var(--primary);
   background: var(--primary);
 
-  box-shadow: inset 0 0 0 3px var(--primary);
+  box-shadow:
+    inset 0 0 0 2px var(--primary);
 }
 
-.permission-content {
+.permission-select:focus-visible {
+  outline: 2px solid var(--primary);
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   PERMISSION MAIN
+========================================================= */
+
+.permission-main {
   min-width: 0;
 
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  flex: 1;
 }
 
-.permission-content strong {
+.permission-name-row {
+  display: flex;
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+}
+
+.permission-name-row strong {
   color: var(--text-primary);
-  font-size: 12px;
+
+  font-size: 11px;
+  font-weight: 650;
+
+  line-height: 1.35;
+}
+
+.permission-description {
+  margin: 3px 0 0;
+
+  color: var(--text-muted);
+
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   REQUIRED BADGE
+========================================================= */
+
+.required-badge {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 18px;
+
+  padding: 2px 6px;
+
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.satisfies-badge {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 18px;
+
+  padding: 2px 6px;
+
+  border: 1px solid #bbf7d0;
+  border-radius: 999px;
+
+  background: #f0fdf4;
+  color: #15803d;
+
+  font-size: 8px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+
+/* =========================================================
+   DEPENDENCY INFORMATION
+========================================================= */
+
+.requires-info {
+  margin-top: 8px;
+  padding: 8px 9px;
+
+  border-left: 2px solid #93c5fd;
+  border-radius: 0 6px 6px 0;
+
+  background: #f8fbff;
+}
+
+.dependency-label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #64748b;
+
+  font-size: 9px;
   font-weight: 650;
 }
 
-.permission-content span {
-  color: var(--text-muted);
-  font-size: 10px;
+.dependency-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 5px;
+}
+
+.dependency-item {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  min-height: 21px;
+
+  padding: 3px 7px;
+
+  border: 1px solid var(--border);
+  border-radius: 5px;
+
+  background: var(--surface);
+  color: var(--text-secondary);
+
+  font-size: 9px;
+  line-height: 1.2;
+
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.dependency-item.satisfied {
+  border-color: #bbf7d0;
+
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.dependency-check {
+  color: #15803d;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   REQUIRED BY
+========================================================= */
+
+.required-by-info {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+
+  gap: 4px;
+
+  margin-top: 7px;
+}
+
+.required-by-info .dependency-label {
+  display: inline;
+
+  margin: 0;
+}
+
+.required-by-list {
+  color: #2563eb;
+
+  font-size: 9px;
+  font-weight: 600;
+
   line-height: 1.4;
 }
 
-.empty-permissions {
-  margin: 22px;
-  padding: 20px;
 
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-md);
+/* =========================================================
+   DEPENDENCY INDICATOR
+========================================================= */
 
-  color: var(--text-muted);
-  text-align: center;
+.dependency-indicator {
+  width: 20px;
+  height: 20px;
+
+  flex: 0 0 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 1px;
+
+  border-radius: 50%;
+
+  background: #eff6ff;
+  color: #60a5fa;
 
   font-size: 12px;
 }
+
+
+/* =========================================================
+   EMPTY PERMISSIONS
+========================================================= */
+
+.empty-permissions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 5px;
+
+  margin: 16px 22px 20px;
+  padding: 26px 20px;
+
+  border: 1px dashed var(--border);
+  border-radius: 9px;
+
+  background: var(--background);
+
+  color: var(--text-muted);
+
+  text-align: center;
+}
+
+.empty-icon {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 3px;
+
+  border-radius: 50%;
+
+  background: var(--surface);
+
+  color: var(--text-muted);
+
+  font-size: 16px;
+}
+
+.empty-permissions strong {
+  color: var(--text-secondary);
+
+  font-size: 12px;
+}
+
+.empty-permissions span {
+  font-size: 10px;
+}
+
 
 /* =========================================================
    FORM FOOTER
@@ -342,33 +1040,44 @@
 
 .form-footer {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+
   gap: 10px;
 
-  padding: 18px 22px;
+  padding: 14px 22px;
 
   border-top: 1px solid var(--border);
+
   background: var(--background);
+
+  box-sizing: border-box;
 }
 
 .form-footer button {
-  height: 40px;
+  height: 38px;
 
-  padding: 0 17px;
+  padding: 0 15px;
 
   border-radius: var(--radius-md);
 
   font: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
 
   cursor: pointer;
 
-  transition: all 150ms ease;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    filter 150ms ease;
 }
 
 .form-footer button:disabled {
   opacity: 0.6;
+
   cursor: not-allowed;
 }
 
@@ -380,21 +1089,50 @@
 }
 
 .cancel-button:hover:not(:disabled) {
+  border-color: var(--text-muted);
+
   background: var(--surface-hover);
   color: var(--text-primary);
 }
 
 .submit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
   border: 1px solid var(--primary);
 
   background: var(--primary);
-  color: white;
+  color: #ffffff;
 }
 
 .submit-button:hover:not(:disabled) {
   filter: brightness(0.95);
+
   box-shadow: var(--shadow-sm);
 }
+
+
+/* =========================================================
+   BUTTON SPINNER
+========================================================= */
+
+.button-spinner {
+  width: 12px;
+  height: 12px;
+
+  display: inline-block;
+
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation: spin 700ms linear infinite;
+}
+
 
 /* =========================================================
    LOADING
@@ -406,10 +1144,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 10px;
 
   color: var(--text-muted);
-  font-size: 12px;
+
+  font-size: 11px;
 }
 
 .loader {
@@ -418,10 +1158,35 @@
 
   border: 2px solid var(--border);
   border-top-color: var(--primary);
+
   border-radius: 50%;
 
   animation: spin 700ms linear infinite;
 }
+
+
+/* =========================================================
+   POPUP MODE
+   Remove child page spacing/card behavior.
+========================================================= */
+
+:host-context(.role-drawer) .teacher-role-form-page {
+  width: 100%;
+}
+
+:host-context(.role-drawer) .error-banner,
+:host-context(.role-drawer) .dependency-banner {
+  margin: 14px 22px 0;
+}
+
+:host-context(.role-drawer) .form-footer {
+  background: var(--surface);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
 
 @keyframes spin {
   to {
@@ -429,13 +1194,14 @@
   }
 }
 
+
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
 @media (max-width: 700px) {
-  .form-grid,
-  .permissions-grid {
+
+  .form-grid {
     grid-template-columns: 1fr;
   }
 
@@ -443,14 +1209,46 @@
     grid-column: auto;
   }
 
+  .permissions-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .permission-total {
+    align-items: flex-start;
+  }
+
+  .group-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .group-actions {
+    width: 100%;
+
+    justify-content: space-between;
+  }
+
+  .group-toggle-button {
+    margin-left: auto;
+  }
+
+  .form-footer {
+    padding: 14px 18px;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
   .page-top h1 {
     font-size: 21px;
   }
-}
 
-@media (max-width: 480px) {
-  .form-grid,
-  .permissions-grid {
+  .form-grid {
+    gap: 14px;
+
     padding: 16px;
   }
 
@@ -458,12 +1256,45 @@
     padding: 16px;
   }
 
+  .permissions-title-row {
+    padding: 16px;
+  }
+
+  .permission-groups {
+    padding: 12px 16px 16px;
+  }
+
+  .group-permissions {
+    padding: 8px;
+  }
+
+  .permission-item {
+    padding: 10px;
+  }
+
+  .dependency-list {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dependency-item {
+    max-width: 100%;
+  }
+
   .form-footer {
     flex-direction: column-reverse;
-    padding: 16px;
+
+    padding: 14px 16px;
   }
 
   .form-footer button {
     width: 100%;
   }
+
+  :host-context(.role-drawer) .error-banner,
+  :host-context(.role-drawer) .dependency-banner {
+    margin-right: 16px;
+    margin-left: 16px;
+  }
+
 }

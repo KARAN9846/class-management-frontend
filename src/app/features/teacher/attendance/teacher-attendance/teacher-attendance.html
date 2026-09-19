@@ -1,79 +1,112 @@
 <div class="page">
 
-<div class="page-header">
+  <!-- ==================== PAGE HEADER ==================== -->
+  <div class="page-header">
 
-  <div>
-    <h1>Attendance</h1>
+    <div>
+      <h1>Attendance</h1>
 
-    <p>
-      View student attendance records
-    </p>
+      <p>
+        View student attendance records
+      </p>
+    </div>
+
+    <a
+      *ngIf="canMarkAttendance()"
+      class="mark-attendance-button"
+      routerLink="/teacher/attendance/mark">
+      Mark Attendance
+    </a>
+
   </div>
 
-  <a
-    class="mark-attendance-button"
-    routerLink="/teacher/attendance/mark">
-    Mark Attendance
-  </a>
 
-</div>
-
+  <!-- ==================== TABLE CARD ==================== -->
   <div class="table-card">
 
-<div class="filter-area">
+    <!-- ==================== FILTER AREA ==================== -->
+    <div class="filter-area">
 
-  <app-search-input
-    placeholder="Search attendance..."
-    (searchChange)="onSearchChange($event)">
-  </app-search-input>
+      <app-search-input
+        placeholder="Search attendance..."
+        (searchChange)="onSearchChange($event)">
+      </app-search-input>
 
-  <select
-    [value]="statusFilter"
-    (change)="onStatusChange($any($event.target).value)">
-    <option value="ALL">All Status</option>
-    <option value="PRESENT">Present</option>
-    <option value="ABSENT">Absent</option>
-  </select>
 
-  <input
-    type="date"
-    [value]="dateFilter"
-    (change)="onDateChange($any($event.target).value)"
-  />
+      <!-- Status -->
+      <select
+        [value]="statusFilter"
+        (change)="onStatusChange($any($event.target).value)"
+        aria-label="Filter by attendance status">
 
-  <select
-    [value]="classFilter"
-    (change)="onClassChange($any($event.target).value)">
-    <option value="ALL">All Classes</option>
+        <option value="ALL">All Status</option>
+        <option value="PRESENT">Present</option>
+        <option value="ABSENT">Absent</option>
 
-    @for (className of classOptions; track className) {
-      <option [value]="className">
-        {{ className }}
-      </option>
-    }
-  </select>
+      </select>
 
-  <select
-    [value]="sectionFilter"
-    (change)="onSectionChange($any($event.target).value)">
-    <option value="ALL">All Sections</option>
 
-    @for (sectionName of sectionOptions; track sectionName) {
-      <option [value]="sectionName">
-        {{ sectionName }}
-      </option>
-    }
-  </select>
+      <!-- Date -->
+      <input
+        type="date"
+        [value]="dateFilter"
+        (change)="onDateChange($any($event.target).value)"
+        aria-label="Filter by attendance date"
+      />
 
-  <button
-    type="button"
-    class="clear-filters-button"
-    (click)="clearFilters()">
-    Clear Filters
-  </button>
 
-</div>
+      <!-- Class -->
+      <select
+        [value]="classFilter"
+        (change)="onClassChange($any($event.target).value)"
+        aria-label="Filter by class">
 
+        <option value="ALL">All Classes</option>
+
+        @for (className of classOptions; track className) {
+
+          <option [value]="className">
+            {{ className }}
+          </option>
+
+        }
+
+      </select>
+
+
+      <!-- Section -->
+      <select
+        [value]="sectionFilter"
+        (change)="onSectionChange($any($event.target).value)"
+        aria-label="Filter by section">
+
+        <option value="ALL">All Sections</option>
+
+        @for (sectionName of sectionOptions; track sectionName) {
+
+          <option [value]="sectionName">
+            {{ sectionName }}
+          </option>
+
+        }
+
+      </select>
+
+
+      <!-- Clear Filters -->
+      <button
+        type="button"
+        class="clear-filters-button"
+        (click)="clearFilters()">
+
+        Clear Filters
+
+      </button>
+
+    </div>
+
+
+    <!-- ==================== ERROR ==================== -->
     @if (errorMessage) {
 
       <div class="error-state">
@@ -82,6 +115,18 @@
 
     }
 
+
+    <!-- ==================== LOADING ==================== -->
+    @if (loading) {
+
+      <div class="loading-state">
+        Loading attendance records...
+      </div>
+
+    }
+
+
+    <!-- ==================== EMPTY ==================== -->
     @if (!loading && attendance.length === 0) {
 
       <div class="empty-state">
@@ -94,16 +139,20 @@
 
       </div>
 
-    } @else {
+    }
 
-<app-data-table
-  [columns]="columns"
-  [data]="attendance"
-  [loading]="loading"
-  [actions]="actions"
-  [showActions]="true"
-  (actionClick)="onActionClick($event)">
-</app-data-table>
+
+    <!-- ==================== TABLE ==================== -->
+    @if (!loading && attendance.length > 0) {
+
+      <app-data-table
+        [columns]="columns"
+        [data]="attendance"
+        [loading]="loading"
+        [actions]="actions"
+        [showActions]="true"
+        (actionClick)="onActionClick($event)">
+      </app-data-table>
 
     }
 

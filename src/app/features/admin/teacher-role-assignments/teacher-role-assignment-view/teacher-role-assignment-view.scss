@@ -1,4 +1,21 @@
+/* =========================================================
+   TEACHER ROLE ASSIGNMENT VIEW
+   ========================================================= */
+
+:host {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
 .assignment-view-page {
+  width: 100%;
+
   height: calc(100vh - 70px);
 
   padding: 28px;
@@ -30,9 +47,9 @@
 }
 
 
-// =========================================================
-// HEADER
-// =========================================================
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .page-header {
   display: flex;
@@ -45,12 +62,14 @@
 .breadcrumb {
   display: flex;
   align-items: center;
+
   gap: 8px;
 
   margin-bottom: 8px;
 
-  font-size: 13px;
   color: #64748b;
+
+  font-size: 13px;
 }
 
 .breadcrumb strong {
@@ -60,24 +79,24 @@
 .page-header h1 {
   margin: 0;
 
+  color: #111827;
+
   font-size: 28px;
   font-weight: 700;
-
-  color: #111827;
 }
 
 .page-header p {
   margin: 6px 0 0;
 
-  font-size: 14px;
-
   color: #64748b;
+
+  font-size: 14px;
 }
 
 
-// =========================================================
-// BUTTONS
-// =========================================================
+/* =========================================================
+   BUTTONS
+   ========================================================= */
 
 .primary-button,
 .secondary-button {
@@ -87,45 +106,56 @@
 
   border-radius: 8px;
 
+  font-family: inherit;
+
   font-size: 14px;
   font-weight: 600;
 
   cursor: pointer;
 
-  transition: 0.2s;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .primary-button {
   border: none;
 
   background: #2563eb;
-  color: #fff;
+  color: #ffffff;
 }
 
 .primary-button:hover {
   background: #1d4ed8;
+
+  box-shadow:
+    0 3px 8px rgba(37, 99, 235, 0.15);
 }
 
 .secondary-button {
   border: 1px solid #d1d5db;
 
-  background: #fff;
+  background: #ffffff;
   color: #374151;
 }
 
 .secondary-button:hover {
   background: #f9fafb;
+
+  border-color: #cbd5e1;
 }
 
 
-// =========================================================
-// ERROR
-// =========================================================
+/* =========================================================
+   ERROR
+   ========================================================= */
 
 .error-banner {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
   gap: 20px;
 
@@ -141,33 +171,39 @@
 .error-banner > div {
   display: flex;
   flex-direction: column;
+
   gap: 4px;
 }
 
 .error-banner strong {
   color: #991b1b;
+
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .error-banner span {
-  font-size: 13px;
   color: #b91c1c;
+
+  font-size: 13px;
 }
 
 .error-banner button {
   border: none;
-  background: transparent;
 
+  background: transparent;
   color: #b91c1c;
 
+  font-family: inherit;
   font-weight: 600;
 
   cursor: pointer;
 }
 
 
-// =========================================================
-// LOADING
-// =========================================================
+/* =========================================================
+   LOADING
+   ========================================================= */
 
 .state-card {
   display: flex;
@@ -183,7 +219,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
 
-  background: #fff;
+  background: #ffffff;
 
   color: #64748b;
 
@@ -209,30 +245,30 @@
 }
 
 
-// =========================================================
-// MAIN CARD
-// =========================================================
+/* =========================================================
+   MAIN CARD
+   ========================================================= */
 
 .content-card {
-  background: #fff;
+  margin-bottom: 30px;
 
   border: 1px solid #e5e7eb;
   border-radius: 12px;
 
-  overflow: hidden;
+  background: #ffffff;
 
-  margin-bottom: 30px;
+  overflow: hidden;
 }
 
 
-// =========================================================
-// ASSIGNMENT HEADER
-// =========================================================
+/* =========================================================
+   ASSIGNMENT HEADER
+   ========================================================= */
 
 .assignment-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
   gap: 20px;
 
@@ -246,6 +282,8 @@
   align-items: center;
 
   gap: 14px;
+
+  min-width: 0;
 }
 
 .teacher-avatar {
@@ -270,15 +308,16 @@
 .teacher-info h2 {
   margin: 0 0 4px;
 
+  color: #111827;
+
   font-size: 20px;
   font-weight: 700;
-
-  color: #111827;
 }
 
 .teacher-info span {
-  font-size: 13px;
   color: #64748b;
+
+  font-size: 13px;
 }
 
 .role-badge {
@@ -288,6 +327,8 @@
   min-height: 34px;
 
   padding: 0 12px;
+
+  flex-shrink: 0;
 
   border-radius: 999px;
 
@@ -301,9 +342,9 @@
 }
 
 
-// =========================================================
-// SECTION
-// =========================================================
+/* =========================================================
+   SECTION
+   ========================================================= */
 
 .section {
   padding: 24px;
@@ -317,8 +358,10 @@
 
 .section-header {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
 
   margin-bottom: 18px;
 }
@@ -326,18 +369,18 @@
 .section-header h3 {
   margin: 0 0 5px;
 
+  color: #111827;
+
   font-size: 16px;
   font-weight: 700;
-
-  color: #111827;
 }
 
 .section-header p {
   margin: 0;
 
-  font-size: 13px;
-
   color: #64748b;
+
+  font-size: 13px;
 }
 
 .count-badge {
@@ -360,9 +403,9 @@
 }
 
 
-// =========================================================
-// INFORMATION GRID
-// =========================================================
+/* =========================================================
+   INFORMATION GRID
+   ========================================================= */
 
 .info-grid {
   display: grid;
@@ -371,7 +414,6 @@
     repeat(2, minmax(0, 1fr));
 
   border: 1px solid #e5e7eb;
-
   border-radius: 10px;
 
   overflow: hidden;
@@ -398,30 +440,31 @@
 
   margin-bottom: 6px;
 
+  color: #64748b;
+
   font-size: 11px;
   font-weight: 700;
 
-  text-transform: uppercase;
   letter-spacing: 0.04em;
 
-  color: #64748b;
+  text-transform: uppercase;
 }
 
 .info-item strong {
   display: block;
 
+  color: #111827;
+
   font-size: 14px;
   font-weight: 600;
-
-  color: #111827;
 
   word-break: break-word;
 }
 
 
-// =========================================================
-// SCOPE LIST
-// =========================================================
+/* =========================================================
+   SCOPE LIST
+   ========================================================= */
 
 .scope-list {
   display: grid;
@@ -438,10 +481,9 @@
   padding: 14px 16px;
 
   border: 1px solid #e5e7eb;
-
   border-radius: 10px;
 
-  background: #fff;
+  background: #ffffff;
 }
 
 .scope-number {
@@ -457,7 +499,6 @@
   border-radius: 7px;
 
   background: #f3f4f6;
-
   color: #374151;
 
   font-size: 13px;
@@ -472,6 +513,8 @@
   gap: 30px;
 
   width: 100%;
+
+  min-width: 0;
 }
 
 .scope-main {
@@ -479,48 +522,58 @@
   flex-direction: column;
 
   gap: 4px;
+
+  min-width: 0;
 }
 
 .scope-main strong {
+  color: #111827;
+
   font-size: 14px;
 
-  color: #111827;
+  word-break: break-word;
 }
 
 .scope-main span {
+  color: #64748b;
+
   font-size: 13px;
 
-  color: #64748b;
+  word-break: break-word;
 }
 
 .scope-section {
   display: flex;
   flex-direction: column;
-
   align-items: flex-end;
 
   gap: 4px;
+
+  flex-shrink: 0;
 }
 
 .scope-label {
+  color: #94a3b8;
+
   font-size: 11px;
 
-  text-transform: uppercase;
   letter-spacing: 0.04em;
 
-  color: #94a3b8;
+  text-transform: uppercase;
 }
 
 .scope-section strong {
+  color: #374151;
+
   font-size: 13px;
 
-  color: #374151;
+  white-space: nowrap;
 }
 
 
-// =========================================================
-// EMPTY
-// =========================================================
+/* =========================================================
+   EMPTY
+   ========================================================= */
 
 .empty-state {
   display: flex;
@@ -539,21 +592,21 @@
 }
 
 .empty-state strong {
-  font-size: 14px;
-
   color: #374151;
+
+  font-size: 14px;
 }
 
 .empty-state span {
-  font-size: 13px;
-
   color: #64748b;
+
+  font-size: 13px;
 }
 
 
-// =========================================================
-// ACTIONS
-// =========================================================
+/* =========================================================
+   ACTIONS
+   ========================================================= */
 
 .page-actions {
   display: flex;
@@ -567,13 +620,90 @@
 }
 
 
-// =========================================================
-// RESPONSIVE
-// =========================================================
+/* =========================================================
+   POPUP MODE
+   =========================================================
+   When this component is displayed inside the centered
+   assignment modal, it must behave as modal content.
+   No internal scrolling is allowed.
+   ========================================================= */
+
+:host-context(.assignment-drawer) {
+  display: block;
+
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+}
+
+:host-context(.assignment-drawer) .assignment-view-page {
+  width: 100%;
+
+  height: auto;
+  min-height: 0;
+
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+
+  overflow: visible;
+
+  background: transparent;
+}
+
+:host-context(.assignment-drawer) .assignment-view-page::-webkit-scrollbar {
+  display: none;
+}
+
+:host-context(.assignment-drawer) .page-header {
+  display: none;
+}
+
+:host-context(.assignment-drawer) .error-banner {
+  margin: 14px 20px;
+}
+
+:host-context(.assignment-drawer) .state-card {
+  margin: 20px;
+}
+
+:host-context(.assignment-drawer) .content-card {
+  margin: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  box-shadow: none;
+
+  overflow: visible;
+}
+
+:host-context(.assignment-drawer) .assignment-header {
+  padding: 20px;
+}
+
+:host-context(.assignment-drawer) .section {
+  padding: 20px;
+}
+
+:host-context(.assignment-drawer) .page-actions {
+  padding: 14px 20px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 700px) {
 
-    .assignment-view-page {
+  .assignment-view-page {
     height: calc(100vh - 60px);
 
     padding: 18px;
@@ -628,11 +758,151 @@
     align-items: flex-start;
   }
 
+  .scope-section strong {
+    white-space: normal;
+  }
+
   .page-actions {
     flex-direction: column-reverse;
   }
 
   .page-actions button {
     width: 100%;
+  }
+
+
+  /* -------------------------------------------------------
+     MOBILE POPUP
+     ------------------------------------------------------- */
+
+  :host-context(.assignment-drawer) .assignment-header {
+    padding: 18px 14px;
+  }
+
+  :host-context(.assignment-drawer) .section {
+    padding: 16px 14px;
+  }
+
+  :host-context(.assignment-drawer) .page-actions {
+    padding: 13px 14px;
+  }
+
+  :host-context(.assignment-drawer) .error-banner {
+    margin: 12px 14px;
+  }
+
+  :host-context(.assignment-drawer) .state-card {
+    margin: 14px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+  .assignment-view-page {
+    padding: 16px 12px 24px;
+  }
+
+  .assignment-header {
+    gap: 12px;
+  }
+
+  .teacher-avatar {
+    width: 42px;
+    height: 42px;
+
+    font-size: 16px;
+  }
+
+  .teacher-info h2 {
+    font-size: 18px;
+  }
+
+  .section {
+    padding: 18px 14px;
+  }
+
+  .section-header {
+    gap: 10px;
+  }
+
+  .scope-item {
+    align-items: flex-start;
+
+    padding: 12px;
+  }
+
+  .scope-number {
+    width: 29px;
+    height: 29px;
+  }
+
+  .page-actions {
+    flex-direction: column-reverse;
+
+    padding: 16px;
+  }
+
+  .page-actions button {
+    width: 100%;
+  }
+
+
+  /* -------------------------------------------------------
+     SMALL MOBILE POPUP
+     ------------------------------------------------------- */
+
+  :host-context(.assignment-drawer) .assignment-header {
+    padding: 16px 12px;
+  }
+
+  :host-context(.assignment-drawer) .section {
+    padding: 14px 12px;
+  }
+
+  :host-context(.assignment-drawer) .page-actions {
+    padding: 12px;
+  }
+
+  :host-context(.assignment-drawer) .error-banner {
+    margin: 10px 12px;
+  }
+
+  :host-context(.assignment-drawer) .state-card {
+    margin: 12px;
+  }
+}
+
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.error-banner button:focus-visible {
+  outline: 2px solid #93c5fd;
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .primary-button,
+  .secondary-button {
+    transition: none;
+  }
+
+  .loader {
+    animation: none;
   }
 }

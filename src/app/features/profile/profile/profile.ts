@@ -5,17 +5,16 @@ import {
   inject,
   output
 } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { AuthStateService } from '../../../core/auth/auth-state.service';
 import {
   ProfileService,
   Profile,
   ChangePasswordRequest
 } from '../../../core/services/profile.service';
-
-import { TokenService } from '../../../core/auth/token.service';
 
 @Component({
   selector: 'app-profile',
@@ -31,9 +30,9 @@ import { TokenService } from '../../../core/auth/token.service';
 export class ProfileComponent {
 
   private readonly profileService = inject(ProfileService);
+  private readonly authStateService = inject(AuthStateService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
-  private readonly tokenService = inject(TokenService);
 
   readonly closeProfile = output<void>();
 
@@ -86,7 +85,6 @@ export class ProfileComponent {
 
     });
   }
-
 
   // =====================================================
   // CHANGE PASSWORD
@@ -162,7 +160,6 @@ export class ProfileComponent {
     });
   }
 
-
   // =====================================================
   // PROFILE HELPERS
   // =====================================================
@@ -184,7 +181,6 @@ export class ProfileComponent {
 
     return 'User';
   }
-
 
   getInitials(): string {
 
@@ -222,17 +218,28 @@ export class ProfileComponent {
       .replace(/\b\w/g, char => char.toUpperCase());
   }
 
-
   // =====================================================
   // LOGOUT
   // =====================================================
 
   logout(): void {
 
-    this.tokenService.removeToken();
+    this.authStateService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
 
-    this.router.navigate(['/login']);
+      error: error => {
+        console.error('Logout failed:', error);
+
+        this.router.navigate(['/login']);
+      }
+    });
   }
+
+  // =====================================================
+  // CLOSE
+  // =====================================================
 
   close(): void {
     this.closeProfile.emit();

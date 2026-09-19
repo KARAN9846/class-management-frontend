@@ -874,6 +874,10 @@ export class TeacherStudentFormComponent implements OnInit {
 
   onSubmit(): void {
 
+    if (this.saving) {
+      return;
+    }
+
     // -------------------------------------------------------
     // RE-CHECK CREATE / UPDATE PERMISSION
     // -------------------------------------------------------
@@ -932,6 +936,16 @@ export class TeacherStudentFormComponent implements OnInit {
       return;
     }
 
+    if (!this.hasValidScopeSelection()) {
+
+      this.errorMessage =
+        'Please select a valid academic scope.';
+
+      this.cdr.markForCheck();
+
+      return;
+    }
+
 
     this.saving = true;
 
@@ -952,6 +966,42 @@ export class TeacherStudentFormComponent implements OnInit {
 
     }
 
+  }
+
+
+  private hasValidScopeSelection(): boolean {
+
+    const academicYearId =
+      this.studentForm.get('academicYearId')?.value;
+
+    const classId =
+      this.studentForm.get('classId')?.value;
+
+    const sectionId =
+      this.studentForm.get('sectionId')?.value;
+
+    if (
+      !this.isPositiveInteger(academicYearId) ||
+      !this.isPositiveInteger(classId) ||
+      !this.isPositiveInteger(sectionId)
+    ) {
+      return false;
+    }
+
+    return this.scopeOptions.some(option =>
+      option.academicYearId === academicYearId &&
+      option.classId === classId &&
+      option.sectionId === sectionId
+    );
+  }
+
+
+  private isPositiveInteger(value: unknown): value is number {
+    return (
+      typeof value === 'number' &&
+      Number.isInteger(value) &&
+      value > 0
+    );
   }
 
 

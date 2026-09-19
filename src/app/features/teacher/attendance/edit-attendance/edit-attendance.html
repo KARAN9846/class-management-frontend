@@ -1,82 +1,242 @@
 <div class="page">
 
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
+
   <div class="page-header">
 
-    <div>
+    <div class="page-header-content">
+
+      <div class="page-eyebrow">
+        Attendance Management
+      </div>
+
       <h1>Edit Attendance</h1>
+
       <p>
-        Update the attendance status
+        Review the attendance record and update its status.
       </p>
+
     </div>
 
     <a
       class="back-button"
       routerLink="/teacher/attendance">
-      ← Back to Attendance
+
+      <span aria-hidden="true">←</span>
+
+      Back to Attendance
+
     </a>
 
   </div>
 
+
+  <!-- =====================================================
+       LOADING
+       ===================================================== -->
+
   @if (loading) {
 
-    <div class="loading-state">
-      Loading attendance...
+    <div class="state-card">
+
+      <div class="loading-spinner"></div>
+
+      <div>
+
+        <strong>
+          Loading attendance record
+        </strong>
+
+        <p>
+          Please wait while the attendance details are loaded.
+        </p>
+
+      </div>
+
     </div>
 
-  } @else if (errorMessage) {
+  }
 
-    <div class="error-state">
-      {{ errorMessage }}
+
+  <!-- =====================================================
+       ERROR
+       ===================================================== -->
+
+  @else if (errorMessage && !attendance) {
+
+    <div
+      class="feedback-message error-message"
+      role="alert">
+
+      <span class="feedback-icon" aria-hidden="true">
+        !
+      </span>
+
+      <div>
+
+        <strong>
+          Unable to load attendance
+        </strong>
+
+        <p>
+          {{ errorMessage }}
+        </p>
+
+      </div>
+
     </div>
 
-  } @else if (attendance) {
+  }
+
+
+  <!-- =====================================================
+       ATTENDANCE RECORD
+       ===================================================== -->
+
+  @else if (attendance) {
 
     <div class="form-card">
 
-      <div class="attendance-info">
 
-        <div class="info-item">
-          <span class="label">Student</span>
-          <span class="value">
+      <!-- =================================================
+           RECORD HEADER
+           ================================================= -->
+
+      <div class="card-header">
+
+        <div>
+
+          <div class="card-eyebrow">
+            Attendance Record
+          </div>
+
+          <h2>
             {{ attendance.studentName }}
-          </span>
+          </h2>
+
+          <p>
+            Update the attendance status for this record.
+          </p>
+
         </div>
 
-        <div class="info-item">
-          <span class="label">Class</span>
-          <span class="value">
-            {{ attendance.className }}
-          </span>
-        </div>
+        <div class="current-status">
 
-        <div class="info-item">
-          <span class="label">Section</span>
-          <span class="value">
-            {{ attendance.sectionName }}
-          </span>
-        </div>
+          <span class="status-indicator"></span>
 
-        <div class="info-item">
-          <span class="label">Date</span>
-          <span class="value">
-            {{ attendance.attendanceDate }}
-          </span>
-        </div>
+          {{ attendance.status }}
 
-        <div class="info-item">
-          <span class="label">Marked By</span>
-          <span class="value">
-            {{ attendance.markedByTeacherName }}
-          </span>
         </div>
 
       </div>
 
+
+      <!-- =================================================
+           STUDENT INFORMATION
+           ================================================= -->
+
+      <div class="info-section">
+
+        <div class="section-title">
+
+          <h3>
+            Student Information
+          </h3>
+
+        </div>
+
+
+        <div class="attendance-info">
+
+          <div class="info-item">
+
+            <span class="label">
+              Student
+            </span>
+
+            <span class="value">
+              {{ attendance.studentName }}
+            </span>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Class
+            </span>
+
+            <span class="value">
+              {{ attendance.className }}
+            </span>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Section
+            </span>
+
+            <span class="value">
+              {{ attendance.sectionName }}
+            </span>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Attendance Date
+            </span>
+
+            <span class="value">
+              {{ attendance.attendanceDate }}
+            </span>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Marked By
+            </span>
+
+            <span class="value">
+              {{ attendance.markedByTeacherName }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           STATUS
+           ================================================= -->
+
       <div class="status-section">
 
-        <label class="status-label">
-          Attendance Status
-        </label>
+        <div class="section-title">
+
+          <h3>
+            Attendance Status
+          </h3>
+
+          <p>
+            Select the correct attendance status.
+          </p>
+
+        </div>
+
 
         <div class="status-options">
 
@@ -84,56 +244,172 @@
             type="button"
             class="status-button present"
             [class.selected]="status === 'PRESENT'"
+            [disabled]="saving"
+            [attr.aria-pressed]="status === 'PRESENT'"
             (click)="status = 'PRESENT'">
-            Present
+
+            <span class="status-dot"></span>
+
+            <span class="status-content">
+
+              <strong>
+                Present
+              </strong>
+
+              <small>
+                Student attended the class
+              </small>
+
+            </span>
+
+            @if (status === 'PRESENT') {
+
+              <span
+                class="selected-check"
+                aria-hidden="true">
+                ✓
+              </span>
+
+            }
+
           </button>
+
 
           <button
             type="button"
             class="status-button absent"
             [class.selected]="status === 'ABSENT'"
+            [disabled]="saving"
+            [attr.aria-pressed]="status === 'ABSENT'"
             (click)="status = 'ABSENT'">
-            Absent
+
+            <span class="status-dot"></span>
+
+            <span class="status-content">
+
+              <strong>
+                Absent
+              </strong>
+
+              <small>
+                Student did not attend the class
+              </small>
+
+            </span>
+
+            @if (status === 'ABSENT') {
+
+              <span
+                class="selected-check"
+                aria-hidden="true">
+                ✓
+              </span>
+
+            }
+
           </button>
 
         </div>
 
       </div>
 
+
+      <!-- =================================================
+           MESSAGES
+           ================================================= -->
+
       @if (errorMessage) {
 
-        <div class="error-state">
-          {{ errorMessage }}
+        <div
+          class="feedback-message error-message"
+          role="alert">
+
+          <span class="feedback-icon" aria-hidden="true">
+            !
+          </span>
+
+          <div>
+
+            <strong>
+              Update failed
+            </strong>
+
+            <p>
+              {{ errorMessage }}
+            </p>
+
+          </div>
+
         </div>
 
       }
+
 
       @if (successMessage) {
 
-        <div class="success-state">
-          {{ successMessage }}
+        <div
+          class="feedback-message success-message"
+          role="status">
+
+          <span class="feedback-icon" aria-hidden="true">
+            ✓
+          </span>
+
+          <div>
+
+            <strong>
+              Attendance updated
+            </strong>
+
+            <p>
+              {{ successMessage }}
+            </p>
+
+          </div>
+
         </div>
 
       }
+
+
+      <!-- =================================================
+           ACTIONS
+           ================================================= -->
 
       <div class="form-actions">
 
         <a
           class="cancel-button"
           routerLink="/teacher/attendance">
+
           Cancel
+
         </a>
+
 
         <button
           type="button"
           class="save-button"
-          [disabled]="saving"
+          [disabled]="
+            saving ||
+            !canEditAttendance()
+          "
           (click)="saveChanges()">
 
           @if (saving) {
-            Saving...
+
+            <span class="button-spinner"></span>
+
+            Saving Changes...
+
           } @else {
+
+            <span aria-hidden="true">
+              ✓
+            </span>
+
             Save Changes
+
           }
 
         </button>

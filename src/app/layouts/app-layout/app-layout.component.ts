@@ -9,6 +9,8 @@ import {
 import { ProfileComponent } from '../../features/profile/profile/profile';
 
 import { TokenService } from '../../core/auth/token.service';
+import { AuthStateService } from '../../core/auth/auth-state.service';
+
 
 interface NavigationItem {
   label: string;
@@ -46,7 +48,8 @@ export class AppLayoutComponent {
 
   constructor(
     private readonly tokenService: TokenService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly authStateService: AuthStateService,
   ) {
     this.loadUserInformation();
     this.loadNavigation();
@@ -216,6 +219,12 @@ export class AppLayoutComponent {
               },
 
               {
+                label: 'Teacher Assignments',
+                route: '/admin/teacher-assignments',
+                icon: '≡'
+              },
+
+              {
                 label: 'Students',
                 route: '/admin/students',
                 icon: '♙'
@@ -298,7 +307,7 @@ export class AppLayoutComponent {
           {
             title: 'MY ACCOUNT',
             items: [
- 
+
               {
                 label: 'Attendance',
                 route: '/student/attendance',
@@ -357,14 +366,22 @@ export class AppLayoutComponent {
   // LOGOUT
   // =====================================================
 
-  logout(): void {
+logout(): void {
 
-    this.tokenService.removeToken();
+  this.authStateService.logout().subscribe({
+    next: () => {
+      this.sidebarOpen = false;
+      this.router.navigate(['/login']);
+    },
 
-    this.sidebarOpen = false;
+    error: error => {
+      console.error('Logout failed:', error);
 
-    this.router.navigate(['/login']);
-  }
+      this.sidebarOpen = false;
+      this.router.navigate(['/login']);
+    }
+  });
+}
 
   goToProfile(): void {
     this.sidebarOpen = false;

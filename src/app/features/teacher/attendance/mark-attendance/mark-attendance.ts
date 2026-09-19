@@ -29,6 +29,8 @@ import {
 } from '../services/teacher-attendance';
 import { RouterLink } from '@angular/router';
 
+import { PermissionService } from '../../../../core/auth/permission.service';
+
 @Component({
   selector: 'app-mark-attendance',
   standalone: true,
@@ -51,6 +53,15 @@ export class MarkAttendanceComponent implements OnInit {
 
   private readonly cdr =
     inject(ChangeDetectorRef);
+
+    private readonly permissionService =
+  inject(PermissionService);
+
+  canMarkAttendance(): boolean {
+  return this.permissionService.hasPermission(
+    'ATTENDANCE_MARK'
+  );
+}
 
   
 
@@ -250,12 +261,31 @@ export class MarkAttendanceComponent implements OnInit {
       status;
   }
 
+  getPresentCount(): number {
+  return this.students.filter(student =>
+    this.studentStatuses[student.studentId] === 'PRESENT'
+  ).length;
+}
+
+getAbsentCount(): number {
+  return this.students.filter(student =>
+    this.studentStatuses[student.studentId] === 'ABSENT'
+  ).length;
+}
+
 
   // =========================================================
   // MARK ATTENDANCE
   // =========================================================
 
   markAttendance(): void {
+
+
+    if (!this.canMarkAttendance()) {
+  this.errorMessage =
+    'You do not have permission to mark attendance.';
+  return;
+}
 
     this.errorMessage = '';
 

@@ -1,0 +1,134 @@
+<div class="teacher-assignment-view">
+
+  <!-- HEADER -->
+  <div class="view-header">
+
+    <div>
+      <span class="view-eyebrow">Academic Management</span>
+
+      <h1>Teacher Assignment</h1>
+
+      <p>
+        View the teacher's current teaching allocation.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="close-button"
+      aria-label="Back"
+      (click)="back()">
+      ×
+    </button>
+
+  </div>
+
+
+  <!-- ERROR -->
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      <span class="alert-icon">!</span>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+
+
+  <!-- LOADING -->
+  @if (loading) {
+
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading assignment details...</p>
+    </div>
+
+  }
+
+
+  <!-- CONTENT -->
+  @if (!loading && assignment) {
+
+    <section class="assignment-card">
+
+      <!-- TEACHER -->
+      <div class="teacher-profile">
+
+        <div class="teacher-avatar">
+          {{ assignment.teacherName.charAt(0).toUpperCase() }}
+        </div>
+
+        <div>
+          <span class="field-label">Teacher</span>
+          <h2>{{ assignment.teacherName }}</h2>
+          <span class="status-badge">Teaching Assignment</span>
+        </div>
+
+      </div>
+
+
+      <!-- DETAILS -->
+      <div class="details-grid">
+
+        <div class="detail-item">
+          <span>Academic Year</span>
+          <strong>{{ assignment.academicYearName }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Class</span>
+          <strong>{{ assignment.className }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Section</span>
+          <strong>{{ assignment.sectionName }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Subject</span>
+          <strong>{{ assignment.subjectName }}</strong>
+        </div>
+
+      </div>
+
+
+      <!-- EXPLANATION -->
+      <div class="info-note">
+
+        <div class="info-icon">i</div>
+
+        <div>
+          <strong>Teaching allocation</strong>
+
+          <p>
+            This assignment determines which class, section and subject
+            this teacher is responsible for during the selected academic year.
+          </p>
+        </div>
+
+      </div>
+
+
+      <!-- FOOTER -->
+      <div class="view-footer">
+
+        <button
+          type="button"
+          class="back-button"
+          (click)="back()">
+          Back
+        </button>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="edit()">
+          Edit Assignment
+        </button>
+
+      </div>
+
+    </section>
+
+  }
+
+</div>

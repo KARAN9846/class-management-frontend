@@ -1,276 +1,1143 @@
 <div class="teacher-role-page">
 
-  <!-- =====================================================
+  <!-- =========================================================
        PAGE HEADER
-  ====================================================== -->
+       ========================================================= -->
 
-  <div class="page-header">
+  <section class="page-header">
 
-    <div>
-
-      <div class="breadcrumb">
-        <span>Management</span>
-        <span>/</span>
-        <strong>Teacher Roles</strong>
-      </div>
-
-      <h1>
-        Teacher Roles
-      </h1>
-
-      <p>
-        Manage additional roles and permissions assigned to teachers.
-      </p>
-
+    <div class="breadcrumb">
+      <span>Management</span>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-current">Teacher Roles</span>
     </div>
 
-    <button
-      type="button"
-      class="primary-button"
-      (click)="createRole()">
 
-      Create Teacher Role
+    <div class="page-header-row">
 
-    </button>
+      <div class="page-title-content">
 
-  </div>
-
-
-  <!-- =====================================================
-       ERROR
-  ====================================================== -->
-
-  @if (errorMessage) {
-
-    <div class="error-banner">
-
-      <div class="error-content">
-
-        <strong>
-          Something went wrong
-        </strong>
-
-        <span>
-          {{ errorMessage }}
-        </span>
-
-      </div>
-
-      <button
-        type="button"
-        class="retry-button"
-        (click)="loadRoles()">
-
-        Retry
-
-      </button>
-
-    </div>
-
-  }
-
-
-  <!-- =====================================================
-       MAIN CARD
-  ====================================================== -->
-
-  <section class="roles-card">
-
-    <!-- ===================================================
-         CARD HEADER
-    ==================================================== -->
-
-    <div class="card-header">
-
-      <div>
-
-        <h2>
-          Teacher Roles
-        </h2>
+        <h1>Teacher Roles</h1>
 
         <p>
-          Define additional responsibilities and permissions
-          available to teachers.
+          Manage teacher roles and their permissions.
         </p>
 
       </div>
 
 
-      <div class="role-count">
+      <button type="button" class="create-role-button" (click)="createRole()">
 
-        <strong>
-          {{ roles.length }}
-        </strong>
-
-        <span>
-          {{ roles.length === 1 ? 'Active Role' : 'Active Roles' }}
+        <span class="create-icon" aria-hidden="true">
+          +
         </span>
 
-      </div>
+        <span>Create Role</span>
 
-    </div>
-
-
-    <!-- ===================================================
-         TABLE
-    ==================================================== -->
-
-    <div class="table-container">
-
-      <app-data-table
-        [columns]="columns"
-        [data]="roles"
-        [loading]="loading"
-        [actions]="actions"
-        [showActions]="true"
-        (actionClick)="onActionClick($event)">
-      </app-data-table>
+      </button>
 
     </div>
 
   </section>
 
 
-  <!-- =====================================================
-       DEACTIVATE CONFIRMATION MODAL
-  ====================================================== -->
+  <!-- =========================================================
+       NOTIFICATIONS
+       ========================================================= -->
 
-  @if (showDeactivateConfirm && selectedRole) {
+  @if (successMessage) {
 
-    <div
-      class="modal-backdrop"
-      (click)="cancelDeactivate()">
+  <div class="notification success-notification" role="status">
 
-      <div
-        class="deactivate-modal"
-        (click)="$event.stopPropagation()">
+    <span class="notification-symbol">
+      ✓
+    </span>
+
+    <span>
+      {{ successMessage }}
+    </span>
+
+  </div>
+
+  }
 
 
-        <!-- =================================================
-             MODAL HEADER
-        ================================================== -->
+  @if (errorMessage && !showDeactivateConfirm) {
 
-        <div class="modal-header">
+  <div class="notification error-notification" role="alert">
 
-          <div class="modal-label">
-            Teacher Role
+    <span class="notification-symbol">
+      !
+    </span>
+
+    <div>
+
+      <strong>
+        Something went wrong
+      </strong>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+  </div>
+
+  }
+
+
+  <!-- =========================================================
+       MAIN CONTENT
+       ========================================================= -->
+
+  <main class="page-content">
+
+    <section class="roles-card">
+
+
+      <!-- =====================================================
+           FILTER BAR
+           ===================================================== -->
+
+      <div class="filter-bar">
+
+        <div class="search-box">
+
+          <span class="search-icon" aria-hidden="true">
+            ⌕
+          </span>
+
+
+          <input type="text" class="search-input" placeholder="Search roles..." [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearchChange()" aria-label="Search teacher roles">
+
+
+          @if (searchTerm) {
+
+          <button type="button" class="clear-search-button" aria-label="Clear search"
+            (click)="searchTerm = ''; onSearchChange()">
+
+            ×
+
+          </button>
+
+          }
+
+        </div>
+
+
+        <div class="status-control">
+
+          <span class="filter-label">
+            Status
+          </span>
+
+          <div class="status-select-wrapper">
+
+            <span class="status-filter-dot" [class.active]="statusFilter === 'active'"
+              [class.inactive]="statusFilter === 'inactive'" [class.all]="statusFilter === 'all'" aria-hidden="true">
+            </span>
+
+            <select id="status-filter" class="status-select" [(ngModel)]="statusFilter"
+              (ngModelChange)="onStatusFilterChange()" aria-label="Filter roles by status">
+
+              <option value="all">
+                All statuses
+              </option>
+
+              <option value="active">
+                Active
+              </option>
+
+              <option value="inactive">
+                Inactive
+              </option>
+
+            </select>
+
           </div>
 
-          <h2>
-            Deactivate Teacher Role?
-          </h2>
+        </div>
+
+
+        @if (
+        searchTerm ||
+        statusFilter !== 'all'
+        ) {
+
+        <button type="button" class="clear-filter-button" (click)="clearFilters()">
+
+          Clear
+
+        </button>
+
+        }
+
+      </div>
+
+
+      <!-- =====================================================
+           TABLE
+           ===================================================== -->
+
+      <div class="table-container">
+
+        @if (loading) {
+
+        <div class="table-loading">
+          Loading teacher roles...
+        </div>
+
+        } @else if (filteredRoles.length > 0) {
+
+        <table class="roles-table">
+
+          <thead>
+
+            <tr>
+
+              <th class="role-column">
+                Role
+              </th>
+
+              <th class="description-column">
+                Description
+              </th>
+
+              <th class="permission-column">
+                Permissions
+              </th>
+
+              <th class="status-column">
+                Status
+              </th>
+
+              <th class="actions-column">
+                Actions
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+            role of paginatedRoles;
+            track role.id
+            ) {
+
+            <tr>
+
+              <!-- ROLE -->
+
+              <td>
+
+                <div class="role-cell">
+
+                  <div class="role-name">
+                    {{ role.name }}
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <!-- DESCRIPTION -->
+
+              <td>
+
+                <div class="role-description" [title]="
+                        role.description ||
+                        'No description provided.'
+                      ">
+
+                  {{
+                  role.description ||
+                  'No description provided.'
+                  }}
+
+                </div>
+
+              </td>
+
+
+              <!-- PERMISSIONS -->
+
+              <td>
+
+                <span class="permission-count-badge">
+
+                  {{
+                  role.permissions?.length || 0
+                  }}
+
+                  {{
+                  (role.permissions?.length || 0) === 1
+                  ? 'permission'
+                  : 'permissions'
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <!-- STATUS -->
+
+              <td>
+
+                <span class="status-badge" [class.active]="role.isActive" [class.inactive]="!role.isActive">
+
+                  <span class="status-dot"></span>
+
+                  {{
+                  role.isActive
+                  ? 'Active'
+                  : 'Inactive'
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <!-- ACTIONS -->
+
+              <td class="actions-cell">
+
+                <div class="action-menu-wrapper">
+
+                  <button type="button" class="action-menu-button" [class.active]="
+                          openMenuRoleId === role.id
+                        " aria-label="Role actions" [attr.aria-expanded]="
+                          openMenuRoleId === role.id
+                        " (click)="
+                          toggleActionMenu(role.id)
+                        ">
+
+                    <span>⋮</span>
+
+                  </button>
+
+
+                  @if (
+                  openMenuRoleId === role.id
+                  ) {
+
+                  <div class="action-menu" role="menu">
+
+                    <button type="button" class="action-menu-item" role="menuitem" (click)="viewRole(role)">
+
+                      <span class="menu-icon">
+                        ◉
+                      </span>
+
+                      View
+
+                    </button>
+
+
+                    <button type="button" class="action-menu-item" role="menuitem" (click)="editRole(role)">
+
+                      <span class="menu-icon">
+                        ✎
+                      </span>
+
+                      Edit
+
+                    </button>
+
+
+                    <div class="action-menu-divider"></div>
+
+
+                    @if (role.isActive) {
+
+                    <button type="button" class="action-menu-item danger" role="menuitem" (click)="
+                                openDeactivateConfirm(role)
+                              ">
+
+                      <span class="menu-icon">
+                        ⊘
+                      </span>
+
+                      Deactivate
+
+                    </button>
+
+                    } @else {
+
+                    <button type="button" class="action-menu-item danger" role="menuitem"
+                      (click)="openDeleteConfirm(role)">
+
+                      <span class="menu-icon">
+                        ×
+                      </span>
+
+                      Delete
+
+                    </button>
+
+                    }
+                  </div>
+
+                  }
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+
+        <!-- ===================================================
+               PAGINATION
+               =================================================== -->
+
+        <div class="table-footer">
+
+          <span>
+
+            Showing
+
+            <strong>
+              {{ paginationStart }}
+            </strong>
+
+            –
+
+            <strong>
+              {{ paginationEnd }}
+            </strong>
+
+            of
+
+            <strong>
+              {{ filteredRoles.length }}
+            </strong>
+
+          </span>
+
+
+          <div class="pagination-controls">
+
+            <button type="button" class="pagination-button" [disabled]="currentPage === 1" (click)="goToPreviousPage()"
+              aria-label="Previous page">
+
+              ‹
+
+            </button>
+
+
+            <span class="page-number">
+
+              {{ currentPage }}
+
+              <span class="page-separator">
+                /
+              </span>
+
+              {{ totalPages }}
+
+            </span>
+
+
+            <button type="button" class="pagination-button" [disabled]="
+                  currentPage === totalPages
+                " (click)="goToNextPage()" aria-label="Next page">
+
+              ›
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        } @else {
+
+        <!-- =================================================
+               EMPTY STATE
+               ================================================= -->
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+            R
+          </div>
+
+          <h3>
+            No roles found
+          </h3>
 
           <p>
 
-            Are you sure you want to deactivate
+            @if (
+            searchTerm ||
+            statusFilter !== 'all'
+            ) {
 
-            <strong>
-              {{ selectedRole.name }}
-            </strong>?
+            Try changing your search
+            or status filter.
 
-            <br>
+            } @else {
 
-            This role will no longer be available
-            for new teacher assignments.
+            Create a teacher role
+            to get started.
+
+            }
+
+          </p>
+
+
+          @if (
+          searchTerm ||
+          statusFilter !== 'all'
+          ) {
+
+          <button type="button" class="secondary-button" (click)="clearFilters()">
+
+            Clear Filters
+
+          </button>
+
+          } @else {
+
+          <button type="button" class="create-role-button" (click)="createRole()">
+
+            <span class="create-icon">
+              +
+            </span>
+
+            Create Role
+
+          </button>
+
+          }
+
+        </div>
+
+        }
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================================================
+       CREATE / EDIT ROLE MODAL
+       ========================================================= -->
+
+  @if (showRoleDrawer) {
+
+  <div class="modal-backdrop" (click)="closeRoleDrawer()" aria-hidden="true">
+  </div>
+
+
+  <section class="role-modal" role="dialog" aria-modal="true" aria-labelledby="role-modal-title">
+
+
+    <header class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          Teacher Access
+        </span>
+
+
+        <h2 id="role-modal-title">
+
+          @if (drawerMode === 'edit') {
+
+          Edit Teacher Role
+
+          } @else {
+
+          Create Teacher Role
+
+          }
+
+        </h2>
+
+
+        <p>
+
+          @if (drawerMode === 'edit') {
+
+          Update role details and permissions.
+
+          } @else {
+
+          Create a role and define its permissions.
+
+          }
+
+        </p>
+
+      </div>
+
+
+      <button type="button" class="modal-close-button" aria-label="Close" (click)="closeRoleDrawer()">
+
+        ×
+
+      </button>
+
+    </header>
+
+
+    <div class="modal-body">
+
+      <app-teacher-role-form [drawerMode]="drawerMode" [drawerRoleId]="selectedRoleId" (closed)="closeRoleDrawer()"
+        (saved)="handleRoleSaved()">
+      </app-teacher-role-form>
+
+    </div>
+
+  </section>
+
+  }
+
+
+  <!-- =========================================================
+       VIEW ROLE MODAL
+       ========================================================= -->
+
+  @if (
+  showViewDrawer &&
+  selectedViewRole
+  ) {
+
+  <div class="modal-backdrop" (click)="closeViewDrawer()" aria-hidden="true">
+  </div>
+
+
+  <section class="role-modal view-role-modal" role="dialog" aria-modal="true" aria-labelledby="view-role-title">
+
+
+    <header class="modal-header">
+
+      <div>
+
+        <span class="modal-eyebrow">
+          Role Details
+        </span>
+
+
+        <h2 id="view-role-title">
+          {{ selectedViewRole.name }}
+        </h2>
+
+
+        <p>
+          Review role details and permissions.
+        </p>
+
+      </div>
+
+
+      <button type="button" class="modal-close-button" aria-label="Close" (click)="closeViewDrawer()">
+
+        ×
+
+      </button>
+
+    </header>
+
+
+    <div class="modal-body view-modal-body">
+
+
+      <!-- ROLE SUMMARY -->
+
+      <div class="role-summary">
+
+        <div class="role-avatar">
+
+          {{
+          selectedViewRole.name
+          .charAt(0)
+          .toUpperCase()
+          }}
+
+        </div>
+
+
+        <div class="role-summary-content">
+
+          <h3>
+            {{ selectedViewRole.name }}
+          </h3>
+
+
+          <p>
+
+            {{
+            selectedViewRole.description ||
+            'No description provided.'
+            }}
 
           </p>
 
         </div>
 
 
-        <!-- =================================================
-             WARNING
-        ================================================== -->
+        <span class="status-badge" [class.active]="
+              selectedViewRole.isActive
+            " [class.inactive]="
+              !selectedViewRole.isActive
+            ">
 
-        <div class="warning-box">
+          <span class="status-dot"></span>
 
-          <strong>
-            Important
-          </strong>
+          {{
+          selectedViewRole.isActive
+          ? 'Active'
+          : 'Inactive'
+          }}
 
-          <span>
-            Existing teacher assignments using this role
-            will not be automatically removed.
+        </span>
+
+      </div>
+
+
+      <!-- PERMISSIONS -->
+
+      <section class="detail-section">
+
+        <div class="detail-section-header">
+
+          <div>
+
+            <span class="detail-eyebrow">
+              Access
+            </span>
+
+            <h3>
+              Permissions
+            </h3>
+
+          </div>
+
+
+          <span class="permission-count">
+
+            {{
+            selectedViewRole.permissions?.length || 0
+            }}
+
           </span>
 
         </div>
 
 
-        <!-- =================================================
-             ROLE INFORMATION
-        ================================================== -->
+        @if (
+        selectedViewRole.permissions?.length
+        ) {
 
-        <div class="role-info">
+        <div class="permission-list">
+
+          @for (
+          permission of selectedViewRole.permissions;
+          track permission.id
+          ) {
+
+          <div class="permission-item">
+
+            <span class="permission-check">
+              ✓
+            </span>
+
+
+            <div class="permission-info">
+
+              <strong>
+                {{ permission.name }}
+              </strong>
+
+              <span>
+                {{ permission.code }}
+              </span>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+        } @else {
+
+        <div class="no-permissions">
+
+          No permissions assigned
+          to this role.
+
+        </div>
+
+        }
+
+      </section>
+
+
+      <!-- ROLE INFORMATION -->
+
+      <section class="detail-section">
+
+        <div class="detail-section-header">
 
           <div>
 
+            <span class="detail-eyebrow">
+              Information
+            </span>
+
+            <h3>
+              Role Information
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <div class="metadata-grid">
+
+          <div class="metadata-item">
+
             <span>
-              Role Name
+              ID
             </span>
 
             <strong>
-              {{ selectedRole.name }}
+              #{{ selectedViewRole.id }}
             </strong>
 
           </div>
 
 
-          <div>
+          <div class="metadata-item">
+
+            <span>
+              Status
+            </span>
+
+            <strong>
+              {{
+              selectedViewRole.isActive
+              ? 'Active'
+              : 'Inactive'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="metadata-item">
+
+            <span>
+              Created
+            </span>
+
+            <strong>
+              {{
+              selectedViewRole.createdAt
+              | date:'medium'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="metadata-item">
 
             <span>
               Permissions
             </span>
 
             <strong>
-              {{ selectedRole.permissions.length }}
+
+              {{
+              selectedViewRole.permissions?.length || 0
+              }}
+
             </strong>
 
           </div>
 
         </div>
 
+      </section>
 
-        <!-- =================================================
-             ACTIONS
-        ================================================== -->
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="cancel-btn"
-            [disabled]="deactivating"
-            (click)="cancelDeactivate()">
-
-            Cancel
-
-          </button>
+    </div>
 
 
-          <button
-            type="button"
-            class="confirm-btn"
-            [disabled]="deactivating"
-            (click)="confirmDeactivate()">
+    <footer class="modal-footer">
 
-            @if (deactivating) {
+      <button type="button" class="secondary-button" (click)="closeViewDrawer()">
 
-              Deactivating...
+        Close
 
-            } @else {
+      </button>
 
-              Deactivate Role
 
-            }
+      <button type="button" class="primary-button" (click)="editFromView()">
 
-          </button>
+        <span>
+          ✎
+        </span>
+
+        Edit Role
+
+      </button>
+
+    </footer>
+
+  </section>
+
+  }
+
+
+  <!-- =========================================================
+     DEACTIVATE CONFIRMATION
+     ========================================================= -->
+
+@if (
+  showDeactivateConfirm &&
+  selectedRole
+) {
+
+  <div
+    class="modal-backdrop deactivate-backdrop"
+    aria-hidden="true">
+  </div>
+
+  <section
+    class="confirm-modal"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="deactivate-title">
+
+    <div class="confirm-icon">
+      !
+    </div>
+
+    <div class="confirm-content">
+
+      <span class="confirm-eyebrow">
+        Confirm action
+      </span>
+
+      <h2 id="deactivate-title">
+        Deactivate role?
+      </h2>
+
+      <p>
+        Are you sure you want to deactivate
+
+        <strong>
+          {{ selectedRole.name }}
+        </strong>?
+
+        This role will no longer be
+        available for new assignments.
+      </p>
+
+      @if (
+        errorMessage &&
+        !deactivating
+      ) {
+
+        <div
+          class="modal-error"
+          role="alert">
+
+          <span>
+            !
+          </span>
+
+          <div>
+
+            <strong>
+              Unable to deactivate role
+            </strong>
+
+            <p>
+              {{ errorMessage }}
+            </p>
+
+          </div>
 
         </div>
+
+      }
+
+      <div class="confirm-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="deactivating"
+          (click)="cancelDeactivate()">
+
+          Cancel
+
+        </button>
+
+        <button
+          type="button"
+          class="danger-button"
+          [disabled]="deactivating"
+          (click)="confirmDeactivate()">
+
+          @if (deactivating) {
+
+            <span class="button-spinner"></span>
+
+            Deactivating...
+
+          } @else {
+
+            Deactivate Role
+
+          }
+
+        </button>
 
       </div>
 
     </div>
 
-  }
+  </section>
+}
+
+
+<!-- =========================================================
+     DELETE CONFIRMATION
+     ========================================================= -->
+
+@if (
+  showDeleteConfirm &&
+  selectedRole
+) {
+
+  <div
+    class="modal-backdrop deactivate-backdrop"
+    aria-hidden="true">
+  </div>
+
+  <section
+    class="confirm-modal"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="delete-title">
+
+    <div class="confirm-icon">
+      !
+    </div>
+
+    <div class="confirm-content">
+
+      <span class="confirm-eyebrow">
+        Confirm deletion
+      </span>
+
+      <h2 id="delete-title">
+        Delete role?
+      </h2>
+
+      <p>
+        Are you sure you want to permanently delete
+
+        <strong>
+          {{ selectedRole.name }}
+        </strong>?
+
+        This action cannot be undone.
+      </p>
+
+      @if (
+        errorMessage &&
+        !deleting
+      ) {
+
+        <div
+          class="modal-error"
+          role="alert">
+
+          <span>
+            !
+          </span>
+
+          <div>
+
+            <strong>
+              Unable to delete role
+            </strong>
+
+            <p>
+              {{ errorMessage }}
+            </p>
+
+          </div>
+
+        </div>
+
+      }
+
+      <div class="confirm-actions">
+
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="deleting"
+          (click)="cancelDelete()">
+
+          Cancel
+
+        </button>
+
+        <button
+          type="button"
+          class="danger-button"
+          [disabled]="deleting"
+          (click)="confirmDelete()">
+
+          @if (deleting) {
+
+            <span class="button-spinner"></span>
+
+            Deleting...
+
+          } @else {
+
+            Delete Role
+
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+}
+
 
 </div>

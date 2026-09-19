@@ -6,72 +6,53 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+
+import { TeacherRoleAssignmentForm } from '../teacher-role-assignment-form/teacher-role-assignment-form';
+import { TeacherRoleAssignmentView } from '../teacher-role-assignment-view/teacher-role-assignment-view';
 
 import {
   TeacherRoleAssignment,
   TeacherRoleScope
 } from '../models/teacher-role-assignment.model';
 
-import {
-  TeacherRoleAssignmentService
-} from '../services/teacher-role-assignment.service';
-
+import { TeacherRoleAssignmentService } from '../services/teacher-role-assignment.service';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-teacher-role-assignment-list',
-
   standalone: true,
-
   imports: [
     CommonModule,
-  ConfirmationDialogComponent
+    FormsModule,
+    TeacherRoleAssignmentForm,
+    ConfirmationDialogComponent,
+    TeacherRoleAssignmentView
   ],
-
-  templateUrl:
-    './teacher-role-assignment-list.html',
-
-  styleUrl:
-    './teacher-role-assignment-list.scss'
+  templateUrl: './teacher-role-assignment-list.html',
+  styleUrl: './teacher-role-assignment-list.scss'
 })
-export class TeacherRoleAssignmentList
-  implements OnInit {
+export class TeacherRoleAssignmentList implements OnInit {
 
+  private readonly assignmentService = inject(
+    TeacherRoleAssignmentService
+  );
 
-  // =========================================================
-  // SERVICES
-  // =========================================================
+  private readonly router = inject(Router);
 
-  private readonly router =
-    inject(Router);
-
-  private readonly assignmentService =
-    inject(TeacherRoleAssignmentService);
-
-  private readonly cdr =
-    inject(ChangeDetectorRef);
-
+  private readonly cdr = inject(ChangeDetectorRef);
 
   // =========================================================
   // DATA
   // =========================================================
 
-  assignments:
-    TeacherRoleAssignment[] = [];
+  assignments: TeacherRoleAssignment[] = [];
 
-
-   // =========================================================
-  // CONFIRMATION DIALOG
-  // =========================================================
-
-  showRemoveDialog = false;
-
-  pendingRemoveTeacherId: number | null = null;
+  filteredAssignments: TeacherRoleAssignment[] = [];
 
   // =========================================================
-  // STATE
+  // UI STATE
   // =========================================================
 
   loading = false;
@@ -82,17 +63,43 @@ export class TeacherRoleAssignmentList
 
   successMessage = '';
 
+  searchTerm = '';
+
+  selectedRole = '';
+
+  selectedAcademicYear = '';
+
+  openMenuTeacherId: number | null = null;
+
+  showViewDrawer = false;
+
+  viewTeacherId: number | null = null;
 
   // =========================================================
-  // INIT
+  // ASSIGNMENT DRAWER
+  // =========================================================
+
+  showAssignmentDrawer = false;
+
+  drawerMode: 'create' | 'edit' = 'create';
+
+  selectedTeacherId: number | null = null;
+
+  // =========================================================
+  // REMOVE CONFIRMATION
+  // =========================================================
+
+  showRemoveDialog = false;
+
+  pendingRemoveTeacherId: number | null = null;
+
+  // =========================================================
+  // LIFECYCLE
   // =========================================================
 
   ngOnInit(): void {
-
     this.loadAssignments();
-
   }
-
 
   // =========================================================
   // LOAD ASSIGNMENTS
@@ -104,238 +111,444 @@ export class TeacherRoleAssignmentList
 
     this.errorMessage = '';
 
-    this.successMessage = '';
+    this.assignmentService.getAllAssignments().subscribe({
 
+      next: (response) => {
 
-    this.assignmentService
-      .getAllAssignments()
-      .subscribe({
+        this.assignments = response.data ?? [];
 
-        next: (response) => {
+        this.applyFilters();
 
-          this.assignments =
-            response?.data ?? [];
+        this.loading = false;
 
-          this.loading = false;
-          this.cdr.detectChanges();
+        this.cdr.detectChanges();
+      },
 
-        },
+      error: (error) => {
 
-        error: (error) => {
+        console.error(
+          'Failed to load teacher role assignments:',
+          error
+        );
 
-          console.error(
-            'Failed to load teacher role assignments',
-            error
-          );
+        this.assignments = [];
 
-          this.errorMessage =
-            error?.error?.message ??
-            'Failed to load teacher role assignments.';
+        this.filteredAssignments = [];
 
-          this.loading = false;
-          this.cdr.detectChanges();
+        this.errorMessage =
+          error?.error?.message ??
+          'Failed to load teacher role assignments.';
 
-        }
+        this.loading = false;
 
-      });
-
+        this.cdr.detectChanges();
+      }
+    });
   }
 
+  // =========================================================
+  // FILTERING
+  // =========================================================
+
+  applyFilters(): void {
+
+    const search = this.searchTerm
+      .trim()
+      .toLowerCase();
+
+    this.filteredAssignments =
+      this.assignments.filter((assignment) => {
+
+        const matchesSearch =
+          !search ||
+          assignment.teacherName
+            ?.toLowerCase()
+            .includes(search) ||
+          assignment.teacherNumber
+            ?.toLowerCase()
+            .includes(search) ||
+          assignment.teacherRoleName
+            ?.toLowerCase()
+            .includes(search);
+
+        const matchesRole =
+          !this.selectedRole ||
+          assignment.teacherRoleName === this.selectedRole;
+
+        const matchesAcademicYear =
+          !this.selectedAcademicYear ||
+          assignment.scopes?.some(
+            (scope) =>
+              scope.academicYearName ===
+              this.selectedAcademicYear
+          );
+
+        return (
+          matchesSearch &&
+          matchesRole &&
+          matchesAcademicYear
+        );
+      });
+  }
+
+  onSearchChange(): void {
+    this.applyFilters();
+  }
+
+  onRoleFilterChange(): void {
+    this.applyFilters();
+  }
+
+  onAcademicYearFilterChange(): void {
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+
+    this.searchTerm = '';
+
+    this.selectedRole = '';
+
+    this.selectedAcademicYear = '';
+
+    this.applyFilters();
+  }
 
   // =========================================================
-  // CREATE ASSIGNMENT
+  // FILTER OPTIONS
+  // =========================================================
+
+  get availableRoles(): string[] {
+
+    return [
+      ...new Set(
+        this.assignments
+          .map((assignment) => assignment.teacherRoleName)
+          .filter(Boolean)
+      )
+    ];
+  }
+
+  get availableAcademicYears(): string[] {
+
+    const years = this.assignments
+      .flatMap(
+        (assignment) =>
+          assignment.scopes ?? []
+      )
+      .map(
+        (scope) =>
+          scope.academicYearName
+      )
+      .filter(
+        (year): year is string =>
+          !!year
+      );
+
+    return [...new Set(years)];
+  }
+
+  // =========================================================
+  // ACTION MENU
+  // =========================================================
+
+  toggleActionMenu(
+    teacherId: number
+  ): void {
+
+    this.openMenuTeacherId =
+      this.openMenuTeacherId === teacherId
+        ? null
+        : teacherId;
+  }
+
+  closeActionMenu(): void {
+    this.openMenuTeacherId = null;
+  }
+
+  // =========================================================
+  // CREATE
   // =========================================================
 
   createAssignment(): void {
 
-    this.router.navigate([
-      '/admin/teacher-role-assignments/create'
-    ]);
+    this.closeActionMenu();
 
+    this.selectedTeacherId = null;
+
+    this.drawerMode = 'create';
+
+    this.showAssignmentDrawer = true;
   }
 
-viewAssignment(teacherId: number): void {
-  this.router.navigate([
-    '/admin/teacher-role-assignments',
-    teacherId,
-    'view'
-  ]);
+  // =========================================================
+  // VIEW
+  // =========================================================
+
+viewAssignment(
+  teacherId: number
+): void {
+
+  this.closeActionMenu();
+
+  this.viewTeacherId = teacherId;
+
+  this.showViewDrawer = true;
 }
 
-editAssignment(teacherId: number): void {
-  this.router.navigate([
-    '/admin/teacher-role-assignments',
-    teacherId,
-    'edit'
-  ]);
+closeViewDrawer(): void {
+
+  this.showViewDrawer = false;
+
+  this.viewTeacherId = null;
 }
 
 
-    // =========================================================
-  // REMOVE ASSIGNMENT
+editFromView(
+  teacherId: number
+): void {
+
+  this.closeViewDrawer();
+
+  this.selectedTeacherId = teacherId;
+
+  this.drawerMode = 'edit';
+
+  this.showAssignmentDrawer = true;
+}
+  // =========================================================
+  // EDIT
+  // =========================================================
+
+editAssignment(
+  teacherId: number
+): void {
+
+  this.closeActionMenu();
+
+  this.selectedTeacherId = teacherId;
+
+  this.drawerMode = 'edit';
+
+  this.showAssignmentDrawer = true;
+}
+
+  // =========================================================
+  // CLOSE ASSIGNMENT DRAWER
+  // =========================================================
+
+  closeAssignmentDrawer(): void {
+
+    this.showAssignmentDrawer = false;
+
+    this.selectedTeacherId = null;
+  }
+
+  // =========================================================
+  // ASSIGNMENT SAVED
+  // =========================================================
+
+  handleAssignmentSaved(): void {
+
+    const wasEdit =
+      this.drawerMode === 'edit';
+
+    this.showAssignmentDrawer = false;
+
+    this.selectedTeacherId = null;
+
+    this.successMessage = wasEdit
+      ? 'Teacher role assignment updated successfully.'
+      : 'Teacher role assigned successfully.';
+
+    this.loadAssignments();
+
+    window.setTimeout(() => {
+
+      this.successMessage = '';
+
+      this.cdr.detectChanges();
+
+    }, 4000);
+  }
+
+  // =========================================================
+  // REMOVE
   // =========================================================
 
   removeAssignment(
     teacherId: number
   ): void {
 
-    if (this.deleting) {
-
-      return;
-
-    }
+    this.closeActionMenu();
 
     this.pendingRemoveTeacherId = teacherId;
 
     this.showRemoveDialog = true;
-
   }
 
+  cancelRemove(): void {
 
-  // =========================================================
-  // CONFIRM REMOVE ASSIGNMENT
-  // =========================================================
+    if (this.deleting) {
+      return;
+    }
 
-  confirmRemoveAssignment(): void {
+    this.showRemoveDialog = false;
+
+    this.pendingRemoveTeacherId = null;
+  }
+
+  confirmRemove(): void {
 
     if (
-      this.pendingRemoveTeacherId === null ||
-      this.deleting
+      this.deleting ||
+      this.pendingRemoveTeacherId === null
     ) {
-
       return;
-
     }
 
     const teacherId =
       this.pendingRemoveTeacherId;
 
-    this.showRemoveDialog = false;
-
-    this.pendingRemoveTeacherId = null;
-
     this.deleting = true;
 
     this.errorMessage = '';
-
-    this.successMessage = '';
-
 
     this.assignmentService
       .removeAssignment(teacherId)
       .subscribe({
 
-        next: (response) => {
+        next: () => {
 
           this.deleting = false;
 
-          this.successMessage =
-            response?.message ??
-            'Teacher role assignment removed successfully.';
+          this.showRemoveDialog = false;
 
+          this.pendingRemoveTeacherId = null;
+
+          this.successMessage =
+            'Teacher role assignment removed successfully.';
 
           this.loadAssignments();
 
+          window.setTimeout(() => {
+
+            this.successMessage = '';
+
+            this.cdr.detectChanges();
+
+          }, 4000);
         },
 
         error: (error) => {
 
           console.error(
-            'Failed to remove teacher role assignment',
+            'Failed to remove teacher role assignment:',
             error
           );
 
+          this.deleting = false;
 
           this.errorMessage =
             error?.error?.message ??
             'Failed to remove teacher role assignment.';
 
-
-          this.deleting = false;
-
+          this.cdr.detectChanges();
         }
-
       });
-
   }
 
-
   // =========================================================
-  // CANCEL REMOVE ASSIGNMENT
-  // =========================================================
-
-  cancelRemoveAssignment(): void {
-
-    this.showRemoveDialog = false;
-
-    this.pendingRemoveTeacherId = null;
-
-  }
-
-
-  // =========================================================
-  // GET SCOPE DISPLAY
+  // SCOPE HELPERS
   // =========================================================
 
-  getScopeCount(
+  getScopeSummary(
     assignment: TeacherRoleAssignment
-  ): number {
+  ): string {
 
-    return assignment.scopes?.length ?? 0;
+    const scopes =
+      assignment.scopes ?? [];
 
+    if (!scopes.length) {
+      return 'No scope assigned';
+    }
+
+    const allClassesCount =
+      scopes.filter(
+        (scope) =>
+          scope.scopeType ===
+          'ALL_CLASSES_SCOPE'
+      ).length;
+
+    const classScopeCount =
+      scopes.filter(
+        (scope) =>
+          scope.scopeType ===
+          'CLASS_SCOPE'
+      ).length;
+
+    if (
+      allClassesCount > 0 &&
+      classScopeCount === 0
+    ) {
+
+      return allClassesCount === 1
+        ? 'All Classes'
+        : `${allClassesCount} All-Class Scopes`;
+    }
+
+    if (
+      classScopeCount > 0 &&
+      allClassesCount === 0
+    ) {
+
+      return classScopeCount === 1
+        ? '1 Class Scope'
+        : `${classScopeCount} Class Scopes`;
+    }
+
+    return `${scopes.length} Scopes`;
   }
-
-
-  // =========================================================
-  // FORMAT SCOPE
-  // =========================================================
 
   formatScope(
     scope: TeacherRoleScope
   ): string {
 
-    const year =
-      scope.academicYearName ??
-      `Year #${scope.academicYearId}`;
+    if (
+      scope.scopeType ===
+      'ALL_CLASSES_SCOPE'
+    ) {
 
+      return (
+        scope.academicYearName ??
+        'All Classes'
+      );
+    }
+
+    const academicYear =
+      scope.academicYearName ??
+      'Academic Year';
 
     const className =
       scope.className ??
-      `Class #${scope.classId}`;
+      'Class';
 
-
-    const section =
+    const sectionName =
       scope.sectionName ??
       'All Sections';
 
-
-    return `${year} • ${className} • ${section}`;
-
+    return `${academicYear} • ${className} • ${sectionName}`;
   }
-
 
   // =========================================================
   // TRACK BY
   // =========================================================
 
-  trackByAssignment(
-    index: number,
+  trackByAssignmentId(
+    _index: number,
     assignment: TeacherRoleAssignment
   ): number {
 
     return assignment.id;
-
   }
-
-
-  // =========================================================
-  // RETRY
-  // =========================================================
-
-  retry(): void {
-
-    this.loadAssignments();
-
-  }
-
 }

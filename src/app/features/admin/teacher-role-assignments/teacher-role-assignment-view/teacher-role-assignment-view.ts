@@ -2,7 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  EventEmitter,
+  Input,
   OnInit,
+  Output,
   inject
 } from '@angular/core';
 import {
@@ -26,6 +29,23 @@ import {
   styleUrl: './teacher-role-assignment-view.scss'
 })
 export class TeacherRoleAssignmentView implements OnInit {
+
+  // =========================================================
+  // INPUTS / OUTPUTS
+  // =========================================================
+
+  @Input()
+  drawerTeacherId: number | null = null;
+
+  @Input()
+  drawerMode = false;
+
+  @Output()
+  closed = new EventEmitter<void>();
+
+  @Output()
+  editRequested = new EventEmitter<number>();
+
 
   // =========================================================
   // SERVICES
@@ -64,6 +84,32 @@ export class TeacherRoleAssignmentView implements OnInit {
 
   ngOnInit(): void {
 
+    /*
+     * Drawer mode:
+     * Teacher ID comes from the parent component.
+     */
+    if (this.drawerMode) {
+
+      if (!this.drawerTeacherId) {
+
+        this.errorMessage =
+          'Invalid teacher ID.';
+
+        return;
+      }
+
+      this.loadAssignment(
+        this.drawerTeacherId
+      );
+
+      return;
+    }
+
+
+    /*
+     * Route mode:
+     * Preserve the existing direct URL functionality.
+     */
     const teacherId =
       Number(
         this.route.snapshot.paramMap.get('teacherId')
@@ -85,7 +131,9 @@ export class TeacherRoleAssignmentView implements OnInit {
   // LOAD ASSIGNMENT
   // =========================================================
 
-  loadAssignment(teacherId: number): void {
+  loadAssignment(
+    teacherId: number
+  ): void {
 
     this.loading = true;
 
@@ -104,7 +152,6 @@ export class TeacherRoleAssignmentView implements OnInit {
 
           this.cdr.detectChanges();
         },
-
 
         error: (error) => {
 
@@ -136,6 +183,23 @@ export class TeacherRoleAssignmentView implements OnInit {
       return;
     }
 
+    /*
+     * When opened inside the list drawer,
+     * let the parent open the edit drawer.
+     */
+    if (this.drawerMode) {
+
+      this.editRequested.emit(
+        this.assignment.teacherId
+      );
+
+      return;
+    }
+
+
+    /*
+     * Preserve existing route-based edit.
+     */
     this.router.navigate([
       '/admin/teacher-role-assignments',
       this.assignment.teacherId,
@@ -145,10 +209,17 @@ export class TeacherRoleAssignmentView implements OnInit {
 
 
   // =========================================================
-  // BACK
+  // CLOSE / BACK
   // =========================================================
 
   goBack(): void {
+
+    if (this.drawerMode) {
+
+      this.closed.emit();
+
+      return;
+    }
 
     this.router.navigate([
       '/admin/teacher-role-assignments'
@@ -162,6 +233,19 @@ export class TeacherRoleAssignmentView implements OnInit {
 
   retry(): void {
 
+    if (this.drawerMode) {
+
+      if (this.drawerTeacherId) {
+
+        this.loadAssignment(
+          this.drawerTeacherId
+        );
+      }
+
+      return;
+    }
+
+
     if (!this.assignment) {
 
       const teacherId =
@@ -170,7 +254,10 @@ export class TeacherRoleAssignmentView implements OnInit {
         );
 
       if (teacherId) {
-        this.loadAssignment(teacherId);
+
+        this.loadAssignment(
+          teacherId
+        );
       }
 
       return;
@@ -196,7 +283,9 @@ export class TeacherRoleAssignmentView implements OnInit {
   // FORMAT DATE
   // =========================================================
 
-  formatDate(date: string): string {
+  formatDate(
+    date: string
+  ): string {
 
     if (!date) {
       return '-';

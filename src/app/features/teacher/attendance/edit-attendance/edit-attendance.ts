@@ -20,6 +20,8 @@ import {
   UpdateAttendanceRequest
 } from '../models/update-attendance-request.model';
 
+import { PermissionService } from '../../../../core/auth/permission.service';
+
 @Component({
   selector: 'app-edit-attendance',
   standalone: true,
@@ -46,6 +48,9 @@ export class EditAttendanceComponent implements OnInit {
 
   private readonly cdr =
     inject(ChangeDetectorRef);
+  
+  private readonly permissionService =
+  inject(PermissionService);
 
   attendanceId!: number;
 
@@ -59,20 +64,57 @@ export class EditAttendanceComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
 
-  ngOnInit(): void {
-    const id =
-      this.route.snapshot.paramMap.get('id');
+ngOnInit(): void {
 
-    if (!id) {
-      this.errorMessage =
-        'Attendance ID is missing.';
-      return;
-    }
+  this.permissionService
+    .loadMyPermissions()
+    .subscribe({
 
-    this.attendanceId = Number(id);
+      next: () => {
 
-    this.loadAttendance();
-  }
+        if (!this.canEditAttendance()) {
+
+          this.errorMessage =
+            'You do not have permission to edit attendance.';
+
+          this.cdr.detectChanges();
+
+          return;
+        }
+
+        const id =
+          this.route.snapshot.paramMap.get('id');
+
+        if (!id) {
+
+          this.errorMessage =
+            'Attendance ID is missing.';
+
+          this.cdr.detectChanges();
+
+          return;
+        }
+
+        this.attendanceId = Number(id);
+
+        this.loadAttendance();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to load teacher permissions:',
+          error
+        );
+
+        this.errorMessage =
+          'Failed to load attendance permissions.';
+
+        this.cdr.detectChanges();
+      }
+
+    });
+}
 
   loadAttendance(): void {
     this.loading = true;
@@ -125,6 +167,12 @@ export class EditAttendanceComponent implements OnInit {
 
   saveChanges(): void {
 
+    if (!this.canEditAttendance()) {
+  this.errorMessage =
+    'You do not have permission to edit attendance.';
+  return;
+}
+
     if (!this.attendance) {
       return;
     }
@@ -176,4 +224,10 @@ export class EditAttendanceComponent implements OnInit {
         }
       });
   }
+
+  canEditAttendance(): boolean {
+  return this.permissionService.hasPermission(
+    'ATTENDANCE_EDIT'
+  );
+}
 }

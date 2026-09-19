@@ -2,11 +2,15 @@ import {
   Component,
   OnInit,
   ChangeDetectorRef,
+  EventEmitter,
+  Input,
+  Output,
   inject
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 import {
   Router,
   ActivatedRoute
@@ -52,9 +56,11 @@ export class TeacherRoleAssignmentForm implements OnInit {
   // SERVICES
   // =========================================================
 
-  private readonly router = inject(Router);
+  private readonly router =
+    inject(Router);
 
-  private readonly route = inject(ActivatedRoute);
+  private readonly route =
+    inject(ActivatedRoute);
 
   private readonly teacherService =
     inject(TeacherService);
@@ -79,12 +85,34 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
 
   // =========================================================
+  // DRAWER INPUT / OUTPUT
+  // =========================================================
+
+  @Input()
+  drawerMode:
+    'create' | 'edit' | 'view' | null = null;
+
+  @Input()
+  drawerTeacherId:
+    number | null = null;
+
+  @Output()
+  closed =
+    new EventEmitter<void>();
+
+  @Output()
+  saved =
+    new EventEmitter<void>();
+
+
+  // =========================================================
   // EDIT MODE
   // =========================================================
 
   isEditMode = false;
 
-  editingTeacherId: number | null = null;
+  editingTeacherId:
+    number | null = null;
 
   loadingAssignment = false;
 
@@ -108,22 +136,32 @@ export class TeacherRoleAssignmentForm implements OnInit {
   // SELECTED VALUES
   // =========================================================
 
-  selectedTeacherId: number | null = null;
+  selectedTeacherId:
+    number | null = null;
 
-  selectedRoleId: number | null = null;
+  selectedRoleId:
+    number | null = null;
 
-  selectedAcademicYearId: number | null = null;
+  selectedAcademicYearId:
+    number | null = null;
 
-  selectedClassId: number | null = null;
+  selectedClassId:
+    number | null = null;
 
-  selectedSectionId: number | null = null;
+  selectedSectionId:
+    number | null = null;
+
+  scopeType:
+    'CLASS_SCOPE' | 'ALL_CLASSES_SCOPE' =
+    'CLASS_SCOPE';
 
 
   // =========================================================
   // SCOPES
   // =========================================================
 
-  scopes: TeacherRoleScope[] = [];
+  scopes:
+    TeacherRoleScope[] = [];
 
 
   // =========================================================
@@ -149,8 +187,59 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
   ngOnInit(): void {
 
+    // =======================================================
+    // DRAWER MODE
+    // =======================================================
+
+    if (this.drawerMode) {
+
+      this.isEditMode =
+        this.drawerMode === 'edit';
+
+      this.editingTeacherId =
+        this.drawerTeacherId;
+
+      this.selectedTeacherId =
+        this.drawerTeacherId;
+
+
+      // -----------------------------------------------------
+      // LOAD BASIC DATA
+      // -----------------------------------------------------
+
+      this.loadTeachers();
+
+      this.loadRoles();
+
+      this.loadAcademicYears();
+
+
+      // -----------------------------------------------------
+      // LOAD EXISTING ASSIGNMENT FOR EDIT ONLY
+      // -----------------------------------------------------
+
+      if (
+        this.drawerMode === 'edit' &&
+        this.drawerTeacherId
+      ) {
+
+        this.loadAssignment(
+          this.drawerTeacherId
+        );
+      }
+
+      return;
+    }
+
+
+    // =======================================================
+    // ROUTE MODE
+    // =======================================================
+
     const teacherIdParam =
-      this.route.snapshot.paramMap.get('teacherId');
+      this.route.snapshot.paramMap.get(
+        'teacherId'
+      );
 
 
     // -------------------------------------------------------
@@ -163,7 +252,10 @@ export class TeacherRoleAssignmentForm implements OnInit {
         Number(teacherIdParam);
 
 
-      if (!teacherId || Number.isNaN(teacherId)) {
+      if (
+        !teacherId ||
+        Number.isNaN(teacherId)
+      ) {
 
         this.errorMessage =
           'Invalid teacher ID.';
@@ -318,240 +410,218 @@ export class TeacherRoleAssignmentForm implements OnInit {
   // LOAD EXISTING ASSIGNMENT
   // =========================================================
 
-  loadAssignment(
-    teacherId: number
-  ): void {
+loadAssignment(teacherId: number): void {
+  this.loadingAssignment = true;
+  this.errorMessage = '';
 
-    this.loadingAssignment = true;
+  this.assignmentService
+    .getAssignmentByTeacherId(teacherId)
+    .subscribe({
+      next: (response) => {
+        const assignment: TeacherRoleAssignment | null =
+          response?.data ?? null;
 
-    this.errorMessage = '';
+        if (!assignment) {
+          this.errorMessage =
+            'Teacher role assignment not found.';
+          this.loadingAssignment = false;
+          this.cdr.detectChanges();
+          return;
+        }
 
-    this.assignmentService
-      .getAssignmentByTeacherId(teacherId)
-      .subscribe({
+        // ==============================
+        // TEACHER
+        // ==============================
 
-        next: (response) => {
+        this.selectedTeacherId =
+          assignment.teacherId;
 
-          const assignment:
-            TeacherRoleAssignment | null =
-              response?.data ?? null;
+        // ==============================
+        // ROLE
+        // ==============================
 
+        this.selectedRoleId =
+          assignment.teacherRoleId;
 
-          if (!assignment) {
+        // ==============================
+        // SCOPES
+        // ==============================
 
-            this.errorMessage =
-              'Teacher role assignment not found.';
+        this.scopes =
+          (assignment.scopes ?? []).map(scope => ({
+            id: scope.id,
+            academicYearId: scope.academicYearId,
+            academicYearName: scope.academicYearName,
+            scopeType: scope.scopeType,
+            classId: scope.classId ?? null,
+            className: scope.className ?? null,
+            sectionId: scope.sectionId ?? null,
+            sectionName: scope.sectionName ?? null
+          }));
 
-            this.loadingAssignment =
-              false;
+        // ==============================
+        // PREFILL FIRST SCOPE
+        // ==============================
 
-            this.cdr.detectChanges();
+        const firstScope = this.scopes[0];
 
-            return;
+        if (firstScope) {
+
+          this.selectedAcademicYearId =
+            firstScope.academicYearId;
+
+          this.scopeType =
+            firstScope.scopeType;
+
+          this.selectedClassId =
+            firstScope.classId ?? null;
+
+          this.selectedSectionId =
+            firstScope.sectionId ?? null;
+
+          // ALL CLASSES
+          if (
+            firstScope.scopeType ===
+            'ALL_CLASSES_SCOPE'
+          ) {
+            this.classes = [];
+            this.sections = [];
           }
 
-
-          // ---------------------------------------------------
-          // TEACHER
-          // ---------------------------------------------------
-
-          this.selectedTeacherId =
-            assignment.teacherId;
-
-
-          // ---------------------------------------------------
-          // ROLE
-          // ---------------------------------------------------
-
-          this.selectedRoleId =
-            assignment.teacherRoleId;
-
-
-          // ---------------------------------------------------
-          // SCOPES
-          // ---------------------------------------------------
-
-          this.scopes =
-            (assignment.scopes ?? []).map(
-              scope => ({
-
-                id: scope.id,
-
-                academicYearId:
-                  scope.academicYearId,
-
-                academicYearName:
-                  scope.academicYearName,
-
-                classId:
-                  scope.classId,
-
-                className:
-                  scope.className,
-
-                sectionId:
-                  scope.sectionId,
-
-                sectionName:
-                  scope.sectionName
-              })
-            );
-
-
-          // ---------------------------------------------------
-          // LOAD FIRST SCOPE INTO FORM
-          // ---------------------------------------------------
-
-          if (this.scopes.length > 0) {
-
-            const firstScope =
-              this.scopes[0];
-
-
-            this.selectedAcademicYearId =
-              firstScope.academicYearId;
-
-            this.selectedClassId =
-              firstScope.classId;
-
-            this.selectedSectionId =
-              firstScope.sectionId ?? null;
-
-
+          // CLASS SCOPE
+          else if (
+            firstScope.classId != null
+          ) {
             this.loadClassesForEdit(
               firstScope.academicYearId,
               firstScope.classId,
               firstScope.sectionId ?? null
             );
           }
-
-
-          this.loadingAssignment =
-            false;
-
-          this.cdr.detectChanges();
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Failed to load teacher role assignment',
-            error
-          );
-
-          this.errorMessage =
-            error?.error?.message ??
-            'Failed to load teacher role assignment.';
-
-          this.loadingAssignment =
-            false;
-
-          this.cdr.detectChanges();
         }
-      });
-  }
+
+        this.loadingAssignment = false;
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to load teacher role assignment',
+          error
+        );
+
+        this.errorMessage =
+          error?.error?.message ??
+          'Failed to load teacher role assignment.';
+
+        this.loadingAssignment = false;
+
+        this.cdr.detectChanges();
+      }
+    });
+}
 
 
   // =========================================================
   // LOAD CLASSES FOR EDIT
   // =========================================================
 
-  loadClassesForEdit(
-    academicYearId: number,
-    classId: number,
-    sectionId: number | null
-  ): void {
+loadClassesForEdit(
+  academicYearId: number,
+  classId: number | null,
+  sectionId: number | null
+): void {
 
-    this.loadingClasses = true;
+  this.loadingClasses = true;
 
-    this.classService
-      .getClasses()
-      .subscribe({
+  this.classService
+    .getClasses()
+    .subscribe({
 
-        next: (response) => {
+      next: (response) => {
 
-          const allClasses =
-            response?.data ?? [];
+        const allClasses =
+          response?.data ?? [];
 
-
-          this.classes =
-            allClasses.filter(
-              item =>
-                item.academicYearId ===
-                academicYearId
-            );
-
-
-          this.loadingClasses =
-            false;
-
-
-          // ---------------------------------------------------
-          // LOAD SECTIONS
-          // ---------------------------------------------------
-
-          if (classId) {
-
-            this.loadingSections = true;
-
-            this.sectionService
-              .getSections(classId)
-              .subscribe({
-
-                next: (sectionResponse) => {
-
-                  this.sections =
-                    sectionResponse?.data ?? [];
-
-                  this.selectedSectionId =
-                    sectionId;
-
-                  this.loadingSections =
-                    false;
-
-                  this.cdr.detectChanges();
-                },
-
-                error: (error) => {
-
-                  console.error(
-                    'Failed to load sections',
-                    error
-                  );
-
-                  this.errorMessage =
-                    error?.error?.message ??
-                    'Failed to load sections.';
-
-                  this.loadingSections =
-                    false;
-
-                  this.cdr.detectChanges();
-                }
-              });
-          }
-
-          this.cdr.detectChanges();
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Failed to load classes',
-            error
+        this.classes =
+          allClasses.filter(
+            item =>
+              item.academicYearId ===
+              academicYearId
           );
 
-          this.errorMessage =
-            error?.error?.message ??
-            'Failed to load classes.';
+        this.loadingClasses = false;
 
-          this.loadingClasses =
-            false;
+        // No class selected
+        if (classId == null) {
+          this.sections = [];
+          this.selectedSectionId = null;
 
           this.cdr.detectChanges();
+          return;
         }
-      });
-  }
+
+        // Load sections for selected class
+        this.loadingSections = true;
+
+        this.sectionService
+          .getSections(classId)
+          .subscribe({
+
+            next: (sectionResponse) => {
+
+              this.sections =
+                sectionResponse?.data ?? [];
+
+              this.selectedSectionId =
+                sectionId;
+
+              this.loadingSections = false;
+
+              this.cdr.detectChanges();
+            },
+
+            error: (error) => {
+
+              console.error(
+                'Failed to load sections',
+                error
+              );
+
+              this.errorMessage =
+                error?.error?.message ??
+                'Failed to load sections.';
+
+              this.loadingSections = false;
+
+              this.cdr.detectChanges();
+            }
+
+          });
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to load classes',
+          error
+        );
+
+        this.errorMessage =
+          error?.error?.message ??
+          'Failed to load classes.';
+
+        this.loadingClasses = false;
+
+        this.cdr.detectChanges();
+      }
+
+    });
+}
 
 
   // =========================================================
@@ -626,6 +696,51 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
 
   // =========================================================
+  // SCOPE TYPE CHANGE
+  // =========================================================
+
+  onScopeTypeChange(): void {
+
+    this.errorMessage = '';
+
+    this.selectedClassId = null;
+
+    this.selectedSectionId = null;
+
+    this.sections = [];
+
+
+    // -------------------------------------------------------
+    // ALL CLASSES
+    // -------------------------------------------------------
+
+    if (
+      this.scopeType ===
+      'ALL_CLASSES_SCOPE'
+    ) {
+
+      this.classes = [];
+
+      this.cdr.detectChanges();
+
+      return;
+    }
+
+
+    // -------------------------------------------------------
+    // CLASS SCOPE
+    // -------------------------------------------------------
+
+    if (
+      this.selectedAcademicYearId
+    ) {
+
+      this.onAcademicYearChange();
+    }
+  }
+
+
+  // =========================================================
   // CLASS CHANGE
   // =========================================================
 
@@ -696,7 +811,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
 
     // -------------------------------------------------------
-    // VALIDATION
+    // ACADEMIC YEAR
     // -------------------------------------------------------
 
     if (!this.selectedAcademicYearId) {
@@ -708,6 +823,103 @@ export class TeacherRoleAssignmentForm implements OnInit {
     }
 
 
+    // -------------------------------------------------------
+    // ALL CLASSES
+    // -------------------------------------------------------
+
+    if (
+      this.scopeType ===
+      'ALL_CLASSES_SCOPE'
+    ) {
+
+      const duplicate =
+        this.scopes.some(scope =>
+
+          scope.academicYearId ===
+            this.selectedAcademicYearId
+          &&
+          scope.scopeType ===
+            'ALL_CLASSES_SCOPE'
+        );
+
+
+      if (duplicate) {
+
+        this.errorMessage =
+          'All Classes access has already been added for this academic year.';
+
+        return;
+      }
+
+
+      const existingYearScope =
+        this.scopes.some(scope =>
+          scope.academicYearId ===
+          this.selectedAcademicYearId
+        );
+
+
+      if (existingYearScope) {
+
+        this.errorMessage =
+          'This academic year already has another scope. All Classes cannot be combined with class-specific scopes.';
+
+        return;
+      }
+
+
+      const scope:
+        TeacherRoleScope = {
+
+        academicYearId:
+          this.selectedAcademicYearId,
+
+        academicYearName:
+          this.getAcademicYearName(
+            this.selectedAcademicYearId
+          ),
+
+        scopeType:
+          'ALL_CLASSES_SCOPE',
+
+        classId:
+          null,
+
+        className:
+          null,
+
+        sectionId:
+          null,
+
+        sectionName:
+          null
+      };
+
+
+      this.scopes = [
+        ...this.scopes,
+        scope
+      ];
+
+
+      this.selectedClassId = null;
+
+      this.selectedSectionId = null;
+
+      this.classes = [];
+
+      this.sections = [];
+
+      this.cdr.detectChanges();
+
+      return;
+    }
+
+
+    // -------------------------------------------------------
+    // CLASS SCOPE
+    // -------------------------------------------------------
+
     if (!this.selectedClassId) {
 
       this.errorMessage =
@@ -718,18 +930,21 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
 
     // -------------------------------------------------------
-    // DUPLICATE CHECK
+    // DUPLICATE
     // -------------------------------------------------------
 
     const duplicate =
       this.scopes.some(scope =>
 
         scope.academicYearId ===
-          this.selectedAcademicYearId &&
-
+          this.selectedAcademicYearId
+        &&
+        scope.scopeType ===
+          'CLASS_SCOPE'
+        &&
         scope.classId ===
-          this.selectedClassId &&
-
+          this.selectedClassId
+        &&
         (scope.sectionId ?? null) ===
           (this.selectedSectionId ?? null)
       );
@@ -745,10 +960,87 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
 
     // -------------------------------------------------------
-    // CREATE SCOPE
+    // ALL CLASSES OVERLAP
     // -------------------------------------------------------
 
-    const scope: TeacherRoleScope = {
+    const hasAllClasses =
+      this.scopes.some(scope =>
+
+        scope.academicYearId ===
+          this.selectedAcademicYearId
+        &&
+        scope.scopeType ===
+          'ALL_CLASSES_SCOPE'
+      );
+
+
+    if (hasAllClasses) {
+
+      this.errorMessage =
+        'All Classes access already covers this academic year.';
+
+      return;
+    }
+
+
+    // -------------------------------------------------------
+    // SAME CLASS SCOPES
+    // -------------------------------------------------------
+
+    const sameClassScopes =
+      this.scopes.filter(scope =>
+
+        scope.academicYearId ===
+          this.selectedAcademicYearId
+        &&
+        scope.scopeType ===
+          'CLASS_SCOPE'
+        &&
+        scope.classId ===
+          this.selectedClassId
+      );
+
+
+    const hasAllSections =
+      sameClassScopes.some(
+        scope =>
+          scope.sectionId == null
+      );
+
+
+    if (
+      hasAllSections &&
+      this.selectedSectionId != null
+    ) {
+
+      this.errorMessage =
+        'This class already has an All Sections scope.';
+
+      return;
+    }
+
+
+    if (
+      this.selectedSectionId == null &&
+      sameClassScopes.some(
+        scope =>
+          scope.sectionId != null
+      )
+    ) {
+
+      this.errorMessage =
+        'Specific section scopes already exist for this class.';
+
+      return;
+    }
+
+
+    // -------------------------------------------------------
+    // CREATE CLASS SCOPE
+    // -------------------------------------------------------
+
+    const scope:
+      TeacherRoleScope = {
 
       academicYearId:
         this.selectedAcademicYearId,
@@ -757,6 +1049,9 @@ export class TeacherRoleAssignmentForm implements OnInit {
         this.getAcademicYearName(
           this.selectedAcademicYearId
         ),
+
+      scopeType:
+        'CLASS_SCOPE',
 
       classId:
         this.selectedClassId,
@@ -767,8 +1062,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
         ),
 
       sectionId:
-        this.selectedSectionId ??
-        undefined,
+        this.selectedSectionId ?? null,
 
       sectionName:
         this.getSectionName(
@@ -777,10 +1071,6 @@ export class TeacherRoleAssignmentForm implements OnInit {
     };
 
 
-    // -------------------------------------------------------
-    // ADD TO LIST
-    // -------------------------------------------------------
-
     this.scopes = [
       ...this.scopes,
       scope
@@ -788,8 +1078,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
 
     // -------------------------------------------------------
-    // RESET CLASS + SECTION
-    // Keep academic year selected.
+    // RESET
     // -------------------------------------------------------
 
     this.selectedClassId = null;
@@ -806,7 +1095,9 @@ export class TeacherRoleAssignmentForm implements OnInit {
   // REMOVE SCOPE
   // =========================================================
 
-  removeScope(index: number): void {
+  removeScope(
+    index: number
+  ): void {
 
     this.scopes =
       this.scopes.filter(
@@ -827,7 +1118,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
     const year =
       this.academicYears.find(
-        item => item.id === id
+        item =>
+          item.id === id
       );
 
 
@@ -841,12 +1133,19 @@ export class TeacherRoleAssignmentForm implements OnInit {
   // =========================================================
 
   getClassName(
-    id: number
+    id: number | null | undefined
   ): string {
+
+    if (id == null) {
+
+      return 'All Classes';
+    }
+
 
     const academicClass =
       this.classes.find(
-        item => item.id === id
+        item =>
+          item.id === id
       );
 
 
@@ -876,7 +1175,8 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
     const section =
       this.sections.find(
-        item => item.id === id
+        item =>
+          item.id === id
       );
 
 
@@ -940,42 +1240,50 @@ export class TeacherRoleAssignmentForm implements OnInit {
     const request:
       CreateTeacherRoleAssignmentRequest = {
 
-        teacherId:
-          this.selectedTeacherId,
+      teacherId:
+        this.selectedTeacherId,
 
-        teacherRoleId:
-          this.selectedRoleId,
+      teacherRoleId:
+        this.selectedRoleId,
 
-        scopes:
-          this.scopes.map(scope => {
+      scopes:
+        this.scopes.map(
+          scope => {
 
             const result: {
               academicYearId: number;
-              classId: number;
-              sectionId?: number;
+              scopeType:
+                'CLASS_SCOPE' |
+                'ALL_CLASSES_SCOPE';
+              classId?: number | null;
+              sectionId?: number | null;
             } = {
 
               academicYearId:
                 scope.academicYearId,
 
-              classId:
-                scope.classId
+              scopeType:
+                scope.scopeType
             };
 
 
             if (
-              scope.sectionId !== undefined &&
-              scope.sectionId !== null
+              scope.scopeType ===
+              'CLASS_SCOPE'
             ) {
 
+              result.classId =
+                scope.classId ?? null;
+
               result.sectionId =
-                scope.sectionId;
+                scope.sectionId ?? null;
             }
 
 
             return result;
-          })
-      };
+          }
+        )
+    };
 
 
     // -------------------------------------------------------
@@ -985,9 +1293,9 @@ export class TeacherRoleAssignmentForm implements OnInit {
     this.submitting = true;
 
 
-    // -------------------------------------------------------
+    // =======================================================
     // EDIT
-    // -------------------------------------------------------
+    // =======================================================
 
     if (
       this.isEditMode &&
@@ -1012,6 +1320,22 @@ export class TeacherRoleAssignmentForm implements OnInit {
             this.cdr.detectChanges();
 
 
+            // ---------------------------------------------
+            // DRAWER MODE
+            // ---------------------------------------------
+
+            if (this.drawerMode) {
+
+              this.saved.emit();
+
+              return;
+            }
+
+
+            // ---------------------------------------------
+            // ROUTE MODE
+            // ---------------------------------------------
+
             setTimeout(() => {
 
               this.router.navigate([
@@ -1020,6 +1344,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
             }, 800);
           },
+
 
           error: (error) => {
 
@@ -1038,13 +1363,14 @@ export class TeacherRoleAssignmentForm implements OnInit {
           }
         });
 
+
       return;
     }
 
 
-    // -------------------------------------------------------
+    // =======================================================
     // CREATE
-    // -------------------------------------------------------
+    // =======================================================
 
     this.assignmentService
       .assignRole(request)
@@ -1061,6 +1387,22 @@ export class TeacherRoleAssignmentForm implements OnInit {
           this.cdr.detectChanges();
 
 
+          // ---------------------------------------------
+          // DRAWER MODE
+          // ---------------------------------------------
+
+          if (this.drawerMode) {
+
+            this.saved.emit();
+
+            return;
+          }
+
+
+          // ---------------------------------------------
+          // ROUTE MODE
+          // ---------------------------------------------
+
           setTimeout(() => {
 
             this.router.navigate([
@@ -1069,6 +1411,7 @@ export class TeacherRoleAssignmentForm implements OnInit {
 
           }, 800);
         },
+
 
         error: (error) => {
 
@@ -1100,6 +1443,22 @@ export class TeacherRoleAssignmentForm implements OnInit {
       return;
     }
 
+
+    // -------------------------------------------------------
+    // DRAWER MODE
+    // -------------------------------------------------------
+
+    if (this.drawerMode) {
+
+      this.closed.emit();
+
+      return;
+    }
+
+
+    // -------------------------------------------------------
+    // ROUTE MODE
+    // -------------------------------------------------------
 
     this.router.navigate([
       '/admin/teacher-role-assignments'

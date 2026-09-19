@@ -1,179 +1,536 @@
 <div class="teacher-role-form-page">
 
+  <!-- =======================================================
+       PAGE HEADER
+  ======================================================= -->
+
+  @if (!isPopupMode) {
+
   <div class="page-top">
+
     <div>
+
       <div class="breadcrumb">
         <span>Management</span>
         <span>/</span>
-        <strong>{{ isEditMode ? 'Edit Teacher Role' : 'Create Teacher Role' }}</strong>
+        <strong>
+          {{
+          isEditMode
+          ? 'Edit Teacher Role'
+          : 'Create Teacher Role'
+          }}
+        </strong>
       </div>
 
       <h1>
-        {{ isEditMode ? 'Edit Teacher Role' : 'Create Teacher Role' }}
+        {{
+        isEditMode
+        ? 'Edit Teacher Role'
+        : 'Create Teacher Role'
+        }}
       </h1>
 
       <p>
-        {{ isEditMode
-          ? 'Update the role details and permissions.'
-          : 'Create a new additional role for teachers.' }}
+        {{
+        isEditMode
+        ? 'Update the role details and permissions.'
+        : 'Create a new additional role for teachers.'
+        }}
       </p>
+
     </div>
+
   </div>
 
-  @if (errorMessage) {
-    <div class="error-banner">
-      <div>
-        <strong>Something went wrong</strong>
-        <span>{{ errorMessage }}</span>
-      </div>
-    </div>
   }
+
+
+  <!-- =======================================================
+       ERROR
+  ======================================================= -->
+
+  @if (errorMessage) {
+
+  <div #formError class="error-banner" tabindex="-1" role="alert">
+
+    <div class="error-content">
+
+      <strong>
+        Something went wrong
+      </strong>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+    <button type="button" class="error-close" aria-label="Dismiss error" (click)="errorMessage = ''">
+
+      ×
+
+    </button>
+
+  </div>
+
+  }
+
+
+  <!-- =======================================================
+       DEPENDENCY MESSAGE
+  ======================================================= -->
+
+  @if (dependencyMessage) {
+
+  <div class="dependency-banner" role="alert">
+
+    <div class="dependency-icon">
+      !
+    </div>
+
+    <div class="dependency-content">
+
+      <strong>
+        Permission dependency
+      </strong>
+
+      <span>
+        {{ dependencyMessage }}
+      </span>
+
+    </div>
+
+    <button type="button" class="dependency-close" aria-label="Dismiss dependency message"
+      (click)="clearDependencyMessage()">
+
+      ×
+
+    </button>
+
+  </div>
+
+  }
+
+
+  <!-- =======================================================
+       LOADING
+  ======================================================= -->
 
   @if (loading) {
 
-    <section class="form-card loading-card">
-      <div class="loader"></div>
-      <span>Loading teacher role...</span>
-    </section>
+  <section class="form-card loading-card">
+
+    <div class="loader"></div>
+
+    <span>
+      Loading teacher role...
+    </span>
+
+  </section>
 
   } @else {
 
-    <form
-      class="form-card"
-      [formGroup]="form"
-      (ngSubmit)="submit()">
+  <!-- =====================================================
+         FORM
+    ===================================================== -->
 
-      <!-- BASIC INFORMATION -->
+  <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
+
+
+    <!-- ===================================================
+           BASIC INFORMATION
+      =================================================== -->
+
+    <section class="form-section">
 
       <div class="section-header">
-        <h2>Basic Information</h2>
-        <p>Define the name and description of this teacher role.</p>
+
+        <div>
+
+          <span class="section-eyebrow">
+            Role Configuration
+          </span>
+
+          <h2>
+            Basic Information
+          </h2>
+
+          <p>
+            Define the name and purpose of this teacher role.
+          </p>
+
+        </div>
+
       </div>
+
 
       <div class="form-grid">
 
         <div class="form-field full-width">
+
           <label for="name">
-            Role Name <span>*</span>
+            Role Name
+            <span>*</span>
           </label>
 
-          <input
-            id="name"
-            type="text"
-            formControlName="name"
-            placeholder="e.g. Senior Class Coordinator"
-            maxlength="100">
+          <input id="name" type="text" formControlName="name" placeholder="e.g. Senior Class Coordinator"
+            maxlength="100" autocomplete="off">
 
           @if (
-            form.controls.name.invalid &&
-            form.controls.name.touched
+          form.controls.name.invalid &&
+          form.controls.name.touched
           ) {
-            <small class="field-error">
-              Role name is required.
-            </small>
+
+          <small class="field-error">
+            Role name is required.
+          </small>
+
           }
+
         </div>
 
+
         <div class="form-field full-width">
+
           <label for="description">
             Description
           </label>
 
-          <textarea
-            id="description"
-            formControlName="description"
-            rows="4"
-            maxlength="255"
+          <textarea id="description" formControlName="description" rows="3" maxlength="255"
             placeholder="Describe the responsibilities of this role...">
-          </textarea>
+            </textarea>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+           PERMISSIONS HEADER
+      =================================================== -->
+
+    <section class="permissions-section">
+
+      <div class="permissions-title-row">
+
+        <div>
+
+          <span class="section-eyebrow">
+            Access Control
+          </span>
+
+          <h2>
+            Permissions
+          </h2>
+
+          <p>
+            Select what teachers assigned to this role can access.
+            Required permissions are explained automatically.
+          </p>
+
+        </div>
+
+
+        <div class="permission-total">
+
+          <strong>
+            {{ selectedPermissionCount }}
+          </strong>
+
+          <span>
+            of {{ totalPermissionCount }} selected
+          </span>
+
         </div>
 
       </div>
 
 
-      <!-- PERMISSIONS -->
+      <!-- =================================================
+             PERMISSION GROUPS
+        ================================================= -->
 
-      <div class="section-header permissions-header">
-        <h2>Permissions</h2>
-        <p>
-          Select the permissions available to teachers assigned this role.
-        </p>
-      </div>
+      @if (permissionGroups.length > 0) {
 
-      @if (permissions.length > 0) {
+      <div class="permission-groups">
 
-        <div class="permissions-grid">
+        @for (
+        group of permissionGroups;
+        track group.key
+        ) {
 
-          @for (permission of permissions; track permission.id) {
+        <section class="permission-group">
 
-            <label
-              class="permission-item"
-              [class.selected]="isPermissionSelected(permission.id)">
+          <!-- GROUP HEADER -->
 
-              <input
-                type="checkbox"
-                [checked]="isPermissionSelected(permission.id)"
-                (change)="togglePermission(permission.id)">
+          <div class="group-header">
 
-              <span class="checkbox"></span>
+            <div class="group-title">
 
-              <span class="permission-content">
+              <h3>
+                {{ group.title }}
+              </h3>
 
-                <strong>
-                  {{ permission.name }}
-                </strong>
+              <p>
+                {{ group.description }}
+              </p>
 
-                <span>
-                  {{ permission.description || permission.code }}
-                </span>
+            </div>
+
+
+            <div class="group-actions">
+
+              <span class="group-count">
+
+                {{ getGroupSelectedCount(group) }}
+                /
+                {{ group.permissions.length }}
 
               </span>
 
-            </label>
 
-          }
+              <button type="button" class="group-toggle-button" (click)="toggleGroup(group)">
 
-        </div>
+                {{
+                isGroupFullySelected(group)
+                ? 'Clear'
+                : 'Select All'
+                }}
 
-      } @else {
+              </button>
 
-        <div class="empty-permissions">
-          No permissions are available.
-        </div>
+            </div>
 
-      }
+          </div>
 
 
-      <!-- FOOTER -->
+          <!-- GROUP PERMISSIONS -->
 
-      <div class="form-footer">
+          <div class="group-permissions">
 
-        <button
-          type="button"
-          class="cancel-button"
-          [disabled]="submitting"
-          (click)="cancel()">
+            @for (
+            permission of group.permissions;
+            track permission.id
+            ) {
 
-          Cancel
+            <div #permissionCard class="permission-item" [class.selected]="
+                        isPermissionSelected(permission.id)
+                      " [class.required]="
+                        isPermissionRequired(permission)
+                      " [class.has-dependency]="
+                        getRequiredPermissions(permission).length > 0
+                      ">
 
-        </button>
 
-        <button
-          type="submit"
-          class="submit-button"
-          [disabled]="submitting || form.invalid">
+              <!-- CHECKBOX -->
 
-          @if (submitting) {
-            {{ isEditMode ? 'Updating...' : 'Creating...' }}
-          } @else {
-            {{ isEditMode ? 'Update Teacher Role' : 'Create Teacher Role' }}
-          }
+              <button type="button" class="permission-select" [class.checked]="
+                          isPermissionSelected(permission.id)
+                        " [attr.aria-pressed]="
+                          isPermissionSelected(permission.id)
+                        " [attr.aria-label]="
+                          isPermissionSelected(permission.id)
+                            ? 'Remove ' + permission.name
+                            : 'Add ' + permission.name
+                        " (click)="
+                          togglePermission(permission.id)
+                        ">
 
-        </button>
+                @if (
+                isPermissionSelected(permission.id)
+                ) {
+
+                <span>
+                  ✓
+                </span>
+
+                }
+
+              </button>
+
+
+              <!-- PERMISSION CONTENT -->
+
+              <div class="permission-main">
+
+                <div class="permission-name-row">
+
+                  <strong>
+                    {{ permission.name }}
+                  </strong>
+
+
+                  @if (isPermissionRequired(permission)) {
+                  <span class="required-badge">
+                    Required
+                  </span>
+                  }
+
+                  @if (isPermissionSatisfyingDependency(permission)) {
+                  <span class="satisfies-badge">
+                    ✓ Satisfies requirement
+                  </span>
+                  }
+
+                </div>
+
+
+                <p class="permission-description">
+                  {{
+                  permission.description ||
+                  permission.code
+                  }}
+                </p>
+
+
+                <!-- REQUIRED PERMISSIONS -->
+
+                @if (getRequiredPermissions(permission).length > 0) {
+                <div class="requires-info">
+
+                  <span class="dependency-label">
+                    {{ getDependencyLabel(permission) }}
+                  </span>
+
+                  <div class="dependency-list">
+                    @for (
+                    requiredPermission of getRequiredPermissions(permission);
+                    track requiredPermission.id
+                    ) {
+                    <span class="dependency-item" [class.satisfied]="
+            isPermissionSelected(requiredPermission.id)
+          ">
+                      @if (isPermissionSelected(requiredPermission.id)) {
+                      <span class="dependency-check">
+                        ✓
+                      </span>
+                      }
+
+                      {{ requiredPermission.name }}
+                    </span>
+                    }
+                  </div>
+
+                </div>
+                }
+
+
+                <!-- REQUIRED BY -->
+
+                @if (
+                getRequiredBy(permission).length > 0
+                ) {
+
+                <div class="required-by-info">
+
+                  <span class="dependency-label">
+                    Required by:
+                  </span>
+
+                  <span class="required-by-list">
+
+                    {{ getRequiredBy(permission).join(', ') }}
+
+                  </span>
+
+                </div>
+
+                }
+
+              </div>
+
+
+              <!-- ACTION INDICATOR -->
+
+              @if (
+              getRequiredPermissions(permission).length > 0
+              ) {
+
+              <div class="dependency-indicator" title="This permission has dependencies">
+
+                ↳
+
+              </div>
+
+              }
+
+            </div>
+
+            }
+
+          </div>
+
+        </section>
+
+        }
 
       </div>
 
-    </form>
+      } @else {
+
+      <div class="empty-permissions">
+
+        <div class="empty-icon">
+          —
+        </div>
+
+        <strong>
+          No permissions available
+        </strong>
+
+        <span>
+          There are currently no teacher permissions available.
+        </span>
+
+      </div>
+
+      }
+
+    </section>
+
+
+    <!-- ===================================================
+           FORM FOOTER
+      =================================================== -->
+
+    <div class="form-footer">
+
+      <button type="button" class="cancel-button" [disabled]="submitting" (click)="cancel()">
+
+        Cancel
+
+      </button>
+
+
+      <button type="submit" class="submit-button" [disabled]="submitting || form.invalid">
+
+        @if (submitting) {
+
+        <span class="button-spinner"></span>
+
+        {{
+        isEditMode
+        ? 'Updating...'
+        : 'Creating...'
+        }}
+
+        } @else {
+
+        {{
+        isEditMode
+        ? 'Update Teacher Role'
+        : 'Create Teacher Role'
+        }}
+
+        }
+
+      </button>
+
+    </div>
+
+  </form>
 
   }
 

@@ -1,168 +1,514 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-
 import {
-  DataTableComponent,
-  TableAction,
-  TableColumn
-} from '../../../../shared/components/data-table/data-table.component';
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
 
-import { TeacherRole } from '../models/teacher-role.model';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 import { TeacherRoleService } from '../services/teacher-role.service';
+import { TeacherRole } from '../models/teacher-role.model';
+import { TeacherRoleForm } from '../teacher-role-form/teacher-role-form';
 
 @Component({
   selector: 'app-teacher-role-list',
   standalone: true,
   imports: [
-    DataTableComponent
+    CommonModule,
+    FormsModule,
+    TeacherRoleForm
   ],
   templateUrl: './teacher-role-list.html',
   styleUrl: './teacher-role-list.scss'
 })
 export class TeacherRoleList implements OnInit {
 
-  private readonly teacherRoleService = inject(TeacherRoleService);
-  private readonly router = inject(Router);
-  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly teacherRoleService =
+    inject(TeacherRoleService);
+
+  private readonly cdr =
+    inject(ChangeDetectorRef);
+
+
+  // =========================================================
+  // DATA
+  // =========================================================
 
   roles: TeacherRole[] = [];
 
+  filteredRoles: TeacherRole[] = [];
+
   loading = false;
+
   errorMessage = '';
 
+  successMessage = '';
+
+
+  // =========================================================
+  // SEARCH / FILTER
+  // =========================================================
+
+  searchTerm = '';
+
+  statusFilter: 'all' | 'active' | 'inactive' = 'all';
+
+
+  // =========================================================
+  // PAGINATION
+  // =========================================================
+
+  currentPage = 1;
+
+  pageSize = 10;
+
+  totalPages = 1;
+
+  paginatedRoles: TeacherRole[] = [];
+
+
+  // =========================================================
+  // ACTION MENU
+  // =========================================================
+
+  openMenuRoleId: number | null = null;
+
+
+  // =========================================================
+  // CREATE / EDIT MODAL
+  // =========================================================
+
+  showRoleDrawer = false;
+
+  drawerMode: 'create' | 'edit' = 'create';
+
+  selectedRoleId: number | null = null;
+
+
+  // =========================================================
+  // VIEW MODAL
+  // =========================================================
+
+  showViewDrawer = false;
+
+  viewRoleId: number | null = null;
+
+  selectedViewRole: TeacherRole | null = null;
+
+
+  // =========================================================
+  // DEACTIVATE
+  // =========================================================
+
   showDeactivateConfirm = false;
+
   selectedRole: TeacherRole | null = null;
+
   deactivating = false;
 
-  columns: TableColumn[] = [
-    {
-      key: 'name',
-      label: 'Role Name',
-      width: '20%'
-    },
-    {
-      key: 'description',
-      label: 'Description',
-      width: '30%'
-    },
-    {
-      key: 'permissions',
-      label: 'Permissions',
-      width: '25%',
-      type: 'permissions'
-    },
-    {
-      key: 'isActive',
-      label: 'Status',
-      width: '12%',
-      type: 'status',
-      align: 'center'
-    },
-    {
-      key: 'createdAt',
-      label: 'Created',
-      width: '13%',
-      type: 'date-time'
-    }
-  ];
 
-  actions: TableAction[] = [
-    {
-      label: 'Edit',
-      type: 'edit',
-      
-    },
-    {
-      label: 'Deactivate',
-      type: 'deactivate',
-      
-      danger: true
-    }
-  ];
+  // =========================================================
+  // DELETE
+  // =========================================================
+
+  showDeleteConfirm = false;
+
+  deleting = false;
+
+
+  // =========================================================
+  // INIT
+  // =========================================================
 
   ngOnInit(): void {
     this.loadRoles();
   }
 
+
+  // =========================================================
+  // LOAD ROLES
+  // =========================================================
+
   loadRoles(): void {
 
     this.loading = true;
+
     this.errorMessage = '';
 
     this.teacherRoleService.getRoles().subscribe({
 
-      next: (response) => {
+      next: response => {
 
         this.roles = response.data ?? [];
 
+        this.applyFilters();
+
         this.loading = false;
+
         this.cdr.detectChanges();
       },
 
-      error: (error) => {
+      error: error => {
 
         console.error(
           'Failed to load teacher roles',
           error
         );
 
+        this.roles = [];
+
+        this.filteredRoles = [];
+
+        this.paginatedRoles = [];
+
         this.errorMessage =
           error?.error?.message ??
           'Failed to load teacher roles. Please try again.';
 
         this.loading = false;
+
         this.cdr.detectChanges();
       }
 
     });
   }
 
+
+  // =========================================================
+  // SEARCH / FILTER
+  // =========================================================
+
+  applyFilters(): void {
+
+    const search =
+      this.searchTerm
+        .trim()
+        .toLowerCase();
+
+
+    this.filteredRoles =
+      this.roles.filter(role => {
+
+        const matchesSearch =
+          !search ||
+          role.name
+            ?.toLowerCase()
+            .includes(search) ||
+          role.description
+            ?.toLowerCase()
+            .includes(search);
+
+
+        const matchesStatus =
+          this.statusFilter === 'all' ||
+          (
+            this.statusFilter === 'active' &&
+            role.isActive
+          ) ||
+          (
+            this.statusFilter === 'inactive' &&
+            !role.isActive
+          );
+
+
+        return matchesSearch && matchesStatus;
+      });
+
+
+    this.currentPage = 1;
+
+    this.updatePagination();
+
+    this.closeActionMenu();
+  }
+
+
+  onSearchChange(): void {
+    this.applyFilters();
+  }
+
+
+  onStatusFilterChange(): void {
+    this.applyFilters();
+  }
+
+
+  clearFilters(): void {
+
+    this.searchTerm = '';
+
+    this.statusFilter = 'all';
+
+    this.applyFilters();
+  }
+
+
+  // =========================================================
+  // PAGINATION
+  // =========================================================
+
+  updatePagination(): void {
+
+    this.totalPages =
+      Math.max(
+        1,
+        Math.ceil(
+          this.filteredRoles.length /
+          this.pageSize
+        )
+      );
+
+
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+
+
+    const startIndex =
+      (this.currentPage - 1) *
+      this.pageSize;
+
+
+    const endIndex =
+      startIndex + this.pageSize;
+
+
+    this.paginatedRoles =
+      this.filteredRoles.slice(
+        startIndex,
+        endIndex
+      );
+  }
+
+
+  goToPreviousPage(): void {
+
+    if (this.currentPage <= 1) {
+      return;
+    }
+
+    this.currentPage--;
+
+    this.updatePagination();
+
+    this.closeActionMenu();
+  }
+
+
+  goToNextPage(): void {
+
+    if (this.currentPage >= this.totalPages) {
+      return;
+    }
+
+    this.currentPage++;
+
+    this.updatePagination();
+
+    this.closeActionMenu();
+  }
+
+
+  get paginationStart(): number {
+
+    if (this.filteredRoles.length === 0) {
+      return 0;
+    }
+
+    return (
+      (this.currentPage - 1) *
+      this.pageSize
+    ) + 1;
+  }
+
+
+  get paginationEnd(): number {
+
+    return Math.min(
+      this.currentPage * this.pageSize,
+      this.filteredRoles.length
+    );
+  }
+
+
+  // =========================================================
+  // ACTION MENU
+  // =========================================================
+
+  toggleActionMenu(roleId: number): void {
+
+    this.openMenuRoleId =
+      this.openMenuRoleId === roleId
+        ? null
+        : roleId;
+  }
+
+
+  closeActionMenu(): void {
+    this.openMenuRoleId = null;
+  }
+
+
+  // =========================================================
+  // CREATE ROLE
+  // =========================================================
+
   createRole(): void {
 
-    this.router.navigate([
-      '/admin/teacher-roles/create'
-    ]);
+    this.closeActionMenu();
 
+    this.selectedRoleId = null;
+
+    this.drawerMode = 'create';
+
+    this.errorMessage = '';
+
+    this.successMessage = '';
+
+    this.showRoleDrawer = true;
   }
 
-  onActionClick(event: {
-    action: TableAction;
-    row: TeacherRole;
-  }): void {
 
-    const { action, row } = event;
+  // =========================================================
+  // VIEW ROLE
+  // =========================================================
 
-    switch (action.type) {
+  viewRole(role: TeacherRole): void {
 
-      case 'edit':
-        this.editRole(row);
-        break;
+    this.closeActionMenu();
 
-      case 'deactivate':
-        this.openDeactivateConfirm(row);
-        break;
+    this.viewRoleId = role.id;
 
+    this.selectedViewRole = role;
+
+    this.errorMessage = '';
+
+    this.showViewDrawer = true;
+  }
+
+
+  closeViewDrawer(): void {
+
+    this.showViewDrawer = false;
+
+    this.viewRoleId = null;
+
+    this.selectedViewRole = null;
+  }
+
+
+  // =========================================================
+  // EDIT FROM VIEW
+  // =========================================================
+
+  editFromView(): void {
+
+    if (!this.selectedViewRole) {
+      return;
     }
+
+
+    const roleId =
+      this.selectedViewRole.id;
+
+
+    this.closeViewDrawer();
+
+    this.selectedRoleId = roleId;
+
+    this.drawerMode = 'edit';
+
+    this.errorMessage = '';
+
+    this.successMessage = '';
+
+    this.showRoleDrawer = true;
   }
+
+
+  // =========================================================
+  // EDIT ROLE
+  // =========================================================
 
   editRole(role: TeacherRole): void {
 
-    this.router.navigate([
-      '/admin/teacher-roles',
-      role.id,
-      'edit'
-    ]);
+    this.closeActionMenu();
 
+    this.selectedRoleId = role.id;
+
+    this.drawerMode = 'edit';
+
+    this.errorMessage = '';
+
+    this.successMessage = '';
+
+    this.showRoleDrawer = true;
   }
+
+
+  // =========================================================
+  // CLOSE CREATE / EDIT
+  // =========================================================
+
+  closeRoleDrawer(): void {
+
+    this.showRoleDrawer = false;
+
+    this.selectedRoleId = null;
+  }
+
+
+  // =========================================================
+  // ROLE SAVED
+  // =========================================================
+
+  handleRoleSaved(): void {
+
+    const wasEdit =
+      this.drawerMode === 'edit';
+
+
+    this.closeRoleDrawer();
+
+
+    this.successMessage =
+      wasEdit
+        ? 'Teacher role updated successfully.'
+        : 'Teacher role created successfully.';
+
+
+    this.loadRoles();
+
+
+    window.setTimeout(() => {
+
+      this.successMessage = '';
+
+      this.cdr.detectChanges();
+
+    }, 4000);
+  }
+
+
+  // =========================================================
+  // DEACTIVATE
+  // =========================================================
 
   openDeactivateConfirm(
     role: TeacherRole
   ): void {
 
-    this.selectedRole = role;
-    this.showDeactivateConfirm = true;
+    this.closeActionMenu();
 
+    this.selectedRole = role;
+
+    this.errorMessage = '';
+
+    this.showDeactivateConfirm = true;
   }
+
 
   cancelDeactivate(): void {
 
@@ -171,9 +517,12 @@ export class TeacherRoleList implements OnInit {
     }
 
     this.showDeactivateConfirm = false;
+
     this.selectedRole = null;
 
+    this.errorMessage = '';
   }
+
 
   confirmDeactivate(): void {
 
@@ -184,9 +533,15 @@ export class TeacherRoleList implements OnInit {
       return;
     }
 
+
+    const roleId =
+      this.selectedRole.id;
+
+
     this.deactivating = true;
 
-    const roleId = this.selectedRole.id;
+    this.errorMessage = '';
+
 
     this.teacherRoleService
       .deactivateRole(roleId)
@@ -197,25 +552,122 @@ export class TeacherRoleList implements OnInit {
           this.deactivating = false;
 
           this.showDeactivateConfirm = false;
+
           this.selectedRole = null;
+
+          this.successMessage =
+            'Teacher role deactivated successfully.';
 
           this.loadRoles();
 
         },
 
-        error: (error) => {
+
+        error: error => {
 
           console.error(
             'Failed to deactivate teacher role',
             error
           );
 
-          this.deactivating = false;
-
           this.errorMessage =
             error?.error?.message ??
             'Failed to deactivate teacher role.';
 
+          this.deactivating = false;
+
+          this.cdr.detectChanges();
+        }
+
+      });
+  }
+
+
+  // =========================================================
+  // DELETE
+  // =========================================================
+
+  openDeleteConfirm(
+    role: TeacherRole
+  ): void {
+
+    this.closeActionMenu();
+
+    this.selectedRole = role;
+
+    this.errorMessage = '';
+
+    this.showDeleteConfirm = true;
+  }
+
+
+  cancelDelete(): void {
+
+    if (this.deleting) {
+      return;
+    }
+
+    this.showDeleteConfirm = false;
+
+    this.selectedRole = null;
+
+    this.errorMessage = '';
+  }
+
+
+  confirmDelete(): void {
+
+    if (
+      !this.selectedRole ||
+      this.deleting
+    ) {
+      return;
+    }
+
+
+    const roleId =
+      this.selectedRole.id;
+
+
+    this.deleting = true;
+
+    this.errorMessage = '';
+
+
+    this.teacherRoleService
+      .deleteRole(roleId)
+      .subscribe({
+
+        next: () => {
+
+          this.deleting = false;
+
+          this.showDeleteConfirm = false;
+
+          this.selectedRole = null;
+
+          this.successMessage =
+            'Teacher role deleted successfully.';
+
+          this.loadRoles();
+
+        },
+
+
+        error: error => {
+
+          console.error(
+            'Failed to delete teacher role',
+            error
+          );
+
+          this.errorMessage =
+            error?.error?.message ??
+            'Unable to delete the teacher role.';
+
+          this.deleting = false;
+
+          this.cdr.detectChanges();
         }
 
       });

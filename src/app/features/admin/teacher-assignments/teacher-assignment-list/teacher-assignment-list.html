@@ -1,0 +1,724 @@
+<div class="page-container">
+
+  <!-- ===================================================== -->
+  <!-- PAGE HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div class="page-header-content">
+
+      <span class="page-eyebrow">
+        Academic Management
+      </span>
+
+      <h1>
+        Teacher Assignments
+      </h1>
+
+      <p>
+        Manage the classes, sections and subjects assigned to teachers.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="primary-button"
+      (click)="createAssignment()">
+      
+      <span class="button-icon" aria-hidden="true">
+        +
+      </span>
+
+      Assign Teacher
+
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- SUCCESS MESSAGE -->
+  <!-- ===================================================== -->
+
+  @if (successMessage) {
+
+    <div
+      class="alert success-alert"
+      role="status">
+
+      <span class="alert-icon" aria-hidden="true">
+        ✓
+      </span>
+
+      <span>
+        {{ successMessage }}
+      </span>
+
+      <button
+        type="button"
+        class="alert-close"
+        aria-label="Dismiss"
+        (click)="successMessage = ''">
+
+        ×
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- ===================================================== -->
+  <!-- ERROR MESSAGE -->
+  <!-- ===================================================== -->
+
+  @if (errorMessage) {
+
+    <div
+      class="alert error-alert"
+      role="alert">
+
+      <span class="alert-icon" aria-hidden="true">
+        !
+      </span>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+      <button
+        type="button"
+        class="alert-close"
+        aria-label="Dismiss"
+        (click)="errorMessage = ''">
+
+        ×
+
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- ===================================================== -->
+  <!-- FILTER BAR -->
+  <!-- ===================================================== -->
+
+  <section class="filter-card">
+
+    <div class="filter-header">
+
+      <div>
+
+        <h2>
+          Assignments
+        </h2>
+
+        <p>
+          Find and manage teacher teaching assignments.
+        </p>
+
+      </div>
+
+      @if (assignments.length) {
+
+        <span class="result-count">
+          {{ assignments.length }}
+          {{ assignments.length === 1 ? 'assignment' : 'assignments' }}
+        </span>
+
+      }
+
+    </div>
+
+
+    <div class="filter-controls">
+
+      <!-- SEARCH -->
+
+      <div class="search-control">
+
+        <label
+          for="teacher-assignment-search">
+
+          Search
+
+        </label>
+
+        <div class="search-wrapper">
+
+          <span
+            class="search-icon"
+            aria-hidden="true">
+
+            ⌕
+
+          </span>
+
+          <input
+            id="teacher-assignment-search"
+            type="text"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearchChange()"
+            placeholder="Teacher, class, section or subject..."
+            autocomplete="off"
+          />
+
+          @if (searchTerm) {
+
+            <button
+              type="button"
+              class="search-clear"
+              aria-label="Clear search"
+              (click)="searchTerm = ''; onSearchChange()">
+
+              ×
+
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- ACADEMIC YEAR -->
+
+      <div class="year-control">
+
+        <label
+          for="academic-year-filter">
+
+          Academic Year
+
+        </label>
+
+        <select
+          id="academic-year-filter"
+          [(ngModel)]="selectedAcademicYear"
+          (ngModelChange)="onAcademicYearChange()">
+
+          <option value="">
+            All academic years
+          </option>
+
+          @for (
+            year of academicYears;
+            track year
+          ) {
+
+            <option [value]="year">
+              {{ year }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <!-- RESET -->
+
+      @if (
+        searchTerm ||
+        selectedAcademicYear
+      ) {
+
+        <button
+          type="button"
+          class="reset-button"
+          (click)="searchTerm = ''; selectedAcademicYear = ''; onSearchChange()">
+
+          Clear filters
+
+        </button>
+
+      }
+
+    </div>
+
+  </section>
+
+
+  <!-- ===================================================== -->
+  <!-- TABLE CARD -->
+  <!-- ===================================================== -->
+
+  <section class="table-card">
+
+
+    <!-- LOADING -->
+
+    @if (loading) {
+
+      <div class="loading-state">
+
+        <div
+          class="loading-spinner"
+          aria-hidden="true">
+        </div>
+
+        <p>
+          Loading teacher assignments...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- EMPTY -->
+
+    @else if (!paginatedAssignments.length) {
+
+      <div class="empty-state">
+
+        <div
+          class="empty-icon"
+          aria-hidden="true">
+
+          ◌
+
+        </div>
+
+        @if (
+          searchTerm ||
+          selectedAcademicYear
+        ) {
+
+          <h3>
+            No matching assignments
+          </h3>
+
+          <p>
+            Try changing your search or filter.
+          </p>
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="searchTerm = ''; selectedAcademicYear = ''; onSearchChange()">
+
+            Clear filters
+
+          </button>
+
+        } @else {
+
+          <h3>
+            No teacher assignments yet
+          </h3>
+
+          <p>
+            Assign a teacher to a class, section and subject to get started.
+          </p>
+
+          <button
+            type="button"
+            class="primary-button"
+            (click)="router.navigate(['/admin/teacher-assignments/create'])">
+
+            <span class="button-icon" aria-hidden="true">
+              +
+            </span>
+
+            Assign Teacher
+
+          </button>
+
+        }
+
+      </div>
+
+    }
+
+
+    <!-- TABLE -->
+
+    @else {
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Teacher
+              </th>
+
+              <th>
+                Academic Year
+              </th>
+
+              <th>
+                Class
+              </th>
+
+              <th>
+                Section
+              </th>
+
+              <th>
+                Subject
+              </th>
+
+              <th class="actions-column">
+                Actions
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              assignment of paginatedAssignments;
+              track assignment.id
+            ) {
+
+              <tr>
+
+                <!-- TEACHER -->
+
+                <td>
+
+                  <div class="teacher-cell">
+
+                    <div class="teacher-avatar">
+                      {{ assignment.teacherName.charAt(0).toUpperCase() }}
+                    </div>
+
+                    <div class="teacher-info">
+
+                      <span class="teacher-name">
+                        {{ assignment.teacherName }}
+                      </span>
+
+                      <span class="teacher-label">
+                        Teacher
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <!-- ACADEMIC YEAR -->
+
+                <td>
+
+                  <span class="year-badge">
+                    {{ assignment.academicYearName }}
+                  </span>
+
+                </td>
+
+
+                <!-- CLASS -->
+
+                <td>
+
+                  <span class="class-name">
+                    {{ assignment.className }}
+                  </span>
+
+                </td>
+
+
+                <!-- SECTION -->
+
+                <td>
+
+                  <span class="section-badge">
+                    {{ assignment.sectionName }}
+                  </span>
+
+                </td>
+
+
+                <!-- SUBJECT -->
+
+                <td>
+
+                  <div class="subject-cell">
+
+                    <span class="subject-name">
+                      {{ assignment.subjectName }}
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <!-- ACTIONS -->
+
+                <td class="actions-cell">
+
+                  <div class="action-menu-wrapper">
+
+                    <button
+                      type="button"
+                      class="action-menu-button"
+                      aria-label="Open actions"
+                      [attr.aria-expanded]="openMenuId === assignment.id"
+                      (click)="toggleActionMenu(assignment.id)">
+
+                      <span aria-hidden="true">
+                        ⋮
+                      </span>
+
+                    </button>
+
+
+                    @if (
+                      openMenuId === assignment.id
+                    ) {
+
+                      <div
+                        class="action-menu"
+                        role="menu">
+
+                        <button
+                          type="button"
+                          role="menuitem"
+                          (click)="viewAssignment(assignment.id)">
+
+                          <span aria-hidden="true">
+                            ◉
+                          </span>
+
+                          View
+
+                        </button>
+
+
+                        <button
+                          type="button"
+                          role="menuitem"
+                          (click)="editAssignment(assignment.id)">
+
+                          <span aria-hidden="true">
+                            ✎
+                          </span>
+
+                          Edit
+
+                        </button>
+
+
+                        <button
+                          type="button"
+                          role="menuitem"
+                          class="danger-action"
+                          (click)="deleteAssignment(assignment)">
+
+                          <span aria-hidden="true">
+                            ×
+                          </span>
+
+                          Delete
+
+                        </button>
+
+                      </div>
+
+                    }
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- PAGINATION -->
+      <!-- ================================================= -->
+
+      <div class="pagination">
+
+        <div class="pagination-info">
+
+          Showing
+          <strong>{{ pageStart }}</strong>
+          –
+          <strong>{{ pageEnd }}</strong>
+          of
+          <strong>{{ assignments.length }}</strong>
+
+        </div>
+
+
+        <div class="pagination-controls">
+
+          <button
+            type="button"
+            class="pagination-button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+            aria-label="Previous page">
+
+            ‹
+
+          </button>
+
+
+          @for (
+            page of visiblePages;
+            track page
+          ) {
+
+            <button
+              type="button"
+              class="pagination-button page-number"
+              [class.active]="currentPage === page"
+              (click)="goToPage(page)">
+
+              {{ page }}
+
+            </button>
+
+          }
+
+
+          <button
+            type="button"
+            class="pagination-button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+            aria-label="Next page">
+
+            ›
+
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  </section>
+
+</div>
+
+
+<!-- ======================================================= -->
+<!-- DELETE CONFIRMATION -->
+<!-- ======================================================= -->
+
+@if (showDeleteDialog) {
+
+  <div
+    class="dialog-backdrop"
+    (click)="cancelDelete()"
+    aria-hidden="true">
+  </div>
+
+
+  <div
+    class="confirmation-dialog"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="delete-dialog-title"
+    (click)="$event.stopPropagation()">
+
+    <div class="dialog-icon">
+      !
+    </div>
+
+    <div class="dialog-content">
+
+      <h2 id="delete-dialog-title">
+        Delete Teacher Assignment?
+      </h2>
+
+      <p>
+
+        This will remove
+
+        <strong>
+          {{ pendingAssignment?.teacherName }}
+        </strong>
+
+        from
+
+        <strong>
+          {{ pendingAssignment?.className }}
+          {{ pendingAssignment?.sectionName }}
+        </strong>
+
+        for
+
+        <strong>
+          {{ pendingAssignment?.subjectName }}
+        </strong>.
+
+      </p>
+
+      <p class="dialog-warning">
+        This action cannot be undone.
+      </p>
+
+    </div>
+
+
+    <div class="dialog-actions">
+
+      <button
+        type="button"
+        class="secondary-button"
+        [disabled]="deleting"
+        (click)="cancelDelete()">
+
+        Cancel
+
+      </button>
+
+      <button
+        type="button"
+        class="danger-button"
+        [disabled]="deleting"
+        (click)="confirmDelete()">
+
+        @if (deleting) {
+
+          <span class="button-spinner"></span>
+
+          Deleting...
+
+        } @else {
+
+          Delete Assignment
+
+        }
+
+      </button>
+
+    </div>
+
+  </div>
+
+}

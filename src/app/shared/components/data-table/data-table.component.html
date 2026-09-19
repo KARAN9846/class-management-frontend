@@ -2,171 +2,163 @@
 
   @if (loading) {
 
-  <div class="table-loading">
+    <div class="table-loading">
 
-    <div class="loading-spinner"></div>
+      <div class="loading-spinner"></div>
 
-    <span>
-      Loading data...
-    </span>
+      <span>Loading data...</span>
 
-  </div>
+    </div>
 
   } @else {
 
-  <div class="table-scroll">
+    <div
+      class="table-scroll"
+      (scroll)="closeActionMenu()">
 
-    <table class="data-table">
+      <table class="data-table">
 
-      <!-- =====================================================
-             TABLE HEADER
-        ====================================================== -->
+        <thead>
 
-      <thead>
+          <tr>
 
-        <tr>
-
-          @for (
-          column of columns;
-          track trackColumn($index, column)
-          ) {
-
-          <th [style.width]="column.width" [class.text-center]="column.align === 'center'"
-            [class.text-right]="column.align === 'right'">
-
-            {{ column.label }}
-
-          </th>
-
-          }
-
-          @if (showActions) {
-
-          <th class="actions-header">
-            Actions
-          </th>
-
-          }
-
-        </tr>
-
-      </thead>
-
-
-      <!-- =====================================================
-             TABLE BODY
-        ====================================================== -->
-
-      <tbody>
-
-        @if (data.length) {
-
-        @for (
-        row of data;
-        track trackRow($index, row)
-        ) {
-
-        <tr>
-
-          @for (
-          column of columns;
-          track trackColumn($index, column)
-          ) {
-
-          <td [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'">
-
-
-            <!-- =================================================
-                         STATUS
-                    ================================================== -->
-
-            @if (
-            column.type === 'status' ||
-            column.type === 'assignment-status'
+            @for (
+              column of columns;
+              track trackColumn($index, column)
             ) {
 
-            <app-status-badge [label]="getStatusLabel(row, column)" [variant]="getStatusVariant(row, column)">
-            </app-status-badge>
+              <th
+                [style.width]="column.width"
+                [class.text-center]="column.align === 'center'"
+                [class.text-right]="column.align === 'right'">
 
+                {{ column.label }}
 
-            <!-- =================================================
-                         PERMISSIONS
-                    ================================================== -->
-
-            } @else if (column.type === 'permissions') {
-
-            <div class="permission-list">
-
-              @if (row[column.key]?.length) {
-
-              @for (
-              permission of row[column.key];
-              track permission?.id ?? $index
-              ) {
-
-              <span class="permission-badge">
-
-                {{ permission?.name ?? permission }}
-
-              </span>
-
-              }
-
-              } @else {
-
-              <span class="empty-permissions">
-                No permissions
-              </span>
-
-              }
-
-            </div>
-
-
-            <!-- =================================================
-                         DATE / TIME
-                    ================================================== -->
-
-            } @else if (column.type === 'date-time') {
-
-            {{ formatDateTime(getCellValue(row, column)) }}
-
-
-            <!-- =================================================
-                         CURRENT
-                    ================================================== -->
-
-            } @else if (column.type === 'current') {
-
-            @if (isCurrent(row)) {
-
-            <span class="current-badge">
-              Current
-            </span>
+              </th>
 
             }
 
+            @if (showActions) {
 
-            <!-- =================================================
-                         SECTIONS
-                    ================================================== -->
+              <th class="actions-header">
+                Actions
+              </th>
 
-            } @else if (column.type === 'sections') {
+            }
 
-            <div class="section-list">
+          </tr>
 
-              @if (row[column.key]?.length) {
+        </thead>
 
-              @for (
-              section of row[column.key];
-              track trackItem($index, section)
-              ) {
 
-              <span class="section-chip">
+        <tbody>
 
-                {{ section.name }}
+          @if (displayedData.length) {
 
-                <button type="button" title="Edit" (click)="
+            @for (
+              row of displayedData;
+              track trackRow($index, row)
+            ) {
+
+              <tr>
+
+                @for (
+                  column of columns;
+                  track trackColumn($index, column)
+                ) {
+
+                  <td
+                    [class.text-center]="column.align === 'center'"
+                    [class.text-right]="column.align === 'right'">
+
+                    @if (
+                      column.type === 'status' ||
+                      column.type === 'assignment-status'
+                    ) {
+
+                      <app-status-badge
+                        [label]="getStatusLabel(row, column)"
+                        [variant]="getStatusVariant(row, column)">
+                      </app-status-badge>
+
+                    } @else if (
+                      column.type === 'permission-count'
+                    ) {
+
+                      <span class="permission-count">
+                        {{ row[column.key]?.length || 0 }}
+                      </span>
+
+                    } @else if (
+                      column.type === 'permissions'
+                    ) {
+
+                      <div class="permission-list">
+
+                        @if (row[column.key]?.length) {
+
+                          @for (
+                            permission of row[column.key];
+                            track permission?.id ?? $index
+                          ) {
+
+                            <span class="permission-badge">
+                              {{ permission?.name ?? permission }}
+                            </span>
+
+                          }
+
+                        } @else {
+
+                          <span class="empty-permissions">
+                            No permissions
+                          </span>
+
+                        }
+
+                      </div>
+
+                    } @else if (
+                      column.type === 'date-time'
+                    ) {
+
+                      <span class="date-cell">
+                        {{ formatDateTime(getCellValue(row, column)) }}
+                      </span>
+
+                    } @else if (
+                      column.type === 'current'
+                    ) {
+
+                      @if (isCurrent(row)) {
+
+                        <span class="current-badge">
+                          Current
+                        </span>
+
+                      }
+
+                    } @else if (
+                      column.type === 'sections'
+                    ) {
+
+                      <div class="section-list">
+
+                        @if (row[column.key]?.length) {
+
+                          @for (
+                            section of row[column.key];
+                            track trackItem($index, section)
+                          ) {
+
+                            <span class="section-chip">
+
+                              {{ section.name }}
+
+                              <button
+                                type="button"
+                                title="Edit"
+                                (click)="
                                   onActionClick(
                                     {
                                       label: 'Edit Section',
@@ -176,12 +168,14 @@
                                   )
                                 ">
 
-                  ✎
+                                ✎
 
-                </button>
+                              </button>
 
-
-                <button type="button" title="Delete" (click)="
+                              <button
+                                type="button"
+                                title="Delete"
+                                (click)="
                                   onActionClick(
                                     {
                                       label: 'Delete Section',
@@ -192,163 +186,278 @@
                                   )
                                 ">
 
-                  ×
+                                ×
 
-                </button>
+                              </button>
 
-              </span>
+                            </span>
 
-              }
+                          }
 
-              } @else {
+                        } @else {
 
-              <span class="empty-sections">
-                No sections
-              </span>
+                          <span class="empty-sections">
+                            No sections
+                          </span>
 
-              }
+                        }
 
-            </div>
+                      </div>
 
+                    } @else if (
+                      column.type === 'attendance-teacher'
+                    ) {
 
-            <!-- =================================================
-                         DEFAULT / TEXT
-                    ================================================== -->
+                      <span class="attendance-teacher-name">
+                        {{ getCellValue(row, column) }}
+                      </span>
 
-            }
-      @else if (column.type === 'attendance-teacher') {
+                    } @else if (
+                      column.type === 'attendance-last-updated'
+                    ) {
 
-  <span class="attendance-teacher-name">
-    {{ getCellValue(row, column) }}
-  </span>
+                      @if (getCellValue(row, column)) {
 
-}
+                        <span class="attendance-last-updated-name">
+                          {{ getCellValue(row, column) }}
+                        </span>
 
-@else if (column.type === 'attendance-last-updated') {
+                      } @else {
 
-  @if (getCellValue(row, column)) {
+                        <span class="attendance-last-updated-empty">
+                          -
+                        </span>
 
-    <span class="attendance-last-updated-name">
-      {{ getCellValue(row, column) }}
-    </span>
+                      }
 
-  } @else {
+                    } @else {
 
-    <span class="attendance-last-updated-empty">
-      -
-    </span>
+                      <span
+                        class="text-cell"
+                        [title]="getCellValue(row, column)">
 
-  }
+                        {{ getCellValue(row, column) }}
 
-}
-            @else {
+                      </span>
 
-            {{ getCellValue(row, column) }}
+                      @if (
+                        currentField &&
+                        column.key === 'name' &&
+                        isCurrent(row)
+                      ) {
 
-            @if (
-            currentField &&
-            column.key === 'name' &&
-            isCurrent(row)
-            ) {
+                        <span class="current-badge">
+                          Current
+                        </span>
 
-            <span class="current-badge">
-              Current
-            </span>
+                      }
 
-            }
+                    }
 
-            }
-
-          </td>
-
-          }
-
-
-          <!-- =====================================================
-                     ACTIONS
-                ====================================================== -->
-
-          @if (showActions) {
-
-          <td class="actions-cell">
-
-            <div class="row-actions">
-
-              @for (
-              action of getRowActions(row);
-              track trackAction($index, action)
-              ) {
-
-              <button type="button" class="row-action" [class.danger]="action.danger" [attr.title]="action.label"
-                (click)="onActionClick(action, row)">
-
-                @if (action.icon) {
-
-                <span class="action-icon">
-                  {{ action.icon }}
-                </span>
-
-                } @else {
-
-                <span>
-                  {{ action.label }}
-                </span>
+                  </td>
 
                 }
 
-              </button>
 
-              }
+                @if (showActions) {
 
-            </div>
+                  <td class="actions-cell">
 
-          </td>
+                    <button
+                      type="button"
+                      class="action-menu-trigger"
+                      aria-label="Open role actions"
+                      [attr.aria-expanded]="
+                        openActionRowId === getRowId(row, $index)
+                      "
+                      (click)="
+                        toggleActionMenu(
+                          row,
+                          $index,
+                          $event
+                        )
+                      ">
+
+                      <span aria-hidden="true">
+                        ⋮
+                      </span>
+
+                    </button>
+
+                  </td>
+
+                }
+
+              </tr>
+
+            }
+
+          } @else {
+
+            <tr>
+
+              <td
+                class="empty-cell"
+                [attr.colspan]="
+                  columns.length +
+                  (showActions ? 1 : 0)
+                ">
+
+                <div class="empty-state">
+
+                  <div class="empty-icon">
+                    ◌
+                  </div>
+
+                  <strong>
+                    No data
+                  </strong>
+
+                  <span>
+                    No records found
+                  </span>
+
+                </div>
+
+              </td>
+
+            </tr>
 
           }
 
-        </tr>
+        </tbody>
 
-        }
+      </table>
 
-        } @else {
+    </div>
 
-        <!-- =====================================================
-                 EMPTY STATE
-            ====================================================== -->
 
-        <tr>
+    <!-- =========================================================
+         VIEWPORT-LEVEL ACTION MENU
+         IMPORTANT:
+         This is OUTSIDE .table-scroll.
+    ========================================================== -->
 
-          <td class="empty-cell" [attr.colspan]="
-                  columns.length + (showActions ? 1 : 0)
-                ">
+    @if (
+      openActionRowId !== null &&
+      actionMenuActions.length
+    ) {
 
-            <div class="empty-state">
+      <div
+        class="action-menu"
+        [style.top.px]="actionMenuTop"
+        [style.left.px]="actionMenuLeft"
+        (click)="$event.stopPropagation()">
 
-              <div class="empty-icon">
-                ◌
-              </div>
+        @for (
+          action of actionMenuActions;
+          track trackAction($index, action)
+        ) {
 
-              <strong>
-                No data
-              </strong>
+          <button
+            type="button"
+            class="action-menu-item"
+            [class.danger]="action.danger"
+            (click)="
+              onActionMenuClick(
+                action,
+                data.find(
+                  item =>
+                    (item?.id ?? -1) === openActionRowId
+                )
+              )
+            ">
 
-              <span>
-                No records found
+            @if (action.icon) {
+
+              <span class="action-menu-icon">
+                {{ action.icon }}
               </span>
 
-            </div>
+            }
 
-          </td>
+            <span>
+              {{ action.label }}
+            </span>
 
-        </tr>
+          </button>
 
         }
 
-      </tbody>
+      </div>
 
-    </table>
+    }
 
-  </div>
+
+    <!-- =========================================================
+         PAGINATION
+    ========================================================== -->
+
+    @if (
+      enablePagination &&
+      totalItems > 0
+    ) {
+
+      <div class="pagination">
+
+        <span class="pagination-summary">
+
+          Showing
+          {{ displayStart }}–{{ displayEnd }}
+          of
+          {{ totalItems }}
+
+        </span>
+
+
+        <div class="pagination-controls">
+
+          <button
+            type="button"
+            class="pagination-button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+            aria-label="Previous page">
+
+            ‹
+
+          </button>
+
+
+          @for (
+            page of pageNumbers;
+            track page
+          ) {
+
+            <button
+              type="button"
+              class="pagination-page"
+              [class.active]="currentPage === page"
+              (click)="goToPage(page)">
+
+              {{ page }}
+
+            </button>
+
+          }
+
+
+          <button
+            type="button"
+            class="pagination-button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+            aria-label="Next page">
+
+            ›
+
+          </button>
+
+        </div>
+
+      </div>
+
+    }
 
   }
 

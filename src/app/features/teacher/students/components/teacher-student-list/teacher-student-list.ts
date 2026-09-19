@@ -9,22 +9,22 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { PermissionService } from '../../../../core/auth/permission.service';
-import { TeacherStudentService } from '../services/teacher-student.service';
+import { ConfirmationDialogComponent } from '../../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { PermissionService } from '../../../../../core/auth/permission.service';
+import { TeacherStudentService } from '../../services/teacher-student.service';
 
 import {
   TeacherStudent,
   TeacherStudentPage,
   TeacherStudentScopeOption
-} from '../models/teacher-student.model';
+} from '../../models/teacher-student.model';
 
-import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
-import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
-import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
-import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
-import { LoadingComponent } from '../../../../shared/components/loading/loading.component';
-import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
+import { SearchInputComponent } from '../../../../../shared/components/search-input/search-input.component';
+import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
+import { StatusBadgeComponent } from '../../../../../shared/components/status-badge/status-badge.component';
+import { LoadingComponent } from '../../../../../shared/components/loading/loading.component';
+import { EmptyStateComponent } from '../../../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-teacher-student-list',

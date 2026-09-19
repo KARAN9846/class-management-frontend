@@ -14,6 +14,7 @@ import {
 } from '../../../../shared/components/data-table/data-table.component';
 
 import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
+import { PermissionService } from '../../../../core/auth/permission.service';
 
 import { Attendance } from '../../../admin/attendance/models/attendance.model';
 import { TeacherAttendance } from '../services/teacher-attendance';
@@ -46,6 +47,21 @@ export class TeacherAttendanceComponent implements OnInit {
 
   private readonly cdr =
     inject(ChangeDetectorRef);
+
+  private readonly permissionService =
+    inject(PermissionService);
+
+    canMarkAttendance(): boolean {
+  return this.permissionService.hasPermission(
+    'ATTENDANCE_MARK'
+  );
+}
+
+canEditAttendance(): boolean {
+  return this.permissionService.hasPermission(
+    'ATTENDANCE_EDIT'
+  );
+}
 
   attendance: Attendance[] = [];
 
@@ -101,16 +117,24 @@ sectionFilter = 'ALL';
 }
   ];
 
-actions: TableAction[] = [
-  {
-    label: 'Edit',
-    type: 'edit'
-  }
-];
+get actions(): TableAction[] {
+  return this.canEditAttendance()
+    ? [
+        {
+          label: 'Edit',
+          type: 'edit'
+        }
+      ]
+    : [];
+}
+
 
 onActionClick(event: any): void {
 
-  if (event.action.type === 'edit') {
+  if (
+    event.action.type === 'edit' &&
+    this.canEditAttendance()
+  ) {
 
     const attendanceId =
       event.row.id;
@@ -122,9 +146,27 @@ onActionClick(event: any): void {
   }
 }
 
-  ngOnInit(): void {
-    this.loadAttendance();
-  }
+ngOnInit(): void {
+  this.permissionService
+    .loadMyPermissions()
+    .subscribe({
+      next: () => {
+        this.loadAttendance();
+      },
+
+      error: (error) => {
+        console.error(
+          'Failed to load teacher permissions:',
+          error
+        );
+
+        this.errorMessage =
+          'Failed to load attendance permissions.';
+
+        this.cdr.detectChanges();
+      }
+    });
+}
 
   loadAttendance(): void {
     this.loading = true;

@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { permissionGuard } from './core/guards/permission.guard';
 
 // LAYOUT
 import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
@@ -48,6 +49,10 @@ import { AssignmentForm } from './features/admin/assignments/assignment-form/ass
 
 import { AttendanceOverview } from './features/admin/attendance/attendance-overview/attendance-overview';
 
+import { TeacherAssignmentList as AdminTeacherAssignmentList } from './features/admin/teacher-assignments/teacher-assignment-list/teacher-assignment-list';
+import { TeacherAssignmentForm as AdminTeacherAssignmentForm } from './features/admin/teacher-assignments/teacher-assignment-form/teacher-assignment-form';
+import { TeacherAssignmentView as AdminTeacherAssignmentView } from './features/admin/teacher-assignments/teacher-assignment-view/teacher-assignment-view';
+
 // FEES
 import { FeeStructureList } from './features/admin/fees/fee-structure-list/fee-structure-list';
 import { FeeStructureCreateComponent } from './features/admin/fees/fee-structure-create/fee-structure-create';
@@ -66,8 +71,8 @@ import { TeacherDashboard } from './features/teacher/dashboard/teacher-dashboard
 import { TeacherAssignmentList } from './features/teacher/assignments/teacher-assignment-list/teacher-assignment-list';
 import { TeacherAssignmentForm } from './features/teacher/assignments/teacher-assignment-form/teacher-assignment-form';
 
-import { TeacherStudentListComponent } from './features/teacher/students/teacher-student-list/teacher-student-list';
-import { TeacherStudentFormComponent } from './features/teacher/students/assigned-students/teacher-student-form/teacher-student-form';
+import { TeacherStudentListComponent } from './features/teacher/students/components/teacher-student-list/teacher-student-list';
+import { TeacherStudentFormComponent } from './features/teacher/students/components/teacher-student-form/teacher-student-form';
 
 import { TeacherAttendanceComponent } from './features/teacher/attendance/teacher-attendance/teacher-attendance';
 import { MarkAttendanceComponent } from './features/teacher/attendance/mark-attendance/mark-attendance';
@@ -294,6 +299,32 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
 
+      // teacher assignments
+{
+  path: 'admin/teacher-assignments',
+  component: AdminTeacherAssignmentList,
+  canActivate: [roleGuard],
+  data: { roles: ['ADMIN'] }
+},
+{
+  path: 'admin/teacher-assignments/create',
+  component: AdminTeacherAssignmentForm,
+  canActivate: [roleGuard],
+  data: { roles: ['ADMIN'] }
+},
+{
+  path: 'admin/teacher-assignments/:id/view',
+  component: AdminTeacherAssignmentView,
+  canActivate: [roleGuard],
+  data: { roles: ['ADMIN'] }
+},
+{
+  path: 'admin/teacher-assignments/:id/edit',
+  component: AdminTeacherAssignmentForm,
+  canActivate: [roleGuard],
+  data: { roles: ['ADMIN'] }
+},
+
       // -------------------- ASSIGNMENTS --------------------
 
       {
@@ -473,22 +504,40 @@ export const routes: Routes = [
       {
         path: 'teacher/attendance',
         component: TeacherAttendanceComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['TEACHER'] }
+        canActivate: [
+          roleGuard,
+          permissionGuard
+        ],
+        data: {
+          roles: ['TEACHER'],
+          permissions: ['ATTENDANCE_VIEW']
+        }
       },
 
       {
         path: 'teacher/attendance/mark',
         component: MarkAttendanceComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['TEACHER'] }
+        canActivate: [
+          roleGuard,
+          permissionGuard
+        ],
+        data: {
+          roles: ['TEACHER'],
+          permissions: ['ATTENDANCE_MARK']
+        }
       },
 
       {
         path: 'teacher/attendance/edit/:id',
         component: EditAttendanceComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['TEACHER'] }
+        canActivate: [
+          roleGuard,
+          permissionGuard
+        ],
+        data: {
+          roles: ['TEACHER'],
+          permissions: ['ATTENDANCE_EDIT']
+        }
       },
 
       // =====================================================

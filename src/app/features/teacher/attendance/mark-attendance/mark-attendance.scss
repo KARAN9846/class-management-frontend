@@ -1,390 +1,1003 @@
-:host {
-  display: block;
-  width: 100%;
-}
+/* =========================================================
+   PAGE
+   ========================================================= */
 
 .page {
-  width: 100%;
-  height: calc(100vh - 110px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 24px 8px 40px 24px;
-  box-sizing: border-box;
-
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
-}
-
-.page::-webkit-scrollbar {
-  width: 6px;
-}
-
-.page::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.page::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
-.page::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  min-height: 100%;
+  padding: 24px;
+  background: #f8fafc;
 }
 
 
-// =========================================================
-// HEADER
-// =========================================================
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
 
 .page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
   margin-bottom: 24px;
+}
+
+.page-header-content {
+  min-width: 0;
+}
+
+.page-eyebrow {
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
 }
 
 .page-header h1 {
   margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #0f172a;
 }
 
 .page-header p {
-  margin: 6px 0 0;
+  margin: 7px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #64748b;
 }
 
 
-// =========================================================
-// CARD
-// =========================================================
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+
+  padding: 10px 14px;
+
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.back-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.back-button:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.18);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   MAIN CARD
+   ========================================================= */
 
 .attendance-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
+  overflow: hidden;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.03),
+    0 4px 12px rgba(15, 23, 42, 0.04);
 }
 
 
-// =========================================================
-// FORM
-// =========================================================
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
 
-.form-row {
+.section-header {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.section-header h2 {
+  margin: 0;
+
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+.section-header p {
+  margin: 4px 0 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.form-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
   gap: 20px;
+
+  padding: 22px 24px 24px;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  min-width: 0;
 }
 
 .form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-size: 13px;
   font-weight: 600;
+
+  color: #334155;
 }
 
-.form-group select,
-.form-group input {
+.form-control {
   width: 100%;
+  min-height: 42px;
   box-sizing: border-box;
-  padding: 11px 12px;
-  border: 1px solid #d1d5db;
+
+  padding: 9px 12px;
+
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
-  background: #fff;
+
+  background: #ffffff;
+
+  color: #0f172a;
+  font-family: inherit;
   font-size: 14px;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
 
-.form-group select:focus,
-.form-group input:focus {
+.form-control:hover:not(:disabled) {
+  border-color: #94a3b8;
+}
+
+.form-control:focus {
   outline: none;
-  border-color: #6b7280;
+  border-color: #3b82f6;
+
+  box-shadow:
+    0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
-.form-group small {
-  color: #6b7280;
+.form-control:disabled {
+  cursor: not-allowed;
+  background: #f8fafc;
+  color: #94a3b8;
+}
+
+.field-hint {
+  display: block;
+
+  margin-top: 6px;
+
+  font-size: 12px;
+  line-height: 1.4;
+
+  color: #64748b;
+}
+
+.field-hint.warning {
+  color: #b45309;
 }
 
 
-// =========================================================
-// MESSAGES
-// =========================================================
+/* =========================================================
+   FEEDBACK MESSAGES
+   ========================================================= */
 
-.success-message,
-.error-message {
-  margin-top: 20px;
-  padding: 12px 14px;
-  border-radius: 8px;
+.feedback-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+
+  margin: 0 24px 20px;
+  padding: 13px 14px;
+
+  border: 1px solid;
+  border-radius: 9px;
+}
+
+.feedback-message strong {
+  display: block;
+
+  margin-bottom: 2px;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.feedback-message p {
+  margin: 0;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.feedback-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+
+  border-radius: 50%;
+
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .success-message {
+  border-color: #bbf7d0;
   background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+.success-message .feedback-icon {
+  background: #dcfce7;
+  color: #15803d;
 }
 
 .error-message {
+  border-color: #fecaca;
   background: #fef2f2;
-  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.error-message .feedback-icon {
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 
-// =========================================================
-// STUDENTS
-// =========================================================
+/* =========================================================
+   STUDENTS SECTION
+   ========================================================= */
 
 .students-section {
-  margin-top: 32px;
+  border-top: 1px solid #eef2f7;
 }
 
 .students-header {
-  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 20px 24px;
 }
 
 .students-header h2 {
   margin: 0;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  color: #0f172a;
 }
 
 .students-header p {
-  margin: 5px 0 0;
-  color: #6b7280;
+  margin: 4px 0 0;
+
+  font-size: 12px;
+  color: #64748b;
 }
 
 
-// =========================================================
-// STUDENT LIST
-// =========================================================
+/* =========================================================
+   ATTENDANCE SUMMARY
+   ========================================================= */
 
-.student-list {
-  width: 100%;
-  border: 1px solid #e5e7eb;
+.attendance-summary {
+  display: flex;
+  align-items: center;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+
+  background: #ffffff;
+}
+
+.summary-item {
+  min-width: 78px;
+  padding: 8px 13px;
+
+  text-align: center;
+}
+
+.summary-item + .summary-item {
+  border-left: 1px solid #e2e8f0;
+}
+
+.summary-value {
+  display: block;
+
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+.summary-label {
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  color: #64748b;
+}
+
+.present-summary .summary-value {
+  color: #15803d;
+}
+
+.absent-summary .summary-value {
+  color: #dc2626;
+}
+
+
+/* =========================================================
+   STUDENT TABLE
+   ========================================================= */
+
+.student-table {
+  margin: 0 24px;
+
+  overflow: hidden;
+
+  border: 1px solid #e2e8f0;
   border-radius: 10px;
-  overflow-x: auto;
-  overflow-y: hidden;
 }
 
 .student-header,
 .student-row {
   display: grid;
-  grid-template-columns: 120px minmax(180px, 1fr) 240px;
+  grid-template-columns: 110px minmax(260px, 1fr) minmax(250px, 0.75fr);
   align-items: center;
-  gap: 16px;
-  min-width: 600px;
-  padding: 14px 16px;
-  box-sizing: border-box;
 }
 
 .student-header {
-  font-weight: 600;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  min-height: 42px;
+
+  background: #f8fafc;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.student-header > div,
+.student-row > div {
+  padding: 0 16px;
 }
 
 .student-row {
-  border-bottom: 1px solid #e5e7eb;
+  min-height: 68px;
+
+  background: #ffffff;
+
+  transition: background 0.12s ease;
 }
 
-.student-row:last-child {
-  border-bottom: none;
+.student-row + .student-row {
+  border-top: 1px solid #f1f5f9;
+}
+
+.student-row:hover {
+  background: #fafcff;
+}
+
+
+/* =========================================================
+   STUDENT COLUMNS
+   ========================================================= */
+
+.student-col-roll {
+  min-width: 0;
 }
 
 .roll-number {
-  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.student-profile {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  min-width: 0;
+}
+
+.student-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+
+  border-radius: 50%;
+
+  background: #f1f5f9;
+
+  color: #475569;
+
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .student-name {
-  font-weight: 500;
+  overflow: hidden;
+
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  color: #1e293b;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-id {
+  margin-top: 2px;
+
+  font-size: 11px;
+  line-height: 1.3;
+
+  color: #94a3b8;
 }
 
 
-// =========================================================
-// ATTENDANCE BUTTONS
-// =========================================================
+/* =========================================================
+   ATTENDANCE BUTTONS
+   ========================================================= */
 
 .attendance-buttons {
-  display: flex;
-  gap: 8px;
+  display: inline-flex;
+  align-items: center;
+
+  padding: 3px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  background: #f8fafc;
 }
 
 .attendance-button {
-  min-width: 80px;
-  padding: 8px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 7px;
-  background: #fff;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.attendance-button:hover {
-  background: #f9fafb;
-}
-
-.attendance-button.present {
-  border-color: #86efac;
-  background: #f0fdf4;
-  font-weight: 600;
-}
-
-.attendance-button.absent {
-  border-color: #fca5a5;
-  background: #fef2f2;
-  font-weight: 600;
-}
-
-.attendance-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-
-// =========================================================
-// SUBMIT
-// =========================================================
-
-.submit-area {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-
-.submit-button {
-  padding: 11px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.submit-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-
-// =========================================================
-// STATES
-// =========================================================
-
-.state,
-.empty-state {
-  padding: 40px 20px;
-  text-align: center;
-}
-
-.empty-state {
-  border: 1px dashed #d1d5db;
-  border-radius: 10px;
-}
-
-.empty-state h3 {
-  margin: 0 0 8px;
-}
-
-.empty-state p {
-  margin: 0;
-}
-
-
-// =========================================================
-// BACK BUTTON
-// =========================================================
-
-.back-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 30px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  text-decoration: none;
+  gap: 7px;
+
+  min-width: 92px;
+  height: 34px;
+
+  padding: 0 12px;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-family: inherit;
+  font-size: 12px;
   font-weight: 600;
+
   cursor: pointer;
-  background: #d7d8da;
-  color: #374151;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.back-button:hover {
-  background: #e5e7eb;
+.attendance-button:hover:not(:disabled) {
+  background: #ffffff;
+  color: #334155;
+}
+
+.attendance-button.selected {
+  background: #ffffff;
+
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.1);
+}
+
+.present-button.selected {
+  color: #15803d;
+}
+
+.absent-button.selected {
+  color: #dc2626;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #cbd5e1;
+}
+
+.present-button.selected .status-dot {
+  background: #22c55e;
+}
+
+.absent-button.selected .status-dot {
+  background: #ef4444;
+}
+
+.attendance-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.attendance-button:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.16);
+  outline-offset: 1px;
 }
 
 
-// =========================================================
-// RESPONSIVE
-// =========================================================
+/* =========================================================
+   MOBILE LABEL
+   ========================================================= */
 
-@media (max-width: 768px) {
+.mobile-label {
+  display: none;
+}
 
-  .page {
-    padding: 18px 6px 30px 18px;
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.students-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  min-height: 180px;
+
+  margin: 0 24px 24px;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  color: #475569;
+}
+
+.students-loading strong {
+  display: block;
+
+  font-size: 13px;
+  color: #334155;
+}
+
+.students-loading p {
+  margin: 3px 0 0;
+
+  font-size: 12px;
+  color: #64748b;
+}
+
+.loading-spinner,
+.button-spinner {
+  width: 17px;
+  height: 17px;
+
+  border: 2px solid #cbd5e1;
+  border-top-color: #475569;
+
+  border-radius: 50%;
+
+  animation: attendance-spin 0.7s linear infinite;
+}
+
+.button-spinner {
+  width: 14px;
+  height: 14px;
+
+  border-color: rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+}
+
+@keyframes attendance-spin {
+  to {
+    transform: rotate(360deg);
   }
+}
 
-  .attendance-card {
-    padding: 16px;
-    border-radius: 10px;
-  }
 
-  .page-header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
 
-  .back-button {
-    margin-top: 0;
-    width: 100%;
-  }
+.empty-state {
+  margin: 0 24px 24px;
+  padding: 48px 24px;
 
-  .form-row {
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  text-align: center;
+}
+
+.empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  margin: 0 auto 12px;
+
+  border-radius: 50%;
+
+  background: #e2e8f0;
+
+  color: #64748b;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.empty-state h3 {
+  margin: 0;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #334155;
+}
+
+.empty-state p {
+  max-width: 420px;
+
+  margin: 6px auto 0;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  color: #64748b;
+}
+
+
+/* =========================================================
+   SUBMIT AREA
+   ========================================================= */
+
+.submit-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  margin-top: 20px;
+  padding: 16px 24px;
+
+  border-top: 1px solid #e2e8f0;
+
+  background: #f8fafc;
+}
+
+.submit-info strong {
+  display: block;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #334155;
+}
+
+.submit-info span {
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 12px;
+
+  color: #64748b;
+}
+
+.submit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-width: 155px;
+  height: 40px;
+
+  padding: 0 16px;
+
+  border: 1px solid #1d4ed8;
+  border-radius: 8px;
+
+  background: #2563eb;
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 1px 2px rgba(37, 99, 235, 0.2);
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.05s ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1e40af;
+
+  box-shadow:
+    0 3px 8px rgba(37, 99, 235, 0.2);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.submit-button:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.2);
+  outline-offset: 2px;
+}
+
+.submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .form-grid {
     grid-template-columns: 1fr;
-  }
-
-  .student-list {
-    overflow-x: auto;
   }
 
   .student-header,
   .student-row {
-    min-width: 560px;
+    grid-template-columns:
+      90px
+      minmax(220px, 1fr)
+      minmax(220px, 0.8fr);
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .page {
+    padding: 16px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .back-button {
+    width: fit-content;
+  }
+
+  .section-header,
+  .form-grid,
+  .students-header {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .feedback-message {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .students-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .attendance-summary {
+    width: 100%;
+  }
+
+  .summary-item {
+    flex: 1;
+  }
+
+  .student-table {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .student-header {
+    display: none;
+  }
+
+  .student-row {
+    display: block;
+
+    padding: 15px;
+  }
+
+  .student-row > div {
+    padding: 0;
+  }
+
+  .student-row > div + div {
+    margin-top: 12px;
+  }
+
+  .mobile-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    color: #94a3b8;
+  }
+
+  .student-col-roll {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .student-col-roll .mobile-label {
+    margin: 0;
+  }
+
+  .attendance-buttons {
+    width: 100%;
+  }
+
+  .attendance-button {
+    flex: 1;
+  }
+
+  .students-loading,
+  .empty-state {
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   .submit-area {
-    justify-content: stretch;
+    align-items: stretch;
+    flex-direction: column;
+
+    padding: 16px;
   }
 
   .submit-button {
     width: 100%;
   }
+
 }
 
-@media (max-width: 480px) {
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
 
   .page {
-    padding: 14px 4px 30px 14px;
+    padding: 12px;
+  }
+
+  .attendance-card {
+    border-radius: 10px;
   }
 
   .page-header h1 {
     font-size: 22px;
   }
 
-  .attendance-card {
-    padding: 12px;
+  .form-grid {
+    gap: 16px;
+    padding-top: 18px;
+    padding-bottom: 18px;
   }
 
-  .students-section {
-    margin-top: 24px;
+  .student-table {
+    margin-left: 12px;
+    margin-right: 12px;
   }
 
-  .student-header,
-  .student-row {
-    min-width: 520px;
-    padding: 12px;
-    gap: 12px;
-  }
-
-  .attendance-button {
-    min-width: 75px;
-    padding: 8px 10px;
-  }
-
+  .students-loading,
   .empty-state {
-    padding: 36px 16px;
+    margin-left: 12px;
+    margin-right: 12px;
   }
+
 }

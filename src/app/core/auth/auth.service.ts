@@ -18,10 +18,17 @@ export class AuthService {
     private readonly http: HttpClient
   ) {}
 
-  login(request: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(
-      `${this.authUrl}/login`,
-      request
-    );
-  }
+login(request: LoginRequest): Observable<LoginResponse> {
+  return this.http.post<LoginResponse>(
+    `${this.authUrl}/login`,
+    request
+  );
+}
+
+logout(): Observable<void> {
+  return this.http.post<void>(
+    `${this.authUrl}/logout`,
+    {}
+  );
+}
 }

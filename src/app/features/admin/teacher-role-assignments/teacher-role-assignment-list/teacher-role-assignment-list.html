@@ -1,12 +1,13 @@
 <div class="assignment-page">
 
-  <!-- ===================================================== -->
-  <!-- HEADER -->
-  <!-- ===================================================== -->
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
 
-  <div class="page-header">
+  <header class="page-header">
 
-    <div>
+    <div class="header-content">
+
       <div class="breadcrumb">
         <span>Management</span>
         <span>/</span>
@@ -16,8 +17,9 @@
       <h1>Teacher Role Assignments</h1>
 
       <p>
-        Assign additional roles and access scopes to teachers.
+        Manage teacher roles and their access scopes.
       </p>
+
     </div>
 
     <button
@@ -25,47 +27,68 @@
       class="primary-button"
       (click)="createAssignment()">
 
-      + Assign Role
+      <span class="button-icon">+</span>
+
+      Assign Role
 
     </button>
 
-  </div>
+  </header>
 
 
-  <!-- ===================================================== -->
-  <!-- SUCCESS -->
-  <!-- ===================================================== -->
+  <!-- =====================================================
+       ALERTS
+       ===================================================== -->
 
   @if (successMessage) {
 
     <div class="success-banner">
 
-      {{ successMessage }}
+      <div class="alert-icon">
+        ✓
+      </div>
+
+      <div>
+        <strong>
+          Success
+        </strong>
+
+        <span>
+          {{ successMessage }}
+        </span>
+      </div>
 
     </div>
 
   }
 
 
-  <!-- ===================================================== -->
-  <!-- ERROR -->
-  <!-- ===================================================== -->
-
   @if (errorMessage) {
 
     <div class="error-banner">
 
-      <div>
-        <strong>Something went wrong</strong>
+      <div class="alert-content">
 
-        <span>
-          {{ errorMessage }}
-        </span>
+        <div class="alert-icon">
+          !
+        </div>
+
+        <div>
+          <strong>
+            Something went wrong
+          </strong>
+
+          <span>
+            {{ errorMessage }}
+          </span>
+        </div>
+
       </div>
 
       <button
         type="button"
-        (click)="retry()">
+        class="retry-button"
+        (click)="loadAssignments()">
 
         Retry
 
@@ -76,9 +99,9 @@
   }
 
 
-  <!-- ===================================================== -->
-  <!-- LOADING -->
-  <!-- ===================================================== -->
+  <!-- =====================================================
+       LOADING STATE
+       ===================================================== -->
 
   @if (loading) {
 
@@ -86,44 +109,298 @@
 
       <div class="loader"></div>
 
-      <span>
-        Loading teacher role assignments...
-      </span>
+      <div>
+        <strong>
+          Loading assignments
+        </strong>
+
+        <span>
+          Fetching teacher role assignments...
+        </span>
+      </div>
 
     </section>
 
   }
 
 
-  <!-- ===================================================== -->
-  <!-- CONTENT -->
-  <!-- ===================================================== -->
-
   @if (!loading) {
 
-    @if (assignments.length > 0) {
+    <!-- ===================================================
+         TOOLBAR
+         =================================================== -->
 
-      <section class="assignment-card">
+    <section class="assignment-card toolbar-card">
 
-        <div class="card-header">
+      <div class="toolbar">
 
-          <div>
-            <h2>Assigned Roles</h2>
+        <!-- Search -->
 
-            <p>
-              {{ assignments.length }}
-              teacher
-              {{ assignments.length === 1 ? '' : 's' }}
-              with assigned roles.
-            </p>
-          </div>
+        <div class="search-box">
+
+          <span
+            class="search-icon"
+            aria-hidden="true">
+
+            ⌕
+
+          </span>
+
+          <input
+            type="text"
+            placeholder="Search teacher, number or role..."
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearchChange()"
+            aria-label="Search teacher role assignments"
+          />
+
+          @if (searchTerm) {
+
+            <button
+              type="button"
+              class="clear-search"
+              (click)="searchTerm = ''; onSearchChange()"
+              aria-label="Clear search">
+
+              ×
+
+            </button>
+
+          }
 
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- TABLE -->
-        <!-- ================================================= -->
+        <!-- Role Filter -->
+
+        <div class="filter-control">
+
+          <label for="roleFilter">
+            Role
+          </label>
+
+          <select
+            id="roleFilter"
+            [(ngModel)]="selectedRole"
+            (ngModelChange)="onRoleFilterChange()">
+
+            <option value="">
+              All Roles
+            </option>
+
+            @for (
+              role of availableRoles;
+              track role
+            ) {
+
+              <option [value]="role">
+                {{ role }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- Academic Year Filter -->
+
+        <div class="filter-control">
+
+          <label for="academicYearFilter">
+            Academic Year
+          </label>
+
+          <select
+            id="academicYearFilter"
+            [(ngModel)]="selectedAcademicYear"
+            (ngModelChange)="onAcademicYearFilterChange()">
+
+            <option value="">
+              All Years
+            </option>
+
+            @for (
+              year of availableAcademicYears;
+              track year
+            ) {
+
+              <option [value]="year">
+                {{ year }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- Clear Filters -->
+
+        @if (
+          searchTerm ||
+          selectedRole ||
+          selectedAcademicYear
+        ) {
+
+          <button
+            type="button"
+            class="clear-filter-button"
+            (click)="clearFilters()">
+
+            Clear
+
+          </button>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         ASSIGNMENTS
+         =================================================== -->
+
+    <section class="assignment-card">
+
+      <!-- Card Header -->
+
+      <div class="card-header">
+
+        <div>
+
+          <h2>
+            Assigned Roles
+          </h2>
+
+          <p>
+
+            @if (assignments.length === 0) {
+
+              No teacher role assignments yet.
+
+            } @else {
+
+              Showing
+
+              <strong>
+                {{ filteredAssignments.length }}
+              </strong>
+
+              of
+
+              <strong>
+                {{ assignments.length }}
+              </strong>
+
+              assignments.
+
+            }
+
+          </p>
+
+        </div>
+
+
+        @if (assignments.length > 0) {
+
+          <div class="assignment-count">
+
+            {{ assignments.length }}
+
+            <span>
+              {{
+                assignments.length === 1
+                  ? 'Assignment'
+                  : 'Assignments'
+              }}
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- =================================================
+           EMPTY STATE — NO ASSIGNMENTS
+           ================================================= -->
+
+      @if (assignments.length === 0) {
+
+        <div class="empty-card">
+
+          <div class="empty-icon">
+            +
+          </div>
+
+          <h3>
+            No Teacher Role Assignments
+          </h3>
+
+          <p>
+            Assign a role to a teacher to give them
+            additional permissions and access scopes.
+          </p>
+
+          <button
+            type="button"
+            class="primary-button"
+            (click)="createAssignment()">
+
+            Assign First Role
+
+          </button>
+
+        </div>
+
+      }
+
+
+      <!-- =================================================
+           EMPTY STATE — FILTERED
+           ================================================= -->
+
+      @else if (filteredAssignments.length === 0) {
+
+        <div class="empty-card filtered-empty">
+
+          <div class="empty-icon search-empty">
+            ⌕
+          </div>
+
+          <h3>
+            No Matching Assignments
+          </h3>
+
+          <p>
+            Try changing your search or filter criteria.
+          </p>
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="clearFilters()">
+
+            Clear Filters
+
+          </button>
+
+        </div>
+
+      }
+
+
+      <!-- =================================================
+           ASSIGNMENT TABLE
+           ================================================= -->
+
+      @else {
 
         <div class="table-wrapper">
 
@@ -133,15 +410,29 @@
 
               <tr>
 
-                <th>Teacher</th>
+                <th>
+                  Teacher
+                </th>
 
-                <th>Role</th>
+                <th>
+                  Assigned Role
+                </th>
 
-                <th>Scopes</th>
+                <th>
+                  Access Scope
+                </th>
 
-                <th>Assigned On</th>
+                <th>
+                  Assigned On
+                </th>
 
-                <th>Action</th>
+                <th class="action-column">
+
+                  <span class="sr-only">
+                    Actions
+                  </span>
+
+                </th>
 
               </tr>
 
@@ -151,15 +442,15 @@
             <tbody>
 
               @for (
-                assignment of assignments;
+                assignment of filteredAssignments;
                 track assignment.id
               ) {
 
                 <tr>
 
-                  <!-- ======================================= -->
-                  <!-- TEACHER -->
-                  <!-- ======================================= -->
+                  <!-- =====================================
+                       TEACHER
+                       ===================================== -->
 
                   <td>
 
@@ -167,11 +458,17 @@
 
                       <div class="teacher-avatar">
 
-                        {{ assignment.teacherName.charAt(0).toUpperCase() }}
+                        {{
+                          assignment.teacherName
+                            ? assignment.teacherName
+                                .charAt(0)
+                                .toUpperCase()
+                            : '?'
+                        }}
 
                       </div>
 
-                      <div>
+                      <div class="teacher-info">
 
                         <strong>
                           {{ assignment.teacherName }}
@@ -188,115 +485,169 @@
                   </td>
 
 
-                  <!-- ======================================= -->
-                  <!-- ROLE -->
-                  <!-- ======================================= -->
+                  <!-- =====================================
+                       ROLE
+                       ===================================== -->
 
                   <td>
 
                     <span class="role-badge">
-
                       {{ assignment.teacherRoleName }}
-
                     </span>
 
                   </td>
 
 
-                  <!-- ======================================= -->
-                  <!-- SCOPES -->
-                  <!-- ======================================= -->
+                  <!-- =====================================
+                       ACCESS SCOPE
+                       ===================================== -->
 
                   <td>
 
                     <div class="scope-cell">
 
-                      <strong>
-                        {{ getScopeCount(assignment) }}
-                        {{ getScopeCount(assignment) === 1 ? 'Scope' : 'Scopes' }}
+                      <strong class="scope-summary">
+                        {{ getScopeSummary(assignment) }}
                       </strong>
 
-                      @if (assignment.scopes.length > 0) {
+                      <div class="scope-count">
 
-                        <div class="scope-list">
+                        {{ assignment.scopes?.length ?? 0 }}
 
-                          @for (
-                            scope of assignment.scopes;
-                            track scope.id ?? $index
-                          ) {
+                        {{
+                          (assignment.scopes?.length ?? 0) === 1
+                            ? 'scope'
+                            : 'scopes'
+                        }}
 
-                            <span class="scope-item">
-
-                              {{ formatScope(scope) }}
-
-                            </span>
-
-                          }
-
-                        </div>
-
-                      }
+                      </div>
 
                     </div>
 
                   </td>
 
 
-                  <!-- ======================================= -->
-                  <!-- DATE -->
-                  <!-- ======================================= -->
+                  <!-- =====================================
+                       ASSIGNED DATE
+                       ===================================== -->
 
                   <td>
 
                     <span class="date-text">
 
-                      {{ assignment.createdAt | date:'dd MMM yyyy' }}
+                      {{
+                        assignment.createdAt
+                          | date:'dd MMM yyyy'
+                      }}
 
                     </span>
 
                   </td>
 
 
-                  <!-- ======================================= -->
-                  <!-- ACTION -->
-                  <!-- ======================================= -->
+                  <!-- =====================================
+                       ACTIONS
+                       ===================================== -->
 
-                  
-                  
-                  
-                  <td>
+                  <td class="action-column">
 
-                     <div class="action-buttons">
+                    <div class="action-menu-wrapper">
 
-<button
-  type="button"
-  class="view-button"
-  (click)="viewAssignment(assignment.teacherId)">
+                      <button
+                        type="button"
+                        class="action-menu-button"
 
-  View
+                        [class.active]="
+                          openMenuTeacherId ===
+                          assignment.teacherId
+                        "
 
-</button>
+                        (click)="
+                          toggleActionMenu(
+                            assignment.teacherId
+                          )
+                        "
 
-<button
-  type="button"
-  class="edit-button"
-  (click)="editAssignment(assignment.teacherId)">
+                        [attr.aria-expanded]="
+                          openMenuTeacherId ===
+                          assignment.teacherId
+                        "
 
-  Edit
+                        aria-label="Assignment actions">
 
-</button>
+                        ⋮
 
-                    <button
-                      type="button"
-                      class="remove-button"
-                      [disabled]="deleting"
-                      (click)="removeAssignment(assignment.teacherId)">
+                      </button>
 
-                      Remove
 
-                    </button>
+                      @if (
+                        openMenuTeacherId ===
+                        assignment.teacherId
+                      ) {
 
-                     </div>
+                        <div class="action-menu">
+
+                          <!-- View -->
+
+                          <button
+                            type="button"
+                            (click)="
+                              viewAssignment(
+                                assignment.teacherId
+                              )
+                            ">
+
+                            <span>
+                              View
+                            </span>
+
+                          </button>
+
+
+                          <!-- Edit -->
+
+                          <button
+                            type="button"
+                            (click)="
+                              editAssignment(
+                                assignment.teacherId
+                              )
+                            ">
+
+                            <span>
+                              Edit
+                            </span>
+
+                          </button>
+
+
+                          <div class="menu-divider"></div>
+
+
+                          <!-- Remove -->
+
+                          <button
+                            type="button"
+                            class="danger-action"
+                            [disabled]="deleting"
+
+                            (click)="
+                              removeAssignment(
+                                assignment.teacherId
+                              )
+                            ">
+
+                            <span>
+                              Remove
+                            </span>
+
+                          </button>
+
+                        </div>
+
+                      }
+
+                    </div>
 
                   </td>
 
@@ -310,53 +661,205 @@
 
         </div>
 
-      </section>
+      }
 
-    }
-
-
-    <!-- =================================================== -->
-    <!-- EMPTY STATE -->
-    <!-- =================================================== -->
-
-    @else {
-
-      <section class="assignment-card empty-card">
-
-        <div class="empty-icon">
-          +
-        </div>
-
-        <h2>No Teacher Role Assignments</h2>
-
-        <p>
-          No additional roles have been assigned to teachers yet.
-        </p>
-
-        <button
-          type="button"
-          class="primary-button"
-          (click)="createAssignment()">
-
-          Assign First Role
-
-        </button>
-
-      </section>
-
-    }
+    </section>
 
   }
+
+
+  <!-- =====================================================
+       REMOVE CONFIRMATION
+       ===================================================== -->
+
   <app-confirmation-dialog
-  [visible]="showRemoveDialog"
-  title="Remove Teacher Role Assignment?"
-  message="Are you sure you want to remove this teacher role assignment?"
-  confirmLabel="Remove"
-  cancelLabel="Cancel"
-  [danger]="true"
-  (confirmed)="confirmRemoveAssignment()"
-  (cancelled)="cancelRemoveAssignment()">
-</app-confirmation-dialog>
+
+    [visible]="showRemoveDialog"
+
+    title="Remove Teacher Role Assignment?"
+
+    message="This will remove the assigned role and its access scopes from this teacher. This action cannot be undone."
+
+    confirmLabel="Remove"
+
+    cancelLabel="Cancel"
+
+    [danger]="true"
+
+    (confirmed)="confirmRemove()"
+
+    (cancelled)="cancelRemove()">
+
+  </app-confirmation-dialog>
 
 </div>
 
+
+<!-- =====================================================
+     CREATE / EDIT MODAL
+     ===================================================== -->
+
+@if (showAssignmentDrawer) {
+
+  <div
+    class="drawer-backdrop"
+    (click)="closeAssignmentDrawer()"
+    aria-hidden="true">
+  </div>
+
+
+  <aside
+    class="assignment-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="assignment-drawer-title">
+
+
+    <!-- Modal Header -->
+
+    <div class="drawer-header">
+
+      <div class="drawer-header-content">
+
+        <span class="drawer-eyebrow">
+          Teacher Access
+        </span>
+
+        <h2 id="assignment-drawer-title">
+
+          {{
+            drawerMode === 'edit'
+              ? 'Edit Role Assignment'
+              : 'Assign Teacher Role'
+          }}
+
+        </h2>
+
+        <p>
+
+          {{
+            drawerMode === 'edit'
+              ? 'Update the teacher role and access scope.'
+              : 'Assign a role and define the teacher access scope.'
+          }}
+
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="drawer-close-button"
+        aria-label="Close"
+        (click)="closeAssignmentDrawer()">
+
+        <span aria-hidden="true">
+          ×
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <!-- Modal Body -->
+
+    <div class="drawer-body">
+
+      <app-teacher-role-assignment-form
+
+        [drawerMode]="drawerMode"
+
+        [drawerTeacherId]="selectedTeacherId"
+
+        (closed)="closeAssignmentDrawer()"
+
+        (saved)="handleAssignmentSaved()">
+
+      </app-teacher-role-assignment-form>
+
+    </div>
+
+  </aside>
+
+}
+
+
+<!-- =====================================================
+     VIEW ASSIGNMENT MODAL
+     ===================================================== -->
+
+@if (showViewDrawer) {
+
+  <div
+    class="drawer-backdrop"
+    (click)="closeViewDrawer()"
+    aria-hidden="true">
+  </div>
+
+
+  <aside
+    class="assignment-drawer view-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="view-drawer-title">
+
+
+    <!-- Modal Header -->
+
+    <div class="drawer-header">
+
+      <div class="drawer-header-content">
+
+        <span class="drawer-eyebrow">
+          Teacher Access
+        </span>
+
+        <h2 id="view-drawer-title">
+          Assignment Details
+        </h2>
+
+        <p>
+          View the teacher's assigned role and access scope.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="drawer-close-button"
+        aria-label="Close"
+        (click)="closeViewDrawer()">
+
+        <span aria-hidden="true">
+          ×
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <!-- Modal Body -->
+
+    <div class="drawer-body">
+
+      <app-teacher-role-assignment-view
+
+        [drawerMode]="true"
+
+        [drawerTeacherId]="viewTeacherId"
+
+        (closed)="closeViewDrawer()"
+
+        (editRequested)="editFromView($event)">
+
+      </app-teacher-role-assignment-view>
+
+    </div>
+
+  </aside>
+
+}

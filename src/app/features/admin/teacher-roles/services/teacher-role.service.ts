@@ -65,4 +65,14 @@ export class TeacherRoleService {
       `${this.endpoint}/${id}/deactivate`
     );
   }
+
+  deleteRole(id: number): Observable<ApiResponse<void>> {
+
+    
+  return this.api.delete<ApiResponse<void>>(
+    `${this.endpoint}/${id}`
+  );
+}
+
+
 }
