@@ -109,75 +109,29 @@
   <div class="main-area">
 
     <!-- Header -->
-    <header class="top-header">
+<header class="top-header">
 
-      <div class="header-left">
+  <div class="header-left">
 
-        <!-- Mobile Menu -->
-        <button
-          type="button"
-          class="menu-button"
-          aria-label="Open navigation"
-          (click)="toggleSidebar()">
+    <button
+      type="button"
+      class="menu-button"
+      aria-label="Open navigation"
+      (click)="toggleSidebar()">
 
-          <span></span>
-          <span></span>
-          <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
 
-        </button>
+    </button>
 
+  </div>
 
-        <div class="breadcrumb">
+  <div class="header-search-container">
+    <app-global-search></app-global-search>
+  </div>
 
-          <span class="breadcrumb-current">
-            Dashboard
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <div class="header-right">
-
-        <!-- Notification -->
-        <button
-          type="button"
-          class="header-button"
-          aria-label="Notifications">
-
-          <span class="notification-icon">♢</span>
-
-          <span class="notification-dot"></span>
-
-        </button>
-
-
-        <!-- User -->
-        <div class="header-user">
-
-          <div class="header-avatar">
-            {{ userInitial }}
-          </div>
-
-          <div class="header-user-info">
-
-            <strong>
-              {{ userName }}
-            </strong>
-
-            <span>
-              {{ userRole }}
-            </span>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </header>
-
+</header>
 
     <!-- Main Content -->
     <main class="content-area">

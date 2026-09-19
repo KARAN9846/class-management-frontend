@@ -11,17 +11,14 @@ import { ProfileComponent } from '../../features/profile/profile/profile';
 import { TokenService } from '../../core/auth/token.service';
 import { AuthStateService } from '../../core/auth/auth-state.service';
 
+import {
+  NAVIGATION_CONFIG,
+  NavigationSection
+} from '../../core/navigation/navigation.config';
 
-interface NavigationItem {
-  label: string;
-  route: string;
-  icon: string;
-}
+import { GlobalSearchComponent } from '../../shared/components/global-search/global-search.component';
 
-interface NavigationSection {
-  title: string;
-  items: NavigationItem[];
-}
+
 
 @Component({
   selector: 'app-layout',
@@ -30,7 +27,8 @@ interface NavigationSection {
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    ProfileComponent
+    ProfileComponent,
+    GlobalSearchComponent
   ],
   templateUrl: './app-layout.component.html',
   styleUrl: './app-layout.component.scss'
@@ -80,259 +78,17 @@ export class AppLayoutComponent {
   // ROLE BASED NAVIGATION
   // =====================================================
 
-  private loadNavigation(): void {
+ private loadNavigation(): void {
 
-    const role = this.tokenService.getRole();
+  const role = this.tokenService.getRole();
 
-    if (!role) {
-      this.navigationSections = [];
-      return;
-    }
-
-    switch (role) {
-
-      case 'SUPER_ADMIN':
-
-        this.navigationSections = [
-          {
-            title: 'MAIN',
-            items: [
-              {
-                label: 'Dashboard',
-                route: '/super-admin/dashboard',
-                icon: '⌂'
-              }
-            ]
-          },
-
-          {
-            title: 'MANAGEMENT',
-            items: [
-              {
-                label: 'Admins',
-                route: '/super-admin/admins',
-                icon: '♙'
-              }
-            ]
-          }
-        ];
-
-        break;
-
-
-      case 'ADMIN':
-
-        this.navigationSections = [
-          {
-            title: 'MAIN',
-            items: [
-              {
-                label: 'Dashboard',
-                route: '/admin/dashboard',
-                icon: '⌂'
-              }
-            ]
-          },
-
-          {
-            title: 'INSIDER',
-            items: [
-              {
-                label: 'Students Insider',
-                route: '/admin/insider/students',
-                icon: '◉'
-              },
-              {
-                label: 'Fees Insider',
-                route: '/admin/fees-insider',
-                icon: '₹'
-              }
-            ]
-          },
-
-
-
-          {
-            title: 'ACADEMIC',
-            items: [
-              {
-                label: 'Academic Years',
-                route: '/admin/academic-years',
-                icon: '▦'
-              },
-
-              {
-                label: 'Classes',
-                route: '/admin/classes',
-                icon: '▤'
-              },
-
-              {
-                label: 'Subjects',
-                route: '/admin/subjects',
-                icon: '▤'
-              }
-            ]
-          },
-
-          {
-            title: 'FEES',
-            items: [
-              {
-                label: 'Fee Structures',
-                route: '/admin/fees/fee-structures',
-                icon: '₹'
-              },
-              {
-                label: 'Student Fees',
-                route: '/admin/fees/student-fees',
-                icon: '₹'
-              },
-              {
-                label: 'Receipt Settings',
-                route: '/admin/fees/receipt-settings',
-                icon: '₹'
-              }
-            ]
-          },
-
-          {
-            title: 'MANAGEMENT',
-            items: [
-              {
-                label: 'Teachers',
-                route: '/admin/teachers',
-                icon: '♙'
-              },
-
-              {
-
-                label: 'Teacher Roles',
-                route: '/admin/teacher-roles',
-                icon: '♙'
-              },
-
-              {
-                label: 'Teacher Role Assignments',
-                route: '/admin/teacher-role-assignments',
-                icon: '♙'
-              },
-
-              {
-                label: 'Teacher Assignments',
-                route: '/admin/teacher-assignments',
-                icon: '≡'
-              },
-
-              {
-                label: 'Students',
-                route: '/admin/students',
-                icon: '♙'
-              },
-
-              {
-                label: 'Assignments',
-                route: '/admin/assignments',
-                icon: '≡'
-              },
-
-              {
-                label: 'Attendance',
-                route: '/admin/attendance',
-                icon: '✓'
-              }
-            ]
-          }
-        ];
-
-        break;
-
-
-      case 'TEACHER':
-
-        this.navigationSections = [
-          {
-            title: 'MAIN',
-            items: [
-              {
-                label: 'Dashboard',
-                route: '/teacher/dashboard',
-                icon: '⌂'
-              }
-            ]
-          },
-
-          {
-            title: 'TEACHING',
-            items: [
-              {
-                label: 'My Assignments',
-                route: '/teacher/assignments',
-                icon: '≡'
-              },
-
-              {
-                label: 'Students',
-                route: '/teacher/students',
-                icon: '♙'
-              },
-
-              {
-                label: 'Attendance',
-                route: '/teacher/attendance',
-                icon: '✓'
-              }
-            ]
-          }
-        ];
-
-        break;
-
-
-      case 'STUDENT':
-
-        this.navigationSections = [
-          {
-            title: 'MAIN',
-            items: [
-              {
-                label: 'Dashboard',
-                route: '/student/dashboard',
-                icon: '⌂'
-              }
-            ]
-          },
-
-
-          {
-            title: 'MY ACCOUNT',
-            items: [
-
-              {
-                label: 'Attendance',
-                route: '/student/attendance',
-                icon: '✓'
-              },
-
-              {
-                label: 'Fees',
-                route: '/student/fees',
-                icon: '₹'
-              },
-            ]
-          }
-        ];
-
-        break;
-
-
-      default:
-
-        this.navigationSections = [];
-
-        break;
-    }
+  if (!role) {
+    this.navigationSections = [];
+    return;
   }
+
+  this.navigationSections = NAVIGATION_CONFIG[role] ?? [];
+}
 
 
   // =====================================================
