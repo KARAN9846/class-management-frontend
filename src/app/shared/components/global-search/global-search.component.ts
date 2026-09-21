@@ -175,11 +175,16 @@ export class GlobalSearchComponent {
 
                             map(recordResults => {
 
+                                const actionResults =
+                                    this.searchService
+                                        .searchActions(query);
+
                                 const pageResults =
                                     this.searchService
                                         .searchPages(query);
 
                                 return [
+                                    ...actionResults,
                                     ...recordResults,
                                     ...pageResults
                                 ];
@@ -193,10 +198,13 @@ export class GlobalSearchComponent {
                                     error
                                 );
 
-                                return of(
-                                    this.searchService
+                                return of([
+                                    ...this.searchService
+                                        .searchActions(query),
+
+                                    ...this.searchService
                                         .searchPages(query)
-                                );
+                                ]);
 
                             }),
 
@@ -857,7 +865,7 @@ export class GlobalSearchComponent {
         return `${result.type}-${result.id ??
             result.route ??
             index
-        }`;
+            }`;
 
     }
 

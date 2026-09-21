@@ -25,15 +25,17 @@ import {
 } from '../navigation/navigation.config';
 
 import { TokenService } from '../auth/token.service';
+import { PermissionService } from '../auth/permission.service';
 
 import { StudentService } from '../../features/admin/students/services/student.service';
 import { TeacherService } from '../../features/admin/teachers/services/teacher.service';
 import { TeacherStudentService } from '../../features/teacher/students/services/teacher-student.service';
 
 import {
-GlobalSearchResult,
-GlobalSearchStudentQuickView,
-GlobalSearchTeacherQuickView
+  GlobalSearchAction,
+  GlobalSearchResult,
+  GlobalSearchStudentQuickView,
+  GlobalSearchTeacherQuickView
 } from '../../shared/components/global-search/global-search.models';
 
 import { TeacherRoleAssignmentService } from '../../features/admin/teacher-role-assignments/services/teacher-role-assignment.service';
@@ -47,6 +49,9 @@ export class GlobalSearchService {
 
   private readonly tokenService =
     inject(TokenService);
+
+private readonly permissionService =
+  inject(PermissionService);
 
   private readonly studentService =
     inject(StudentService);
@@ -97,6 +102,172 @@ private readonly teacherRoleService =
       section => section.items
     );
   }
+
+  // =========================================================
+// QUICK ACTIONS
+// =========================================================
+
+private readonly quickActions: GlobalSearchAction[] = [
+
+  // -------------------------------------------------------
+  // ADMIN
+  // -------------------------------------------------------
+
+  {
+    id: 'ADD_STUDENT',
+    title: 'Add Student',
+    description: 'Create a new student',
+    icon: '+',
+    route: '/admin/students/create',
+    roles: ['ADMIN']
+  },
+
+  {
+    id: 'ADD_TEACHER',
+    title: 'Add Teacher',
+    description: 'Create a new teacher',
+    icon: '+',
+    route: '/admin/teachers/create',
+    roles: ['ADMIN']
+  },
+
+  {
+    id: 'ADD_TEACHER_ROLE',
+    title: 'Add Teacher Role',
+    description: 'Create a new teacher role',
+    icon: '+',
+    route: '/admin/teacher-roles/create',
+    roles: ['ADMIN']
+  },
+
+  {
+    id: 'ASSIGN_TEACHER_ROLE',
+    title: 'Assign Teacher Role',
+    description: 'Assign a role to a teacher',
+    icon: '↗',
+    route: '/admin/teacher-role-assignments/create',
+    roles: ['ADMIN']
+  },
+
+  {
+    id: 'ADD_TEACHER_ASSIGNMENT',
+    title: 'Add Teacher Assignment',
+    description: 'Assign academic scope to a teacher',
+    icon: '+',
+    route: '/admin/teacher-assignments/create',
+    roles: ['ADMIN']
+  },
+
+  {
+    id: 'ADD_ASSIGNMENT',
+    title: 'Add Assignment',
+    description: 'Create a new assignment',
+    icon: '+',
+    route: '/admin/assignments/create',
+    roles: ['ADMIN']
+  },
+
+  {
+    id: 'ADD_FEE_STRUCTURE',
+    title: 'Add Fee Structure',
+    description: 'Create a new fee structure',
+    icon: '+',
+    route: '/admin/fees/fee-structures/create',
+    roles: ['ADMIN']
+  },
+
+  // -------------------------------------------------------
+  // TEACHER
+  // -------------------------------------------------------
+
+  {
+    id: 'ADD_STUDENT',
+    title: 'Add Student',
+    description: 'Create a new student',
+    icon: '+',
+    route: '/teacher/students/create',
+    roles: ['TEACHER']
+  },
+
+  {
+    id: 'MARK_ATTENDANCE',
+    title: 'Mark Attendance',
+    description: 'Mark student attendance',
+    icon: '✓',
+    route: '/teacher/attendance/mark',
+    roles: ['TEACHER'],
+    permission: 'ATTENDANCE_MARK'
+  }
+
+];
+
+    
+    
+    // =========================================================
+// QUICK ACTION SEARCH
+// =========================================================
+
+searchActions(
+  query: string
+): GlobalSearchResult[] {
+
+  const normalizedQuery =
+    query.trim().toLowerCase();
+
+  const role =
+    this.getRole();
+
+  if (!role) {
+    return [];
+  }
+
+  return this.quickActions
+    .filter(action =>
+      action.roles.includes(
+        role as 'SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT'
+      )
+    )
+    .filter(action => {
+
+      if (
+        action.permission &&
+        !this.permissionService.hasPermission(
+          action.permission
+        )
+      ) {
+        return false;
+      }
+
+      if (!normalizedQuery) {
+        return true;
+      }
+
+      return (
+        action.title
+          .toLowerCase()
+          .includes(normalizedQuery) ||
+
+        action.description
+          .toLowerCase()
+          .includes(normalizedQuery)
+      );
+
+    })
+    .map(action => ({
+
+      type: 'action' as const,
+
+      title: action.title,
+
+      subtitle: action.description,
+
+      icon: action.icon,
+
+      route: action.route
+
+    }));
+
+}
 
 
   // =========================================================

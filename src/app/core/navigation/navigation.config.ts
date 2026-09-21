@@ -198,6 +198,11 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
                     label: 'Fees',
                     route: '/student/fees',
                     icon: '₹'
+                },
+                {
+                    label: 'Assignments',
+                    route: '/student/assignments',
+                    icon: '≡'
                 }
             ]
         }

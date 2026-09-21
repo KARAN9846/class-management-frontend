@@ -82,6 +82,7 @@ import { EditAttendanceComponent } from './features/teacher/attendance/edit-atte
 import { StudentDashboard } from './features/student/dashboard/student-dashboard/student-dashboard';
 import { StudentAttendanceComponent } from './features/student/attendance/student-attendance/student-attendance';
 import { StudentFeesComponent } from './features/student/fees/fees';
+import { StudentAssignmentsComponent } from './features/student/assignments/student-assignments/student-assignments';
 
 export const routes: Routes = [
 
@@ -300,30 +301,30 @@ export const routes: Routes = [
       },
 
       // teacher assignments
-{
-  path: 'admin/teacher-assignments',
-  component: AdminTeacherAssignmentList,
-  canActivate: [roleGuard],
-  data: { roles: ['ADMIN'] }
-},
-{
-  path: 'admin/teacher-assignments/create',
-  component: AdminTeacherAssignmentForm,
-  canActivate: [roleGuard],
-  data: { roles: ['ADMIN'] }
-},
-{
-  path: 'admin/teacher-assignments/:id/view',
-  component: AdminTeacherAssignmentView,
-  canActivate: [roleGuard],
-  data: { roles: ['ADMIN'] }
-},
-{
-  path: 'admin/teacher-assignments/:id/edit',
-  component: AdminTeacherAssignmentForm,
-  canActivate: [roleGuard],
-  data: { roles: ['ADMIN'] }
-},
+      {
+        path: 'admin/teacher-assignments',
+        component: AdminTeacherAssignmentList,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/teacher-assignments/create',
+        component: AdminTeacherAssignmentForm,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/teacher-assignments/:id/view',
+        component: AdminTeacherAssignmentView,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/teacher-assignments/:id/edit',
+        component: AdminTeacherAssignmentForm,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
 
       // -------------------- ASSIGNMENTS --------------------
 
@@ -499,6 +500,8 @@ export const routes: Routes = [
         data: { roles: ['TEACHER'] }
       },
 
+
+
       // -------------------- ATTENDANCE ---------------------
 
       {
@@ -566,6 +569,17 @@ export const routes: Routes = [
           roles: ['STUDENT'],
           title: 'My Attendance',
           description: 'View attendance records.'
+        }
+      },
+
+      {
+        path: 'student/assignments',
+        component: StudentAssignmentsComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['STUDENT'],
+          title: 'Assignments',
+          description: 'View your assignments and deadlines.'
         }
       }
     ]

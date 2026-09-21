@@ -5,6 +5,27 @@ export type GlobalSearchResultType =
   | 'action';
 
 
+export type GlobalSearchActionId =
+  | 'ADD_STUDENT'
+  | 'ADD_TEACHER'
+  | 'ADD_TEACHER_ROLE'
+  | 'ASSIGN_TEACHER_ROLE'
+  | 'ADD_TEACHER_ASSIGNMENT'
+  | 'ADD_ASSIGNMENT'
+  | 'ADD_FEE_STRUCTURE'
+  | 'MARK_ATTENDANCE';
+
+export interface GlobalSearchAction {
+  id: GlobalSearchActionId;
+  title: string;
+  description: string;
+  icon: string;
+  route: string;
+  roles: ('SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT')[];
+  permission?: string;
+}
+
+
 export interface GlobalSearchMetadata {
   label: string;
   value: string;
@@ -148,4 +169,5 @@ export interface GlobalSearchTeacherQuickView {
     name: string;
     description?: string | null;
   }[];
+  
 }

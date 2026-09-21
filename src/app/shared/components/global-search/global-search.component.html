@@ -21,7 +21,7 @@
         </span>
 
 
-        <input #searchInput type="text" [value]="query" placeholder="Search students, teachers, pages..."
+        <input #searchInput type="text" [value]="query" placeholder="Search students, teachers, pages, or actions..."
             aria-label="Global search" autocomplete="off" (input)="onInput($event)" (focus)="query && (isOpen = true)"
             (keydown)="onKeyDown($event)" />
 
@@ -98,14 +98,98 @@
         }
 
 
-        @else {
+      @else {
+
+        <!-- ===============================================
+             QUICK ACTIONS
+        ================================================ -->
+
+        @if (showCategory('action')) {
+
+        <div class="results-section">
+
+            <div class="results-header">
+
+                <span>
+                    Quick Actions
+                </span>
+
+                <span>
+                    {{ getResultsByType('action').length }}
+                </span>
+
+            </div>
+
+
+            @for (
+            result of getResultsByType('action');
+            track trackResult($index, result)
+            ) {
+
+            <button
+                type="button"
+                class="search-result quick-action-result"
+                [class.selected]="
+                  results.indexOf(result) === selectedIndex
+                "
+                (mouseenter)="
+                  selectedIndex = results.indexOf(result)
+                "
+                (click)="
+                  selectResult(result)
+                "
+                role="option"
+                [attr.aria-selected]="
+                  results.indexOf(result) === selectedIndex
+                "
+            >
+
+                <span class="result-icon quick-action-icon">
+                    {{ result.icon }}
+                </span>
+
+
+                <span class="result-content">
+
+                    <strong>
+                        {{ result.title }}
+                    </strong>
+
+                    @if (result.subtitle) {
+
+                    <small>
+                        {{ result.subtitle }}
+                    </small>
+
+                    }
+
+                </span>
+
+
+                @if (
+                results.indexOf(result) === selectedIndex
+                ) {
+
+                <span class="result-enter">
+                    ↵
+                </span>
+
+                }
+
+            </button>
+
+            }
+
+        </div>
+
+        }
+
 
         <!-- ===============================================
              STUDENTS
         ================================================ -->
 
         @if (showCategory('student')) {
-
         <div class="results-section">
 
             <div class="results-header">
@@ -370,9 +454,9 @@
                 No results found
             </strong>
 
-            <span>
-                Try a student name, teacher name, or page.
-            </span>
+<span>
+    Try a name, page, or action like "Add Student".
+</span>
 
         </div>
 

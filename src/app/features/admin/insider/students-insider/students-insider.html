@@ -1486,6 +1486,14 @@
 
                             }
 
+                            @if (isReportColumnVisible('discount')) {
+
+                            <th>
+                                Discount (₹)
+                            </th>
+
+                            }
+
 
                             @if (isReportColumnVisible('paid')) {
 
@@ -1613,6 +1621,13 @@
                             <td *ngIf="isReportColumnVisible('totalFee')">
 
                                 ₹{{ row.totalFee | number:'1.0-0' }}
+
+                            </td>
+                            <!-- Discount -->
+
+                            <td *ngIf="isReportColumnVisible('discount')">
+
+                                ₹{{ row.discountAmount | number:'1.0-0' }}
 
                             </td>
 

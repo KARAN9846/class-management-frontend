@@ -49,15 +49,17 @@ interface StudentReportRow {
 
     outstandingAmount: number;
 
+    discountAmount: number;
+
     feeStatus:
-        | 'PAID'
-        | 'PARTIALLY_PAID'
-        | 'UNPAID';
+    | 'PAID'
+    | 'PARTIALLY_PAID'
+    | 'UNPAID';
 
     risk:
-        | 'LOW'
-        | 'MEDIUM'
-        | 'HIGH';
+    | 'LOW'
+    | 'MEDIUM'
+    | 'HIGH';
 
 }
 
@@ -108,7 +110,7 @@ export class StudentsInsider implements OnInit {
 
     constructor(
         private readonly cdr: ChangeDetectorRef
-    ) {}
+    ) { }
 
     private readonly studentService =
         inject(StudentService);
@@ -259,6 +261,12 @@ export class StudentsInsider implements OnInit {
         {
             key: 'totalFee',
             label: 'Total Fee',
+            visible: false
+        },
+
+        {
+            key: 'discount',
+            label: 'Discount (₹)',
             visible: false
         },
 
@@ -552,667 +560,667 @@ export class StudentsInsider implements OnInit {
     attendanceTrendChartData:
         ChartConfiguration<'line'>['data'] = {
 
-        labels: [],
+            labels: [],
 
-        datasets: [
+            datasets: [
 
-            {
-                label: 'Attendance %',
+                {
+                    label: 'Attendance %',
 
-                data: [],
+                    data: [],
 
-                borderColor: '#2563eb',
+                    borderColor: '#2563eb',
 
-                backgroundColor:
-                    'rgba(37, 99, 235, 0.12)',
+                    backgroundColor:
+                        'rgba(37, 99, 235, 0.12)',
 
-                pointBackgroundColor:
-                    '#2563eb',
+                    pointBackgroundColor:
+                        '#2563eb',
 
-                pointBorderColor:
-                    '#ffffff',
+                    pointBorderColor:
+                        '#ffffff',
 
-                pointBorderWidth: 2,
+                    pointBorderWidth: 2,
 
-                pointRadius: 3,
+                    pointRadius: 3,
 
-                pointHoverRadius: 5,
+                    pointHoverRadius: 5,
 
-                borderWidth: 2.5,
+                    borderWidth: 2.5,
 
-                tension: 0.35,
+                    tension: 0.35,
 
-                fill: true
-            }
+                    fill: true
+                }
 
-        ]
+            ]
 
-    };
+        };
 
 
     attendanceTrendChartOptions:
         ChartOptions<'line'> = {
 
-        responsive: true,
+            responsive: true,
 
-        maintainAspectRatio: false,
+            maintainAspectRatio: false,
 
-        resizeDelay: 100,
+            resizeDelay: 100,
 
-        interaction: {
-            intersect: false,
-            mode: 'index'
-        },
-
-        layout: {
-            padding: {
-                top: 6,
-                right: 8,
-                bottom: 4,
-                left: 4
-            }
-        },
-
-        scales: {
-
-            y: {
-
-                min: 0,
-
-                max: 100,
-
-                beginAtZero: true,
-
-                border: {
-                    display: false
-                },
-
-                ticks: {
-
-                    stepSize: 20,
-
-                    padding: 5,
-
-                    font: {
-                        size: 10
-                    },
-
-                    callback: value =>
-                        `${value}%`
-                },
-
-                grid: {
-                    color:
-                        'rgba(148, 163, 184, 0.16)',
-
-                    drawTicks: false
-                }
-
+            interaction: {
+                intersect: false,
+                mode: 'index'
             },
 
-            x: {
+            layout: {
+                padding: {
+                    top: 6,
+                    right: 8,
+                    bottom: 4,
+                    left: 4
+                }
+            },
 
-                border: {
-                    display: false
-                },
+            scales: {
 
-                ticks: {
+                y: {
 
-                    autoSkip: true,
+                    min: 0,
 
-                    maxTicksLimit: 7,
+                    max: 100,
 
-                    maxRotation: 0,
+                    beginAtZero: true,
 
-                    minRotation: 0,
+                    border: {
+                        display: false
+                    },
 
-                    padding: 5,
+                    ticks: {
 
-                    font: {
-                        size: 10
+                        stepSize: 20,
+
+                        padding: 5,
+
+                        font: {
+                            size: 10
+                        },
+
+                        callback: value =>
+                            `${value}%`
+                    },
+
+                    grid: {
+                        color:
+                            'rgba(148, 163, 184, 0.16)',
+
+                        drawTicks: false
                     }
 
                 },
 
-                grid: {
-                    display: false
+                x: {
+
+                    border: {
+                        display: false
+                    },
+
+                    ticks: {
+
+                        autoSkip: true,
+
+                        maxTicksLimit: 7,
+
+                        maxRotation: 0,
+
+                        minRotation: 0,
+
+                        padding: 5,
+
+                        font: {
+                            size: 10
+                        }
+
+                    },
+
+                    grid: {
+                        display: false
+                    }
+
                 }
 
-            }
-
-        },
-
-        plugins: {
-
-            legend: {
-                display: false
             },
 
-            tooltip: {
+            plugins: {
 
-                displayColors: false,
+                legend: {
+                    display: false
+                },
 
-                padding: 8,
+                tooltip: {
 
-                callbacks: {
+                    displayColors: false,
 
-                    label: context =>
-                        `Attendance: ${context.parsed.y}%`
+                    padding: 8,
+
+                    callbacks: {
+
+                        label: context =>
+                            `Attendance: ${context.parsed.y}%`
+
+                    }
 
                 }
 
             }
 
-        }
-
-    };
+        };
 
 
     attendanceDistributionChartData:
         ChartConfiguration<'doughnut'>['data'] = {
 
-        labels: [
-            'Excellent',
-            'Good',
-            'Needs Attention',
-            'No Data'
-        ],
+            labels: [
+                'Excellent',
+                'Good',
+                'Needs Attention',
+                'No Data'
+            ],
 
-        datasets: [
+            datasets: [
 
-            {
+                {
 
-                data: [
-                    0,
-                    0,
-                    0,
-                    0
-                ],
+                    data: [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
 
-                backgroundColor: [
-                    '#16a34a',
-                    '#2563eb',
-                    '#f59e0b',
-                    '#94a3b8'
-                ],
+                    backgroundColor: [
+                        '#16a34a',
+                        '#2563eb',
+                        '#f59e0b',
+                        '#94a3b8'
+                    ],
 
-                hoverBackgroundColor: [
-                    '#15803d',
-                    '#1d4ed8',
-                    '#d97706',
-                    '#64748b'
-                ],
+                    hoverBackgroundColor: [
+                        '#15803d',
+                        '#1d4ed8',
+                        '#d97706',
+                        '#64748b'
+                    ],
 
-                borderColor: '#ffffff',
+                    borderColor: '#ffffff',
 
-                borderWidth: 2,
+                    borderWidth: 2,
 
-                hoverOffset: 4
-            }
+                    hoverOffset: 4
+                }
 
-        ]
+            ]
 
-    };
+        };
 
 
     attendanceDistributionChartOptions:
         ChartOptions<'doughnut'> = {
 
-        responsive: true,
+            responsive: true,
 
-        maintainAspectRatio: false,
+            maintainAspectRatio: false,
 
-        resizeDelay: 100,
+            resizeDelay: 100,
 
-        cutout: '68%',
+            cutout: '68%',
 
-        layout: {
-            padding: 4
-        },
-
-        plugins: {
-
-            legend: {
-
-                position: 'bottom',
-
-                align: 'center',
-
-                labels: {
-
-                    usePointStyle: true,
-
-                    pointStyle: 'circle',
-
-                    boxWidth: 7,
-
-                    boxHeight: 7,
-
-                    padding: 9,
-
-                    font: {
-                        size: 10
-                    }
-
-                }
-
+            layout: {
+                padding: 4
             },
 
-            tooltip: {
+            plugins: {
 
-                displayColors: true,
+                legend: {
 
-                padding: 8,
+                    position: 'bottom',
 
-                callbacks: {
+                    align: 'center',
 
-                    label: context => {
+                    labels: {
 
-                        const values =
-                            context.dataset.data.map(
-                                value =>
-                                    Number(value ?? 0)
-                            );
+                        usePointStyle: true,
 
-                        const total =
-                            values.reduce(
-                                (sum, value) =>
-                                    sum + value,
-                                0
-                            );
+                        pointStyle: 'circle',
 
-                        const value =
-                            Number(context.raw ?? 0);
+                        boxWidth: 7,
 
-                        const percentage =
-                            total > 0
-                                ? (
-                                    value / total * 100
-                                ).toFixed(1)
-                                : '0.0';
+                        boxHeight: 7,
 
-                        return `${context.label}: ${value} (${percentage}%)`;
+                        padding: 9,
+
+                        font: {
+                            size: 10
+                        }
+
+                    }
+
+                },
+
+                tooltip: {
+
+                    displayColors: true,
+
+                    padding: 8,
+
+                    callbacks: {
+
+                        label: context => {
+
+                            const values =
+                                context.dataset.data.map(
+                                    value =>
+                                        Number(value ?? 0)
+                                );
+
+                            const total =
+                                values.reduce(
+                                    (sum, value) =>
+                                        sum + value,
+                                    0
+                                );
+
+                            const value =
+                                Number(context.raw ?? 0);
+
+                            const percentage =
+                                total > 0
+                                    ? (
+                                        value / total * 100
+                                    ).toFixed(1)
+                                    : '0.0';
+
+                            return `${context.label}: ${value} (${percentage}%)`;
+                        }
+
                     }
 
                 }
 
             }
 
-        }
-
-    };
+        };
 
 
     classDistributionChartData:
         ChartConfiguration<'bar'>['data'] = {
 
-        labels: [],
+            labels: [],
 
-        datasets: [
+            datasets: [
 
-            {
+                {
 
-                label: 'Students',
+                    label: 'Students',
 
-                data: [],
+                    data: [],
 
-                backgroundColor: '#3b82f6',
+                    backgroundColor: '#3b82f6',
 
-                hoverBackgroundColor: '#2563eb',
+                    hoverBackgroundColor: '#2563eb',
 
-                borderColor: '#2563eb',
+                    borderColor: '#2563eb',
 
-                borderWidth: 1,
+                    borderWidth: 1,
 
-                borderRadius: 6,
+                    borderRadius: 6,
 
-                borderSkipped: false,
+                    borderSkipped: false,
 
-                barPercentage: 0.72,
+                    barPercentage: 0.72,
 
-                categoryPercentage: 0.78,
+                    categoryPercentage: 0.78,
 
-                maxBarThickness: 34
-            }
+                    maxBarThickness: 34
+                }
 
-        ]
+            ]
 
-    };
+        };
 
 
     classDistributionChartOptions:
         ChartOptions<'bar'> = {
 
-        responsive: true,
+            responsive: true,
 
-        maintainAspectRatio: false,
+            maintainAspectRatio: false,
 
-        resizeDelay: 100,
+            resizeDelay: 100,
 
-        layout: {
-            padding: {
-                top: 4,
-                right: 6,
-                bottom: 4,
-                left: 4
-            }
-        },
+            layout: {
+                padding: {
+                    top: 4,
+                    right: 6,
+                    bottom: 4,
+                    left: 4
+                }
+            },
 
-        scales: {
+            scales: {
 
-            y: {
+                y: {
 
-                beginAtZero: true,
+                    beginAtZero: true,
 
-                border: {
-                    display: false
-                },
+                    border: {
+                        display: false
+                    },
 
-                ticks: {
+                    ticks: {
 
-                    precision: 0,
+                        precision: 0,
 
-                    padding: 5,
+                        padding: 5,
 
-                    font: {
-                        size: 10
+                        font: {
+                            size: 10
+                        }
+
+                    },
+
+                    grid: {
+                        color:
+                            'rgba(148, 163, 184, 0.14)',
+
+                        drawTicks: false
                     }
 
                 },
 
-                grid: {
-                    color:
-                        'rgba(148, 163, 184, 0.14)',
+                x: {
 
-                    drawTicks: false
-                }
+                    border: {
+                        display: false
+                    },
 
-            },
+                    ticks: {
 
-            x: {
+                        autoSkip: true,
 
-                border: {
-                    display: false
-                },
+                        maxTicksLimit: 8,
 
-                ticks: {
+                        maxRotation: 0,
 
-                    autoSkip: true,
+                        minRotation: 0,
 
-                    maxTicksLimit: 8,
+                        padding: 5,
 
-                    maxRotation: 0,
+                        font: {
+                            size: 9
+                        }
 
-                    minRotation: 0,
+                    },
 
-                    padding: 5,
-
-                    font: {
-                        size: 9
+                    grid: {
+                        display: false
                     }
 
-                },
-
-                grid: {
-                    display: false
                 }
 
-            }
-
-        },
-
-        plugins: {
-
-            legend: {
-                display: false
             },
 
-            tooltip: {
+            plugins: {
 
-                displayColors: false,
+                legend: {
+                    display: false
+                },
 
-                padding: 8,
+                tooltip: {
 
-                callbacks: {
+                    displayColors: false,
 
-                    label: context =>
-                        `Students: ${context.parsed.y}`
+                    padding: 8,
+
+                    callbacks: {
+
+                        label: context =>
+                            `Students: ${context.parsed.y}`
+
+                    }
 
                 }
 
             }
 
-        }
-
-    };
+        };
 
 
     sectionDistributionChartData:
         ChartConfiguration<'bar'>['data'] = {
 
-        labels: [],
+            labels: [],
 
-        datasets: [
+            datasets: [
 
-            {
+                {
 
-                label: 'Students',
+                    label: 'Students',
 
-                data: [],
+                    data: [],
 
-                backgroundColor: '#8b5cf6',
+                    backgroundColor: '#8b5cf6',
 
-                hoverBackgroundColor: '#7c3aed',
+                    hoverBackgroundColor: '#7c3aed',
 
-                borderColor: '#7c3aed',
+                    borderColor: '#7c3aed',
 
-                borderWidth: 1,
+                    borderWidth: 1,
 
-                borderRadius: 6,
+                    borderRadius: 6,
 
-                borderSkipped: false,
+                    borderSkipped: false,
 
-                barPercentage: 0.68,
+                    barPercentage: 0.68,
 
-                categoryPercentage: 0.76,
+                    categoryPercentage: 0.76,
 
-                maxBarThickness: 24
-            }
+                    maxBarThickness: 24
+                }
 
-        ]
+            ]
 
-    };
+        };
 
 
     sectionDistributionChartOptions:
         ChartOptions<'bar'> = {
 
-        indexAxis: 'y',
+            indexAxis: 'y',
 
-        responsive: true,
+            responsive: true,
 
-        maintainAspectRatio: false,
+            maintainAspectRatio: false,
 
-        resizeDelay: 100,
+            resizeDelay: 100,
 
-        layout: {
-            padding: {
-                top: 4,
-                right: 8,
-                bottom: 4,
-                left: 4
-            }
-        },
+            layout: {
+                padding: {
+                    top: 4,
+                    right: 8,
+                    bottom: 4,
+                    left: 4
+                }
+            },
 
-        scales: {
+            scales: {
 
-            x: {
+                x: {
 
-                beginAtZero: true,
+                    beginAtZero: true,
 
-                border: {
-                    display: false
-                },
+                    border: {
+                        display: false
+                    },
 
-                ticks: {
+                    ticks: {
 
-                    precision: 0,
+                        precision: 0,
 
-                    padding: 5,
+                        padding: 5,
 
-                    font: {
-                        size: 10
+                        font: {
+                            size: 10
+                        }
+
+                    },
+
+                    grid: {
+
+                        color:
+                            'rgba(148, 163, 184, 0.14)',
+
+                        drawTicks: false
                     }
 
                 },
 
-                grid: {
+                y: {
 
-                    color:
-                        'rgba(148, 163, 184, 0.14)',
+                    border: {
+                        display: false
+                    },
 
-                    drawTicks: false
-                }
+                    ticks: {
 
-            },
+                        autoSkip: true,
 
-            y: {
+                        padding: 5,
 
-                border: {
-                    display: false
-                },
+                        font: {
+                            size: 9
+                        }
 
-                ticks: {
+                    },
 
-                    autoSkip: true,
-
-                    padding: 5,
-
-                    font: {
-                        size: 9
+                    grid: {
+                        display: false
                     }
 
-                },
-
-                grid: {
-                    display: false
                 }
 
-            }
-
-        },
-
-        plugins: {
-
-            legend: {
-                display: false
             },
 
-            tooltip: {
+            plugins: {
 
-                displayColors: false,
+                legend: {
+                    display: false
+                },
 
-                padding: 8,
+                tooltip: {
 
-                callbacks: {
+                    displayColors: false,
 
-                    label: context =>
-                        `Students: ${context.parsed.x}`
+                    padding: 8,
+
+                    callbacks: {
+
+                        label: context =>
+                            `Students: ${context.parsed.x}`
+
+                    }
 
                 }
 
             }
 
-        }
-
-    };
+        };
 
 
     feeStatusChartData:
         ChartConfiguration<'doughnut'>['data'] = {
 
-        labels: [
-            'Fully Paid',
-            'Partially Paid',
-            'Unpaid'
-        ],
+            labels: [
+                'Fully Paid',
+                'Partially Paid',
+                'Unpaid'
+            ],
 
-        datasets: [
+            datasets: [
 
-            {
+                {
 
-                data: [0, 0, 0],
+                    data: [0, 0, 0],
 
-                backgroundColor: [
-                    '#16a34a',
-                    '#f59e0b',
-                    '#ef4444'
-                ],
+                    backgroundColor: [
+                        '#16a34a',
+                        '#f59e0b',
+                        '#ef4444'
+                    ],
 
-                hoverBackgroundColor: [
-                    '#15803d',
-                    '#d97706',
-                    '#dc2626'
-                ],
+                    hoverBackgroundColor: [
+                        '#15803d',
+                        '#d97706',
+                        '#dc2626'
+                    ],
 
-                borderColor: '#ffffff',
+                    borderColor: '#ffffff',
 
-                borderWidth: 2,
+                    borderWidth: 2,
 
-                hoverOffset: 4
-            }
+                    hoverOffset: 4
+                }
 
-        ]
+            ]
 
-    };
+        };
 
 
     feeStatusChartOptions:
         ChartOptions<'doughnut'> = {
 
-        responsive: true,
+            responsive: true,
 
-        maintainAspectRatio: false,
+            maintainAspectRatio: false,
 
-        resizeDelay: 100,
+            resizeDelay: 100,
 
-        cutout: '68%',
+            cutout: '68%',
 
-        layout: {
-            padding: 4
-        },
+            layout: {
+                padding: 4
+            },
 
-        plugins: {
+            plugins: {
 
-            legend: {
+                legend: {
 
-                position: 'bottom',
+                    position: 'bottom',
 
-                align: 'center',
+                    align: 'center',
 
-                labels: {
+                    labels: {
 
-                    usePointStyle: true,
+                        usePointStyle: true,
 
-                    pointStyle: 'circle',
+                        pointStyle: 'circle',
 
-                    boxWidth: 7,
+                        boxWidth: 7,
 
-                    boxHeight: 7,
+                        boxHeight: 7,
 
-                    padding: 9,
+                        padding: 9,
 
-                    font: {
-                        size: 10
+                        font: {
+                            size: 10
+                        }
+
                     }
 
                 }
 
             }
 
-        }
-
-    };
+        };
 
 
     // =========================================================
@@ -1632,6 +1640,9 @@ export class StudentsInsider implements OnInit {
                         totalFee:
                             fee.totalFee,
 
+                        discountAmount:
+                            fee.discountAmount,
+
                         paidAmount:
                             fee.paidAmount,
 
@@ -1750,6 +1761,7 @@ export class StudentsInsider implements OnInit {
         studentId: number
     ): {
         totalFee: number;
+        discountAmount: number;
         paidAmount: number;
         outstandingAmount: number;
     } {
@@ -1765,7 +1777,17 @@ export class StudentsInsider implements OnInit {
                 (sum, fee) =>
                     sum +
                     Number(
-                        fee.payableAmount || 0
+                        fee.originalAmount || 0
+                    ),
+                0
+            );
+
+        const discountAmount =
+            fees.reduce(
+                (sum, fee) =>
+                    sum +
+                    Number(
+                        fee.discountAmount || 0
                     ),
                 0
             );
@@ -1789,6 +1811,7 @@ export class StudentsInsider implements OnInit {
 
         return {
             totalFee,
+            discountAmount,
             paidAmount,
             outstandingAmount
         };
@@ -2735,7 +2758,7 @@ export class StudentsInsider implements OnInit {
     ): boolean {
 
         switch (
-            this.selectedAttendanceFilter
+        this.selectedAttendanceFilter
         ) {
 
             case 'EXCELLENT':
@@ -2776,7 +2799,7 @@ export class StudentsInsider implements OnInit {
     ): boolean {
 
         switch (
-            this.selectedFeeFilter
+        this.selectedFeeFilter
         ) {
 
             case 'PAID':
@@ -3370,7 +3393,7 @@ export class StudentsInsider implements OnInit {
     ): boolean {
 
         switch (
-            this.reportAttendanceFilter
+        this.reportAttendanceFilter
         ) {
 
             case 'EXCELLENT':
@@ -3423,7 +3446,7 @@ export class StudentsInsider implements OnInit {
     ): boolean {
 
         switch (
-            this.reportFeeFilter
+        this.reportFeeFilter
         ) {
 
             case 'PAID':
@@ -3800,7 +3823,7 @@ export class StudentsInsider implements OnInit {
 
     }
 
-        // =========================================================
+    // =========================================================
     // STUDENT REPORT EXPORT
     // =========================================================
 

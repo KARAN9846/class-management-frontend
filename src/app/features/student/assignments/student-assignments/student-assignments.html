@@ -1,0 +1,577 @@
+<div class="page">
+
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Assignments</h1>
+
+      <p>
+        View your assignments, deadlines and academic tasks.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SUMMARY CARDS
+       ===================================================== -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+
+      <div class="summary-content">
+        <span class="summary-label">
+          Total Assignments
+        </span>
+
+        <span class="summary-value">
+          {{ totalCount }}
+        </span>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-content">
+        <span class="summary-label">
+          Upcoming
+        </span>
+
+        <span class="summary-value">
+          {{ dueCount }}
+        </span>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-content">
+        <span class="summary-label">
+          Due Soon
+        </span>
+
+        <span class="summary-value">
+          {{ dueSoonCount }}
+        </span>
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-content">
+        <span class="summary-label">
+          Overdue
+        </span>
+
+        <span class="summary-value">
+          {{ overdueCount }}
+        </span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MAIN CARD
+       ===================================================== -->
+
+  <div class="assignment-card">
+
+    <!-- FILTER AREA -->
+
+    <div class="filter-area">
+
+      <div class="search-wrapper">
+
+        <app-search-input
+          placeholder="Search assignments..."
+          (searchChange)="onSearchChange($event)">
+        </app-search-input>
+
+      </div>
+
+
+      <div class="subject-filter">
+
+        <label for="subjectFilter">
+          Subject
+        </label>
+
+        <select
+          id="subjectFilter"
+          [(ngModel)]="selectedSubject">
+
+          <option value="ALL">
+            All Subjects
+          </option>
+
+          @for (subject of subjects; track subject) {
+
+            <option [value]="subject">
+              {{ subject }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- DUE FILTERS -->
+
+    <div class="status-filters">
+
+      <button
+        type="button"
+        [class.active]="selectedFilter === 'ALL'"
+        (click)="setFilter('ALL')">
+
+        All
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.active]="selectedFilter === 'DUE'"
+        (click)="setFilter('DUE')">
+
+        Upcoming
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.active]="selectedFilter === 'DUE_SOON'"
+        (click)="setFilter('DUE_SOON')">
+
+        Due Soon
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.active]="selectedFilter === 'OVERDUE'"
+        (click)="setFilter('OVERDUE')">
+
+        Overdue
+
+      </button>
+
+    </div>
+
+
+    <!-- ERROR -->
+
+    @if (errorMessage) {
+
+      <div class="error-state">
+        {{ errorMessage }}
+      </div>
+
+    }
+
+
+    <!-- LOADING -->
+
+    @if (loading) {
+
+      <div class="assignment-grid">
+
+        @for (item of [1, 2, 3, 4]; track item) {
+
+          <div class="assignment-skeleton">
+
+            <div class="skeleton-line skeleton-subject"></div>
+
+            <div class="skeleton-line skeleton-title"></div>
+
+            <div class="skeleton-line skeleton-text"></div>
+
+            <div class="skeleton-line skeleton-text short"></div>
+
+            <div class="skeleton-footer"></div>
+
+          </div>
+
+        }
+
+      </div>
+
+    }
+
+
+    <!-- EMPTY -->
+
+    @else if (filteredAssignments.length === 0) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          —
+        </div>
+
+        <h3>
+          No assignments found
+        </h3>
+
+        <p>
+          There are no assignments matching your current filters.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- ASSIGNMENTS -->
+
+    @else {
+
+      <div class="assignment-grid">
+
+        @for (
+          assignment of filteredAssignments;
+          track trackByAssignmentId($index, assignment)
+        ) {
+
+          <article class="assignment-item">
+
+            <!-- CARD HEADER -->
+
+            <div class="assignment-header">
+
+              <div class="subject-info">
+
+                <span class="subject-name">
+                  {{ assignment.subjectName }}
+                </span>
+
+                @if (assignment.subjectCode) {
+
+                  <span class="subject-code">
+                    {{ assignment.subjectCode }}
+                  </span>
+
+                }
+
+              </div>
+
+
+              <span
+                class="due-badge"
+                [class.overdue]="isOverdue(assignment)"
+                [class.due-soon]="
+                  !isOverdue(assignment) &&
+                  isDueSoon(assignment)
+                ">
+
+                {{ getDueLabel(assignment) }}
+
+              </span>
+
+            </div>
+
+
+            <!-- TITLE -->
+
+            <h2 class="assignment-title">
+              {{ assignment.title }}
+            </h2>
+
+
+            <!-- DESCRIPTION -->
+
+            @if (assignment.description) {
+
+              <p class="assignment-description">
+                {{ assignment.description }}
+              </p>
+
+            }
+
+
+            <!-- DETAILS -->
+
+            <div class="assignment-details">
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Teacher
+                </span>
+
+                <span class="detail-value">
+                  {{ assignment.teacherName }}
+                </span>
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Due Date
+                </span>
+
+                <span class="detail-value">
+                  {{ assignment.dueDate | date:'dd MMM yyyy, hh:mm a' }}
+                </span>
+
+              </div>
+
+
+              <div class="detail-item">
+
+                <span class="detail-label">
+                  Max Marks
+                </span>
+
+                <span class="detail-value">
+                  {{ assignment.maxMarks }}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="assignment-footer">
+
+              <div class="class-info">
+
+                {{ assignment.className }}
+
+                @if (assignment.sectionName) {
+                  <span>
+                    • {{ assignment.sectionName }}
+                  </span>
+                }
+
+              </div>
+
+
+              <button
+                type="button"
+                class="view-button"
+                (click)="openDetails(assignment)">
+
+                View Details
+
+              </button>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     DETAILS MODAL
+     ===================================================== -->
+
+@if (selectedAssignment) {
+
+  <div
+    class="modal-backdrop"
+    (click)="closeDetails()">
+
+    <div
+      class="details-modal"
+      (click)="$event.stopPropagation()">
+
+      <!-- MODAL HEADER -->
+
+      <div class="modal-header">
+
+        <div>
+
+          <span class="modal-subject">
+            {{ selectedAssignment.subjectName }}
+          </span>
+
+          <h2>
+            {{ selectedAssignment.title }}
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="close-button"
+          aria-label="Close"
+          (click)="closeDetails()">
+
+          ×
+
+        </button>
+
+      </div>
+
+
+      <!-- MODAL BODY -->
+
+      <div class="modal-body">
+
+        @if (selectedAssignment.description) {
+
+          <div class="description-section">
+
+            <span class="modal-label">
+              Description
+            </span>
+
+            <p>
+              {{ selectedAssignment.description }}
+            </p>
+
+          </div>
+
+        }
+
+
+        <div class="modal-details">
+
+          <div class="modal-detail">
+
+            <span class="modal-label">
+              Teacher
+            </span>
+
+            <span class="modal-value">
+              {{ selectedAssignment.teacherName }}
+            </span>
+
+          </div>
+
+
+          <div class="modal-detail">
+
+            <span class="modal-label">
+              Class
+            </span>
+
+            <span class="modal-value">
+              {{ selectedAssignment.className }}
+            </span>
+
+          </div>
+
+
+          <div class="modal-detail">
+
+            <span class="modal-label">
+              Section
+            </span>
+
+            <span class="modal-value">
+              {{ selectedAssignment.sectionName }}
+            </span>
+
+          </div>
+
+
+          <div class="modal-detail">
+
+            <span class="modal-label">
+              Due Date
+            </span>
+
+            <span class="modal-value">
+              {{ selectedAssignment.dueDate | date:'dd MMM yyyy, hh:mm a' }}
+            </span>
+
+          </div>
+
+
+          <div class="modal-detail">
+
+            <span class="modal-label">
+              Maximum Marks
+            </span>
+
+            <span class="modal-value">
+              {{ selectedAssignment.maxMarks }}
+            </span>
+
+          </div>
+
+
+          <div class="modal-detail">
+
+            <span class="modal-label">
+              Status
+            </span>
+
+            <span
+              class="modal-status"
+              [class.overdue]="
+                isOverdue(selectedAssignment)
+              "
+              [class.due-soon]="
+                !isOverdue(selectedAssignment) &&
+                isDueSoon(selectedAssignment)
+              ">
+
+              {{ getDueLabel(selectedAssignment) }}
+
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- MODAL FOOTER -->
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="close-modal-button"
+          (click)="closeDetails()">
+
+          Close
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
