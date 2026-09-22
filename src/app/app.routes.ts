@@ -29,6 +29,7 @@ import { FeesInsider } from './features/admin/insider/fees-insider/fees-insider'
 import { AcademicYearsComponent } from './features/admin/academic/academic-years/academic-years';
 import { ClassesComponent } from './features/admin/academic/classes/classes';
 import { SubjectsComponent } from './features/admin/academic/subjects/subjects';
+import { SchoolComponent } from './features/admin/academic/schools/school';
 
 import { TeacherList } from './features/admin/teachers/teacher-list/teacher-list';
 import { TeacherDetails } from './features/admin/teachers/teacher-details/teacher-details';
@@ -52,6 +53,7 @@ import { AttendanceOverview } from './features/admin/attendance/attendance-overv
 import { TeacherAssignmentList as AdminTeacherAssignmentList } from './features/admin/teacher-assignments/teacher-assignment-list/teacher-assignment-list';
 import { TeacherAssignmentForm as AdminTeacherAssignmentForm } from './features/admin/teacher-assignments/teacher-assignment-form/teacher-assignment-form';
 import { TeacherAssignmentView as AdminTeacherAssignmentView } from './features/admin/teacher-assignments/teacher-assignment-view/teacher-assignment-view';
+import { StudentWorkspace } from './features/admin/students/student-workspace/student-workspace';
 
 // FEES
 import { FeeStructureList } from './features/admin/fees/fee-structure-list/fee-structure-list';
@@ -181,6 +183,13 @@ export const routes: Routes = [
       },
 
       {
+        path: 'admin/schools',
+        component: SchoolComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+
+      {
         path: 'admin/classes',
         component: ClassesComponent,
         canActivate: [roleGuard],
@@ -236,6 +245,13 @@ export const routes: Routes = [
       {
         path: 'admin/students/create',
         component: StudentForm,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+
+      {
+        path: 'admin/students/:id',
+        component: StudentWorkspace,
         canActivate: [roleGuard],
         data: { roles: ['ADMIN'] }
       },

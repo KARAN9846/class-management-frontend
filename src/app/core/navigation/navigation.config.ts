@@ -68,6 +68,12 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
                     route: '/admin/academic-years',
                     icon: '▦'
                 },
+
+                {
+                    label: 'Schools',
+                    route: '/admin/schools',
+                    icon: '▦'
+                },
                 {
                     label: 'Classes',
                     route: '/admin/classes',

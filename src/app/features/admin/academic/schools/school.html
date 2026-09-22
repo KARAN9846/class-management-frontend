@@ -1,0 +1,258 @@
+<div class="page">
+
+  <app-page-header
+    title="Schools"
+    description="Manage schools for your institution."
+    actionLabel="Add School"
+    [showAction]="true"
+    (actionClick)="openAddForm()">
+  </app-page-header>
+
+
+  <!-- FILTERS -->
+
+  <div class="filter-card">
+
+    <app-search-input
+      placeholder="Search schools..."
+      [(ngModel)]="searchTerm">
+    </app-search-input>
+
+    <select
+      class="filter-select"
+      [(ngModel)]="statusFilter">
+
+      <option value="ALL">All Status</option>
+      <option value="ACTIVE">Active</option>
+      <option value="INACTIVE">Inactive</option>
+
+    </select>
+
+  </div>
+
+
+  <!-- ERROR -->
+
+  @if (errorMessage) {
+
+    <div class="error-state">
+      <span>{{ errorMessage }}</span>
+    </div>
+
+  }
+
+
+  <!-- DATA TABLE -->
+
+  <app-data-table
+    [columns]="columns"
+    [data]="filteredSchools"
+    [loading]="loading"
+    [actions]="actions"
+    [showActions]="true"
+    (actionClick)="onAction($event)">
+  </app-data-table>
+
+
+  <!-- ADD / EDIT MODAL -->
+
+  @if (showForm) {
+
+    <div
+      class="modal-backdrop"
+      (click)="closeForm()">
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- MODAL HEADER -->
+
+        <div class="modal-header">
+
+          <div class="modal-title">
+
+            <span class="modal-eyebrow">
+              ACADEMIC MANAGEMENT
+            </span>
+
+            <h2>
+              {{ editingSchool ? 'Edit School' : 'Add School' }}
+            </h2>
+
+          </div>
+
+          <button
+            type="button"
+            class="close-btn"
+            (click)="closeForm()">
+
+            ×
+
+          </button>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form
+          (ngSubmit)="saveSchool()"
+          #schoolForm="ngForm">
+
+
+          <!-- SCHOOL NAME -->
+
+          <div class="form-group">
+
+            <label>School Name</label>
+
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter school name"
+              [(ngModel)]="form.name"
+              required>
+
+          </div>
+
+
+          <!-- CODE + PHONE -->
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label>School Code</label>
+
+              <input
+                type="text"
+                name="code"
+                placeholder="e.g. SCH-001"
+                [(ngModel)]="form.code">
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>Phone</label>
+
+              <input
+                type="tel"
+                name="phone"
+                placeholder="School phone number"
+                [(ngModel)]="form.phone">
+
+            </div>
+
+          </div>
+
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+
+            <label>Email</label>
+
+            <input
+              type="email"
+              name="email"
+              placeholder="school@example.com"
+              [(ngModel)]="form.email">
+
+          </div>
+
+
+          <!-- ADDRESS -->
+
+          <div class="form-group">
+
+            <label>Address</label>
+
+            <textarea
+              name="address"
+              rows="3"
+              placeholder="Enter school address"
+              [(ngModel)]="form.address">
+            </textarea>
+
+          </div>
+
+
+          <!-- STATUS -->
+
+          @if (editingSchool) {
+
+            <div class="form-group">
+
+              <label>Status</label>
+
+              <select
+                name="status"
+                [(ngModel)]="form.status">
+
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+
+              </select>
+
+            </div>
+
+          }
+
+
+          <!-- ACTIONS -->
+
+          <div class="modal-actions">
+
+            <button
+              type="button"
+              class="btn-secondary"
+              (click)="closeForm()">
+
+              Cancel
+
+            </button>
+
+
+            <button
+              type="submit"
+              class="btn-primary"
+              [disabled]="schoolForm.invalid || saving">
+
+              {{ saving ? 'Saving...' : (editingSchool ? 'Update' : 'Save') }}
+
+            </button>
+
+          </div>
+
+
+        </form>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- DELETE CONFIRMATION -->
+
+  <app-confirmation-dialog
+    [visible]="showDeleteDialog"
+    title="Delete School?"
+    [message]="
+      'Are you sure you want to delete school &quot;' +
+      (schoolToDelete?.name ?? '') +
+      '&quot;?'
+    "
+    confirmLabel="Delete"
+    cancelLabel="Cancel"
+    [danger]="true"
+    (confirmed)="confirmDeleteSchool()"
+    (cancelled)="cancelDeleteSchool()">
+  </app-confirmation-dialog>
+
+</div>

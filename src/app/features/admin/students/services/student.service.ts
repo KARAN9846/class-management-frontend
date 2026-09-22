@@ -79,6 +79,27 @@ getStudents(
   );
 }
 
+  // =========================
+  // GET STUDENTS FOR EXPORT
+  // =========================
+
+  getStudentsForExport(
+    search = '',
+    academicYearId?: number,
+    classId?: number,
+    sectionId?: number
+  ): Observable<ApiResponse<StudentPage>> {
+
+    return this.getStudents(
+      0,
+      10000,
+      search,
+      academicYearId,
+      classId,
+      sectionId
+    );
+  }
+
 
   // =========================
   // GET STUDENT BY ID

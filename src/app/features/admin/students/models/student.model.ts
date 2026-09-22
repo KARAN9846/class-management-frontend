@@ -15,6 +15,9 @@ export interface Student {
 
   sectionId: number;
   sectionName: string;
+
+  schoolId: number | null;
+schoolName: string | null;
 }
 
 export interface StudentDetails extends Student {
@@ -40,12 +43,12 @@ export interface CreateStudentRequest {
   academicYearId: number;
   classId: number;
   sectionId: number;
+
+  schoolId: number | null;
 }
 
 export interface UpdateStudentRequest {
-    rollNumber: string;
-
-
+  rollNumber: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -54,4 +57,6 @@ export interface UpdateStudentRequest {
   academicYearId: number;
   classId: number;
   sectionId: number;
+
+  schoolId: number | null;
 }

@@ -1,6 +1,8 @@
-<main class="receipt-view-page">
-
+<main
+  class="receipt-view-page"
+  [class.popup-mode]="popupMode">
   <!-- PAGE HEADER -->
+ @if (!popupMode) {
   <header class="page-header">
     <div>
       <h1>Fee Receipt</h1>
@@ -25,6 +27,7 @@
       }
     </div>
   </header>
+}
 
 
   <!-- ERROR -->

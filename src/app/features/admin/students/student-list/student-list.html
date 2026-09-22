@@ -1,177 +1,535 @@
 <div class="page">
 
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
   <div class="page-header">
 
-    <div>
+    <div class="page-title">
 
       <h1>Students</h1>
 
       <p>
-        Manage all students and their accounts
+        Manage all students, admissions and academic records
       </p>
 
     </div>
 
+    <button type="button" class="add-btn" (click)="openAddStudent()">
 
-    <button
-      type="button"
-      class="add-btn"
-      (click)="router.navigate(['/admin/students/create'])">
+      <span class="add-icon">+</span>
 
-      + Add Student
+      Add Student
 
     </button>
 
   </div>
 
 
+  <!-- =====================================================
+       STUDENT LIST CARD
+       ===================================================== -->
   <div class="table-card">
 
-<div class="filter-area">
+    <!-- ===================================================
+         TOOLBAR
+         =================================================== -->
+    <div class="student-toolbar">
 
-  <app-search-input
-    placeholder="Search students..."
-    (searchChange)="onSearch($event)">
-  </app-search-input>
+      <!-- Search -->
+      <div class="search-area">
 
-
-  <!-- Academic Year -->
-
-  <select
-    class="filter-select"
-    [value]="selectedAcademicYearId ?? ''"
-    (change)="onAcademicYearChange($any($event.target).value)">
-
-    <option value="">
-      Academic Year
-    </option>
-
-    @for (academicYear of academicYears; track academicYear.id) {
-
-      <option [value]="academicYear.id">
-        {{ academicYear.name }}
-      </option>
-
-    }
-
-  </select>
-
-
-  <!-- Class -->
-
-  <select
-    class="filter-select"
-    [value]="selectedClassId ?? ''"
-    [disabled]="selectedAcademicYearId === null"
-    (change)="onClassChange($any($event.target).value)">
-
-    <option value="">
-      Class
-    </option>
-
-    @for (classItem of filteredClasses; track classItem.id) {
-
-      <option [value]="classItem.id">
-        {{ classItem.name }}
-      </option>
-
-    }
-
-  </select>
-
-
-  <!-- Section -->
-
-  <select
-    class="filter-select"
-    [value]="selectedSectionId ?? ''"
-    [disabled]="selectedClassId === null"
-    (change)="onSectionChange($any($event.target).value)">
-
-    <option value="">
-      Section
-    </option>
-
-    @for (section of sections; track section.id) {
-
-      <option [value]="section.id">
-        {{ section.name }}
-      </option>
-
-    }
-
-  </select>
-
-
-  <!-- Clear -->
-
-  <button
-    type="button"
-    class="clear-filter-btn"
-    (click)="clearFilters()">
-
-    Clear
-
-  </button>
-
-</div>
-
-
-    @if (errorMessage) {
-
-      <div class="error-state">
-
-        {{ errorMessage }}
+        <app-search-input placeholder="Search students..." (searchChange)="onSearch($event)">
+        </app-search-input>
 
       </div>
 
+
+      <!-- Filters -->
+      <div class="filter-area">
+
+        <!-- Academic Year -->
+        <select class="filter-select" [value]="selectedAcademicYearId ?? ''"
+          (change)="onAcademicYearChange($any($event.target).value)">
+
+          <option value="">
+            Academic Year
+          </option>
+
+          @for (academicYear of academicYears; track academicYear.id) {
+
+          <option [value]="academicYear.id">
+            {{ academicYear.name }}
+          </option>
+
+          }
+
+        </select>
+
+
+        <!-- Class -->
+        <select class="filter-select" [value]="selectedClassId ?? ''" [disabled]="selectedAcademicYearId === null"
+          (change)="onClassChange($any($event.target).value)">
+
+          <option value="">
+            Class
+          </option>
+
+          @for (classItem of filteredClasses; track classItem.id) {
+
+          <option [value]="classItem.id">
+            {{ classItem.name }}
+          </option>
+
+          }
+
+        </select>
+
+
+        <!-- Section -->
+        <select class="filter-select" [value]="selectedSectionId ?? ''" [disabled]="selectedClassId === null"
+          (change)="onSectionChange($any($event.target).value)">
+
+          <option value="">
+            Section
+          </option>
+
+          @for (section of sections; track section.id) {
+
+          <option [value]="section.id">
+            {{ section.name }}
+          </option>
+
+          }
+
+        </select>
+
+
+        <!-- Clear -->
+        @if (hasActiveFilters) {
+        <button type="button" class="clear-filter-btn active" (click)="clearFilters()">
+          Clear
+        </button>
+        }
+
+      </div>
+
+
+      <!-- View controls -->
+      <div class="toolbar-actions">
+
+        <div class="view-controls">
+
+          <div class="view-toggle">
+
+            <button type="button" class="view-toggle-btn" [class.active]="viewMode === 'table'"
+              (click)="setViewMode('table')">
+
+              <span class="view-icon">☷</span>
+              Table
+
+            </button>
+
+            <button type="button" class="view-toggle-btn" [class.active]="viewMode === 'cards'"
+              (click)="setViewMode('cards')">
+
+              <span class="view-icon">▦</span>
+              Cards
+
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="column-wrapper">
+
+          <button type="button" class="columns-btn" [class.open]="columnMenuOpen" (click)="toggleColumnMenu()">
+
+            <span class="columns-icon">☷</span>
+            Columns
+            <span class="columns-chevron">⌄</span>
+
+          </button>
+
+          @if (columnMenuOpen) {
+
+          <div class="column-menu">
+
+            <div class="column-menu-header">
+              <div>
+                <strong>Columns</strong>
+                <small>Choose what appears in the table</small>
+              </div>
+            </div>
+
+            <div class="column-menu-list">
+
+              @for (column of columns; track column.key) {
+
+              <label class="column-option" [class.locked]="column.key === 'studentName'">
+
+                <input type="checkbox" [checked]="isColumnVisible(column.key)" [disabled]="column.key === 'studentName'"
+                  (change)="toggleColumn(column.key)">
+
+                <span class="column-option-label">
+                  {{ column.label }}
+                </span>
+
+                @if (column.key === 'studentName') {
+                <span class="column-required">
+                  Required
+                </span>
+                }
+
+              </label>
+
+              }
+
+            </div>
+
+            <div class="column-menu-footer">
+
+              <button type="button" class="column-reset-btn" (click)="resetColumns()">
+
+                Reset to default
+
+              </button>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+        <div class="export-wrapper">
+
+          <button type="button" class="export-btn" [class.open]="exportMenuOpen" [disabled]="exporting"
+            (click)="toggleExportMenu()">
+
+            <span class="export-icon">↓</span>
+
+            {{ exporting ? 'Exporting...' : 'Export' }}
+
+            <span class="export-chevron">⌄</span>
+
+          </button>
+
+          @if (exportMenuOpen) {
+
+          <div class="export-menu">
+
+            <button type="button" class="export-menu-item" [disabled]="exporting" (click)="exportStudentsCsv()">
+
+              <span class="export-menu-icon">CSV</span>
+
+              <span class="export-menu-content">
+                <strong>Export CSV</strong>
+                <small>Download filtered students</small>
+              </span>
+
+            </button>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         ERROR
+         =================================================== -->
+    @if (errorMessage) {
+
+    <div class="error-state">
+      {{ errorMessage }}
+    </div>
+
     }
 
 
-    <app-data-table
-
-      [columns]="columns"
-
-      [data]="students"
-
-      [loading]="loading"
-
-      [actions]="actions"
-
-      [showActions]="true"
-
-      (actionClick)="onAction($event)">
-
+    <!-- ===================================================
+         TABLE VIEW
+         =================================================== -->
+    @if (viewMode === 'table') {
+    <app-data-table [columns]="visibleColumns" [data]="students" [loading]="loading" [actions]="actions"
+      [showActions]="true" [stickyFirstColumn]="true" (actionClick)="onAction($event)"
+      (studentNameClick)="openStudentWorkspace($event)">
     </app-data-table>
 
+    }
 
+
+    <!-- ===================================================
+         CARD VIEW
+         =================================================== -->
+    @if (viewMode === 'cards') {
+
+    <div class="student-card-grid">
+
+      @if (loading) {
+
+      <div class="cards-loading">
+        Loading students...
+      </div>
+
+      } @else if (students.length === 0) {
+
+      <div class="cards-empty">
+        No students found.
+      </div>
+
+      } @else {
+
+      @for (student of students; track student.id) {
+
+      <article class="student-card">
+
+        <!-- Card header -->
+        <div class="student-card-header">
+
+          <div class="student-avatar">
+
+            {{ student.firstName?.charAt(0) || '' }}{{ student.lastName?.charAt(0) || '' }}
+
+          </div>
+
+          <div class="student-card-identity">
+
+            <h3>
+              {{ student.firstName }} {{ student.lastName }}
+            </h3>
+
+            <span>
+              Roll No. {{ student.rollNumber || '—' }}
+            </span>
+
+          </div>
+
+          <span class="student-status" [class.active]="student.isActive" [class.inactive]="!student.isActive">
+
+            {{ student.isActive ? 'Active' : 'Inactive' }}
+
+          </span>
+
+        </div>
+
+
+        <!-- Academic information -->
+        <div class="student-card-info">
+
+          <div class="info-item">
+
+            <span class="info-label">
+              Academic Year
+            </span>
+
+            <span class="info-value">
+              {{ student.academicYearName || '—' }}
+            </span>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="info-label">
+              Class
+            </span>
+
+            <span class="info-value">
+              {{ student.className || '—' }}
+            </span>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="info-label">
+              Section
+            </span>
+
+            <span class="info-value">
+              {{ student.sectionName || '—' }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Card actions -->
+        <div class="student-card-footer">
+
+          <button type="button" class="card-action primary" (click)="openStudentWorkspace(student.id)">
+
+            Open
+
+          </button>
+
+
+          <button type="button" class="card-action" (click)="openEditStudent(student.id)">
+
+            Edit
+
+          </button>
+
+
+          <button type="button" class="card-action more" (click)="toggleStatus(student)">
+
+            ⋮
+
+          </button>
+
+        </div>
+
+      </article>
+
+      }
+
+      }
+
+    </div>
+
+    }
+
+
+    <!-- ===================================================
+         PAGINATION
+         =================================================== -->
     <div class="pagination-area">
 
-      <app-pagination
-
-        [currentPage]="page + 1"
-
-        [totalItems]="totalElements"
-
-        [pageSize]="size"
-
+      <app-pagination [currentPage]="page + 1" [totalItems]="totalElements" [pageSize]="size"
         (pageChange)="onPageChange($event)">
-
       </app-pagination>
 
     </div>
 
   </div>
 
-  <app-confirmation-dialog
-  [visible]="showConfirmationDialog"
-  [title]="confirmationTitle"
-  [message]="confirmationMessage"
-  [confirmLabel]="confirmationConfirmLabel"
-  cancelLabel="Cancel"
-  [danger]="true"
-  (confirmed)="confirmAction()"
-  (cancelled)="cancelConfirmation()">
-</app-confirmation-dialog>
+
+  <!-- =====================================================
+       CONFIRMATION DIALOG
+       ===================================================== -->
+  <app-confirmation-dialog [visible]="showConfirmationDialog" [title]="confirmationTitle"
+    [message]="confirmationMessage" [confirmLabel]="confirmationConfirmLabel" cancelLabel="Cancel" [danger]="true"
+    (confirmed)="confirmAction()" (cancelled)="cancelConfirmation()">
+  </app-confirmation-dialog>
+
+
+  <!-- =====================================================
+       STUDENT QUICK VIEW
+       ===================================================== -->
+  @if (quickViewStudentId !== null) {
+
+  <app-student-quick-view [studentId]="quickViewStudentId" (closed)="closeStudentQuickView()"
+    (openStudent)="openStudentWorkspace($event)" />
+
+  }
+
+
+  <!-- =====================================================
+     EDIT STUDENT POPUP
+     ===================================================== -->
+  @if (editPopupOpen && editStudentId !== null) {
+
+  <div class="student-edit-overlay" (click)="closeEditStudent()">
+
+    <div class="student-edit-modal" role="dialog" aria-modal="true" aria-labelledby="editStudentTitle"
+      (click)="$event.stopPropagation()">
+
+      <!-- Popup header -->
+      <div class="student-edit-modal-header">
+
+        <div>
+          <h2 id="editStudentTitle">
+            Edit Student
+          </h2>
+
+          <p>
+            Update student information and academic details
+          </p>
+        </div>
+
+        <button type="button" class="student-edit-close" aria-label="Close" (click)="closeEditStudent()">
+
+          ×
+
+        </button>
+
+      </div>
+
+
+      <!-- Existing Student Form -->
+      <div class="student-edit-modal-body">
+
+        <app-student-form [popupMode]="true" [studentIdForPopup]="editStudentId" (closePopup)="closeEditStudent()"
+          (saved)="onStudentSaved()">
+        </app-student-form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  }
+
+  @if (addPopupOpen) {
+  <div
+    class="student-edit-overlay"
+    (click)="closeAddStudent()">
+
+    <div
+      class="student-edit-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="addStudentTitle"
+      (click)="$event.stopPropagation()">
+
+      <div class="student-edit-modal-header">
+
+        <div>
+          <h2 id="addStudentTitle">
+            Add Student
+          </h2>
+
+          <p>
+            Create a new student and assign academic details
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="student-edit-close"
+          aria-label="Close"
+          (click)="closeAddStudent()">
+          ×
+        </button>
+
+      </div>
+
+      <div class="student-edit-modal-body">
+
+        <app-student-form
+          [popupMode]="true"
+          (closePopup)="closeAddStudent()"
+          (saved)="onStudentCreated()">
+        </app-student-form>
+
+      </div>
+
+    </div>
+
+  </div>
+}
 
 </div>

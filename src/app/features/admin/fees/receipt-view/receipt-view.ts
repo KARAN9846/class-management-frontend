@@ -5,6 +5,11 @@ import {
   inject,
   OnInit
 } from '@angular/core';
+import {
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -22,6 +27,11 @@ import { environment } from '../../../../../environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiptViewComponent implements OnInit {
+
+  @Input() popupMode = false;
+@Input() receiptId: number | null = null;
+@Output() closePopup = new EventEmitter<void>();
+
   private readonly receiptService = inject(ReceiptService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -32,7 +42,9 @@ export class ReceiptViewComponent implements OnInit {
   errorMessage = '';
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+   const id = this.popupMode
+  ? Number(this.receiptId)
+  : Number(this.route.snapshot.paramMap.get('id'));
 
     if (!id) {
       this.errorMessage = 'Invalid receipt.';
@@ -42,9 +54,14 @@ export class ReceiptViewComponent implements OnInit {
     this.loadReceipt(id);
   }
 
-    goBack(): void {
-    this.router.navigate(['/admin/fees/student-fees']);
+goBack(): void {
+  if (this.popupMode) {
+    this.closePopup.emit();
+    return;
   }
+
+  this.router.navigate(['/admin/fees/student-fees']);
+}
 
   loadReceipt(id: number): void {
     this.loading = true;

@@ -33,8 +33,11 @@
 
 .data-table {
   width: 100%;
+  min-width: 1100px;
 
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+
   table-layout: fixed;
 
   font-family: Inter, Arial, sans-serif;
@@ -66,7 +69,7 @@
 .data-table td {
   height: 68px;
 
-  padding: 10px 22px;
+  padding: 10px 20px;
 
   border-bottom: 1px solid var(--border);
 
@@ -74,7 +77,47 @@
 
   font-size: 14px;
 
+  line-height: 1.4;
+
   vertical-align: middle;
+}
+
+/* ============================================================
+   STICKY FIRST COLUMN
+   ============================================================ */
+
+.data-table th.sticky-column,
+.data-table td.sticky-column {
+  position: sticky;
+
+  left: 0;
+
+  z-index: 3;
+
+  background: #ffffff;
+
+  min-width: 190px;
+}
+
+/* Header must remain above body cells */
+.data-table thead th.sticky-column {
+  z-index: 5;
+
+  background: #f8fafc;
+
+  min-width: 190px;
+}
+
+/* Keep the sticky cell visually separated */
+.data-table th.sticky-column,
+.data-table td.sticky-column {
+  box-shadow:
+    2px 0 0 #e5e7eb,
+    6px 0 10px rgba(15, 23, 42, 0.03);
+}
+
+.data-table tbody tr:hover td.sticky-column {
+  background: #f8fbff;
 }
 
 .data-table tbody tr {
@@ -103,6 +146,129 @@
 
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* ============================================================
+   STUDENT NAME
+   ============================================================ */
+
+.student-name-cell {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  min-width: 0;
+
+  width: 100%;
+}
+
+.student-name-avatar {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  border-radius: 50%;
+
+  background: #dbeafe;
+
+  color: #2563eb;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.student-name-content {
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+
+  gap: 2px;
+}
+
+.student-name-primary {
+  display: block;
+
+  overflow: hidden;
+
+  color: #111827;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  line-height: 1.3;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.student-name-link {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+
+  border: 0;
+  background: transparent;
+
+  color: #111827;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.student-name-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.student-name-link:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.student-name-secondary {
+  display: block;
+
+  overflow: hidden;
+
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  line-height: 1.3;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.student-name-separator {
+  margin: 0 3px;
+
+  color: #94a3b8;
 }
 
 .date-cell {

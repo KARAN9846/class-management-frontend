@@ -664,6 +664,18 @@
     padding: 22px 20px 45px;
   }
 
+  .receipt-view-page.popup-mode {
+  max-width: none;
+  margin: 0;
+  padding: 20px;
+}
+
+.receipt-view-page.popup-mode .receipt-paper {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
   .receipt-header {
     padding: 28px;
   }

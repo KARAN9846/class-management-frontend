@@ -1,0 +1,1169 @@
+<div class="student-workspace">
+
+    <!-- Loading -->
+    @if (loading) {
+    <div class="workspace-loading">
+        <div class="loading-spinner"></div>
+        <span>Loading student...</span>
+    </div>
+    }
+
+    <!-- Error -->
+    @if (!loading && errorMessage) {
+    <div class="workspace-error">
+        <div class="error-icon">!</div>
+
+        <div class="error-content">
+            <strong>Unable to load student</strong>
+            <span>{{ errorMessage }}</span>
+        </div>
+
+        <button type="button" class="back-button" (click)="goBack()">
+            Back to Students
+        </button>
+    </div>
+    }
+
+    <!-- Workspace -->
+    @if (!loading && student) {
+
+    <!-- Header -->
+    <header class="workspace-header">
+
+        <div class="header-top">
+            <button type="button" class="back-link" (click)="goBack()">
+                <span class="back-icon">←</span>
+                <span>Students</span>
+            </button>
+        </div>
+
+        <div class="student-header">
+
+            <div class="student-identity">
+
+                <div class="student-avatar">
+                    {{ studentInitials }}
+                </div>
+
+                <div class="student-heading">
+                    <div class="student-name-row">
+                        <h1>{{ studentName }}</h1>
+
+                        <span class="status-badge" [class.inactive]="!student.isActive">
+                            <span class="status-dot"></span>
+                            {{ student.isActive ? 'Active' : 'Inactive' }}
+                        </span>
+                    </div>
+
+                    <div class="student-meta">
+                        <span>Roll No. {{ student.rollNumber || '—' }}</span>
+                        <span class="meta-separator">•</span>
+                        <span>{{ student.className || 'Class not assigned' }}</span>
+                        <span class="meta-separator">•</span>
+                        <span>{{ student.sectionName || 'Section not assigned' }}</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="header-actions">
+
+                <button type="button" class="download-button" (click)="openDownloadPopup()">
+
+                    <span class="button-icon">↓</span>
+                    Download
+
+                </button>
+
+                <button type="button" class="edit-button" (click)="editStudent()">
+
+                    <span class="button-icon">✎</span>
+                    Edit Student
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- Workspace Navigation -->
+    <nav class="workspace-tabs" aria-label="Student workspace">
+
+        <button type="button" class="workspace-tab" [class.active]="activeTab === 'overview'"
+            (click)="setActiveTab('overview')">
+            Overview
+        </button>
+
+        <button type="button" class="workspace-tab" [class.active]="activeTab === 'personal'"
+            (click)="setActiveTab('personal')">
+            Personal
+        </button>
+
+        <button type="button" class="workspace-tab" [class.active]="activeTab === 'academic'"
+            (click)="setActiveTab('academic')">
+            Academic
+        </button>
+
+        <button type="button" class="workspace-tab" [class.active]="activeTab === 'attendance'"
+            (click)="setActiveTab('attendance')">
+            Attendance
+        </button>
+
+        <button type="button" class="workspace-tab" [class.active]="activeTab === 'fees'"
+            (click)="setActiveTab('fees')">
+            Fees
+        </button>
+
+    </nav>
+
+    <!-- Content -->
+    <main class="workspace-content">
+
+        @switch (activeTab) {
+
+        @case ('overview') {
+
+        <section class="content-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Overview</h2>
+                    <p>Quick summary of the student's current information.</p>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="overview-grid">
+
+                <div class="info-card">
+                    <span class="card-label">Student</span>
+
+                    <strong>
+                        {{ studentName }}
+                    </strong>
+
+                    <small>
+                        {{ student.email || 'No email available' }}
+                    </small>
+                </div>
+
+                <div class="info-card">
+                    <span class="card-label">Roll Number</span>
+
+                    <strong>
+                        {{ student.rollNumber || '—' }}
+                    </strong>
+
+                    <small>
+                        Student identification
+                    </small>
+                </div>
+
+                <div class="info-card">
+                    <span class="card-label">Class & Section</span>
+
+                    <strong>
+                        {{ student.className || '—' }}
+                        @if (student.sectionName) {
+                        <span> • {{ student.sectionName }}</span>
+                        }
+                    </strong>
+
+                    <small>
+                        Current academic placement
+                    </small>
+                </div>
+
+                <div class="info-card">
+                    <span class="card-label">Academic Year</span>
+
+                    <strong>
+                        {{ student.academicYearName || '—' }}
+                    </strong>
+
+                    <small>
+                        Current enrollment
+                    </small>
+                </div>
+
+            </div>
+
+            <!-- Student Information -->
+            <div class="overview-information">
+
+                <div class="overview-information-header">
+                    <div>
+                        <h3>Student Information</h3>
+                        <p>Basic information currently available in the system.</p>
+                    </div>
+                </div>
+
+                <div class="details-grid">
+
+                    <div class="detail-card">
+                        <span>School</span>
+                        <strong>{{ student.schoolName || 'No School' }}</strong>
+                    </div>
+
+                    <div class="detail-card">
+                        <span>Academic Year</span>
+                        <strong>{{ student.academicYearName || '—' }}</strong>
+                    </div>
+
+                    <div class="detail-card">
+                        <span>Class</span>
+                        <strong>{{ student.className || '—' }}</strong>
+                    </div>
+
+                    <div class="detail-card">
+                        <span>Section</span>
+                        <strong>{{ student.sectionName || '—' }}</strong>
+                    </div>
+
+                    <div class="detail-card">
+                        <span>Roll Number</span>
+                        <strong>{{ student.rollNumber || '—' }}</strong>
+                    </div>
+
+                    <div class="detail-card">
+                        <span>Enrollment Number</span>
+                        <strong>{{ student.enrollmentNumber || '—' }}</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Module Summary -->
+
+            <div class="module-summary">
+
+                <!-- Attendance -->
+                <div class="module-summary-card">
+
+                    <div class="module-summary-icon">✓</div>
+
+                    <div class="module-summary-content">
+                        <strong>Attendance</strong>
+
+                        @if (attendanceLoading) {
+                        <span>Loading attendance...</span>
+                        } @else if (attendanceTotalCount === 0) {
+                        <span>No attendance records</span>
+                        } @else {
+                        <span>
+                            {{ attendancePercentage }}% attendance
+                        </span>
+
+                        <small>
+                            {{ attendancePresentCount }} present
+                            ·
+                            {{ attendanceAbsentCount }} absent
+                        </small>
+                        }
+                    </div>
+
+                    <button type="button" (click)="setActiveTab('attendance')">
+                        Open
+                    </button>
+
+                </div>
+
+                <!-- Fees -->
+                <div class="module-summary-card">
+
+                    <div class="module-summary-icon">₹</div>
+
+                    <div class="module-summary-content">
+                        <strong>Fees</strong>
+
+                        @if (feesLoading) {
+                        <span>Loading fees...</span>
+                        } @else if (!studentFee) {
+                        <span>No fee record</span>
+                        } @else {
+                        <span>
+                            ₹{{ studentFee.paidAmount | number:'1.0-2' }}
+                            paid
+                        </span>
+
+                        <small>
+                            @if (studentFee.remainingAmount > 0) {
+                            ₹{{ studentFee.remainingAmount | number:'1.0-2' }}
+                            remaining
+                            } @else {
+                            Fully paid
+                            }
+                        </small>
+                        }
+                    </div>
+
+                    <button type="button" (click)="setActiveTab('fees')">
+                        Open
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+        }
+
+        @case ('personal') {
+
+        <section class="content-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Personal Information</h2>
+                    <p>Basic contact and identity information.</p>
+                </div>
+            </div>
+
+            <div class="details-grid">
+
+                <div class="detail-card">
+                    <span>First Name</span>
+                    <strong>{{ student.firstName || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Last Name</span>
+                    <strong>{{ student.lastName || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Email</span>
+                    <strong>{{ student.email || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Phone</span>
+                    <strong>{{ student.phone || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Status</span>
+                    <strong>
+                        {{ student.isActive ? 'Active' : 'Inactive' }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+        }
+
+        @case ('academic') {
+
+        <section class="content-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Academic Information</h2>
+                    <p>Current enrollment and academic placement.</p>
+                </div>
+            </div>
+
+            <div class="details-grid">
+
+                <div class="detail-card">
+                    <span>Academic Year</span>
+                    <strong>{{ student.academicYearName || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Class</span>
+                    <strong>{{ student.className || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Section</span>
+                    <strong>{{ student.sectionName || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Roll Number</span>
+                    <strong>{{ student.rollNumber || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Enrollment Number</span>
+                    <strong>{{ student.enrollmentNumber || '—' }}</strong>
+                </div>
+
+            </div>
+
+        </section>
+        }
+
+        @case ('attendance') {
+
+        <section class="content-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Attendance</h2>
+                    <p>Attendance summary and recent attendance records.</p>
+                </div>
+            </div>
+
+            @if (attendanceLoading) {
+
+            <div class="workspace-module-loading">
+                <div class="loading-spinner"></div>
+                <span>Loading attendance...</span>
+            </div>
+
+            } @else {
+
+            <!-- Attendance Summary -->
+            <div class="attendance-summary">
+
+                <div class="attendance-stat attendance-stat-primary">
+                    <span class="attendance-stat-label">Attendance Rate</span>
+
+                    <strong>
+                        {{ attendancePercentage }}%
+                    </strong>
+
+                    <small>
+                        {{ attendanceTotalCount }} recorded days
+                    </small>
+                </div>
+
+                <div class="attendance-stat">
+                    <span class="attendance-stat-label">Present</span>
+
+                    <strong>
+                        {{ attendancePresentCount }}
+                    </strong>
+
+                    <small>
+                        Days present
+                    </small>
+                </div>
+
+                <div class="attendance-stat">
+                    <span class="attendance-stat-label">Absent</span>
+
+                    <strong>
+                        {{ attendanceAbsentCount }}
+                    </strong>
+
+                    <small>
+                        Days absent
+                    </small>
+                </div>
+
+            </div>
+
+            @if (attendanceError) {
+
+            <div class="attendance-message">
+                {{ attendanceError }}
+            </div>
+
+            } @else if (attendanceTotalCount === 0) {
+
+            <div class="module-placeholder">
+                <div class="placeholder-icon">✓</div>
+
+                <h3>No attendance records</h3>
+
+                <p>
+                    No attendance records are available for this student yet.
+                </p>
+            </div>
+
+            } @else {
+
+            <!-- Recent Attendance -->
+            <div class="attendance-records">
+
+                <div class="attendance-records-header">
+                    <div>
+                        <h3>Recent Attendance</h3>
+                        <p>Latest attendance records for this student.</p>
+                    </div>
+                </div>
+
+                <div class="attendance-table-wrapper">
+
+                    <table class="attendance-table">
+
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            item of recentAttendance;
+                            track item.id
+                            ) {
+
+                            <tr>
+
+                                <td>
+                                    {{ item.attendanceDate }}
+                                </td>
+
+                                <td>
+                                    <span class="attendance-status" [class.absent]="item.status === 'ABSENT'">
+                                        <span class="attendance-status-dot"></span>
+                                        {{ item.status === 'PRESENT' ? 'Present' : 'Absent' }}
+                                    </span>
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            }
+
+            }
+
+        </section>
+        }
+
+        @case ('fees') {
+        <section class="content-section">
+            <div class="section-heading">
+                <div>
+                    <h2>Fees</h2>
+                    <p>Fee summary and payment history for this student.</p>
+                </div>
+            </div>
+
+            @if (feesLoading) {
+            <div class="workspace-module-loading">
+                <div class="loading-spinner"></div>
+                <span>Loading fee information...</span>
+            </div>
+            } @else if (feesError) {
+            <div class="attendance-message">
+                {{ feesError }}
+            </div>
+            } @else if (!studentFee) {
+            <div class="module-placeholder">
+                <div class="placeholder-icon">₹</div>
+                <h3>No fee record</h3>
+                <p>No fee information is available for this student yet.</p>
+            </div>
+            } @else {
+
+            <!-- Fee Summary -->
+            <div class="fee-summary">
+
+                <div class="fee-stat fee-stat-primary">
+                    <span class="fee-stat-label">Payable Amount</span>
+                    <strong>₹{{ studentFee.payableAmount | number:'1.0-2' }}</strong>
+                    <small>Total amount after discount</small>
+                </div>
+
+                <div class="fee-stat">
+                    <span class="fee-stat-label">Paid</span>
+                    <strong>₹{{ studentFee.paidAmount | number:'1.0-2' }}</strong>
+                    <small>Amount received</small>
+                </div>
+
+                <div class="fee-stat fee-stat-warning">
+                    <span class="fee-stat-label">Remaining</span>
+                    <strong>₹{{ studentFee.remainingAmount | number:'1.0-2' }}</strong>
+                    <small>Amount pending</small>
+                </div>
+
+            </div>
+
+            <!-- Fee Details -->
+            <div class="fee-details-card">
+
+                <div class="fee-card-header">
+                    <div>
+                        <h3>Fee Details</h3>
+                        <p>{{ studentFee.academicYearName }} · {{ studentFee.className }} · {{ studentFee.sectionName }}
+                        </p>
+                    </div>
+
+                    <span class="fee-status" [class.paid]="studentFee.status === 'PAID'"
+                        [class.remaining]="studentFee.status === 'REMAINING'"
+                        [class.unpaid]="studentFee.status === 'UNPAID'">
+                        {{ studentFee.status }}
+                    </span>
+                </div>
+
+                <div class="fee-details-grid">
+
+                    <div class="fee-detail-item">
+                        <span>Original Amount</span>
+                        <strong>₹{{ studentFee.originalAmount | number:'1.0-2' }}</strong>
+                    </div>
+
+                    <div class="fee-detail-item">
+                        <span>Discount</span>
+                        <strong>₹{{ studentFee.discountAmount | number:'1.0-2' }}</strong>
+                    </div>
+
+                    <div class="fee-detail-item">
+                        <span>Discount Type</span>
+                        <strong>{{ studentFee.discountType || '—' }}</strong>
+                    </div>
+
+                    <div class="fee-detail-item">
+                        <span>Discount Value</span>
+                        <strong>{{ studentFee.discountValue || 0 }}</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Payment History -->
+            <div class="fee-payments-card">
+
+                <div class="fee-card-header">
+                    <div>
+                        <h3>Payment History</h3>
+                        <p>Payments recorded against this student's fee.</p>
+                    </div>
+
+                    <div class="fee-card-actions">
+
+                        <button type="button" class="fee-action-button fee-action-primary"
+                            (click)="openAddPaymentPopup()">
+                            + Add Payment
+                        </button>
+
+                    </div>
+                </div>
+
+                @if (feePayments.length === 0) {
+                <div class="fee-empty-payments">
+                    <span>No payments recorded yet.</span>
+                </div>
+                } @else {
+
+                <div class="fee-payments-table-wrapper">
+                    <table class="fee-payments-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Payment Type</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @for (payment of feePayments; track payment.id) {
+                            <tr>
+                                <td>{{ payment.paymentDate }}</td>
+
+                                <td class="payment-amount">
+                                    ₹{{ payment.amount | number:'1.0-2' }}
+                                </td>
+
+                                <td>
+                                    {{ payment.paymentMethod || '—' }}
+                                </td>
+
+                                <td>
+                                    {{ payment.paymentType || '—' }}
+                                </td>
+
+                                <td>
+                                    <span class="payment-status">
+                                        {{ payment.status || 'Recorded' }}
+                                    </span>
+                                </td>
+
+                                <td class="payment-actions-cell">
+
+                                    @if (payment.status === 'VERIFIED') {
+                                    <button type="button" class="payment-row-action" (click)="openPaymentEdit(payment)">
+                                        Edit
+                                    </button>
+                                    } @else {
+                                    <span class="payment-row-no-action">—</span>
+                                    }
+
+                                    <button type="button" class="payment-row-action"
+                                        (click)="openPaymentReceipt(payment)">
+                                        Receipt
+                                    </button>
+
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                }
+
+            </div>
+            }
+        </section>
+        }
+
+        }
+
+    </main>
+
+    }
+
+</div>
+
+@if (editPopupOpen && studentId !== null) {
+<div class="student-edit-overlay" (click)="closeEditPopup()">
+
+    <div class="student-edit-modal" role="dialog" aria-modal="true" aria-labelledby="workspaceEditStudentTitle"
+        (click)="$event.stopPropagation()">
+
+        <div class="student-edit-modal-header">
+
+            <div>
+                <h2 id="workspaceEditStudentTitle">
+                    Edit Student
+                </h2>
+
+                <p>
+                    Update student information and academic details
+                </p>
+            </div>
+
+            <button type="button" class="student-edit-close" aria-label="Close" (click)="closeEditPopup()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="student-edit-modal-body">
+
+            <app-student-form [popupMode]="true" [studentIdForPopup]="studentId" (closePopup)="closeEditPopup()"
+                (saved)="onStudentSaved()">
+            </app-student-form>
+
+        </div>
+
+    </div>
+
+</div>
+}
+
+@if (addPaymentPopupOpen && studentFee) {
+<div class="student-payment-overlay" (click)="closeAddPaymentPopup()">
+
+    <div class="student-payment-modal" role="dialog" aria-modal="true" aria-labelledby="addPaymentTitle"
+        (click)="$event.stopPropagation()">
+
+        <div class="student-payment-modal-header">
+
+            <div>
+                <h2 id="addPaymentTitle">Add Payment</h2>
+                <p>
+                    Record a payment for {{ student?.firstName }}
+                    {{ student?.lastName }}
+                </p>
+            </div>
+
+            <button type="button" class="student-payment-close" aria-label="Close" (click)="closeAddPaymentPopup()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="student-payment-modal-body">
+
+            <app-add-payment [popupMode]="true" [studentFeeId]="studentFee.id" (closePopup)="closeAddPaymentPopup()"
+                (saved)="onPaymentSaved()">
+            </app-add-payment>
+
+        </div>
+
+    </div>
+</div>
+}
+@if (paymentEditPopupOpen && editingPayment) {
+<div class="payment-edit-overlay" (click)="closePaymentEdit()">
+
+    <div class="student-payment-modal student-payment-edit-modal" role="dialog" aria-modal="true"
+        aria-labelledby="editPaymentTitle" (click)="$event.stopPropagation()">
+
+        <div class="student-payment-modal-header">
+            <div>
+                <h2 id="editPaymentTitle">Edit Payment</h2>
+                <p>
+                    Update payment details for
+                    {{ student?.firstName }}
+                    {{ student?.lastName }}
+                </p>
+            </div>
+
+            <button type="button" class="student-payment-close" aria-label="Close" (click)="closePaymentEdit()">
+                ×
+            </button>
+        </div>
+
+        <div class="student-payment-modal-body">
+
+            @if (paymentEditErrorMessage) {
+            <div class="student-payment-error">
+                {{ paymentEditErrorMessage }}
+            </div>
+            }
+
+            <div class="student-payment-form-grid">
+
+                <!-- Payment Type -->
+                <div class="student-payment-form-group">
+                    <label for="editPaymentType">
+                        Payment Type
+                    </label>
+
+                    <select id="editPaymentType" [(ngModel)]="editPaymentType" [disabled]="paymentSaving">
+
+                        <option value="INSTALLMENT">
+                            Installment
+                        </option>
+
+                        <option value="FULL_PAYMENT">
+                            Full Payment
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Amount -->
+                <div class="student-payment-form-group">
+                    <label for="editPaymentAmount">
+                        Amount
+                    </label>
+
+                    <input id="editPaymentAmount" type="number" min="0" step="0.01" [(ngModel)]="editPaymentAmount"
+                        [disabled]="paymentSaving">
+                </div>
+
+                <!-- Discount Type -->
+                <div class="student-payment-form-group">
+                    <label for="editDiscountType">
+                        Discount Type
+                    </label>
+
+                    <select id="editDiscountType" [(ngModel)]="editDiscountType" [disabled]="paymentSaving">
+
+                        <option value="NONE">No Discount</option>
+                        <option value="PERCENTAGE">Percentage</option>
+                        <option value="FIXED_AMOUNT">
+                            Fixed Amount
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Discount Value -->
+                <div class="student-payment-form-group">
+                    <label for="editDiscountValue">
+                        Discount Value
+                    </label>
+
+                    <input id="editDiscountValue" type="number" min="0" step="0.01" [(ngModel)]="editDiscountValue"
+                        [disabled]="paymentSaving">
+                </div>
+
+                <!-- Payment Method -->
+                <div class="student-payment-form-group">
+                    <label for="editPaymentMethod">
+                        Payment Method
+                    </label>
+
+                    <select id="editPaymentMethod" [(ngModel)]="editPaymentMethod" [disabled]="paymentSaving">
+
+                        <option value="CASH">Cash</option>
+                        <option value="UPI">UPI</option>
+                        <option value="CARD">Card</option>
+                        <option value="BANK_TRANSFER">Bank Transfer</option>
+                        <option value="CHEQUE">Cheque</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+
+                <!-- Payment Date -->
+                <div class="student-payment-form-group">
+                    <label for="editPaymentDate">
+                        Payment Date
+                    </label>
+
+                    <input id="editPaymentDate" type="date" [(ngModel)]="editPaymentDate" [disabled]="paymentSaving">
+                </div>
+
+                <!-- Notes -->
+                <div class="student-payment-form-group student-payment-form-full">
+                    <label for="editPaymentNotes">
+                        Note
+                    </label>
+
+                    <textarea id="editPaymentNotes" rows="3" [(ngModel)]="editPaymentNotes" [disabled]="paymentSaving"
+                        placeholder="Optional note">
+            </textarea>
+                </div>
+
+                <!-- Revision Reason -->
+                <div class="student-payment-form-group student-payment-form-full">
+                    <label for="editRevisionReason">
+                        Revision Reason
+                        <span>*</span>
+                    </label>
+
+                    <textarea id="editRevisionReason" rows="3" [(ngModel)]="editRevisionReason"
+                        [disabled]="paymentSaving" placeholder="Why is this payment being revised?">
+            </textarea>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="student-payment-modal-footer">
+
+            <button type="button" class="student-payment-secondary-button" (click)="closePaymentEdit()"
+                [disabled]="paymentSaving">
+                Cancel
+            </button>
+
+            <button type="button" class="student-payment-primary-button" (click)="savePaymentEdit()"
+                [disabled]="paymentSaving">
+
+                @if (paymentSaving) {
+                Saving...
+                } @else {
+                Save Changes
+                }
+
+            </button>
+
+        </div>
+
+    </div>
+</div>
+}
+
+@if (receiptPopupOpen) {
+<div class="student-receipt-overlay" (click)="closeReceiptPopup()">
+
+    <div class="student-receipt-modal" role="dialog" aria-modal="true" aria-labelledby="studentReceiptTitle"
+        (click)="$event.stopPropagation()">
+
+<div class="student-receipt-modal-header">
+  <div>
+    <h2>Fee Receipt</h2>
+    <p>View and download the payment receipt.</p>
+  </div>
+
+  <div class="student-receipt-header-actions">
+    @if (selectedReceipt) {
+      <button
+        type="button"
+        class="student-receipt-download"
+        (click)="downloadSelectedReceipt()">
+        Download PDF
+      </button>
+    }
+
+    <button
+      type="button"
+      class="student-receipt-close"
+      (click)="closeReceiptPopup()"
+      aria-label="Close receipt">
+      ×
+    </button>
+  </div>
+</div>
+
+        <div class="student-receipt-modal-body">
+
+            @if (receiptLoading) {
+            <div class="student-receipt-state">
+                <div class="student-receipt-spinner"></div>
+                <p>Loading receipt...</p>
+            </div>
+            }
+
+            @else if (receiptErrorMessage) {
+            <div class="student-receipt-state student-receipt-error">
+                <p>{{ receiptErrorMessage }}</p>
+
+                <button type="button" class="student-receipt-retry" (click)="closeReceiptPopup()">
+                    Close
+                </button>
+            </div>
+            }
+
+            @else if (selectedReceipt) {
+            <app-receipt-view [popupMode]="true" [receiptId]="selectedReceipt.id" (closePopup)="closeReceiptPopup()">
+            </app-receipt-view>
+            }
+
+        </div>
+
+    </div>
+</div>
+}
+
+@if (downloadPopupOpen) {
+<div class="student-download-overlay" (click)="closeDownloadPopup()">
+
+    <div class="student-download-modal" role="dialog" aria-modal="true" aria-labelledby="downloadReportTitle"
+        (click)="$event.stopPropagation()">
+
+        <div class="student-download-modal-header">
+
+            <div>
+                <h2 id="downloadReportTitle">
+                    Download Student Report
+                </h2>
+
+                <p>
+                    Choose the information you want to include
+                    in the report.
+                </p>
+            </div>
+
+            <button type="button" class="student-download-close" aria-label="Close" (click)="closeDownloadPopup()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="student-download-modal-body">
+
+            <div class="download-report-student">
+                <span class="download-report-student-label">
+                    Student
+                </span>
+
+                <strong>
+                    {{ student?.firstName }}
+                    {{ student?.lastName }}
+                </strong>
+            </div>
+
+            <div class="download-report-options">
+
+                <label class="download-option required">
+
+                    <input type="checkbox" checked disabled>
+
+                    <span class="download-option-content">
+                        <strong>Basic Information</strong>
+                        <small>
+                            Student identity and contact details
+                        </small>
+                    </span>
+
+                    <span class="required-label">
+                        Required
+                    </span>
+
+                </label>
+
+                <label class="download-option">
+
+                    <input type="checkbox" [(ngModel)]="downloadOptions.personal">
+
+                    <span class="download-option-content">
+                        <strong>Personal</strong>
+                        <small>
+                            Email, phone and personal details
+                        </small>
+                    </span>
+
+                </label>
+
+                <label class="download-option">
+
+                    <input type="checkbox" [(ngModel)]="downloadOptions.academic">
+
+                    <span class="download-option-content">
+                        <strong>Academic</strong>
+                        <small>
+                            School, academic year, class,
+                            section and enrollment details
+                        </small>
+                    </span>
+
+                </label>
+
+                <label class="download-option">
+
+                    <input type="checkbox" [(ngModel)]="downloadOptions.attendance">
+
+                    <span class="download-option-content">
+                        <strong>Attendance</strong>
+                        <small>
+                            Attendance summary and attendance records
+                        </small>
+                    </span>
+
+                </label>
+
+                <label class="download-option">
+
+                    <input type="checkbox" [(ngModel)]="downloadOptions.fees">
+
+                    <span class="download-option-content">
+                        <strong>Fees</strong>
+                        <small>
+                            Fee summary and payment history
+                        </small>
+                    </span>
+
+                </label>
+
+            </div>
+
+            <label class="remember-download-selection">
+
+                <input type="checkbox" [(ngModel)]="rememberDownloadSelection">
+
+                <span>
+                    Remember my selection for other students
+                </span>
+
+            </label>
+
+        </div>
+
+        <div class="student-download-modal-footer">
+
+            <button type="button" class="secondary-button" (click)="closeDownloadPopup()">
+                Cancel
+            </button>
+
+            <button type="button" class="primary-download-button" (click)="downloadStudentReport()">
+
+                <span class="button-icon">↓</span>
+                Download Report
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+}

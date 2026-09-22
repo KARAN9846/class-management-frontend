@@ -395,6 +395,28 @@
 }
 
 /* =========================================================
+   POPUP MODE
+   ========================================================= */
+
+.page.popup-mode {
+  height: auto;
+  min-height: 0;
+
+  padding: 0;
+
+  overflow: visible;
+}
+
+.page.popup-mode .page-header {
+  display: none;
+}
+
+.page.popup-mode .form-card {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* =========================================================
    LOADING
    ========================================================= */
 

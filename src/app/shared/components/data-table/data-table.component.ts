@@ -15,17 +15,26 @@ export interface TableColumn {
   width?: string;
   align?: 'left' | 'center' | 'right';
 
-  type?:
-    | 'text'
-    | 'status'
-    | 'current'
-    | 'sections'
-    | 'permissions'
-    | 'permission-count'
-    | 'date-time'
-    | 'assignment-status'
-    | 'attendance-teacher'
-    | 'attendance-last-updated';
+  /**
+   * Optional value formatter for display-only values.
+   * Keeps the original row data unchanged.
+   */
+  value?: (row: any) => any;
+
+type?:
+  | 'text'
+  | 'student-name'
+  | 'status'
+  | 'fee-status'
+  | 'percentage'
+  | 'current'
+  | 'sections'
+  | 'permissions'
+  | 'permission-count'
+  | 'date-time'
+  | 'assignment-status'
+  | 'attendance-teacher'
+  | 'attendance-last-updated';
 }
 
 export interface TableAction {
@@ -55,14 +64,22 @@ export class DataTableComponent {
 
   @Input() rowActions?: (row: any) => TableAction[];
 
-  @Input() showActions = false;
+@Input() showActions = false;
 
-  @Input() currentField?: string;
+/**
+ * Keeps the first data column visible while
+ * horizontally scrolling the table.
+ */
+@Input() stickyFirstColumn = false;
+
+@Input() currentField?: string;
 
   @Input() enablePagination = false;
   @Input() pageSize = 10;
 
   @Output() actionClick = new EventEmitter<any>();
+
+  @Output() studentNameClick = new EventEmitter<number>();
 
 
   /* =========================================================
@@ -162,13 +179,17 @@ export class DataTableComponent {
      CELL HELPERS
      ========================================================= */
 
-  getCellValue(
-    row: any,
-    column: TableColumn
-  ): any {
-    return row[column.key];
+getCellValue(
+  row: any,
+  column: TableColumn
+): any {
+
+  if (column.value) {
+    return column.value(row);
   }
 
+  return row[column.key];
+}
   getBooleanCellValue(
     row: any,
     column: TableColumn
@@ -466,4 +487,19 @@ export class DataTableComponent {
   ): any {
     return item?.id ?? index;
   }
+
+  onStudentNameClick(row: any, event: MouseEvent): void {
+  event.stopPropagation();
+
+  const studentId = Number(row?.['id']);
+
+  if (!Number.isFinite(studentId) || studentId <= 0) {
+    return;
+  }
+
+  this.studentNameClick.emit(studentId);
+}
+
+
+
 }

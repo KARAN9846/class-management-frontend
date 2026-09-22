@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -22,6 +30,12 @@ import { StudentFeeService } from '../services/student-fee.service';
   styleUrl: './add-payment.scss'
 })
 export class AddPayment implements OnInit {
+
+  @Input() popupMode = false;
+  @Input() studentFeeId: number | null = null;
+
+  @Output() closePopup = new EventEmitter<void>();
+  @Output() saved = new EventEmitter<void>();
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -60,9 +74,9 @@ export class AddPayment implements OnInit {
 
   ngOnInit(): void {
 
-    const id = Number(
-      this.route.snapshot.paramMap.get('id')
-    );
+    const id = this.popupMode
+      ? this.studentFeeId
+      : Number(this.route.snapshot.paramMap.get('id'));
 
     if (!id) {
       this.errorMessage = 'Invalid student fee ID.';
@@ -368,32 +382,32 @@ export class AddPayment implements OnInit {
     this.cdr.detectChanges();
   }
 
-onAmountChange(): void {
-  this.errorMessage = '';
+  onAmountChange(): void {
+    this.errorMessage = '';
 
-  if (this.amount === null || this.amount === undefined) {
+    if (this.amount === null || this.amount === undefined) {
+      this.cdr.detectChanges();
+      return;
+    }
+
+    const value = Number(this.amount);
+
+    if (Number.isNaN(value)) {
+      this.amount = null;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (value <= 0) {
+      this.amount = value;
+    } else if (value > this.remainingAmount) {
+      this.amount = this.remainingAmount;
+    } else {
+      this.amount = this.roundMoney(value);
+    }
+
     this.cdr.detectChanges();
-    return;
   }
-
-  const value = Number(this.amount);
-
-  if (Number.isNaN(value)) {
-    this.amount = null;
-    this.cdr.detectChanges();
-    return;
-  }
-
-  if (value <= 0) {
-    this.amount = value;
-  } else if (value > this.remainingAmount) {
-    this.amount = this.remainingAmount;
-  } else {
-    this.amount = this.roundMoney(value);
-  }
-
-  this.cdr.detectChanges();
-}
 
   /**
    * For Full Payment, calculate the collected amount
@@ -740,6 +754,11 @@ onAmountChange(): void {
 
         this.saving = false;
 
+        if (this.popupMode) {
+          this.saved.emit();
+          return;
+        }
+
         this.router.navigate([
           '/admin/fees/student-fees',
           this.studentFee!.id
@@ -779,10 +798,15 @@ onAmountChange(): void {
   // ==================================================
   // CANCEL
   // ==================================================
-cancel(): void {
-  this.router.navigate(['/admin/fees/student-fees']);
-}
+  cancel(): void {
 
+    if (this.popupMode) {
+      this.closePopup.emit();
+      return;
+    }
+
+    this.router.navigate(['/admin/fees/student-fees']);
+  }
   // ==================================================
   // MONEY
   // ==================================================

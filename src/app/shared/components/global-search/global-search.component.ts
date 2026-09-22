@@ -25,12 +25,12 @@ import {
 } from 'rxjs/operators';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { StudentQuickViewComponent } from '../student-quick-view/student-quick-view.component';
 
 import { GlobalSearchService } from '../../../core/services/global-search.service';
 
 import {
     GlobalSearchResult,
-    GlobalSearchStudentQuickView,
     GlobalSearchTeacherQuickView
 } from './global-search.models';
 
@@ -38,6 +38,9 @@ import {
 @Component({
     selector: 'app-global-search',
     standalone: true,
+    imports: [
+        StudentQuickViewComponent
+    ],
     templateUrl: './global-search.component.html',
     styleUrl: './global-search.component.scss'
 })
@@ -79,7 +82,6 @@ export class GlobalSearchComponent {
     // teacher/student selection.
     // =========================================================
 
-    private studentQuickViewRequestId = 0;
 
     private teacherQuickViewRequestId = 0;
 
@@ -103,13 +105,11 @@ export class GlobalSearchComponent {
     // STUDENT QUICK VIEW
     // =========================================================
 
-    quickViewStudent:
-        GlobalSearchStudentQuickView | null = null;
+
 
     quickViewResult:
         GlobalSearchResult | null = null;
 
-    isQuickViewLoading = false;
 
 
     // =========================================================
@@ -401,110 +401,19 @@ export class GlobalSearchComponent {
     // =========================================================
     // OPEN STUDENT QUICK VIEW
     // =========================================================
-
     openStudentQuickView(
         studentId: number,
         result?: GlobalSearchResult
     ): void {
-
-        if (!studentId) {
+        if (!Number.isFinite(studentId) || studentId <= 0) {
             return;
         }
 
+        // Invalidate any active teacher quick view.
+        this.closeTeacherQuickView();
 
-        const requestId =
-            ++this.studentQuickViewRequestId;
-
-
-        // Invalidate teacher request.
-
-        this.teacherQuickViewRequestId++;
-
-        this.quickViewTeacher = null;
-
-        this.isTeacherQuickViewLoading = false;
-
-
-        // Prepare student view.
-
-        this.quickViewStudent = null;
-
-        this.quickViewResult =
-            result ?? null;
-
-        this.isQuickViewLoading = true;
-
-
+        this.quickViewResult = result ?? null;
         this.cdr.detectChanges();
-
-
-        this.searchService
-            .getStudentQuickView(studentId)
-            .pipe(
-
-                takeUntilDestroyed(
-                    this.destroyRef
-                ),
-
-                finalize(() => {
-
-                    if (
-                        requestId ===
-                        this.studentQuickViewRequestId
-                    ) {
-
-                        this.isQuickViewLoading =
-                            false;
-
-                        this.cdr.detectChanges();
-
-                    }
-
-                })
-
-            )
-
-            .subscribe({
-
-                next: student => {
-
-                    if (
-                        requestId !==
-                        this.studentQuickViewRequestId
-                    ) {
-                        return;
-                    }
-
-                    this.quickViewStudent =
-                        student;
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: error => {
-
-                    if (
-                        requestId !==
-                        this.studentQuickViewRequestId
-                    ) {
-                        return;
-                    }
-
-                    console.error(
-                        'Student Quick View failed:',
-                        error
-                    );
-
-                    this.quickViewStudent =
-                        null;
-
-                    this.cdr.detectChanges();
-
-                }
-
-            });
-
     }
 
 
@@ -513,22 +422,8 @@ export class GlobalSearchComponent {
     // =========================================================
 
     closeStudentQuickView(): void {
-
-        this.studentQuickViewRequestId++;
-
-        this.quickViewStudent = null;
-
-        if (!this.quickViewTeacher) {
-
-            this.quickViewResult =
-                null;
-
-        }
-
-        this.isQuickViewLoading = false;
-
+        this.quickViewResult = null;
         this.cdr.detectChanges();
-
     }
 
 
@@ -557,12 +452,7 @@ export class GlobalSearchComponent {
         // -------------------------------------------------------
         // Invalidate student request.
         // -------------------------------------------------------
-
-        this.studentQuickViewRequestId++;
-
-        this.quickViewStudent = null;
-
-        this.isQuickViewLoading = false;
+        this.closeStudentQuickView();
 
 
         // -------------------------------------------------------
@@ -673,7 +563,7 @@ export class GlobalSearchComponent {
 
         this.quickViewTeacher = null;
 
-        if (!this.quickViewStudent) {
+        if (!this.quickViewResult) {
 
             this.quickViewResult =
                 null;
@@ -918,5 +808,10 @@ export class GlobalSearchComponent {
         );
 
     }
+
+    navigateToStudent(studentId: number): void {
+    this.router.navigate(['/admin/students', studentId]);
+    this.closeStudentQuickView();
+}
 
 }

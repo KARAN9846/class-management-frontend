@@ -1,4 +1,6 @@
-<div class="page">
+<div
+  class="page"
+  [class.popup-mode]="popupMode">
 
   <!-- ================= HEADER ================= -->
 
@@ -336,6 +338,41 @@
 
 
           <div class="form-grid">
+
+            <!-- ================= SCHOOL ================= -->
+
+<div class="form-group">
+
+  <label for="schoolId">
+    School
+  </label>
+
+  <select
+    id="schoolId"
+    formControlName="schoolId">
+
+    <option [ngValue]="null">
+      No School
+    </option>
+
+    @for (
+      school of schools;
+      track school.id
+    ) {
+
+      @if (school.isActive) {
+
+        <option [ngValue]="school.id">
+          {{ school.name }}
+        </option>
+
+      }
+
+    }
+
+  </select>
+
+</div>
 
 
             <!-- ================= ACADEMIC YEAR ================= -->

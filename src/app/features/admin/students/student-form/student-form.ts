@@ -1,7 +1,10 @@
 import {
   Component,
   ChangeDetectorRef,
+  EventEmitter,
+  Input,
   OnInit,
+  Output,
   inject
 } from '@angular/core';
 
@@ -53,6 +56,14 @@ import {
   UpdateStudentRequest
 } from '../models/student.model';
 
+import {
+  School
+} from '../../academic/schools/school.model';
+
+import {
+  SchoolService
+} from '../../academic/schools/services/school.service';
+
 
 @Component({
   selector: 'app-student-form',
@@ -67,6 +78,24 @@ import {
   styleUrl: './student-form.scss'
 })
 export class StudentForm implements OnInit {
+
+@Input() popupMode = false;
+
+@Input() set studentIdForPopup(value: number | null) {
+  if (!this.popupMode || !value) {
+    return;
+  }
+
+  this.studentId = value;
+  this.isEditMode = true;
+
+  this.loadEditFormState();
+  this.loadStudent();
+}
+
+@Output() closePopup = new EventEmitter<void>();
+
+@Output() saved = new EventEmitter<void>();
 
   private readonly fb = inject(FormBuilder);
 
@@ -89,6 +118,9 @@ export class StudentForm implements OnInit {
 
   private readonly sectionService =
     inject(SectionService);
+
+    private readonly schoolService =
+  inject(SchoolService);
 
 
   // =========================================================
@@ -114,13 +146,15 @@ export class StudentForm implements OnInit {
   // DROPDOWN DATA
   // =========================================================
 
-  academicYears: AcademicYear[] = [];
+academicYears: AcademicYear[] = [];
 
-  classes: AcademicClass[] = [];
+classes: AcademicClass[] = [];
 
-  sections: Section[] = [];
+sections: Section[] = [];
 
-  filteredClasses: AcademicClass[] = [];
+filteredClasses: AcademicClass[] = [];
+
+schools: School[] = [];
 
 
   // =========================================================
@@ -186,12 +220,16 @@ export class StudentForm implements OnInit {
       ]
     ],
 
-    sectionId: [
-      null as number | null,
-      [
-        Validators.required
-      ]
-    ]
+sectionId: [
+  null as number | null,
+  [
+    Validators.required
+  ]
+],
+
+schoolId: [
+  null as number | null
+]
 
   });
 
@@ -200,14 +238,39 @@ export class StudentForm implements OnInit {
   // INIT
   // =========================================================
 
-  ngOnInit(): void {
+ngOnInit(): void {
 
+  this.loadAcademicYears();
+
+  this.loadSchools();
+
+  if (!this.popupMode) {
     this.checkEditMode();
-
-    this.loadAcademicYears();
-
   }
 
+}
+
+private loadEditFormState(): void {
+
+  this.studentForm
+    .get('password')
+    ?.clearValidators();
+
+  this.studentForm
+    .get('password')
+    ?.updateValueAndValidity();
+
+  this.studentForm
+    .get('rollNumber')
+    ?.setValidators([
+      Validators.required
+    ]);
+
+  this.studentForm
+    .get('rollNumber')
+    ?.updateValueAndValidity();
+
+}
 
   // =========================================================
   // CHECK CREATE / EDIT MODE
@@ -229,7 +292,6 @@ export class StudentForm implements OnInit {
 
       this.studentId = null;
 
-
       // Password required during CREATE
       this.studentForm
         .get('password')
@@ -240,7 +302,6 @@ export class StudentForm implements OnInit {
       this.studentForm
         .get('password')
         ?.updateValueAndValidity();
-
 
       // Roll number NOT required during CREATE
       this.studentForm
@@ -264,27 +325,8 @@ export class StudentForm implements OnInit {
     this.studentId = Number(id);
 
 
-    // Password NOT required during EDIT
-    this.studentForm
-      .get('password')
-      ?.clearValidators();
-
-    this.studentForm
-      .get('password')
-      ?.updateValueAndValidity();
-
-
-    // Roll number REQUIRED during EDIT
-    this.studentForm
-      .get('rollNumber')
-      ?.setValidators([
-        Validators.required
-      ]);
-
-    this.studentForm
-      .get('rollNumber')
-      ?.updateValueAndValidity();
-
+    // Configure form for EDIT mode
+    this.loadEditFormState();
 
     this.loadStudent();
 
@@ -327,6 +369,43 @@ export class StudentForm implements OnInit {
       });
 
   }
+
+  // =========================================================
+// LOAD SCHOOLS
+// =========================================================
+
+loadSchools(): void {
+
+  this.schoolService
+    .getAll()
+    .subscribe({
+
+      next: (response) => {
+
+        this.schools =
+          response.data.content;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Failed to load schools:',
+          error
+        );
+
+        this.handleError(
+          error,
+          'Failed to load schools.'
+        );
+
+      }
+
+    });
+
+}
 
 
   // =========================================================
@@ -545,10 +624,16 @@ export class StudentForm implements OnInit {
                 student.classId
               ),
 
-            sectionId:
-              Number(
-                student.sectionId
-              )
+sectionId:
+  Number(
+    student.sectionId
+  ),
+
+schoolId:
+  student.schoolId !== null &&
+  student.schoolId !== undefined
+    ? Number(student.schoolId)
+    : null
 
           });
 
@@ -658,8 +743,7 @@ export class StudentForm implements OnInit {
 
           this.handleError(
             error,
-            `Failed to load student. HTTP ${
-              error?.status || 'Unknown'
+            `Failed to load student. HTTP ${error?.status || 'Unknown'
             }`
           );
 
@@ -750,10 +834,15 @@ export class StudentForm implements OnInit {
           formValue.classId
         ),
 
-      sectionId:
-        Number(
-          formValue.sectionId
-        )
+sectionId:
+  Number(
+    formValue.sectionId
+  ),
+
+schoolId:
+  formValue.schoolId
+    ? Number(formValue.schoolId)
+    : null
 
     };
 
@@ -770,7 +859,6 @@ export class StudentForm implements OnInit {
             'Student created successfully.';
 
           this.cdr.detectChanges();
-
 
           setTimeout(() => {
 
@@ -870,10 +958,15 @@ export class StudentForm implements OnInit {
           formValue.classId
         ),
 
-      sectionId:
-        Number(
-          formValue.sectionId
-        )
+sectionId:
+  Number(
+    formValue.sectionId
+  ),
+
+schoolId:
+  formValue.schoolId
+    ? Number(formValue.schoolId)
+    : null
 
     };
 
@@ -894,6 +987,10 @@ export class StudentForm implements OnInit {
 
           this.cdr.detectChanges();
 
+          if (this.popupMode) {
+            this.saved.emit();
+            return;
+          }
 
           setTimeout(() => {
 
@@ -1118,6 +1215,11 @@ export class StudentForm implements OnInit {
 
   cancel(): void {
 
+    if (this.popupMode) {
+      this.closePopup.emit();
+      return;
+    }
+
     this.router.navigate([
       '/admin/students'
     ]);
@@ -1146,5 +1248,6 @@ export class StudentForm implements OnInit {
     );
 
   }
+
 
 }
