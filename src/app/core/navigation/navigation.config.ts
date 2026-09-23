@@ -64,25 +64,9 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
             title: 'ACADEMIC',
             items: [
                 {
-                    label: 'Academic Years',
-                    route: '/admin/academic-years',
+                    label: 'Academic Management',
+                    route: '/admin/academic',
                     icon: '▦'
-                },
-
-                {
-                    label: 'Schools',
-                    route: '/admin/schools',
-                    icon: '▦'
-                },
-                {
-                    label: 'Classes',
-                    route: '/admin/classes',
-                    icon: '▤'
-                },
-                {
-                    label: 'Subjects',
-                    route: '/admin/subjects',
-                    icon: '▤'
                 }
             ]
         },
@@ -90,18 +74,8 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
             title: 'FEES',
             items: [
                 {
-                    label: 'Fee Structures',
-                    route: '/admin/fees/fee-structures',
-                    icon: '₹'
-                },
-                {
-                    label: 'Student Fees',
-                    route: '/admin/fees/student-fees',
-                    icon: '₹'
-                },
-                {
-                    label: 'Receipt Settings',
-                    route: '/admin/fees/receipt-settings',
+                    label: 'Fee Management',
+                    route: '/admin/fees',
                     icon: '₹'
                 }
             ]
@@ -110,24 +84,9 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
             title: 'MANAGEMENT',
             items: [
                 {
-                    label: 'Teachers',
+                    label: 'Teacher Management',
                     route: '/admin/teachers',
                     icon: '♙'
-                },
-                {
-                    label: 'Teacher Roles',
-                    route: '/admin/teacher-roles',
-                    icon: '♙'
-                },
-                {
-                    label: 'Teacher Role Assignments',
-                    route: '/admin/teacher-role-assignments',
-                    icon: '♙'
-                },
-                {
-                    label: 'Teacher Assignments',
-                    route: '/admin/teacher-assignments',
-                    icon: '≡'
                 },
                 {
                     label: 'Students',

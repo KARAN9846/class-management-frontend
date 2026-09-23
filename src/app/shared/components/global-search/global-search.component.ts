@@ -100,6 +100,8 @@ export class GlobalSearchComponent {
 
     isLoading = false;
 
+    isMac = false;
+
 
     // =========================================================
     // STUDENT QUICK VIEW
@@ -127,6 +129,10 @@ export class GlobalSearchComponent {
     // =========================================================
 
     constructor() {
+
+            this.isMac =
+        typeof navigator !== 'undefined' &&
+        /Mac|iPhone|iPad|iPod/i.test(navigator.platform);
 
         this.searchQuery$
             .pipe(
@@ -266,46 +272,52 @@ export class GlobalSearchComponent {
     // INPUT
     // =========================================================
 
-    onInput(event: Event): void {
+onInput(event: Event): void {
 
-        const input =
-            event.target as HTMLInputElement;
+    const input =
+        event.target as HTMLInputElement;
 
-        this.query =
-            input.value;
+    this.query =
+        input.value;
 
-        const normalizedQuery =
-            this.query.trim();
+    const normalizedQuery =
+        this.query.trim();
 
-        this.selectedIndex = 0;
+    this.selectedIndex = 0;
 
-        this.isOpen =
-            normalizedQuery.length > 0;
+    this.isOpen =
+        normalizedQuery.length > 0;
 
-        this.searchQuery$.next(
-            normalizedQuery
-        );
+    this.searchQuery$.next(
+        normalizedQuery
+    );
 
-    }
+}
 
 
     // =========================================================
     // OPEN SEARCH
     // =========================================================
 
-    openSearch(): void {
+openSearch(): void {
 
-        this.isOpen = true;
+    this.isOpen = true;
 
-        setTimeout(() => {
+    setTimeout(() => {
 
-            this.searchInput
-                ?.nativeElement
-                .focus();
+        const input =
+            this.searchInput?.nativeElement;
 
-        });
+        if (!input) {
+            return;
+        }
 
-    }
+        input.focus();
+        input.select();
+
+    });
+
+}
 
 
     // =========================================================

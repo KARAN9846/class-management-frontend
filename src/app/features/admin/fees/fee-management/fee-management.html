@@ -1,0 +1,90 @@
+<main class="fee-management-page">
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+
+    <div class="page-title">
+      <div class="breadcrumb">
+        <span>Management</span>
+        <span>/</span>
+        <strong>Fees</strong>
+      </div>
+
+      <h1>Fee Management</h1>
+
+      <p>
+        Manage student fees and payment status.
+      </p>
+    </div>
+
+
+    <!-- FEE CONFIGURATION -->
+    <div class="fee-configuration">
+
+      <div class="configuration-label">
+        <span class="configuration-title">
+          Fee Configuration
+        </span>
+
+        <span class="configuration-description">
+          Manage fee and receipt settings
+        </span>
+      </div>
+
+
+      <div class="configuration-actions">
+
+        <button
+          type="button"
+          class="configuration-button"
+          (click)="openFeeStructures()">
+
+          <span class="configuration-icon">
+            ₹
+          </span>
+
+          <span class="configuration-button-text">
+            Fee Structures
+          </span>
+
+          <span class="configuration-arrow">
+            →
+          </span>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="configuration-button"
+          (click)="openReceiptSettings()">
+
+          <span class="configuration-icon">
+            🧾
+          </span>
+
+          <span class="configuration-button-text">
+            Receipt Settings
+          </span>
+
+          <span class="configuration-arrow">
+            →
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- STUDENT FEES -->
+  <section class="student-fees-section">
+
+    <app-student-fee-list></app-student-fee-list>
+
+  </section>
+
+</main>

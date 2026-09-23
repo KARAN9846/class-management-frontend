@@ -41,6 +41,9 @@ import {
 import { TeacherRoleAssignmentService } from '../../features/admin/teacher-role-assignments/services/teacher-role-assignment.service';
 import { TeacherRoleService } from '../../features/admin/teacher-roles/services/teacher-role.service';
 
+import { ClassService } from '../../features/admin/academic/classes/class.service';
+import { SubjectService } from '../../features/admin/academic/subjects/subject.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -50,8 +53,8 @@ export class GlobalSearchService {
   private readonly tokenService =
     inject(TokenService);
 
-private readonly permissionService =
-  inject(PermissionService);
+  private readonly permissionService =
+    inject(PermissionService);
 
   private readonly studentService =
     inject(StudentService);
@@ -59,11 +62,11 @@ private readonly permissionService =
   private readonly teacherService =
     inject(TeacherService);
 
- private readonly teacherRoleAssignmentService =
-  inject(TeacherRoleAssignmentService);
+  private readonly teacherRoleAssignmentService =
+    inject(TeacherRoleAssignmentService);
 
-private readonly teacherRoleService =
-  inject(TeacherRoleService);
+  private readonly teacherRoleService =
+    inject(TeacherRoleService);
   private readonly teacherStudentService =
     inject(TeacherStudentService);
 
@@ -72,6 +75,12 @@ private readonly teacherRoleService =
 
   private readonly studentFeeService =
     inject(StudentFeeService);
+
+  private readonly classService =
+    inject(ClassService);
+
+  private readonly subjectService =
+    inject(SubjectService);
 
 
   // =========================================================
@@ -104,170 +113,228 @@ private readonly teacherRoleService =
   }
 
   // =========================================================
-// QUICK ACTIONS
-// =========================================================
+  // QUICK ACTIONS
+  // =========================================================
 
-private readonly quickActions: GlobalSearchAction[] = [
+  private readonly quickActions: GlobalSearchAction[] = [
 
-  // -------------------------------------------------------
-  // ADMIN
-  // -------------------------------------------------------
+    // -------------------------------------------------------
+    // ADMIN
+    // -------------------------------------------------------
 
-  {
-    id: 'ADD_STUDENT',
-    title: 'Add Student',
-    description: 'Create a new student',
-    icon: '+',
-    route: '/admin/students/create',
-    roles: ['ADMIN']
-  },
+    {
+      id: 'ADD_STUDENT',
+      title: 'Add Student',
+      description: 'Create a new student',
+      icon: '+',
+      route: '/admin/students/create',
+      roles: ['ADMIN'],
+      aliases: [
+        'new student',
+        'create student',
+        'add student'
+      ]
+    },
 
-  {
-    id: 'ADD_TEACHER',
-    title: 'Add Teacher',
-    description: 'Create a new teacher',
-    icon: '+',
-    route: '/admin/teachers/create',
-    roles: ['ADMIN']
-  },
+    {
+      id: 'ADD_TEACHER',
+      title: 'Add Teacher',
+      description: 'Create a new teacher',
+      icon: '+',
+      route: '/admin/teachers/create',
+      roles: ['ADMIN'],
+      aliases: [
+        'new teacher',
+        'create teacher',
+        'add teacher'
+      ]
+    },
 
-  {
-    id: 'ADD_TEACHER_ROLE',
-    title: 'Add Teacher Role',
-    description: 'Create a new teacher role',
-    icon: '+',
-    route: '/admin/teacher-roles/create',
-    roles: ['ADMIN']
-  },
+    {
+      id: 'ADD_TEACHER_ROLE',
+      title: 'Add Teacher Role',
+      description: 'Create a new teacher role',
+      icon: '+',
+      route: '/admin/teacher-roles/create',
+      roles: ['ADMIN'],
+      aliases: [
+        'new teacher role',
+        'create teacher role',
+        'add teacher role'
+      ]
+    },
 
-  {
-    id: 'ASSIGN_TEACHER_ROLE',
-    title: 'Assign Teacher Role',
-    description: 'Assign a role to a teacher',
-    icon: '↗',
-    route: '/admin/teacher-role-assignments/create',
-    roles: ['ADMIN']
-  },
+    {
+      id: 'ASSIGN_TEACHER_ROLE',
+      title: 'Assign Teacher Role',
+      description: 'Assign a role to a teacher',
+      icon: '↗',
+      route: '/admin/teacher-role-assignments/create',
+      roles: ['ADMIN'],
+      aliases: [
+        'assign role',
+        'assign teacher role',
+        'teacher role assignment'
+      ]
+    },
 
-  {
-    id: 'ADD_TEACHER_ASSIGNMENT',
-    title: 'Add Teacher Assignment',
-    description: 'Assign academic scope to a teacher',
-    icon: '+',
-    route: '/admin/teacher-assignments/create',
-    roles: ['ADMIN']
-  },
+    {
+      id: 'ADD_TEACHER_ASSIGNMENT',
+      title: 'Add Teacher Assignment',
+      description: 'Assign academic scope to a teacher',
+      icon: '+',
+      route: '/admin/teacher-assignments/create',
+      roles: ['ADMIN'],
+      aliases: [
+        'new teacher assignment',
+        'create teacher assignment',
+        'add teacher assignment'
+      ]
+    },
 
-  {
-    id: 'ADD_ASSIGNMENT',
-    title: 'Add Assignment',
-    description: 'Create a new assignment',
-    icon: '+',
-    route: '/admin/assignments/create',
-    roles: ['ADMIN']
-  },
+    {
+      id: 'ADD_ASSIGNMENT',
+      title: 'Add Assignment',
+      description: 'Create a new assignment',
+      icon: '+',
+      route: '/admin/assignments/create',
+      roles: ['ADMIN'],
+      aliases: [
+        'new assignment',
+        'create assignment',
+        'add assignment'
+      ]
+    },
 
-  {
-    id: 'ADD_FEE_STRUCTURE',
-    title: 'Add Fee Structure',
-    description: 'Create a new fee structure',
-    icon: '+',
-    route: '/admin/fees/fee-structures/create',
-    roles: ['ADMIN']
-  },
+    {
+      id: 'ADD_FEE_STRUCTURE',
+      title: 'Add Fee Structure',
+      description: 'Create a new fee structure',
+      icon: '+',
+      route: '/admin/fees/fee-structures/create',
+      roles: ['ADMIN'],
+      aliases: [
+        'new fee structure',
+        'create fee structure',
+        'add fee structure',
+        'fees'
+      ]
+    },
 
-  // -------------------------------------------------------
-  // TEACHER
-  // -------------------------------------------------------
+    // -------------------------------------------------------
+    // TEACHER
+    // -------------------------------------------------------
 
-  {
-    id: 'ADD_STUDENT',
-    title: 'Add Student',
-    description: 'Create a new student',
-    icon: '+',
-    route: '/teacher/students/create',
-    roles: ['TEACHER']
-  },
+    {
+      id: 'ADD_STUDENT',
+      title: 'Add Student',
+      description: 'Create a new student',
+      icon: '+',
+      route: '/teacher/students/create',
+      roles: ['TEACHER'],
+      aliases: [
+        'new student',
+        'create student',
+        'add student'
+      ]
+    },
 
-  {
-    id: 'MARK_ATTENDANCE',
-    title: 'Mark Attendance',
-    description: 'Mark student attendance',
-    icon: '✓',
-    route: '/teacher/attendance/mark',
-    roles: ['TEACHER'],
-    permission: 'ATTENDANCE_MARK'
-  }
+    {
+      id: 'MARK_ATTENDANCE',
+      title: 'Mark Attendance',
+      description: 'Mark student attendance',
+      icon: '✓',
+      route: '/teacher/attendance/mark',
+      roles: ['TEACHER'],
+      permission: 'ATTENDANCE_MARK',
+      aliases: [
+        'attendance',
+        'mark attendance',
+        'take attendance'
+      ]
+    }
 
-];
+  ];
 
-    
-    
-    // =========================================================
-// QUICK ACTION SEARCH
-// =========================================================
 
-searchActions(
-  query: string
-): GlobalSearchResult[] {
 
-  const normalizedQuery =
-    query.trim().toLowerCase();
+  // =========================================================
+  // QUICK ACTION SEARCH
+  // =========================================================
 
-  const role =
-    this.getRole();
+  searchActions(
+    query: string
+  ): GlobalSearchResult[] {
 
-  if (!role) {
-    return [];
-  }
+    const normalizedQuery =
+      query.trim().toLowerCase();
 
-  return this.quickActions
-    .filter(action =>
-      action.roles.includes(
-        role as 'SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT'
-      )
-    )
-    .filter(action => {
+    const role =
+      this.getRole();
 
-      if (
-        action.permission &&
-        !this.permissionService.hasPermission(
-          action.permission
+    if (!role) {
+      return [];
+    }
+
+    return this.quickActions
+      .filter(action =>
+        action.roles.includes(
+          role as 'SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT'
         )
-      ) {
-        return false;
-      }
+      )
+      .filter(action => {
 
-      if (!normalizedQuery) {
-        return true;
-      }
+        if (
+          action.permission &&
+          !this.permissionService.hasPermission(
+            action.permission
+          )
+        ) {
+          return false;
+        }
 
-      return (
-        action.title
-          .toLowerCase()
-          .includes(normalizedQuery) ||
+        if (!normalizedQuery) {
+          return true;
+        }
+        const matchesTitle =
+          action.title
+            .toLowerCase()
+            .includes(normalizedQuery);
 
-        action.description
-          .toLowerCase()
-          .includes(normalizedQuery)
-      );
+        const matchesDescription =
+          action.description
+            .toLowerCase()
+            .includes(normalizedQuery);
 
-    })
-    .map(action => ({
+        const matchesAlias =
+          action.aliases?.some(alias =>
+            alias
+              .toLowerCase()
+              .includes(normalizedQuery)
+          ) ?? false;
 
-      type: 'action' as const,
+        return (
+          matchesTitle ||
+          matchesDescription ||
+          matchesAlias
+        );
 
-      title: action.title,
+      })
+      .map(action => ({
 
-      subtitle: action.description,
+        type: 'action' as const,
 
-      icon: action.icon,
+        title: action.title,
 
-      route: action.route
+        subtitle: action.description,
 
-    }));
+        icon: action.icon,
 
-}
+        route: action.route
+
+      }));
+
+  }
 
 
   // =========================================================
@@ -306,6 +373,247 @@ searchActions(
       }));
   }
 
+  private rankResults(
+    results: GlobalSearchResult[],
+    query: string
+  ): GlobalSearchResult[] {
+
+    const normalizedQuery =
+      query.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return results;
+    }
+
+    const scoreResult = (
+      result: GlobalSearchResult
+    ): number => {
+
+      const title =
+        result.title?.toLowerCase() ?? '';
+
+      const subtitle =
+        result.subtitle?.toLowerCase() ?? '';
+
+      const description =
+        result.description?.toLowerCase() ?? '';
+
+      const metadataText =
+        result.metadata
+          ?.map(item =>
+            `${item.label} ${item.value}`
+          )
+          .join(' ')
+          .toLowerCase() ?? '';
+
+      // Exact title
+      if (title === normalizedQuery) {
+        return 1000;
+      }
+
+      // Title starts with query
+      if (title.startsWith(normalizedQuery)) {
+        return 800;
+      }
+
+      // Title contains query
+      if (title.includes(normalizedQuery)) {
+        return 600;
+      }
+
+      const normalizedSubtitle =
+        subtitle
+          .replace(/roll\s*no[:\s-]*/i, '')
+          .replace(/teacher\s*no[:\s-]*/i, '')
+          .trim();
+
+      if (
+        normalizedSubtitle === normalizedQuery
+      ) {
+        return 900;
+      }
+
+      if (
+        normalizedSubtitle.startsWith(normalizedQuery)
+      ) {
+        return 700;
+      }
+
+      if (
+        normalizedSubtitle.includes(normalizedQuery)
+      ) {
+        return 500;
+      }
+
+      if (subtitle.startsWith(normalizedQuery)) {
+        return 450;
+      }
+
+      if (subtitle.includes(normalizedQuery)) {
+        return 350;
+      }
+
+      // Description match
+      if (description.includes(normalizedQuery)) {
+        return 250;
+      }
+
+      // Metadata match
+      if (metadataText.includes(normalizedQuery)) {
+        return 150;
+      }
+
+      return 0;
+    };
+
+    return [...results]
+      .map((result, index) => ({
+        result,
+        score: scoreResult(result),
+        index
+      }))
+      .filter(item => item.score > 0)
+      .sort((a, b) => {
+
+        if (b.score !== a.score) {
+          return b.score - a.score;
+        }
+
+        return a.index - b.index;
+      })
+      .map(item => item.result);
+  }
+
+
+  private searchAcademicRecords(
+    query: string
+  ): Observable<GlobalSearchResult[]> {
+
+    const normalizedQuery =
+      query.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return of([]);
+    }
+
+    return forkJoin({
+      classes: this.classService
+        .getClasses()
+        .pipe(
+          catchError(() => of(null))
+        ),
+
+      subjects: this.subjectService
+        .getSubjects()
+        .pipe(
+          catchError(() => of(null))
+        )
+    }).pipe(
+
+      map(response => {
+
+        const results: GlobalSearchResult[] = [];
+
+        // =====================================================
+        // CLASSES
+        // =====================================================
+
+        const classes =
+          response.classes?.data ?? [];
+
+        for (const academicClass of classes) {
+
+          const searchableText = [
+            academicClass.name,
+            academicClass.academicYear
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+
+          if (!searchableText.includes(normalizedQuery)) {
+            continue;
+          }
+
+          results.push({
+            type: 'page',
+            id: academicClass.id,
+            title: academicClass.name,
+            subtitle:
+              academicClass.academicYear
+                ? `Academic Year: ${academicClass.academicYear}`
+                : 'Class',
+            description:
+              'Academic class',
+            icon: '▣',
+            route: '/admin/academic',
+            metadata: [
+              {
+                label: 'Academic Year',
+                value:
+                  academicClass.academicYear ?? 'N/A'
+              }
+            ]
+          });
+        }
+
+        // =====================================================
+        // SUBJECTS
+        // =====================================================
+
+        const subjects =
+          response.subjects?.data ?? [];
+
+        for (const subject of subjects) {
+
+          const searchableText = [
+            subject.name,
+            subject.code,
+            subject.className,
+            subject.academicYear
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+
+          if (!searchableText.includes(normalizedQuery)) {
+            continue;
+          }
+
+          results.push({
+            type: 'page',
+            id: subject.id,
+            title: subject.name,
+            subtitle:
+              `${subject.code} • ${subject.className}`,
+            description:
+              `Academic Year: ${subject.academicYear}`,
+            icon: '▤',
+            route: '/admin/academic',
+            metadata: [
+              {
+                label: 'Code',
+                value: subject.code
+              },
+              {
+                label: 'Class',
+                value: subject.className
+              },
+              {
+                label: 'Academic Year',
+                value: subject.academicYear
+              }
+            ]
+          });
+        }
+
+        return this.rankResults(
+          results,
+          normalizedQuery
+        );
+      })
+    );
+  }
 
   // =========================================================
   // GLOBAL RECORD SEARCH
@@ -334,161 +642,164 @@ searchActions(
     // ADMIN
     // =======================================================
 
-    if (role === 'ADMIN') {
+if (role === 'ADMIN') {
 
-      return forkJoin({
+  return forkJoin({
 
-        students:
-          this.studentService
-            .getStudents(
-              0,
-              5,
-              normalizedQuery
-            )
-            .pipe(
-              catchError(() => of(null))
-            ),
+    students:
+      this.studentService
+        .getStudents(
+          0,
+          5,
+          normalizedQuery
+        )
+        .pipe(
+          catchError(() => of(null))
+        ),
 
-        teachers:
-          this.teacherService
-            .getTeachers(
-              0,
-              5,
-              normalizedQuery
-            )
-            .pipe(
-              catchError(() => of(null))
-            )
+    teachers:
+      this.teacherService
+        .getTeachers(
+          0,
+          5,
+          normalizedQuery
+        )
+        .pipe(
+          catchError(() => of(null))
+        ),
 
-      }).pipe(
+    academic:
+      this.searchAcademicRecords(
+        normalizedQuery
+      )
 
-        map(response => {
+  }).pipe(
 
-          const results:
-            GlobalSearchResult[] = [];
+    map(response => {
 
+      const results:
+        GlobalSearchResult[] = [];
 
-          // -------------------------------------------------
-          // STUDENTS
-          // -------------------------------------------------
+      const students =
+        response.students?.data?.content ?? [];
 
-          const students =
-            response.students?.data?.content ?? [];
+      for (const student of students) {
 
-          for (const student of students) {
+        results.push({
 
-            results.push({
+          type: 'student',
 
-              type: 'student',
+          id: student.id,
 
-              id: student.id,
+          title:
+            `${student.firstName} ${student.lastName}`.trim(),
 
-              title:
-                `${student.firstName} ${student.lastName}`.trim(),
+          subtitle:
+            `${student.className} • Roll No: ${student.rollNumber}`,
 
-              subtitle:
-                `${student.className} • Roll No: ${student.rollNumber}`,
+          description:
+            student.email,
 
-              description:
-                student.email,
+          icon: '♙',
 
-              icon: '♙',
+          route:
+            `/admin/students/${student.id}/edit`,
 
-              route:
-                `/admin/students/${student.id}/edit`,
+          metadata: [
 
-              metadata: [
+            {
+              label: 'Class',
+              value: student.className
+            },
 
-                {
-                  label: 'Class',
-                  value: student.className
-                },
+            {
+              label: 'Section',
+              value: student.sectionName
+            },
 
-                {
-                  label: 'Section',
-                  value: student.sectionName
-                },
+            {
+              label: 'Roll No',
+              value: student.rollNumber
+            },
 
-                {
-                  label: 'Roll No',
-                  value: student.rollNumber
-                },
+            {
+              label: 'Status',
+              value:
+                student.isActive
+                  ? 'Active'
+                  : 'Inactive'
+            }
 
-                {
-                  label: 'Status',
-                  value:
-                    student.isActive
-                      ? 'Active'
-                      : 'Inactive'
-                }
+          ]
 
-              ]
+        });
 
-            });
-          }
+      }
 
+      const teachers =
+        response.teachers?.data?.content ?? [];
 
-          // -------------------------------------------------
-          // TEACHERS
-          // -------------------------------------------------
+      for (const teacher of teachers) {
 
-          const teachers =
-            response.teachers?.data?.content ?? [];
+        results.push({
 
-          for (const teacher of teachers) {
+          type: 'teacher',
 
-            results.push({
+          id: teacher.id,
 
-              type: 'teacher',
+          title:
+            `${teacher.firstName} ${teacher.lastName}`.trim(),
 
-              id: teacher.id,
+          subtitle:
+            `Teacher No: ${teacher.teacherNumber}`,
 
-              title:
-                `${teacher.firstName} ${teacher.lastName}`.trim(),
+          description:
+            teacher.email,
 
-              subtitle:
-                `Teacher No: ${teacher.teacherNumber}`,
+          icon: '♙',
 
-              description:
-                teacher.email,
+          route:
+            `/admin/teachers/${teacher.id}`,
 
-              icon: '♙',
+          metadata: [
 
-              route:
-                `/admin/teachers/${teacher.id}`,
+            {
+              label: 'Teacher No',
+              value: teacher.teacherNumber
+            },
 
-              metadata: [
+            {
+              label: 'Phone',
+              value: teacher.phone
+            },
 
-                {
-                  label: 'Teacher No',
-                  value: teacher.teacherNumber
-                },
+            {
+              label: 'Status',
+              value:
+                teacher.isActive
+                  ? 'Active'
+                  : 'Inactive'
+            }
 
-                {
-                  label: 'Phone',
-                  value: teacher.phone
-                },
+          ]
 
-                {
-                  label: 'Status',
-                  value:
-                    teacher.isActive
-                      ? 'Active'
-                      : 'Inactive'
-                }
+        });
 
-              ]
+      }
 
-            });
-          }
-
-
-          return results;
-
-        })
-
+      results.push(
+        ...response.academic
       );
-    }
+
+      return this.rankResults(
+        results,
+        normalizedQuery
+      );
+
+    })
+
+  );
+}
 
 
     // =======================================================
@@ -514,12 +825,10 @@ searchActions(
         .pipe(
 
           map(response => {
-
             const students =
               response?.data?.content ?? [];
 
-            return students.map(student => ({
-
+            const results = students.map(student => ({
               type: 'student' as const,
 
               id:
@@ -529,8 +838,7 @@ searchActions(
                 `${student.firstName} ${student.lastName}`.trim(),
 
               subtitle:
-                `${student.className} • Roll No: ${
-                  student.rollNumber ?? 'N/A'
+                `${student.className} • Roll No: ${student.rollNumber ?? 'N/A'
                 }`,
 
               description:
@@ -571,6 +879,10 @@ searchActions(
 
             }));
 
+            return this.rankResults(
+              results,
+              normalizedQuery
+            );
           }),
 
           catchError(() => of([]))
@@ -648,18 +960,11 @@ searchActions(
           this.studentFeeService
             .getAll()
             .pipe(
-
               catchError(() => of({
-
                 success: false,
-
-                message:
-                  'Fees unavailable',
-
+                message: 'Fees unavailable',
                 data: []
-
               }))
-
             )
 
       }).pipe(
@@ -743,17 +1048,11 @@ searchActions(
           if (!studentFees.length) {
 
             return of(
-
               this.buildStudentQuickView(
-
                 student,
-
                 attendance,
-
                 []
-
               )
-
             );
           }
 
@@ -851,13 +1150,9 @@ searchActions(
 
 
               return this.buildStudentQuickView(
-
                 student,
-
                 attendance,
-
                 fees
-
               );
 
             })
@@ -964,85 +1259,140 @@ searchActions(
   }
 
   // =========================================================
-// TEACHER QUICK VIEW
-// =========================================================
+  // TEACHER QUICK VIEW
+  // =========================================================
 
-getTeacherQuickView(
-  teacherId: number
-): Observable<GlobalSearchTeacherQuickView | null> {
+  getTeacherQuickView(
+    teacherId: number
+  ): Observable<GlobalSearchTeacherQuickView | null> {
 
-  const teacherRequest =
-    this.teacherService
-      .getTeacherById(teacherId)
-      .pipe(
-        map(response => response?.data ?? null),
-        catchError(() => of(null))
-      );
-
-  const assignmentRequest =
-    this.teacherRoleAssignmentService
-      .getAssignmentByTeacherId(teacherId)
-      .pipe(
-        map(response => response?.data ?? null),
-        catchError(() => of(null))
-      );
-
-  return forkJoin({
-    teacher: teacherRequest,
-    assignment: assignmentRequest
-  }).pipe(
-
-    switchMap(({ teacher, assignment }) => {
-
-      if (!teacher) {
-        return of(null);
-      }
-
-      // -------------------------------------------------------
-      // NO ROLE ASSIGNMENT
-      // -------------------------------------------------------
-
-      if (!assignment) {
-
-        return of({
-          id: teacher.id,
-
-          name:
-            `${teacher.firstName} ${teacher.lastName}`.trim(),
-
-          teacherNumber:
-            teacher.teacherNumber,
-
-          email:
-            teacher.email,
-
-          phone:
-            teacher.phone,
-
-          isActive:
-            teacher.isActive,
-
-          assignments: [],
-
-          permissions: []
-        });
-
-      }
-
-      // -------------------------------------------------------
-      // ROLE DETAILS
-      // -------------------------------------------------------
-
-      return this.teacherRoleService
-        .getRoleById(assignment.teacherRoleId)
+    const teacherRequest =
+      this.teacherService
+        .getTeacherById(teacherId)
         .pipe(
+          map(response => response?.data ?? null),
+          catchError(() => of(null))
+        );
 
-          map(roleResponse => {
+    const assignmentRequest =
+      this.teacherRoleAssignmentService
+        .getAssignmentByTeacherId(teacherId)
+        .pipe(
+          map(response => response?.data ?? null),
+          catchError(() => of(null))
+        );
 
-            const role =
-              roleResponse?.data ?? null;
+    return forkJoin({
+      teacher: teacherRequest,
+      assignment: assignmentRequest
+    }).pipe(
 
-            return {
+      switchMap(({ teacher, assignment }) => {
+
+        if (!teacher) {
+          return of(null);
+        }
+
+        // -------------------------------------------------------
+        // NO ROLE ASSIGNMENT
+        // -------------------------------------------------------
+
+        if (!assignment) {
+
+          return of({
+            id: teacher.id,
+
+            name:
+              `${teacher.firstName} ${teacher.lastName}`.trim(),
+
+            teacherNumber:
+              teacher.teacherNumber,
+
+            email:
+              teacher.email,
+
+            phone:
+              teacher.phone,
+
+            isActive:
+              teacher.isActive,
+
+            assignments: [],
+
+            permissions: []
+          });
+
+        }
+
+        // -------------------------------------------------------
+        // ROLE DETAILS
+        // -------------------------------------------------------
+
+        return this.teacherRoleService
+          .getRoleById(assignment.teacherRoleId)
+          .pipe(
+
+            map(roleResponse => {
+
+              const role =
+                roleResponse?.data ?? null;
+
+              return {
+
+                id: teacher.id,
+
+                name:
+                  `${teacher.firstName} ${teacher.lastName}`.trim(),
+
+                teacherNumber:
+                  teacher.teacherNumber,
+
+                email:
+                  teacher.email,
+
+                phone:
+                  teacher.phone,
+
+                isActive:
+                  teacher.isActive,
+
+                role: role
+                  ? {
+                    id: role.id,
+                    name: role.name,
+                    description: role.description,
+                    isActive: role.isActive
+                  }
+                  : undefined,
+
+                assignments:
+                  assignment.scopes?.map(scope => ({
+                    academicYearName:
+                      scope.academicYearName,
+
+                    scopeType:
+                      scope.scopeType,
+
+                    className:
+                      scope.className,
+
+                    sectionName:
+                      scope.sectionName
+                  })) ?? [],
+
+                permissions:
+                  role?.permissions?.map(permission => ({
+                    id: permission.id,
+                    code: permission.code,
+                    name: permission.name,
+                    description: permission.description
+                  })) ?? []
+
+              } satisfies GlobalSearchTeacherQuickView;
+
+            }),
+
+            catchError(() => of({
 
               id: teacher.id,
 
@@ -1061,14 +1411,10 @@ getTeacherQuickView(
               isActive:
                 teacher.isActive,
 
-              role: role
-                ? {
-                    id: role.id,
-                    name: role.name,
-                    description: role.description,
-                    isActive: role.isActive
-                  }
-                : undefined,
+              role: {
+                id: assignment.teacherRoleId,
+                name: assignment.teacherRoleName
+              },
 
               assignments:
                 assignment.scopes?.map(scope => ({
@@ -1085,69 +1431,18 @@ getTeacherQuickView(
                     scope.sectionName
                 })) ?? [],
 
-              permissions:
-                role?.permissions?.map(permission => ({
-                  id: permission.id,
-                  code: permission.code,
-                  name: permission.name,
-                  description: permission.description
-                })) ?? []
+              permissions: []
 
-            } satisfies GlobalSearchTeacherQuickView;
+            } satisfies GlobalSearchTeacherQuickView))
 
-          }),
+          );
 
-          catchError(() => of({
+      }),
 
-            id: teacher.id,
+      catchError(() => of(null))
 
-            name:
-              `${teacher.firstName} ${teacher.lastName}`.trim(),
-
-            teacherNumber:
-              teacher.teacherNumber,
-
-            email:
-              teacher.email,
-
-            phone:
-              teacher.phone,
-
-            isActive:
-              teacher.isActive,
-
-            role: {
-              id: assignment.teacherRoleId,
-              name: assignment.teacherRoleName
-            },
-
-            assignments:
-              assignment.scopes?.map(scope => ({
-                academicYearName:
-                  scope.academicYearName,
-
-                scopeType:
-                  scope.scopeType,
-
-                className:
-                  scope.className,
-
-                sectionName:
-                  scope.sectionName
-              })) ?? [],
-
-            permissions: []
-
-          } satisfies GlobalSearchTeacherQuickView))
-
-        );
-
-    }),
-
-    catchError(() => of(null))
-
-  );
-}
+    );
+  }
 
 
   // =========================================================
@@ -1200,11 +1495,11 @@ getTeacherQuickView(
       total > 0
 
         ? Number(
-            (
-              (present / total) *
-              100
-            ).toFixed(1)
-          )
+          (
+            (present / total) *
+            100
+          ).toFixed(1)
+        )
 
         : 0;
 

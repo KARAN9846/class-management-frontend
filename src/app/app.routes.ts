@@ -54,6 +54,8 @@ import { TeacherAssignmentList as AdminTeacherAssignmentList } from './features/
 import { TeacherAssignmentForm as AdminTeacherAssignmentForm } from './features/admin/teacher-assignments/teacher-assignment-form/teacher-assignment-form';
 import { TeacherAssignmentView as AdminTeacherAssignmentView } from './features/admin/teacher-assignments/teacher-assignment-view/teacher-assignment-view';
 import { StudentWorkspace } from './features/admin/students/student-workspace/student-workspace';
+import { AcademicWorkspaceComponent } from './features/admin/academic/academic-workspace/academic-workspace';
+import { TeacherManagementComponent } from './features/admin/teachers/teacher-management/teacher-management';
 
 // FEES
 import { FeeStructureList } from './features/admin/fees/fee-structure-list/fee-structure-list';
@@ -85,6 +87,7 @@ import { StudentDashboard } from './features/student/dashboard/student-dashboard
 import { StudentAttendanceComponent } from './features/student/attendance/student-attendance/student-attendance';
 import { StudentFeesComponent } from './features/student/fees/fees';
 import { StudentAssignmentsComponent } from './features/student/assignments/student-assignments/student-assignments';
+import { FeeManagementComponent } from './features/admin/fees/fee-management/fee-management';
 
 export const routes: Routes = [
 
@@ -176,29 +179,8 @@ export const routes: Routes = [
       // --------------------- ACADEMIC ----------------------
 
       {
-        path: 'admin/academic-years',
-        component: AcademicYearsComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
-      },
-
-      {
-        path: 'admin/schools',
-        component: SchoolComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
-      },
-
-      {
-        path: 'admin/classes',
-        component: ClassesComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
-      },
-
-      {
-        path: 'admin/subjects',
-        component: SubjectsComponent,
+        path: 'admin/academic',
+        component: AcademicWorkspaceComponent,
         canActivate: [roleGuard],
         data: { roles: ['ADMIN'] }
       },
@@ -207,7 +189,7 @@ export const routes: Routes = [
 
       {
         path: 'admin/teachers',
-        component: TeacherList,
+        component: TeacherManagementComponent,
         canActivate: [roleGuard],
         data: { roles: ['ADMIN'] }
       },
@@ -381,6 +363,13 @@ export const routes: Routes = [
       // =====================================================
       // ADMIN FEES
       // =====================================================
+
+      {
+        path: 'admin/fees',
+        component: FeeManagementComponent,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
 
       {
         path: 'admin/fees/fee-structures',

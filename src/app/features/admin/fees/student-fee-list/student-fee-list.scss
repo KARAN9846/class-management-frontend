@@ -1,71 +1,46 @@
 .student-fee-page {
   width: 100%;
-  height: calc(100vh - 110px);
-
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  padding: 24px 8px 40px 24px;
-
+  height: auto;
+  overflow: visible;
+  padding: 0;
   box-sizing: border-box;
-
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
 }
 
-.student-fee-page::-webkit-scrollbar {
-  width: 6px;
-}
-
-.student-fee-page::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.student-fee-page::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
-/* =====================================================
-   PAGE HEADER
-   ===================================================== */
-
-.page-header {
-  margin-bottom: 24px;
-
-  h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-  }
-
-  p {
-    margin: 6px 0 0;
-    color: #6b7280;
-  }
-}
 
 /* =====================================================
    ERROR
-   ===================================================== */
+===================================================== */
 
 .error-message {
   margin-bottom: 20px;
   padding: 12px 16px;
 
+  border: 1px solid #fecaca;
   border-radius: 8px;
 
   background: #fef2f2;
   color: #b91c1c;
+
+  font-size: 14px;
 }
+
 
 /* =====================================================
    FILTERS
-   ===================================================== */
+===================================================== */
 
 .filter-card {
-  display: flex;
-  gap: 20px;
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1fr)
+    minmax(180px, 1fr)
+    minmax(240px, 1.4fr)
+    minmax(170px, 1fr)
+    minmax(170px, 1fr);
+
+  gap: 16px;
+
+  align-items: end;
 
   padding: 20px;
   margin-bottom: 24px;
@@ -74,37 +49,179 @@
 
   border: 1px solid #e5e7eb;
   border-radius: 12px;
+
+  box-sizing: border-box;
 }
+
 
 .filter-group {
   display: flex;
   flex-direction: column;
   gap: 7px;
 
-  min-width: 220px;
-
-  label {
-    font-size: 13px;
-    font-weight: 600;
-  }
+  min-width: 0;
 }
 
+
+.filter-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+
+.filter-input,
 .filter-select {
+  width: 100%;
   height: 42px;
 
   padding: 0 12px;
+
+  box-sizing: border-box;
 
   border: 1px solid #d1d5db;
   border-radius: 8px;
 
   background: #ffffff;
 
+  color: #111827;
+
   font-size: 14px;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
 }
+
+
+.filter-input::placeholder {
+  color: #9ca3af;
+}
+
+
+.filter-input:hover,
+.filter-select:hover {
+  border-color: #9ca3af;
+}
+
+
+.filter-input:focus,
+.filter-select:focus {
+  outline: none;
+
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.filter-group-search {
+  min-width: 0;
+}
+
+
+/* =====================================================
+   SORT DIRECTION
+===================================================== */
+
+.sort-direction-button {
+  height: 42px;
+
+  padding: 0 14px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+
+.sort-direction-button:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+
+.sort-direction-button:disabled {
+  background: #f8fafc;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+
+.sort-direction-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+
+/* =====================================================
+   RESET FILTERS
+===================================================== */
+
+.reset-filter-button {
+  height: 42px;
+
+  padding: 0 16px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  background: #f8fafc;
+
+  color: #475569;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+
+.reset-filter-button:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+
+.reset-filter-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
 
 /* =====================================================
    SUMMARY
-   ===================================================== */
+===================================================== */
 
 .summary-grid {
   display: grid;
@@ -115,6 +232,7 @@
   margin-bottom: 24px;
 }
 
+
 .summary-card {
   padding: 18px;
 
@@ -123,23 +241,30 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
 
-  span {
-    display: block;
-
-    margin-bottom: 8px;
-
-    font-size: 13px;
-    color: #6b7280;
-  }
-
-  strong {
-    font-size: 21px;
-  }
+  box-sizing: border-box;
 }
+
+
+.summary-card span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 13px;
+  color: #6b7280;
+}
+
+
+.summary-card strong {
+  font-size: 21px;
+  font-weight: 700;
+  color: #111827;
+}
+
 
 /* =====================================================
    TABLE CARD
-   ===================================================== */
+===================================================== */
 
 .table-card {
   background: #ffffff;
@@ -150,39 +275,57 @@
   overflow: hidden;
 }
 
+
 .table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
   padding: 20px;
 
   border-bottom: 1px solid #e5e7eb;
-
-  h2 {
-    margin: 0 0 4px;
-
-    font-size: 18px;
-  }
-
-  span {
-    font-size: 13px;
-    color: #6b7280;
-  }
 }
+
+
+.table-header h2 {
+  margin: 0 0 4px;
+
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+
+.table-header span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
 
 /* =====================================================
    TABLE
-   ===================================================== */
+===================================================== */
 
 .table-wrapper {
   width: 100%;
 
+  max-height: 520px;
+
   overflow-x: auto;
+  overflow-y: auto;
+
+  -webkit-overflow-scrolling: touch;
 }
+
 
 table {
   width: 100%;
-  min-width: 1100px;
+  min-width: 1050px;
 
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
 }
+
 
 th,
 td {
@@ -195,7 +338,15 @@ td {
   white-space: nowrap;
 }
 
+
 th {
+  position: sticky;
+  top: 0;
+
+  z-index: 5;
+
+  background: #ffffff;
+
   font-size: 12px;
   font-weight: 700;
 
@@ -204,24 +355,43 @@ th {
   text-transform: uppercase;
 }
 
+
 td {
   font-size: 14px;
+  color: #334155;
 }
+
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+
+tbody tr:hover {
+  background: #f8fafc;
+}
+
 
 .student-name {
   font-weight: 600;
+  color: #0f172a;
 }
+
 
 .amount-strong {
   font-weight: 700;
+  color: #0f172a;
 }
+
 
 /* =====================================================
    FEE STATUS
-   ===================================================== */
+===================================================== */
 
 .status-badge {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   padding: 5px 9px;
 
@@ -231,176 +401,184 @@ td {
   font-weight: 700;
 }
 
+
 .status-paid {
   background: #dcfce7;
   color: #166534;
 }
+
 
 .status-remaining {
   background: #fef3c7;
   color: #92400e;
 }
 
+
 .status-unpaid {
   background: #fee2e2;
   color: #991b1b;
 }
 
+
 /* =====================================================
    ACTION COLUMN
-   ===================================================== */
+===================================================== */
 
 .action-cell {
-  width: 330px;
-  min-width: 330px;
+  position: relative;
 
-  padding-left: 16px;
-  padding-right: 16px;
+  width: 56px;
+  min-width: 56px;
+
+  text-align: center;
 }
+
 
 /* =====================================================
-   ACTION BUTTONS
-   ===================================================== */
+   ACTION MENU
+===================================================== */
 
-.action-buttons {
-  display: flex;
-  align-items: center;
+.action-menu {
+  position: relative;
 
-  gap: 10px;
-
-  width: max-content;
-
-  flex-wrap: nowrap;
-
-  white-space: nowrap;
+  display: inline-flex;
 }
 
-.action-button {
-  display: inline-flex;
 
+/* =====================================================
+   ACTION MENU TRIGGER
+===================================================== */
+
+.action-menu-trigger {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  box-sizing: border-box;
+  width: 34px;
+  height: 34px;
 
-  height: 40px;
-
-  padding: 0 16px;
+  padding: 0;
 
   border: 1px solid transparent;
   border-radius: 8px;
 
-  font-size: 13px;
-  font-weight: 600;
+  background: transparent;
+
+  color: #475569;
+
+  font-size: 22px;
   line-height: 1;
 
   cursor: pointer;
 
-  white-space: nowrap;
-
   transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:focus-visible {
-    outline: 2px solid #93c5fd;
-    outline-offset: 2px;
-  }
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
-/* =====================================================
-   VIEW
-   ===================================================== */
 
-.btn-view {
-  width: 78px;
-  min-width: 78px;
-
-  background: #eff6ff;
-
-  border-color: #dbeafe;
-
-  color: #1d4ed8;
-
-  &:hover {
-    background: #dbeafe;
-    border-color: #bfdbfe;
-  }
+.action-menu-trigger:hover {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #0f172a;
 }
 
-/* =====================================================
-   ADD PAYMENT
-   ===================================================== */
 
-.btn-add {
-  width: 132px;
-  min-width: 132px;
-
-  background: #ecfdf5;
-
-  border-color: #d1fae5;
-
-  color: #047857;
-
-  &:hover {
-    background: #d1fae5;
-    border-color: #a7f3d0;
-  }
+.action-menu-trigger:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }
 
-/* =====================================================
-   EMPTY ADD PAYMENT PLACEHOLDER
-   ===================================================== */
 
-.action-placeholder {
-  width: 132px;
-  min-width: 132px;
+/* =====================================================
+   ACTION MENU DROPDOWN
+===================================================== */
+
+.action-menu-dropdown {
+  position: absolute;
+
+  top: calc(100% + 6px);
+  right: 0;
+
+  z-index: 50;
+
+  min-width: 160px;
+
+  padding: 5px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+
+  box-shadow:
+    0 10px 25px rgba(15, 23, 42, 0.12),
+    0 2px 6px rgba(15, 23, 42, 0.06);
+}
+
+
+/* =====================================================
+   MENU ITEM
+===================================================== */
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  width: 100%;
+
+  padding: 9px 10px;
+
+  border: 0;
+  border-radius: 6px;
 
   background: transparent;
 
-  border-color: transparent;
+  color: #334155;
 
-  color: #9ca3af;
+  font-size: 13px;
+  font-weight: 500;
 
-  cursor: default;
+  text-align: left;
 
-  pointer-events: none;
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
-/* =====================================================
-   RECEIPT
-   ===================================================== */
 
-.btn-receipt {
-  width: 92px;
-  min-width: 92px;
-
-  background: #f1f5f9;
-
-  border-color: #cbd5e1;
-
-  color: #475569;
-
-  &:hover {
-    background: #e2e8f0;
-    border-color: #94a3b8;
-  }
+.menu-item:hover {
+  background: #f8fafc;
+  color: #0f172a;
 }
+
+
+.menu-item:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: -2px;
+}
+
+
+.menu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
 
 /* =====================================================
    LOADING / EMPTY
-   ===================================================== */
+===================================================== */
 
 .loading-state,
 .empty-state {
@@ -411,29 +589,108 @@ td {
   color: #6b7280;
 }
 
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+
+.empty-reset-button {
+  height: 36px;
+
+  padding: 0 14px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #475569;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+.empty-reset-button:hover {
+  background: #f8fafc;
+  border-color: #9ca3af;
+}
+
+
+.empty-reset-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+
 /* =====================================================
-   RESPONSIVE
-   ===================================================== */
+   TABLE SCROLLBAR
+===================================================== */
+
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* =====================================================
+   RESPONSIVE — TABLET
+===================================================== */
+
+@media (max-width: 1200px) {
+
+  .filter-card {
+    grid-template-columns:
+      repeat(3, minmax(180px, 1fr));
+  }
+
+}
+
+
+/* =====================================================
+   RESPONSIVE — MOBILE / SMALL TABLET
+===================================================== */
 
 @media (max-width: 900px) {
+
+  .filter-card {
+    grid-template-columns:
+      repeat(2, minmax(180px, 1fr));
+  }
+
 
   .summary-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .filter-card {
-    flex-direction: column;
-  }
-
-  .filter-group {
-    width: 100%;
-  }
-
-  .action-cell {
-    width: 330px;
-    min-width: 330px;
-  }
 }
+
+
+/* =====================================================
+   RESPONSIVE — MOBILE
+===================================================== */
 
 @media (max-width: 600px) {
 
@@ -441,33 +698,39 @@ td {
     padding: 16px;
   }
 
+
+  .filter-card {
+    grid-template-columns: 1fr;
+
+    gap: 14px;
+
+    padding: 16px;
+  }
+
+
+  .filter-group {
+    width: 100%;
+  }
+
+
+  .sort-direction-button,
+  .reset-filter-button {
+    width: 100%;
+  }
+
+
   .summary-grid {
     grid-template-columns: 1fr;
   }
 
-  .action-buttons {
-    gap: 8px;
+
+  .table-header {
+    padding: 16px;
   }
 
-  .action-button {
-    height: 38px;
 
-    padding: 0 14px;
+  .table-wrapper {
+    max-height: 480px;
   }
 
-  .btn-view {
-    width: 78px;
-    min-width: 78px;
-  }
-
-  .btn-add,
-  .action-placeholder {
-    width: 132px;
-    min-width: 132px;
-  }
-
-  .btn-receipt {
-    width: 92px;
-    min-width: 92px;
-  }
 }

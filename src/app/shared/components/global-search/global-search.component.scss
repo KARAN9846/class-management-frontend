@@ -1283,6 +1283,146 @@
   line-height: 16px;
 }
 
+/* =========================================================
+   SEARCH EMPTY STATE
+========================================================= */
+
+.search-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 180px;
+  padding: 32px 24px;
+
+  text-align: center;
+}
+
+.search-empty .empty-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 12px;
+
+  border-radius: 12px;
+
+  background: #f8fafc;
+  color: #94a3b8;
+
+  font-size: 22px;
+}
+
+.search-empty strong {
+  color: #0f172a;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.search-empty span {
+  margin-top: 6px;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+.search-empty small {
+  margin-top: 8px;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   KEYBOARD FOOTER
+========================================================= */
+
+.search-keyboard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 16px;
+
+  padding: 8px 12px;
+
+  border-top: 1px solid #f1f5f9;
+
+  background: #fafafa;
+
+  color: #94a3b8;
+
+  font-size: 10px;
+}
+
+.search-keyboard-footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.search-keyboard-footer kbd {
+  min-width: 18px;
+  height: 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 4px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+
+  background: #ffffff;
+
+  color: #64748b;
+
+  font-size: 10px;
+  font-family: inherit;
+  font-weight: 600;
+
+  box-shadow: 0 1px 1px rgba(15, 23, 42, 0.04);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .search-keyboard-footer {
+    justify-content: center;
+    gap: 10px;
+
+    padding: 8px;
+  }
+
+}
+
+@media (max-width: 420px) {
+
+  .search-keyboard-footer {
+    gap: 7px;
+
+    font-size: 9px;
+  }
+
+  .search-keyboard-footer kbd {
+    font-size: 9px;
+  }
+
+}
+
 
 /* =========================================================
    TABLET

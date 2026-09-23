@@ -15,12 +15,15 @@ import {
   UpdateReceiptSettingsRequest
 } from '../models/receipt-settings.model';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-receipt-settings',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+
   ],
   templateUrl: './receipt-settings.html',
   styleUrl: './receipt-settings.scss',
@@ -30,6 +33,7 @@ export class ReceiptSettingsComponent implements OnInit {
 
   private readonly receiptSettingsService = inject(ReceiptSettingsService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
 
   settings: ReceiptSettings | null = null;
 
@@ -311,4 +315,8 @@ private uploadFile(
 
     return `${environment.apiBaseUrl.replace('/api/v1', '')}${normalizedPath}`;
   }
+
+  goBackToFeeManagement(): void {
+  this.router.navigate(['/admin/fees']);
+}
 }

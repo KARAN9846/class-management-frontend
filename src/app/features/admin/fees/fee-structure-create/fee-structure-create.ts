@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject,
+  input,
+  output
+} from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -14,17 +23,35 @@ import {
   CreateFeeStructureRequest
 } from '../models/fee-structure.model';
 
+
 @Component({
   selector: 'app-fee-structure-create',
   standalone: true,
+
   imports: [
     CommonModule,
     FormsModule
   ],
+
   templateUrl: './fee-structure-create.html',
   styleUrl: './fee-structure-create.scss'
 })
 export class FeeStructureCreateComponent implements OnInit {
+
+  // =====================================================
+  // MODAL
+  // =====================================================
+
+  modal = input(false);
+
+  created = output<void>();
+
+  cancelled = output<void>();
+
+
+  // =====================================================
+  // SERVICES
+  // =====================================================
 
   private readonly academicYearService =
     inject(AcademicYearService);
@@ -42,9 +69,9 @@ export class FeeStructureCreateComponent implements OnInit {
     inject(ChangeDetectorRef);
 
 
-  // =========================
+  // =====================================================
   // DATA
-  // =========================
+  // =====================================================
 
   academicYears: {
     id: number;
@@ -58,9 +85,9 @@ export class FeeStructureCreateComponent implements OnInit {
   }[] = [];
 
 
-  // =========================
+  // =====================================================
   // FORM
-  // =========================
+  // =====================================================
 
   form = {
     academicYearId: 0,
@@ -69,9 +96,9 @@ export class FeeStructureCreateComponent implements OnInit {
   };
 
 
-  // =========================
+  // =====================================================
   // STATE
-  // =========================
+  // =====================================================
 
   loading = false;
 
@@ -80,18 +107,20 @@ export class FeeStructureCreateComponent implements OnInit {
   errorMessage = '';
 
 
-  // =========================
+  // =====================================================
   // INIT
-  // =========================
+  // =====================================================
 
   ngOnInit(): void {
+
     this.loadData();
+
   }
 
 
-  // =========================
+  // =====================================================
   // LOAD DATA
-  // =========================
+  // =====================================================
 
   private loadData(): void {
 
@@ -124,6 +153,7 @@ export class FeeStructureCreateComponent implements OnInit {
                       cls.academicYearId
                   }));
 
+
                 // Select first academic year
                 if (this.academicYears.length) {
 
@@ -131,11 +161,14 @@ export class FeeStructureCreateComponent implements OnInit {
                     this.academicYears[0].id;
 
                   this.updateClassSelection();
+
                 }
+
 
                 this.loading = false;
 
                 this.cdr.markForCheck();
+
               },
 
               error: error => {
@@ -152,9 +185,11 @@ export class FeeStructureCreateComponent implements OnInit {
                 this.loading = false;
 
                 this.cdr.markForCheck();
+
               }
 
             });
+
         },
 
         error: error => {
@@ -171,27 +206,30 @@ export class FeeStructureCreateComponent implements OnInit {
           this.loading = false;
 
           this.cdr.markForCheck();
+
         }
 
       });
+
   }
 
 
-  // =========================
+  // =====================================================
   // ACADEMIC YEAR CHANGE
-  // =========================
+  // =====================================================
 
   onAcademicYearChange(): void {
 
     this.form.classId = 0;
 
     this.updateClassSelection();
+
   }
 
 
-  // =========================
+  // =====================================================
   // FILTER CLASSES
-  // =========================
+  // =====================================================
 
   private updateClassSelection(): void {
 
@@ -204,6 +242,7 @@ export class FeeStructureCreateComponent implements OnInit {
           cls.academicYearId === selectedYearId
       );
 
+
     if (availableClasses.length) {
 
       this.form.classId =
@@ -212,15 +251,18 @@ export class FeeStructureCreateComponent implements OnInit {
     } else {
 
       this.form.classId = 0;
+
     }
 
+
     this.cdr.markForCheck();
+
   }
 
 
-  // =========================
+  // =====================================================
   // GET AVAILABLE CLASSES
-  // =========================
+  // =====================================================
 
   get filteredClasses() {
 
@@ -229,33 +271,42 @@ export class FeeStructureCreateComponent implements OnInit {
         cls.academicYearId ===
         this.form.academicYearId
     );
+
   }
 
 
-  // =========================
+  // =====================================================
   // SAVE
-  // =========================
+  // =====================================================
 
   save(): void {
 
     this.errorMessage = '';
 
+
+    // Academic Year validation
     if (!this.form.academicYearId) {
 
       this.errorMessage =
         'Please select an academic year.';
 
       return;
+
     }
 
+
+    // Class validation
     if (!this.form.classId) {
 
       this.errorMessage =
         'Please select a class.';
 
       return;
+
     }
 
+
+    // Fee validation
     if (
       this.form.feeAmount === null ||
       this.form.feeAmount <= 0
@@ -265,6 +316,7 @@ export class FeeStructureCreateComponent implements OnInit {
         'Please enter a valid fee amount.';
 
       return;
+
     }
 
 
@@ -285,6 +337,7 @@ export class FeeStructureCreateComponent implements OnInit {
 
     this.saving = true;
 
+
     this.feeStructureService
       .create(request)
       .subscribe({
@@ -293,11 +346,30 @@ export class FeeStructureCreateComponent implements OnInit {
 
           this.saving = false;
 
+
+          // =================================================
+          // MODAL MODE
+          // =================================================
+
+          if (this.modal()) {
+
+            this.created.emit();
+
+            return;
+
+          }
+
+
+          // =================================================
+          // NORMAL PAGE MODE
+          // =================================================
+
           this.router.navigate([
             '/admin/fees/fee-structures'
           ]);
 
         },
+
 
         error: error => {
 
@@ -313,15 +385,17 @@ export class FeeStructureCreateComponent implements OnInit {
             'Failed to create fee structure.';
 
           this.cdr.markForCheck();
+
         }
 
       });
+
   }
 
 
-  // =========================
+  // =====================================================
   // CANCEL
-  // =========================
+  // =====================================================
 
   cancel(): void {
 
@@ -329,9 +403,28 @@ export class FeeStructureCreateComponent implements OnInit {
       return;
     }
 
+
+    // ===================================================
+    // MODAL MODE
+    // ===================================================
+
+    if (this.modal()) {
+
+      this.cancelled.emit();
+
+      return;
+
+    }
+
+
+    // ===================================================
+    // NORMAL PAGE MODE
+    // ===================================================
+
     this.router.navigate([
       '/admin/fees/fee-structures'
     ]);
+
   }
 
 }

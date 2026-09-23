@@ -1,29 +1,5 @@
 <div class="page">
 
-  <!-- =====================================================
-       HEADER
-  ====================================================== -->
-
-  <div class="page-header">
-
-    <div>
-      <h1>Teachers</h1>
-
-      <p>
-        Manage all teachers and their accounts
-      </p>
-    </div>
-
-    <button
-      type="button"
-      class="add-btn"
-      (click)="router.navigate(['/admin/teachers/create'])">
-
-      + Add Teacher
-
-    </button>
-
-  </div>
 
 
   <!-- =====================================================
@@ -32,15 +8,36 @@
 
   <div class="table-card">
 
-    <div class="filter-area">
+<div class="filter-area">
 
-      <app-search-input
-        placeholder="Search teachers..."
-        (searchChange)="onSearch($event)">
-      </app-search-input>
+  <div class="directory-info">
+    <h2>Teacher Directory</h2>
 
-    </div>
+    <p>
+      Search and manage all teachers.
+    </p>
+  </div>
 
+  <div class="filter-controls">
+
+    <app-search-input
+      placeholder="Search by name, email or phone..."
+      (searchChange)="onSearch($event)">
+    </app-search-input>
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="router.navigate(['/admin/teachers/create'])">
+
+      <span class="add-icon" aria-hidden="true">+</span>
+      <span>Add Teacher</span>
+
+    </button>
+
+  </div>
+
+</div>
 
     <!-- Error -->
 

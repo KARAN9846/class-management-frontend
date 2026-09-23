@@ -1,216 +1,202 @@
 <div class="global-search">
 
-    <!-- =====================================================
+  <!-- =====================================================
        SEARCH BOX
   ====================================================== -->
 
-    <div class="search-box">
+  <div class="search-box">
 
-        <span class="search-icon" aria-hidden="true">
+    <span class="search-icon" aria-hidden="true">
 
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 
-                <circle cx="11" cy="11" r="7">
-                </circle>
+        <circle cx="11" cy="11" r="7">
+        </circle>
 
-                <path d="m20 20-3.5-3.5">
-                </path>
+        <path d="m20 20-3.5-3.5">
+        </path>
 
-            </svg>
+      </svg>
+
+    </span>
+
+
+    <input #searchInput type="text" [value]="query"
+      placeholder="Search students, teachers, classes, pages or actions..." aria-label="Global search"
+      autocomplete="off" (input)="onInput($event)" (focus)="query && (isOpen = true)" (keydown)="onKeyDown($event)" />
+
+
+    <!-- ===================================================
+         CLEAR BUTTON
+    ==================================================== -->
+
+    @if (query) {
+
+    <button type="button" class="clear-button" aria-label="Clear search" (click)="closeSearch()">
+
+      ×
+
+    </button>
+
+    }
+
+
+    <!-- ===================================================
+         KEYBOARD SHORTCUT
+    ==================================================== -->
+
+    @if (!query) {
+
+    <kbd class="shortcut" aria-label="Keyboard shortcut">
+
+      <span class="shortcut-key">
+        {{ isMac ? '⌘' : 'Ctrl' }}
+      </span>
+
+      <span>K</span>
+
+    </kbd>
+
+    }
+
+  </div>
+
+
+  <!-- =====================================================
+       SEARCH RESULTS
+  ====================================================== -->
+
+  @if (isOpen) {
+
+  <div class="search-results" [class.teacher-quick-view-open]="quickViewTeacher || isTeacherQuickViewLoading"
+    role="listbox" aria-label="Search results">
+
+
+    <!-- =================================================
+           LOADING
+      ================================================== -->
+
+    @if (isLoading) {
+
+    <div class="search-loading">
+
+      <span class="loading-spinner">
+      </span>
+
+      <span>
+        Searching...
+      </span>
+
+    </div>
+
+    }
+
+
+    @else {
+
+    <!-- ===============================================
+             QUICK ACTIONS
+        ================================================ -->
+
+    @if (showCategory('action')) {
+
+    <div class="results-section">
+
+      <div class="results-header">
+
+        <span>
+          Quick Actions
+        </span>
+
+        <span>
+          {{ getResultsByType('action').length }}
+        </span>
+
+      </div>
+
+
+      @for (
+      result of getResultsByType('action');
+      track trackResult($index, result)
+      ) {
+
+      <button type="button" class="search-result quick-action-result" [class.selected]="
+                  results.indexOf(result) === selectedIndex
+                " (mouseenter)="
+                  selectedIndex = results.indexOf(result)
+                " (click)="
+                  selectResult(result)
+                " role="option" [attr.aria-selected]="
+                  results.indexOf(result) === selectedIndex
+                ">
+
+        <span class="result-icon quick-action-icon">
+          {{ result.icon }}
+        </span>
+
+
+        <span class="result-content">
+
+          <strong>
+            {{ result.title }}
+          </strong>
+
+          @if (result.subtitle) {
+
+          <small>
+            {{ result.subtitle }}
+          </small>
+
+          }
 
         </span>
 
 
-        <input #searchInput type="text" [value]="query" placeholder="Search students, teachers, pages, or actions..."
-            aria-label="Global search" autocomplete="off" (input)="onInput($event)" (focus)="query && (isOpen = true)"
-            (keydown)="onKeyDown($event)" />
+        @if (
+        results.indexOf(result) === selectedIndex
+        ) {
 
-
-        <!-- ===================================================
-         CLEAR BUTTON
-    ==================================================== -->
-
-        @if (query) {
-
-        <button type="button" class="clear-button" aria-label="Clear search" (click)="closeSearch()">
-
-            ×
-
-        </button>
+        <span class="result-enter">
+          ↵
+        </span>
 
         }
 
+      </button>
 
-        <!-- ===================================================
-         KEYBOARD SHORTCUT
-    ==================================================== -->
-
-        @if (!query) {
-
-        <kbd class="shortcut">
-
-            <span class="shortcut-key">
-                ⌘
-            </span>
-
-            <span>
-                K
-            </span>
-
-        </kbd>
-
-        }
+      }
 
     </div>
 
-
-    <!-- =====================================================
-       SEARCH RESULTS
-  ====================================================== -->
-
-    @if (isOpen) {
-
-    <div
-        class="search-results"
-        [class.teacher-quick-view-open]="quickViewTeacher || isTeacherQuickViewLoading"
-        role="listbox"
-        aria-label="Search results"
-      >
+    }
 
 
-        <!-- =================================================
-           LOADING
-      ================================================== -->
-
-        @if (isLoading) {
-
-        <div class="search-loading">
-
-            <span class="loading-spinner">
-            </span>
-
-            <span>
-                Searching...
-            </span>
-
-        </div>
-
-        }
-
-
-      @else {
-
-        <!-- ===============================================
-             QUICK ACTIONS
-        ================================================ -->
-
-        @if (showCategory('action')) {
-
-        <div class="results-section">
-
-            <div class="results-header">
-
-                <span>
-                    Quick Actions
-                </span>
-
-                <span>
-                    {{ getResultsByType('action').length }}
-                </span>
-
-            </div>
-
-
-            @for (
-            result of getResultsByType('action');
-            track trackResult($index, result)
-            ) {
-
-            <button
-                type="button"
-                class="search-result quick-action-result"
-                [class.selected]="
-                  results.indexOf(result) === selectedIndex
-                "
-                (mouseenter)="
-                  selectedIndex = results.indexOf(result)
-                "
-                (click)="
-                  selectResult(result)
-                "
-                role="option"
-                [attr.aria-selected]="
-                  results.indexOf(result) === selectedIndex
-                "
-            >
-
-                <span class="result-icon quick-action-icon">
-                    {{ result.icon }}
-                </span>
-
-
-                <span class="result-content">
-
-                    <strong>
-                        {{ result.title }}
-                    </strong>
-
-                    @if (result.subtitle) {
-
-                    <small>
-                        {{ result.subtitle }}
-                    </small>
-
-                    }
-
-                </span>
-
-
-                @if (
-                results.indexOf(result) === selectedIndex
-                ) {
-
-                <span class="result-enter">
-                    ↵
-                </span>
-
-                }
-
-            </button>
-
-            }
-
-        </div>
-
-        }
-
-
-        <!-- ===============================================
+    <!-- ===============================================
              STUDENTS
         ================================================ -->
 
-        @if (showCategory('student')) {
-        <div class="results-section">
+    @if (showCategory('student')) {
+    <div class="results-section">
 
-            <div class="results-header">
+      <div class="results-header">
 
-                <span>
-                    Students
-                </span>
+        <span>
+          Students
+        </span>
 
-                <span>
-                    {{ getResultsByType('student').length }}
-                </span>
+        <span>
+          {{ getResultsByType('student').length }}
+        </span>
 
-            </div>
+      </div>
 
 
-            @for (
-            result of getResultsByType('student');
-            track trackResult($index, result)
-            ) {
+      @for (
+      result of getResultsByType('student');
+      track trackResult($index, result)
+      ) {
 
-            <button type="button" class="search-result" [class.selected]="
+      <button type="button" class="search-result" [class.selected]="
                   results.indexOf(result) === selectedIndex
                 " (mouseenter)="
                   selectedIndex = results.indexOf(result)
@@ -221,84 +207,84 @@
                 ">
 
 
-                <span class="result-icon">
-                    {{ result.icon }}
-                </span>
+        <span class="result-icon">
+          {{ result.icon }}
+        </span>
 
 
-                <span class="result-content">
+        <span class="result-content">
 
-                    <strong>
-                        {{ result.title }}
-                    </strong>
+          <strong>
+            {{ result.title }}
+          </strong>
 
-                    @if (result.subtitle) {
+          @if (result.subtitle) {
 
-                    <small>
-                        {{ result.subtitle }}
-                    </small>
+          <small>
+            {{ result.subtitle }}
+          </small>
 
-                    }
+          }
 
-                    @if (result.description) {
+          @if (result.description) {
 
-                    <small class="result-description">
+          <small class="result-description">
 
-                        {{ result.description }}
+            {{ result.description }}
 
-                    </small>
+          </small>
 
-                    }
+          }
 
-                </span>
+        </span>
 
 
-                @if (
-                results.indexOf(result) === selectedIndex
-                ) {
+        @if (
+        results.indexOf(result) === selectedIndex
+        ) {
 
-                <span class="result-enter">
-                    ↵
-                </span>
-
-                }
-
-            </button>
-
-            }
-
-        </div>
+        <span class="result-enter">
+          ↵
+        </span>
 
         }
 
+      </button>
 
-        <!-- ===============================================
+      }
+
+    </div>
+
+    }
+
+
+    <!-- ===============================================
              TEACHERS
         ================================================ -->
 
-        @if (showCategory('teacher')) {
+    @if (showCategory('teacher')) {
 
-        <div class="results-section">
+    <div class="results-section">
 
-            <div class="results-header">
+      <div class="results-header">
 
-                <span>
-                    Teachers
-                </span>
+        <span>
+          Teachers
+        </span>
 
-                <span>
-                    {{ getResultsByType('teacher').length }}
-                </span>
+        <span>
+          {{ getResultsByType('teacher').length }}
+        </span>
 
-            </div>
+      </div>
 
 
-            @for (
-            result of getResultsByType('teacher');
-            track trackResult($index, result)
-            ) {
+      @for (
+      result of getResultsByType('teacher');
+      track trackResult($index, result)
+      ) {
 
-            <button type="button" class="search-result" [class.selected]="
+      <button type="button" class="search-result" [class.selected]="
                   results.indexOf(result) === selectedIndex
                 " (mouseenter)="
                   selectedIndex = results.indexOf(result)
@@ -309,84 +295,84 @@
                 ">
 
 
-                <span class="result-icon">
-                    {{ result.icon }}
-                </span>
+        <span class="result-icon">
+          {{ result.icon }}
+        </span>
 
 
-                <span class="result-content">
+        <span class="result-content">
 
-                    <strong>
-                        {{ result.title }}
-                    </strong>
+          <strong>
+            {{ result.title }}
+          </strong>
 
-                    @if (result.subtitle) {
+          @if (result.subtitle) {
 
-                    <small>
-                        {{ result.subtitle }}
-                    </small>
+          <small>
+            {{ result.subtitle }}
+          </small>
 
-                    }
+          }
 
-                    @if (result.description) {
+          @if (result.description) {
 
-                    <small class="result-description">
+          <small class="result-description">
 
-                        {{ result.description }}
+            {{ result.description }}
 
-                    </small>
+          </small>
 
-                    }
+          }
 
-                </span>
+        </span>
 
 
-                @if (
-                results.indexOf(result) === selectedIndex
-                ) {
+        @if (
+        results.indexOf(result) === selectedIndex
+        ) {
 
-                <span class="result-enter">
-                    ↵
-                </span>
-
-                }
-
-            </button>
-
-            }
-
-        </div>
+        <span class="result-enter">
+          ↵
+        </span>
 
         }
 
+      </button>
 
-        <!-- ===============================================
+      }
+
+    </div>
+
+    }
+
+
+    <!-- ===============================================
              PAGES
         ================================================ -->
 
-        @if (showCategory('page')) {
+    @if (showCategory('page')) {
 
-        <div class="results-section">
+    <div class="results-section">
 
-            <div class="results-header">
+      <div class="results-header">
 
-                <span>
-                    Pages
-                </span>
+        <span>
+          Pages
+        </span>
 
-                <span>
-                    {{ getResultsByType('page').length }}
-                </span>
+        <span>
+          {{ getResultsByType('page').length }}
+        </span>
 
-            </div>
+      </div>
 
 
-            @for (
-            result of getResultsByType('page');
-            track trackResult($index, result)
-            ) {
+      @for (
+      result of getResultsByType('page');
+      track trackResult($index, result)
+      ) {
 
-            <button type="button" class="search-result" [class.selected]="
+      <button type="button" class="search-result" [class.selected]="
                   results.indexOf(result) === selectedIndex
                 " (mouseenter)="
                   selectedIndex = results.indexOf(result)
@@ -397,481 +383,475 @@
                 ">
 
 
-                <span class="result-icon">
-                    {{ result.icon }}
-                </span>
+        <span class="result-icon">
+          {{ result.icon }}
+        </span>
 
 
-                <span class="result-content">
+        <span class="result-content">
 
-                    <strong>
-                        {{ result.title }}
-                    </strong>
+          <strong>
+            {{ result.title }}
+          </strong>
 
-                    @if (result.subtitle) {
+          @if (result.subtitle) {
 
-                    <small>
-                        {{ result.subtitle }}
-                    </small>
+          <small>
+            {{ result.subtitle }}
+          </small>
 
-                    }
+          }
 
-                </span>
+        </span>
 
 
-                @if (
-                results.indexOf(result) === selectedIndex
-                ) {
+        @if (
+        results.indexOf(result) === selectedIndex
+        ) {
 
-                <span class="result-enter">
-                    ↵
-                </span>
-
-                }
-
-            </button>
-
-            }
-
-        </div>
+        <span class="result-enter">
+          ↵
+        </span>
 
         }
 
+      </button>
 
-        <!-- ===============================================
+      }
+
+    </div>
+
+    }
+
+
+    <!-- ===============================================
              NO RESULTS
         ================================================ -->
 
-        @if (!results.length) {
+    @if (!results.length) {
 
-        <div class="search-empty">
+    <div class="search-empty">
 
-            <div class="empty-icon">
-                ⌕
+      <div class="empty-icon">
+        ⌕
+      </div>
+
+      <strong>
+        No results found
+      </strong>
+
+      <span>
+        Try a student, teacher, class, page, or action.
+      </span>
+
+      <small>
+        Example: "Rahul", "Class 12", or "Add Student"
+      </small>
+
+    </div>
+
+    }
+
+    @if (results.length && !quickViewTeacher && !isTeacherQuickViewLoading) {
+
+    <div class="search-keyboard-footer">
+
+      <span>
+        <kbd>↑</kbd>
+        <kbd>↓</kbd>
+        Navigate
+      </span>
+
+      <span>
+        <kbd>↵</kbd>
+        Open
+      </span>
+
+      <span>
+        <kbd>Esc</kbd>
+        Close
+      </span>
+
+    </div>
+
+    }
+
+    } <!-- =========================================================
+             TEACHER QUICK VIEW
+        ========================================================= -->
+
+    @if (quickViewTeacher || isTeacherQuickViewLoading) {
+
+    <div class="teacher-quick-view-layer">
+
+      <!-- Full-screen backdrop. -->
+      <div class="teacher-quick-view-backdrop" aria-hidden="true" (click)="closeTeacherQuickView()"></div>
+
+      <aside class="global-search-teacher-panel" role="dialog" aria-modal="true"
+        aria-labelledby="teacher-quick-view-title" (click)="$event.stopPropagation()">
+
+        <!-- HEADER -->
+        <header class="teacher-panel-header">
+
+          <div class="teacher-panel-identity">
+
+            <div class="teacher-panel-avatar">
+              {{ quickViewTeacher?.name?.charAt(0)?.toUpperCase() || 'T' }}
             </div>
 
-            <strong>
-                No results found
-            </strong>
+            <div class="teacher-panel-heading">
 
-<span>
-    Try a name, page, or action like "Add Student".
-</span>
+              <div class="teacher-panel-eyebrow">
+                Teacher Quick View
+              </div>
+
+              <h2 id="teacher-quick-view-title" class="teacher-panel-title">
+                {{ quickViewTeacher?.name || 'Teacher' }}
+              </h2>
+
+            </div>
+
+          </div>
+
+          <button type="button" class="teacher-panel-close" aria-label="Close teacher quick view"
+            (click)="closeTeacherQuickView()">
+            ×
+          </button>
+
+        </header>
+
+
+        <!-- LOADING -->
+        @if (isTeacherQuickViewLoading) {
+
+        <div class="teacher-panel-loading">
+
+          <div class="teacher-panel-spinner"></div>
+
+          <span>
+            Loading teacher details...
+          </span>
 
         </div>
 
         }
 
-        }        <!-- =========================================================
-             TEACHER QUICK VIEW
-        ========================================================= -->
 
-        @if (quickViewTeacher || isTeacherQuickViewLoading) {
+        <!-- CONTENT -->
+        @if (!isTeacherQuickViewLoading && quickViewTeacher) {
 
-          <div class="teacher-quick-view-layer">
+        <div class="teacher-panel-content">
 
-            <!-- Full-screen backdrop. -->
-            <div
-              class="teacher-quick-view-backdrop"
-              aria-hidden="true"
-              (click)="closeTeacherQuickView()"
-            ></div>
+          <!-- STATUS -->
+          <div class="teacher-panel-status-row">
 
-            <aside
-              class="global-search-teacher-panel"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="teacher-quick-view-title"
-              (click)="$event.stopPropagation()"
-            >
-        
-            <!-- HEADER -->
-            <header class="teacher-panel-header">
-        
-              <div class="teacher-panel-identity">
-        
-                <div class="teacher-panel-avatar">
-                  {{ quickViewTeacher?.name?.charAt(0)?.toUpperCase() || 'T' }}
-                </div>
-        
-                <div class="teacher-panel-heading">
-        
-                  <div class="teacher-panel-eyebrow">
-                    Teacher Quick View
-                  </div>
-        
-                  <h2
-                    id="teacher-quick-view-title"
-                    class="teacher-panel-title"
-                  >
-                    {{ quickViewTeacher?.name || 'Teacher' }}
-                  </h2>
-        
-                </div>
-        
-              </div>
-        
-              <button
-                type="button"
-                class="teacher-panel-close"
-                aria-label="Close teacher quick view"
-                (click)="closeTeacherQuickView()"
-              >
-                ×
-              </button>
-        
-            </header>
-        
-        
-            <!-- LOADING -->
-            @if (isTeacherQuickViewLoading) {
-        
-              <div class="teacher-panel-loading">
-        
-                <div class="teacher-panel-spinner"></div>
-        
-                <span>
-                  Loading teacher details...
+            <span class="teacher-panel-status" [class.active]="quickViewTeacher.isActive"
+              [class.inactive]="!quickViewTeacher.isActive">
+
+              <span class="teacher-panel-status-dot"></span>
+
+              {{ quickViewTeacher.isActive ? 'Active' : 'Inactive' }}
+
+            </span>
+
+          </div>
+
+
+          <!-- TEACHER INFORMATION -->
+          <section class="teacher-panel-section">
+
+            <h3 class="teacher-panel-section-title">
+              Teacher Information
+            </h3>
+
+            <div class="teacher-info-card">
+
+              <div class="teacher-info-row">
+
+                <span class="teacher-info-label">
+                  Teacher Number
                 </span>
-        
+
+                <span class="teacher-info-value">
+                  {{ quickViewTeacher.teacherNumber || '—' }}
+                </span>
+
               </div>
-        
-            }
-        
-        
-            <!-- CONTENT -->
-            @if (!isTeacherQuickViewLoading && quickViewTeacher) {
-        
-              <div class="teacher-panel-content">
-        
-                <!-- STATUS -->
-                <div class="teacher-panel-status-row">
-        
-                  <span
-                    class="teacher-panel-status"
-                    [class.active]="quickViewTeacher.isActive"
-                    [class.inactive]="!quickViewTeacher.isActive"
-                  >
-        
-                    <span class="teacher-panel-status-dot"></span>
-        
-                    {{ quickViewTeacher.isActive ? 'Active' : 'Inactive' }}
-        
-                  </span>
-        
+
+
+              <div class="teacher-info-row">
+
+                <span class="teacher-info-label">
+                  Email
+                </span>
+
+                <span class="teacher-info-value">
+                  {{ quickViewTeacher.email || '—' }}
+                </span>
+
+              </div>
+
+
+              <div class="teacher-info-row">
+
+                <span class="teacher-info-label">
+                  Phone
+                </span>
+
+                <span class="teacher-info-value">
+                  {{ quickViewTeacher.phone || '—' }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- ROLE -->
+          <section class="teacher-panel-section">
+
+            <h3 class="teacher-panel-section-title">
+              Role & Assignment
+            </h3>
+
+            @if (quickViewTeacher.role) {
+
+            <div class="teacher-role-card">
+
+              <div class="teacher-role-content">
+
+                <div class="teacher-role-name">
+                  {{ quickViewTeacher.role.name }}
                 </div>
-        
-        
-                <!-- TEACHER INFORMATION -->
-                <section class="teacher-panel-section">
-        
-                  <h3 class="teacher-panel-section-title">
-                    Teacher Information
-                  </h3>
-        
-                  <div class="teacher-info-card">
-        
-                    <div class="teacher-info-row">
-        
-                      <span class="teacher-info-label">
-                        Teacher Number
-                      </span>
-        
-                      <span class="teacher-info-value">
-                        {{ quickViewTeacher.teacherNumber || '—' }}
-                      </span>
-        
-                    </div>
-        
-        
-                    <div class="teacher-info-row">
-        
-                      <span class="teacher-info-label">
-                        Email
-                      </span>
-        
-                      <span class="teacher-info-value">
-                        {{ quickViewTeacher.email || '—' }}
-                      </span>
-        
-                    </div>
-        
-        
-                    <div class="teacher-info-row">
-        
-                      <span class="teacher-info-label">
-                        Phone
-                      </span>
-        
-                      <span class="teacher-info-value">
-                        {{ quickViewTeacher.phone || '—' }}
-                      </span>
-        
-                    </div>
-        
-                  </div>
-        
-                </section>
-        
-        
-                <!-- ROLE -->
-                <section class="teacher-panel-section">
-        
-                  <h3 class="teacher-panel-section-title">
-                    Role & Assignment
-                  </h3>
-        
-                  @if (quickViewTeacher.role) {
-        
-                    <div class="teacher-role-card">
-        
-                      <div class="teacher-role-content">
-        
-                        <div class="teacher-role-name">
-                          {{ quickViewTeacher.role.name }}
-                        </div>
-        
-                        @if (quickViewTeacher.role.description) {
-        
-                          <div class="teacher-role-description">
-                            {{ quickViewTeacher.role.description }}
-                          </div>
-        
-                        }
-        
-                      </div>
-        
-                      @if (quickViewTeacher.role.isActive !== undefined) {
-        
-                        <span
-                          class="teacher-role-status"
-                          [class.inactive]="!quickViewTeacher.role.isActive"
-                        >
-                          {{ quickViewTeacher.role.isActive ? 'Active' : 'Inactive' }}
-                        </span>
-        
-                      }
-        
-                    </div>
-        
-                  } @else {
-        
-                    <div class="teacher-empty-state">
-                      <div class="teacher-empty-title">
-                        No role assignment
-                      </div>
-        
-                      <div class="teacher-empty-text">
-                        No role assignment is currently assigned.
-                      </div>
-                    </div>
-        
-                  }
-        
-                </section>
-        
-        
-                <!-- ASSIGNMENT SCOPES -->
-                @if (quickViewTeacher.assignments.length) {
-        
-                  <section class="teacher-panel-section">
-        
-                    <h3 class="teacher-panel-section-title">
-                      Assignment Scope
-                    </h3>
-        
-                    <div class="teacher-assignment-list">
-        
-                      @for (
-                        assignment of quickViewTeacher.assignments;
-                        track $index
-                      ) {
-        
-                        <div class="teacher-assignment-card">
-        
-                          <div class="teacher-assignment-grid">
-        
-                            <div class="teacher-assignment-item">
-        
-                              <span class="teacher-info-label">
-                                Academic Year
-                              </span>
-        
-                              <span class="teacher-info-value">
-                                {{ assignment.academicYearName || '—' }}
-                              </span>
-        
-                            </div>
-        
-        
-                            <div class="teacher-assignment-item">
-        
-                              <span class="teacher-info-label">
-                                Scope
-                              </span>
-        
-                              <span class="teacher-info-value">
-                                {{ assignment.scopeType }}
-                              </span>
-        
-                            </div>
-        
-        
-                            <div class="teacher-assignment-item">
-        
-                              <span class="teacher-info-label">
-                                Class
-                              </span>
-        
-                              <span class="teacher-info-value">
-                                {{ assignment.className || 'All Classes' }}
-                              </span>
-        
-                            </div>
-        
-        
-                            <div class="teacher-assignment-item">
-        
-                              <span class="teacher-info-label">
-                                Section
-                              </span>
-        
-                              <span class="teacher-info-value">
-                                {{ assignment.sectionName || 'All Sections' }}
-                              </span>
-        
-                            </div>
-        
-                          </div>
-        
-                        </div>
-        
-                      }
-        
-                    </div>
-        
-                  </section>
-        
+
+                @if (quickViewTeacher.role.description) {
+
+                <div class="teacher-role-description">
+                  {{ quickViewTeacher.role.description }}
+                </div>
+
                 }
-        
-        
-                <!-- PERMISSIONS -->
-                @if (quickViewTeacher.permissions.length) {
-        
-                  <section class="teacher-panel-section">
-        
-                    <h3 class="teacher-panel-section-title">
-                      Permissions
-                    </h3>
-        
-                    <div class="teacher-permission-list">
-        
-                      @for (
-                        permission of quickViewTeacher.permissions;
-                        track permission.id
-                      ) {
-        
-                        <div class="teacher-permission-item">
-        
-                          <div class="teacher-permission-name">
-                            {{ permission.name }}
-                          </div>
-        
-                          <div class="teacher-permission-code">
-                            {{ permission.code }}
-                          </div>
-        
-                        </div>
-        
-                      }
-        
-                    </div>
-        
-                  </section>
-        
-                } @else {
-        
-                  @if (quickViewTeacher.role) {
-        
-                    <section class="teacher-panel-section">
-        
-                      <h3 class="teacher-panel-section-title">
-                        Permissions
-                      </h3>
-        
-                      <div class="teacher-empty-state">
-                        <div class="teacher-empty-text">
-                          No permissions assigned to this role.
-                        </div>
-                      </div>
-        
-                    </section>
-        
-                  }
-        
-                }
-        
+
               </div>
-        
+
+              @if (quickViewTeacher.role.isActive !== undefined) {
+
+              <span class="teacher-role-status" [class.inactive]="!quickViewTeacher.role.isActive">
+                {{ quickViewTeacher.role.isActive ? 'Active' : 'Inactive' }}
+              </span>
+
+              }
+
+            </div>
+
+            } @else {
+
+            <div class="teacher-empty-state">
+              <div class="teacher-empty-title">
+                No role assignment
+              </div>
+
+              <div class="teacher-empty-text">
+                No role assignment is currently assigned.
+              </div>
+            </div>
+
             }
-        
-        
-            <!-- FOOTER -->
-            @if (!isTeacherQuickViewLoading && quickViewTeacher) {
-        
-              <footer class="teacher-panel-footer">
-        
-                <button
-                  type="button"
-                  class="teacher-panel-button secondary"
-                  (click)="closeTeacherQuickView()"
-                >
-                  Close
-                </button>
-        
-        
-                <button
-                  type="button"
-                  class="teacher-panel-button secondary"
-                  (click)="navigate({
+
+          </section>
+
+
+          <!-- ASSIGNMENT SCOPES -->
+          @if (quickViewTeacher.assignments.length) {
+
+          <section class="teacher-panel-section">
+
+            <h3 class="teacher-panel-section-title">
+              Assignment Scope
+            </h3>
+
+            <div class="teacher-assignment-list">
+
+              @for (
+              assignment of quickViewTeacher.assignments;
+              track $index
+              ) {
+
+              <div class="teacher-assignment-card">
+
+                <div class="teacher-assignment-grid">
+
+                  <div class="teacher-assignment-item">
+
+                    <span class="teacher-info-label">
+                      Academic Year
+                    </span>
+
+                    <span class="teacher-info-value">
+                      {{ assignment.academicYearName || '—' }}
+                    </span>
+
+                  </div>
+
+
+                  <div class="teacher-assignment-item">
+
+                    <span class="teacher-info-label">
+                      Scope
+                    </span>
+
+                    <span class="teacher-info-value">
+                      {{ assignment.scopeType }}
+                    </span>
+
+                  </div>
+
+
+                  <div class="teacher-assignment-item">
+
+                    <span class="teacher-info-label">
+                      Class
+                    </span>
+
+                    <span class="teacher-info-value">
+                      {{ assignment.className || 'All Classes' }}
+                    </span>
+
+                  </div>
+
+
+                  <div class="teacher-assignment-item">
+
+                    <span class="teacher-info-label">
+                      Section
+                    </span>
+
+                    <span class="teacher-info-value">
+                      {{ assignment.sectionName || 'All Sections' }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              }
+
+            </div>
+
+          </section>
+
+          }
+
+
+          <!-- PERMISSIONS -->
+          @if (quickViewTeacher.permissions.length) {
+
+          <section class="teacher-panel-section">
+
+            <h3 class="teacher-panel-section-title">
+              Permissions
+            </h3>
+
+            <div class="teacher-permission-list">
+
+              @for (
+              permission of quickViewTeacher.permissions;
+              track permission.id
+              ) {
+
+              <div class="teacher-permission-item">
+
+                <div class="teacher-permission-name">
+                  {{ permission.name }}
+                </div>
+
+                <div class="teacher-permission-code">
+                  {{ permission.code }}
+                </div>
+
+              </div>
+
+              }
+
+            </div>
+
+          </section>
+
+          } @else {
+
+          @if (quickViewTeacher.role) {
+
+          <section class="teacher-panel-section">
+
+            <h3 class="teacher-panel-section-title">
+              Permissions
+            </h3>
+
+            <div class="teacher-empty-state">
+              <div class="teacher-empty-text">
+                No permissions assigned to this role.
+              </div>
+            </div>
+
+          </section>
+
+          }
+
+          }
+
+        </div>
+
+        }
+
+
+        <!-- FOOTER -->
+        @if (!isTeacherQuickViewLoading && quickViewTeacher) {
+
+        <footer class="teacher-panel-footer">
+
+          <button type="button" class="teacher-panel-button secondary" (click)="closeTeacherQuickView()">
+            Close
+          </button>
+
+
+          <button type="button" class="teacher-panel-button secondary" (click)="navigate({
                     type: 'teacher',
                     id: quickViewTeacher.id,
                     title: quickViewTeacher.name,
                     icon: '♙',
                     route: '/admin/teachers/' + quickViewTeacher.id + '/edit'
-                  })"
-                >
-                  Edit Teacher
-                </button>
-        
-        
-                <button
-                  type="button"
-                  class="teacher-panel-button primary"
-                  (click)="navigate({
+                  })">
+            Edit Teacher
+          </button>
+
+
+          <button type="button" class="teacher-panel-button primary" (click)="navigate({
                     type: 'teacher',
                     id: quickViewTeacher.id,
                     title: quickViewTeacher.name,
                     icon: '♙',
                     route: '/admin/teachers/' + quickViewTeacher.id
-                  })"
-                >
-                  Teacher Details
-                </button>
-        
-              </footer>
-        
-            }
-        
-          </aside>
+                  })">
+            Teacher Details
+          </button>
 
-          </div>
-        
+        </footer>
+
         }
+
+      </aside>
 
     </div>
 
     }
+
+  </div>
+
+  }
 
 </div>
 
@@ -886,11 +866,7 @@
 
 @if (quickViewResult) {
 
-<app-student-quick-view
-    [studentId]="quickViewResult.id ?? null"
-    (closed)="closeStudentQuickView()"
-    (openStudent)="navigateToStudent($event)"
-/>
+<app-student-quick-view [studentId]="quickViewResult.id ?? null" (closed)="closeStudentQuickView()"
+  (openStudent)="navigateToStudent($event)" />
 
 }
-

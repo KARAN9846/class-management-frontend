@@ -16,16 +16,18 @@ import { SearchInputComponent } from '../../../../shared/components/search-input
 
 import { Attendance } from '../models/attendance.model';
 import { AttendanceService } from '../services/attendance.service';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-attendance-overview',
   standalone: true,
 
-  imports: [
-    CommonModule,
-    DataTableComponent,
-    SearchInputComponent
-  ],
+imports: [
+  CommonModule,
+  DataTableComponent,
+  SearchInputComponent,
+  PaginationComponent
+],
 
   templateUrl: './attendance-overview.html',
   styleUrl: './attendance-overview.scss'
@@ -41,6 +43,12 @@ export class AttendanceOverview implements OnInit {
   attendance: Attendance[] = [];
 
   private allAttendance: Attendance[] = [];
+
+ filteredAttendance: Attendance[] = [];
+
+currentPage = 1;
+
+pageSize = 10;
 
   loading = false;
 
@@ -133,44 +141,69 @@ export class AttendanceOverview implements OnInit {
       });
   }
 
-  applySearch(): void {
+applySearch(): void {
   const searchValue =
     this.search.trim().toLowerCase();
 
-  this.attendance = this.allAttendance.filter((item) => {
+  this.filteredAttendance =
+    this.allAttendance.filter((item) => {
 
-    const matchesSection =
-  this.sectionFilter === 'ALL' ||
-  item.sectionName === this.sectionFilter;
+      const matchesSection =
+        this.sectionFilter === 'ALL' ||
+        item.sectionName === this.sectionFilter;
 
-    const matchesSearch =
-      !searchValue ||
-      item.studentName?.toLowerCase().includes(searchValue) ||
-      item.className?.toLowerCase().includes(searchValue) ||
-      item.sectionName?.toLowerCase().includes(searchValue) ||
-      item.markedByTeacherName?.toLowerCase().includes(searchValue) ||
-      item.status?.toLowerCase().includes(searchValue);
+      const matchesSearch =
+        !searchValue ||
+        item.studentName?.toLowerCase().includes(searchValue) ||
+        item.className?.toLowerCase().includes(searchValue) ||
+        item.sectionName?.toLowerCase().includes(searchValue) ||
+        item.markedByTeacherName?.toLowerCase().includes(searchValue) ||
+        item.status?.toLowerCase().includes(searchValue);
 
-    const matchesStatus =
-      this.statusFilter === 'ALL' ||
-      item.status === this.statusFilter;
+      const matchesStatus =
+        this.statusFilter === 'ALL' ||
+        item.status === this.statusFilter;
 
-    const matchesDate =
-      !this.dateFilter ||
-      item.attendanceDate === this.dateFilter;
+      const matchesDate =
+        !this.dateFilter ||
+        item.attendanceDate === this.dateFilter;
 
-    const matchesClass =
-      this.classFilter === 'ALL' ||
-      item.className === this.classFilter;
+      const matchesClass =
+        this.classFilter === 'ALL' ||
+        item.className === this.classFilter;
 
-    return (
-      matchesSearch &&
-      matchesStatus &&
-      matchesDate &&
-      matchesClass &&
-      matchesSection
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesDate &&
+        matchesClass &&
+        matchesSection
+      );
+    });
+
+  this.currentPage = 1;
+
+  this.updatePagination();
+}
+
+private updatePagination(): void {
+  const startIndex =
+    (this.currentPage - 1) * this.pageSize;
+
+  const endIndex =
+    startIndex + this.pageSize;
+
+  this.attendance =
+    this.filteredAttendance.slice(
+      startIndex,
+      endIndex
     );
-  });
+}
+
+onPageChange(page: number): void {
+  this.currentPage = page;
+
+  this.updatePagination();
 }
 
 get classOptions(): string[] {

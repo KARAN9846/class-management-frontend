@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { TeacherRoleService } from '../services/teacher-role.service';
 import { TeacherRole } from '../models/teacher-role.model';
 import { TeacherRoleForm } from '../teacher-role-form/teacher-role-form';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-teacher-role-list',
@@ -30,6 +31,8 @@ export class TeacherRoleList implements OnInit {
 
   private readonly cdr =
     inject(ChangeDetectorRef);
+
+
 
 
   // =========================================================
@@ -672,4 +675,9 @@ export class TeacherRoleList implements OnInit {
 
       });
   }
+  private readonly router = inject(Router);
+
+  goBackToTeacherManagement(): void {
+  this.router.navigate(['/admin/teachers']);
+}
 }

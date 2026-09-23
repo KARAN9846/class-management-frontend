@@ -22,13 +22,16 @@ import {
 
 import { FeeStructureService } from '../services/fee-structure.service';
 
+import { FeeStructureCreateComponent } from '../fee-structure-create/fee-structure-create';
+
 @Component({
   selector: 'app-fee-structure-list',
   standalone: true,
 
   imports: [
     DataTableComponent,
-    FormsModule
+    FormsModule,
+    FeeStructureCreateComponent
   ],
 
   templateUrl: './fee-structure-list.html',
@@ -47,6 +50,24 @@ export class FeeStructureList implements OnInit {
 
   private readonly cdr =
     inject(ChangeDetectorRef);
+
+
+  // =====================================================
+  // MODAL
+  // =====================================================
+
+  isCreateModalOpen = false;
+
+
+  closeCreateModal(): void {
+    this.isCreateModalOpen = false;
+  }
+
+
+  onFeeStructureCreated(): void {
+    this.isCreateModalOpen = false;
+    this.loadFeeStructures();
+  }
 
 
   // =====================================================
@@ -279,9 +300,7 @@ export class FeeStructureList implements OnInit {
 
   createFeeStructure(): void {
 
-    this.router.navigate([
-      '/admin/fees/fee-structures/create'
-    ]);
+    this.isCreateModalOpen = true;
 
   }
 
@@ -471,6 +490,19 @@ export class FeeStructureList implements OnInit {
         }
 
       });
+
+  }
+
+
+  // =====================================================
+  // BACK TO FEE MANAGEMENT
+  // =====================================================
+
+  goBackToFeeManagement(): void {
+
+    this.router.navigate([
+      '/admin/fees'
+    ]);
 
   }
 

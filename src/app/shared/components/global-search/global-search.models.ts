@@ -23,6 +23,7 @@ export interface GlobalSearchAction {
   route: string;
   roles: ('SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT')[];
   permission?: string;
+  aliases?: string[];
 }
 
 

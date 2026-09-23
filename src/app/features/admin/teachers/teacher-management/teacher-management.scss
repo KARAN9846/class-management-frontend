@@ -1,0 +1,346 @@
+.teacher-management-page {
+  width: 100%;
+  max-width: 1600px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  min-width: 220px;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.breadcrumb strong {
+  color: #334155;
+  font-weight: 600;
+}
+
+.page-title h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.page-title p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   TEACHER CONFIGURATION
+   ========================================================= */
+
+.teacher-configuration {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.configuration-label {
+  display: flex;
+  flex-direction: column;
+  min-width: 155px;
+}
+
+.configuration-title {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.configuration-description {
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.configuration-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.configuration-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 205px;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0f172a;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.configuration-button:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06);
+  transform: translateY(-1px);
+}
+
+.configuration-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.configuration-button-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.configuration-button-text {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.configuration-button-description {
+  margin-top: 2px;
+  overflow: hidden;
+  color: #94a3b8;
+  font-size: 10px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.configuration-arrow {
+  color: #64748b;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   TEACHER OPERATIONS
+   ========================================================= */
+
+.teacher-operations {
+  margin-bottom: 16px;
+}
+
+.operations-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.operations-title {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.operations-section-label {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.operations-description {
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.assignment-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 285px;
+  padding: 9px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #0f172a;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.assignment-button:hover {
+  border-color: #cbd5e1;
+  background: #ffffff;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06);
+  transform: translateY(-1px);
+}
+
+.assignment-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.assignment-button-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.assignment-button-title {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.assignment-button-description {
+  margin-top: 2px;
+  color: #94a3b8;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.assignment-arrow {
+  color: #64748b;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   TEACHER LIST
+   ========================================================= */
+
+.teacher-list-section {
+  width: 100%;
+  min-width: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1250px) {
+  .page-header {
+    flex-direction: column;
+  }
+
+  .teacher-configuration {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .configuration-actions {
+    flex: 1;
+  }
+
+  .configuration-button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 800px) {
+  .teacher-management-page {
+    padding: 16px;
+  }
+
+  .teacher-configuration {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .configuration-actions {
+    flex-direction: column;
+  }
+
+  .configuration-button {
+    width: 100%;
+  }
+
+  .operations-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .assignment-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .teacher-management-page {
+    padding: 12px;
+  }
+
+  .page-title h1 {
+    font-size: 24px;
+  }
+
+  .configuration-label {
+    min-width: 0;
+  }
+}

@@ -27,28 +27,102 @@ import { StudentFee } from '../models/student-fee.model';
 })
 export class StudentFeeList implements OnInit {
 
-  private readonly academicYearService = inject(AcademicYearService);
-  private readonly classService = inject(ClassService);
-  private readonly studentFeeService = inject(StudentFeeService);
-  private readonly router = inject(Router);
-  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly academicYearService =
+    inject(AcademicYearService);
+
+  private readonly classService =
+    inject(ClassService);
+
+  private readonly studentFeeService =
+    inject(StudentFeeService);
+
+  private readonly router =
+    inject(Router);
+
+  private readonly cdr =
+    inject(ChangeDetectorRef);
+
+
+  // =====================================================
+  // DATA
+  // =====================================================
 
   studentFees: StudentFee[] = [];
 
   academicYears: any[] = [];
 
   allClasses: any[] = [];
+
   classes: any[] = [];
 
+
+  // =====================================================
+  // SERVER-SIDE FILTERS
+  // =====================================================
+
   academicYearFilter: number | 'ALL' = 'ALL';
+
   classFilter: number | 'ALL' = 'ALL';
 
+
+  // =====================================================
+  // CLIENT-SIDE FILTERS
+  // =====================================================
+
+  searchTerm = '';
+
+  statusFilter:
+    | 'ALL'
+    | 'PAID'
+    | 'REMAINING'
+    | 'UNPAID' = 'ALL';
+
+  feeRangeFilter:
+    | 'ALL'
+    | '0_10000'
+    | '10000_25000'
+    | '25000_PLUS' = 'ALL';
+
+
+  // =====================================================
+  // SORTING
+  // =====================================================
+
+  sortField:
+    | 'NONE'
+    | 'STUDENT_NAME'
+    | 'PAYABLE_AMOUNT'
+    | 'PAID_AMOUNT'
+    | 'REMAINING_AMOUNT' = 'NONE';
+
+  sortDirection:
+    | 'ASC'
+    | 'DESC' = 'ASC';
+
+
+  // =====================================================
+  // STATE
+  // =====================================================
+
   loading = false;
+
   errorMessage = '';
 
+
+  // =====================================================
+  // INIT
+  // =====================================================
+
   ngOnInit(): void {
+
     this.loadAcademicYears();
+
   }
+
+
+  // =====================================================
+  // LOAD ACADEMIC YEARS
+  // =====================================================
 
   loadAcademicYears(): void {
 
@@ -59,26 +133,36 @@ export class StudentFeeList implements OnInit {
 
       next: (response) => {
 
-        this.academicYears = response.data.content ?? [];
+        this.academicYears =
+          response.data.content ?? [];
 
-        const currentYear = this.academicYears.find(
-          (year: any) => year.isCurrent === true
-        );
+
+        const currentYear =
+          this.academicYears.find(
+            (year: any) =>
+              year.isCurrent === true
+          );
+
 
         if (currentYear) {
 
-          this.academicYearFilter = currentYear.id;
+          this.academicYearFilter =
+            currentYear.id;
 
-        } else if (this.academicYears.length > 0) {
+        } else if (
+          this.academicYears.length > 0
+        ) {
 
           this.academicYearFilter =
             this.academicYears[0].id;
 
         } else {
 
-          this.academicYearFilter = 'ALL';
+          this.academicYearFilter =
+            'ALL';
 
         }
+
 
         this.loadClasses();
 
@@ -99,10 +183,17 @@ export class StudentFeeList implements OnInit {
           'Failed to load academic years.';
 
         this.cdr.detectChanges();
+
       }
 
     });
+
   }
+
+
+  // =====================================================
+  // LOAD CLASSES
+  // =====================================================
 
   loadClasses(): void {
 
@@ -110,15 +201,11 @@ export class StudentFeeList implements OnInit {
 
       next: (response) => {
 
-        this.allClasses = response.data ?? [];
+        this.allClasses =
+          response.data ?? [];
 
         this.filterClassesByYear();
 
-        /*
-         * IMPORTANT:
-         * Load student fees immediately after
-         * academic years and classes are ready.
-         */
         this.loadStudentFees();
 
       },
@@ -138,10 +225,17 @@ export class StudentFeeList implements OnInit {
           'Failed to load classes.';
 
         this.cdr.detectChanges();
+
       }
 
     });
+
   }
+
+
+  // =====================================================
+  // FILTER CLASSES BY ACADEMIC YEAR
+  // =====================================================
 
   filterClassesByYear(): void {
 
@@ -153,15 +247,23 @@ export class StudentFeeList implements OnInit {
 
     } else {
 
-      this.classes = this.allClasses.filter(
-        (item: any) =>
-          item.academicYearId === this.academicYearFilter
-      );
+      this.classes =
+        this.allClasses.filter(
+          (item: any) =>
+            item.academicYearId ===
+            this.academicYearFilter
+        );
 
     }
 
     this.classFilter = 'ALL';
+
   }
+
+
+  // =====================================================
+  // ACADEMIC YEAR CHANGE
+  // =====================================================
 
   onAcademicYearChange(): void {
 
@@ -170,17 +272,30 @@ export class StudentFeeList implements OnInit {
     this.filterClassesByYear();
 
     this.loadStudentFees();
+
   }
+
+
+  // =====================================================
+  // CLASS CHANGE
+  // =====================================================
 
   onClassChange(): void {
 
     this.loadStudentFees();
+
   }
+
+
+  // =====================================================
+  // LOAD STUDENT FEES
+  // =====================================================
 
   loadStudentFees(): void {
 
     this.loading = true;
     this.errorMessage = '';
+
 
     /*
      * All academic years
@@ -197,31 +312,24 @@ export class StudentFeeList implements OnInit {
           this.loading = false;
 
           this.cdr.detectChanges();
+
         },
 
         error: (error) => {
 
-          console.error(
-            'Failed to load student fees:',
-            error
+          this.handleLoadError(
+            error,
+            'Failed to load student fees.'
           );
 
-          this.studentFees = [];
-
-          this.loading = false;
-
-          this.errorMessage =
-            error?.error?.message ||
-            error?.message ||
-            'Failed to load student fees.';
-
-          this.cdr.detectChanges();
         }
 
       });
 
       return;
+
     }
+
 
     /*
      * Selected academic year,
@@ -241,31 +349,24 @@ export class StudentFeeList implements OnInit {
             this.loading = false;
 
             this.cdr.detectChanges();
+
           },
 
           error: (error) => {
 
-            console.error(
-              'Failed to load student fees:',
-              error
+            this.handleLoadError(
+              error,
+              'Failed to load student fees.'
             );
 
-            this.studentFees = [];
-
-            this.loading = false;
-
-            this.errorMessage =
-              error?.error?.message ||
-              error?.message ||
-              'Failed to load student fees.';
-
-            this.cdr.detectChanges();
           }
 
         });
 
       return;
+
     }
+
 
     /*
      * Selected academic year
@@ -286,58 +387,405 @@ export class StudentFeeList implements OnInit {
           this.loading = false;
 
           this.cdr.detectChanges();
+
         },
 
         error: (error) => {
 
-          console.error(
-            'Failed to load student fees:',
-            error
+          this.handleLoadError(
+            error,
+            'Failed to load student fees.'
           );
 
-          this.studentFees = [];
-
-          this.loading = false;
-
-          this.errorMessage =
-            error?.error?.message ||
-            error?.message ||
-            'Failed to load student fees.';
-
-          this.cdr.detectChanges();
         }
 
       });
+
   }
+
+
+  // =====================================================
+  // LOAD ERROR
+  // =====================================================
+
+  private handleLoadError(
+    error: any,
+    fallbackMessage: string
+  ): void {
+
+    console.error(
+      'Failed to load student fees:',
+      error
+    );
+
+    this.studentFees = [];
+
+    this.loading = false;
+
+    this.errorMessage =
+      error?.error?.message ||
+      error?.message ||
+      fallbackMessage;
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // FILTERED + SORTED DATA
+  // =====================================================
+
+  get filteredStudentFees(): StudentFee[] {
+
+    let result =
+      [...this.studentFees];
+
+
+    // ===================================================
+    // SEARCH
+    // ===================================================
+
+    const search =
+      this.searchTerm
+        .trim()
+        .toLowerCase();
+
+
+    if (search) {
+
+      result =
+        result.filter(
+          fee => {
+
+            const studentName =
+              fee.studentName
+                ?.toLowerCase() ?? '';
+
+            const rollNumber =
+              fee.rollNumber
+                ?.toLowerCase() ?? '';
+
+            const className =
+              fee.className
+                ?.toLowerCase() ?? '';
+
+            const sectionName =
+              fee.sectionName
+                ?.toLowerCase() ?? '';
+
+
+            return (
+              studentName.includes(search) ||
+              rollNumber.includes(search) ||
+              className.includes(search) ||
+              sectionName.includes(search)
+            );
+
+          }
+        );
+
+    }
+
+
+    // ===================================================
+    // STATUS FILTER
+    // ===================================================
+
+    if (this.statusFilter !== 'ALL') {
+
+      result =
+        result.filter(
+          fee =>
+            fee.status ===
+            this.statusFilter
+        );
+
+    }
+
+
+    // ===================================================
+    // FEE RANGE FILTER
+    // ===================================================
+
+    if (
+      this.feeRangeFilter !== 'ALL'
+    ) {
+
+      result =
+        result.filter(
+          fee => {
+
+            const amount =
+              Number(fee.payableAmount);
+
+
+            switch (
+            this.feeRangeFilter
+            ) {
+
+              case '0_10000':
+
+                return amount >= 0 &&
+                  amount < 10000;
+
+
+              case '10000_25000':
+
+                return amount >= 10000 &&
+                  amount < 25000;
+
+
+              case '25000_PLUS':
+
+                return amount >= 25000;
+
+
+              default:
+
+                return true;
+
+            }
+
+          }
+        );
+
+    }
+
+
+    // ===================================================
+    // SORT
+    // ===================================================
+
+    if (
+      this.sortField !== 'NONE'
+    ) {
+
+      result.sort(
+        (a, b) => {
+
+          let comparison = 0;
+
+
+          switch (
+          this.sortField
+          ) {
+
+            case 'STUDENT_NAME':
+
+              comparison =
+                (a.studentName ?? '')
+                  .localeCompare(
+                    b.studentName ?? '',
+                    undefined,
+                    {
+                      sensitivity: 'base'
+                    }
+                  );
+
+              break;
+
+
+            case 'PAYABLE_AMOUNT':
+
+              comparison =
+                Number(a.payableAmount) -
+                Number(b.payableAmount);
+
+              break;
+
+
+            case 'PAID_AMOUNT':
+
+              comparison =
+                Number(a.paidAmount) -
+                Number(b.paidAmount);
+
+              break;
+
+
+            case 'REMAINING_AMOUNT':
+
+              comparison =
+                Number(a.remainingAmount) -
+                Number(b.remainingAmount);
+
+              break;
+
+          }
+
+
+          return this.sortDirection === 'ASC'
+            ? comparison
+            : -comparison;
+
+        }
+      );
+
+    }
+
+
+    return result;
+
+  }
+
+
+  // =====================================================
+  // TOTAL PAYABLE
+  // =====================================================
 
   get totalPayable(): number {
 
-    return this.studentFees.reduce(
+    return this.filteredStudentFees.reduce(
       (total, fee) =>
         total + Number(fee.payableAmount),
       0
     );
+
   }
+
+
+  // =====================================================
+  // TOTAL PAID
+  // =====================================================
 
   get totalPaid(): number {
 
-    return this.studentFees.reduce(
+    return this.filteredStudentFees.reduce(
       (total, fee) =>
         total + Number(fee.paidAmount),
       0
     );
+
   }
+
+
+  // =====================================================
+  // TOTAL REMAINING
+  // =====================================================
 
   get totalRemaining(): number {
 
-    return this.studentFees.reduce(
+    return this.filteredStudentFees.reduce(
       (total, fee) =>
         total + Number(fee.remainingAmount),
       0
     );
+
   }
 
-  getStatusClass(status: string): string {
+
+  // =====================================================
+  // SEARCH CHANGE
+  // =====================================================
+
+  onSearchChange(): void {
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // STATUS CHANGE
+  // =====================================================
+
+  onStatusFilterChange(): void {
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // FEE RANGE CHANGE
+  // =====================================================
+
+  onFeeRangeChange(): void {
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // SORT CHANGE
+  // =====================================================
+
+  onSortChange(): void {
+
+    if (
+      this.sortField === 'NONE'
+    ) {
+
+      this.sortDirection = 'ASC';
+
+    }
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // SORT DIRECTION
+  // =====================================================
+
+  toggleSortDirection(): void {
+
+    if (
+      this.sortField === 'NONE'
+    ) {
+
+      return;
+
+    }
+
+    this.sortDirection =
+      this.sortDirection === 'ASC'
+        ? 'DESC'
+        : 'ASC';
+
+    this.cdr.detectChanges();
+
+  }
+
+
+  // =====================================================
+  // RESET FILTERS
+  // =====================================================
+
+  resetFilters(): void {
+
+    // Reset server-side filters
+    this.academicYearFilter = 'ALL';
+    this.classFilter = 'ALL';
+
+    // Reset client-side filters
+    this.searchTerm = '';
+    this.statusFilter = 'ALL';
+    this.feeRangeFilter = 'ALL';
+
+    // Reset sorting
+    this.sortField = 'NONE';
+    this.sortDirection = 'ASC';
+
+    // Show all classes
+    this.filterClassesByYear();
+
+    // Reload all student fees
+    this.loadStudentFees();
+
+  }
+
+
+  // =====================================================
+  // STATUS CLASS
+  // =====================================================
+
+  getStatusClass(
+    status: string
+  ): string {
 
     switch (status) {
 
@@ -349,26 +797,58 @@ export class StudentFeeList implements OnInit {
 
       default:
         return 'status-unpaid';
+
     }
+
   }
 
-  viewStudentFee(fee: StudentFee): void {
+
+  // =====================================================
+  // VIEW STUDENT FEE
+  // =====================================================
+
+  viewStudentFee(
+    fee: StudentFee
+  ): void {
+
+    this.closeActionMenu();
 
     this.router.navigate([
       '/admin/fees/student-fees',
       fee.id
     ]);
+
   }
 
-editStudentFee(fee: StudentFee): void {
-  this.router.navigate([
-    '/admin/fees/student-fees',
-    fee.id,
-    'edit'
-  ]);
-}
 
-  addPayment(fee: StudentFee): void {
+  // =====================================================
+  // EDIT STUDENT FEE
+  // =====================================================
+
+  editStudentFee(
+    fee: StudentFee
+  ): void {
+
+    this.closeActionMenu();
+
+    this.router.navigate([
+      '/admin/fees/student-fees',
+      fee.id,
+      'edit'
+    ]);
+
+  }
+
+
+  // =====================================================
+  // ADD PAYMENT
+  // =====================================================
+
+  addPayment(
+    fee: StudentFee
+  ): void {
+
+    this.closeActionMenu();
 
     if (fee.remainingAmount <= 0) {
       return;
@@ -379,13 +859,52 @@ editStudentFee(fee: StudentFee): void {
       fee.id,
       'payment'
     ]);
+
   }
 
-  viewReceipts(fee: StudentFee): void {
-  this.router.navigate([
-    '/admin/fees/student-fees',
-    fee.id,
-    'receipts'
-  ]);
-}
+
+  // =====================================================
+  // VIEW RECEIPTS
+  // =====================================================
+
+  viewReceipts(
+    fee: StudentFee
+  ): void {
+
+    this.closeActionMenu();
+
+    this.router.navigate([
+      '/admin/fees/student-fees',
+      fee.id,
+      'receipts'
+    ]);
+
+  }
+
+
+  // =====================================================
+  // ACTION MENU
+  // =====================================================
+
+  openActionMenuId: number | null = null;
+
+
+  toggleActionMenu(
+    feeId: number
+  ): void {
+
+    this.openActionMenuId =
+      this.openActionMenuId === feeId
+        ? null
+        : feeId;
+
+  }
+
+
+  closeActionMenu(): void {
+
+    this.openActionMenuId = null;
+
+  }
+
 }

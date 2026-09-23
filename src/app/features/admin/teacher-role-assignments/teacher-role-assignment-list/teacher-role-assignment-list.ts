@@ -28,7 +28,8 @@ import { ConfirmationDialogComponent } from '../../../../shared/components/confi
     FormsModule,
     TeacherRoleAssignmentForm,
     ConfirmationDialogComponent,
-    TeacherRoleAssignmentView
+    TeacherRoleAssignmentView,
+  
   ],
   templateUrl: './teacher-role-assignment-list.html',
   styleUrl: './teacher-role-assignment-list.scss'
@@ -42,6 +43,8 @@ export class TeacherRoleAssignmentList implements OnInit {
   private readonly router = inject(Router);
 
   private readonly cdr = inject(ChangeDetectorRef);
+
+  
 
   // =========================================================
   // DATA
@@ -551,4 +554,8 @@ editAssignment(
 
     return assignment.id;
   }
+
+  goBackToTeacherManagement(): void {
+  this.router.navigate(['/admin/teachers']);
+}
 }

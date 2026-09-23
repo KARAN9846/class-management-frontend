@@ -1,417 +1,237 @@
+/* =========================================================
+   TEACHER LIST PAGE
+========================================================= */
+
 .page {
   width: 100%;
-  height: calc(100vh - 110px);
+  padding: 0;
 
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  padding: 24px 8px 40px 24px;
-
-  background: #f8fafc;
+  background: transparent;
 
   box-sizing: border-box;
 }
-.page::-webkit-scrollbar {
-  width: 6px;
-}
 
-.page::-webkit-scrollbar-track {
-  background: transparent;
-}
 
-.page::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
+/* =========================================================
+   TEACHER DIRECTORY / FILTER BAR
+========================================================= */
 
-.page::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-.page-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:24px;
-}
-
-.page-header h1{
-margin:0;
-font-size:28px;
-font-weight:700;
-color:#111827;
-}
-
-.page-header p{
-margin:6px 0 0;
-color:#64748b;
-font-size:14px;
-}
-
-.add-btn{
-background:#2563eb;
-color:white;
-border:none;
-padding:12px 20px;
-border-radius:10px;
-font-size:14px;
-font-weight:600;
-cursor:pointer;
-transition:.2s;
-}
-
-.add-btn:hover{
-background:#1d4ed8;
-}
-
-.table-card{
-background:white;
-border-radius:16px;
-box-shadow:0 4px 20px rgba(0,0,0,.06);
-overflow:hidden;
-}
-
-.filter-area{
-padding:20px;
-border-bottom:1px solid #e5e7eb;
-}
-
-.pagination-area{
-padding:16px 20px;
-border-top:1px solid #e5e7eb;
-display:flex;
-justify-content:flex-end;
-}
-
-.error-state {
-  margin: 16px 20px;
-  padding: 14px 16px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
-  color: #dc2626;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* STATUS CONFIRMATION MODAL */
-
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-
+.filter-area {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 
-  z-index: 1000;
+  gap: 24px;
 
-  padding: 20px;
+  width: 100%;
+  padding: 16px 18px;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  box-sizing: border-box;
 }
 
-.status-modal {
+.directory-info {
+  flex: 0 0 auto;
+  min-width: 180px;
+}
+
+.directory-info h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+.directory-info p {
+  margin: 3px 0 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   SEARCH + ADD TEACHER
+========================================================= */
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-controls app-search-input {
+  display: block;
+
   width: 100%;
   max-width: 420px;
 
-  background: #ffffff;
-  border-radius: 16px;
-
-  padding: 28px;
-
-  text-align: center;
-
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
-
-  animation: modal-enter 0.18s ease-out;
+  min-width: 180px;
 }
 
-.modal-icon {
-  width: 48px;
-  height: 48px;
 
-  margin: 0 auto 16px;
+/* =========================================================
+   ADD TEACHER BUTTON
+========================================================= */
 
-  display: flex;
+.add-btn {
+  display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
+  gap: 7px;
 
-  background: #eff6ff;
-  color: #2563eb;
+  flex: 0 0 auto;
 
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.status-modal h2 {
-  margin: 0;
-
-  font-size: 20px;
-  font-weight: 700;
-
-  color: #111827;
-}
-
-.status-modal p {
-  margin: 10px 0 24px;
-
-  font-size: 14px;
-  line-height: 1.6;
-
-  color: #64748b;
-}
-
-.status-modal p strong {
-  color: #111827;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.cancel-btn,
-.confirm-btn {
+  min-width: 132px;
   height: 40px;
 
-  padding: 0 18px;
+  padding: 0 16px;
 
-  border-radius: 8px;
+  border: 1px solid #2563eb;
+  border-radius: 9px;
 
-  font-size: 13px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.cancel-btn {
-  background: #ffffff;
-  color: #475569;
-
-  border: 1px solid #e2e8f0;
-}
-
-.cancel-btn:hover {
-  background: #f8fafc;
-}
-
-.confirm-btn {
   background: #2563eb;
   color: #ffffff;
 
-  border: 1px solid #2563eb;
-}
-
-.confirm-btn:hover {
-  background: #1d4ed8;
-}
-
-@keyframes modal-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@media (max-width: 500px) {
-
-  .status-modal {
-    padding: 22px;
-  }
-
-  .modal-actions {
-    flex-direction: column-reverse;
-  }
-
-  .cancel-btn,
-  .confirm-btn {
-    width: 100%;
-  }
-}
-
-/* =========================================================
-   DELETE CONFIRMATION MODAL
-========================================================= */
-
-.delete-modal {
-  width: 100%;
-  max-width: 460px;
-
-  background: #ffffff;
-  border-radius: 16px;
-
-  padding: 28px;
-
-  text-align: center;
-
-  box-sizing: border-box;
-
-  box-shadow:
-    0 20px 50px rgba(15, 23, 42, 0.20);
-
-  animation: modal-enter 0.18s ease-out;
-}
-
-
-/* =========================================================
-   DELETE ICON
-========================================================= */
-
-.delete-modal-icon {
-  width: 52px;
-  height: 52px;
-
-  margin: 0 auto 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #fef2f2;
-  color: #dc2626;
-
-  border: 1px solid #fecaca;
-
-  font-size: 24px;
-  font-weight: 700;
-}
-
-
-/* =========================================================
-   DELETE TITLE
-========================================================= */
-
-.delete-modal h2 {
-  margin: 0;
-
-  font-size: 21px;
-  font-weight: 700;
-
-  color: #111827;
-}
-
-
-/* =========================================================
-   DELETE MESSAGE
-========================================================= */
-
-.delete-modal p {
-  margin: 12px 0 20px;
-
-  font-size: 14px;
-  line-height: 1.6;
-
-  color: #64748b;
-}
-
-.delete-modal p strong {
-  color: #111827;
-}
-
-
-/* =========================================================
-   TEACHER INFORMATION
-========================================================= */
-
-.delete-teacher-info {
-  display: flex;
-  flex-direction: column;
-
-  gap: 10px;
-
-  margin: 0 0 24px;
-
-  padding: 14px 16px;
-
-  background: #f8fafc;
-
-  border: 1px solid #e5e7eb;
-
-  border-radius: 10px;
-
-  text-align: left;
-}
-
-.delete-teacher-info > div {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  gap: 16px;
-}
-
-.delete-teacher-info span {
-  font-size: 12px;
-
-  color: #64748b;
-}
-
-.delete-teacher-info strong {
   font-size: 13px;
-
-  color: #111827;
-
-  text-align: right;
-
-  word-break: break-word;
-}
-
-
-/* =========================================================
-   DELETE BUTTON
-========================================================= */
-
-.delete-confirm-btn {
-  height: 40px;
-
-  padding: 0 18px;
-
-  border-radius: 8px;
-
-  border: 1px solid #dc2626;
-
-  background: #dc2626;
-
-  color: #ffffff;
-
-  font-size: 13px;
-
   font-weight: 600;
+
+  line-height: 1;
 
   cursor: pointer;
 
-  transition: 0.2s;
+  white-space: nowrap;
+
+  box-sizing: border-box;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
 
-.delete-confirm-btn:hover {
-  background: #b91c1c;
+.add-btn:hover {
+  background: #1d4ed8;
 
-  border-color: #b91c1c;
+  border-color: #1d4ed8;
+
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.18);
+
+  transform: translateY(-1px);
 }
 
-.delete-confirm-btn:disabled {
-  opacity: 0.6;
+.add-btn:active {
+  transform: translateY(0);
+}
 
-  cursor: not-allowed;
+.add-btn:focus-visible {
+  outline: 2px solid #93c5fd;
+
+  outline-offset: 2px;
+}
+
+.add-icon {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 17px;
+  font-weight: 500;
+
+  line-height: 1;
 }
 
 
 /* =========================================================
-   SUCCESS MESSAGE
+   TABLE CARD
+========================================================= */
+
+.table-card {
+  width: 100%;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.04);
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.pagination-area {
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  padding: 16px 20px;
+
+  border-top: 1px solid #e2e8f0;
+
+  background: #ffffff;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   ERROR STATE
+========================================================= */
+
+.error-state {
+  margin: 16px 20px;
+
+  padding: 14px 16px;
+
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+
+  border-radius: 8px;
+
+  color: #dc2626;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  line-height: 1.5;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   SUCCESS STATE
 ========================================================= */
 
 .success-state {
@@ -428,19 +248,564 @@ justify-content:flex-end;
   color: #15803d;
 
   font-size: 14px;
-
   font-weight: 500;
+
+  line-height: 1.5;
+
+  box-sizing: border-box;
 }
 
 
 /* =========================================================
-   RESPONSIVE DELETE MODAL
+   STATUS CONFIRMATION MODAL
 ========================================================= */
 
-@media (max-width: 500px) {
+.modal-backdrop {
+  position: fixed;
 
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(15, 23, 42, 0.45);
+
+  box-sizing: border-box;
+}
+
+.status-modal {
+  width: 100%;
+  max-width: 420px;
+
+  padding: 28px;
+
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  text-align: center;
+
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.18);
+
+  box-sizing: border-box;
+
+  animation: modal-enter 0.18s ease-out;
+}
+
+.modal-icon {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  margin: 0 auto 16px;
+
+  background: #eff6ff;
+
+  border-radius: 50%;
+
+  color: #2563eb;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.status-modal h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  line-height: 1.35;
+}
+
+.status-modal p {
+  margin: 10px 0 24px;
+
+  color: #64748b;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.status-modal p strong {
+  color: #111827;
+}
+
+
+/* =========================================================
+   MODAL ACTIONS
+========================================================= */
+
+.modal-actions {
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+}
+
+.cancel-btn,
+.confirm-btn {
+  min-height: 40px;
+
+  padding: 0 18px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.cancel-btn {
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  color: #475569;
+}
+
+.cancel-btn:hover {
+  background: #f8fafc;
+
+  border-color: #cbd5e1;
+}
+
+.confirm-btn {
+  background: #2563eb;
+
+  border: 1px solid #2563eb;
+
+  color: #ffffff;
+}
+
+.confirm-btn:hover {
+  background: #1d4ed8;
+
+  border-color: #1d4ed8;
+}
+
+.cancel-btn:disabled,
+.confirm-btn:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   DELETE CONFIRMATION MODAL
+========================================================= */
+
+.delete-modal {
+  width: 100%;
+  max-width: 460px;
+
+  padding: 28px;
+
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  text-align: center;
+
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.20);
+
+  box-sizing: border-box;
+
+  animation: modal-enter 0.18s ease-out;
+}
+
+
+/* =========================================================
+   DELETE ICON
+========================================================= */
+
+.delete-modal-icon {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  margin: 0 auto 16px;
+
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+
+  border-radius: 50%;
+
+  color: #dc2626;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   DELETE TITLE
+========================================================= */
+
+.delete-modal h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 21px;
+  font-weight: 700;
+
+  line-height: 1.35;
+}
+
+
+/* =========================================================
+   DELETE MESSAGE
+========================================================= */
+
+.delete-modal p {
+  margin: 12px 0 20px;
+
+  color: #64748b;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+.delete-modal p strong {
+  color: #111827;
+}
+
+
+/* =========================================================
+   DELETE TEACHER INFORMATION
+========================================================= */
+
+.delete-teacher-info {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin: 0 0 24px;
+
+  padding: 14px 16px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 10px;
+
+  text-align: left;
+
+  box-sizing: border-box;
+}
+
+.delete-teacher-info > div {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.delete-teacher-info span {
+  color: #64748b;
+
+  font-size: 12px;
+
+  line-height: 1.4;
+}
+
+.delete-teacher-info strong {
+  color: #111827;
+
+  font-size: 13px;
+
+  line-height: 1.4;
+
+  text-align: right;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   DELETE BUTTON
+========================================================= */
+
+.delete-confirm-btn {
+  min-height: 40px;
+
+  padding: 0 18px;
+
+  border: 1px solid #dc2626;
+
+  border-radius: 8px;
+
+  background: #dc2626;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.delete-confirm-btn:hover {
+  background: #b91c1c;
+
+  border-color: #b91c1c;
+}
+
+.delete-confirm-btn:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   MODAL ANIMATION
+========================================================= */
+
+@keyframes modal-enter {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(8px)
+      scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .filter-area {
+    gap: 18px;
+  }
+
+  .directory-info {
+    min-width: 160px;
+  }
+
+  .filter-controls {
+    gap: 8px;
+  }
+
+  .filter-controls app-search-input {
+    max-width: 360px;
+  }
+
+  .add-btn {
+    min-width: 124px;
+
+    padding: 0 14px;
+  }
+}
+
+
+/* =========================================================
+   TABLET / SMALL LAPTOP
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .filter-area {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 14px;
+  }
+
+  .directory-info {
+    width: 100%;
+  }
+
+  .filter-controls {
+    width: 100%;
+
+    justify-content: flex-start;
+  }
+
+  .filter-controls app-search-input {
+    flex: 1;
+
+    max-width: none;
+  }
+
+  .add-btn {
+    flex-shrink: 0;
+  }
+
+  .pagination-area {
+    padding: 14px 16px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .filter-area {
+    padding: 14px;
+  }
+
+  .filter-controls {
+    align-items: stretch;
+
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .filter-controls app-search-input {
+    width: 100%;
+
+    max-width: none;
+  }
+
+  .add-btn {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .pagination-area {
+    justify-content: center;
+
+    padding: 12px;
+  }
+
+  .error-state,
+  .success-state {
+    margin: 12px;
+
+    padding: 12px 14px;
+
+    font-size: 13px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .filter-area {
+    padding: 12px;
+  }
+
+  .directory-info h2 {
+    font-size: 14px;
+  }
+
+  .directory-info p {
+    font-size: 11px;
+  }
+
+  .table-card {
+    border-radius: 10px;
+  }
+
+  .pagination-area {
+    padding: 10px;
+  }
+
+  .status-modal,
   .delete-modal {
+    max-width: none;
+
     padding: 22px;
+
+    border-radius: 14px;
+  }
+
+  .modal-backdrop {
+    padding: 14px;
+  }
+
+  .status-modal h2,
+  .delete-modal h2 {
+    font-size: 18px;
+  }
+
+  .status-modal p,
+  .delete-modal p {
+    font-size: 13px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+
+    width: 100%;
+  }
+
+  .cancel-btn,
+  .confirm-btn,
+  .delete-confirm-btn {
+    width: 100%;
+  }
+
+  .delete-teacher-info {
+    padding: 12px 14px;
   }
 
   .delete-teacher-info > div {
@@ -454,65 +819,39 @@ justify-content:flex-end;
   .delete-teacher-info strong {
     text-align: left;
   }
-
-  .delete-modal .modal-actions {
-    flex-direction: column-reverse;
-  }
-
-  .delete-modal .cancel-btn,
-  .delete-modal .delete-confirm-btn {
-    width: 100%;
-  }
-
 }
 
-@media (max-width: 700px) {
-  .page {
-    padding: 18px 6px 30px 18px;
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 360px) {
+
+  .filter-area {
+    padding: 10px;
   }
 
-  .page-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 15px;
+  .directory-info h2 {
+    font-size: 13px;
+  }
+
+  .directory-info p {
+    font-size: 10px;
   }
 
   .add-btn {
-    width: 100%;
+    height: 38px;
+
+    font-size: 12px;
   }
 
-  .table-card {
-    border-radius: 10px;
+  .add-icon {
+    font-size: 16px;
   }
 
-  .filter-area {
-    padding: 16px;
-  }
-
-  .pagination-area {
-    padding: 14px 16px;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .page {
-    padding: 14px 4px 30px 14px;
-  }
-
-  .page-header h1 {
-    font-size: 22px;
-  }
-
-  .table-card {
-    border-radius: 10px;
-  }
-
-  .filter-area {
-    padding: 12px;
-  }
-
-  .pagination-area {
-    padding: 12px;
+  .status-modal,
+  .delete-modal {
+    padding: 18px;
   }
 }

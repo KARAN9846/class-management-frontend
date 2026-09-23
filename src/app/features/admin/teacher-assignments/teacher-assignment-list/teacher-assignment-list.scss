@@ -810,6 +810,42 @@ tbody tr:hover {
   margin-top: 22px;
 }
 
+.back-to-management-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 16px;
+  padding: 8px 14px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #475569;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.back-to-management-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.back-to-management-button:focus-visible {
+  outline: 2px solid #94a3b8;
+  outline-offset: 2px;
+}
+
 
 // =========================================================
 // ANIMATION

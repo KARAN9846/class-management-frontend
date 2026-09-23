@@ -1,0 +1,134 @@
+<main class="teacher-management-page">
+
+  <header class="page-header">
+
+    <div class="page-title">
+      <div class="breadcrumb">
+        <span>Management</span>
+        <span>/</span>
+        <strong>Teachers</strong>
+      </div>
+
+      <h1>Teacher Management</h1>
+
+      <p>
+        Manage teachers, assignments, roles and access.
+      </p>
+    </div>
+
+    <div class="teacher-configuration">
+
+      <div class="configuration-label">
+        <span class="configuration-title">
+          Teacher Configuration
+        </span>
+
+        <span class="configuration-description">
+          Manage roles and teacher access
+        </span>
+      </div>
+
+      <div class="configuration-actions">
+
+        <button
+          type="button"
+          class="configuration-button"
+          (click)="openTeacherRoles()">
+
+          <span class="configuration-icon">♙</span>
+
+          <span class="configuration-button-content">
+            <span class="configuration-button-text">
+              Teacher Roles
+            </span>
+
+            <span class="configuration-button-description">
+              Manage roles and permissions
+            </span>
+          </span>
+
+          <span class="configuration-arrow">
+            →
+          </span>
+
+        </button>
+
+        <button
+          type="button"
+          class="configuration-button"
+          (click)="openRoleAssignments()">
+
+          <span class="configuration-icon">⇄</span>
+
+          <span class="configuration-button-content">
+            <span class="configuration-button-text">
+              Role Assignments
+            </span>
+
+            <span class="configuration-button-description">
+              Assign roles to teachers
+            </span>
+          </span>
+
+          <span class="configuration-arrow">
+            →
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <section class="teacher-operations">
+
+    <div class="operations-header">
+
+      <div class="operations-title">
+        <span class="operations-section-label">
+          Teacher Operations
+        </span>
+
+        <span class="operations-description">
+          Manage class and subject assignments
+        </span>
+      </div>
+
+      <button
+        type="button"
+        class="assignment-button"
+        (click)="openTeacherAssignments()">
+
+        <span class="assignment-icon">≡</span>
+
+        <span class="assignment-button-content">
+          <span class="assignment-button-title">
+            Teacher Assignments
+          </span>
+
+          <span class="assignment-button-description">
+            Manage teacher class and subject assignments
+          </span>
+        </span>
+
+        <span class="assignment-arrow">
+          →
+        </span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <section class="teacher-list-section">
+
+    <app-teacher-list></app-teacher-list>
+
+  </section>
+
+</main>

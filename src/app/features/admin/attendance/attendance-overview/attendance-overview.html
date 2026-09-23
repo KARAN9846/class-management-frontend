@@ -106,6 +106,17 @@
     [showActions]="false">
   </app-data-table>
 
+  @if (filteredAttendance.length > 0) {
+
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalItems]="filteredAttendance.length"
+      [pageSize]="pageSize"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+
+  }
+
 }
 
   </div>

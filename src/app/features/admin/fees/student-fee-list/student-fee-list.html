@@ -1,20 +1,25 @@
 <main class="student-fee-page">
 
-  <div class="page-header">
-    <div>
-      <h1>Student Fees</h1>
-      <p>Manage student fees and payment status.</p>
-    </div>
-  </div>
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
 
   @if (errorMessage) {
+
     <div class="error-message">
       {{ errorMessage }}
     </div>
+
   }
 
-  <!-- FILTERS -->
+
+  <!-- =====================================================
+       FILTERS
+  ====================================================== -->
+
   <section class="filter-card">
+
+    <!-- ACADEMIC YEAR -->
 
     <div class="filter-group">
 
@@ -33,14 +38,19 @@
         </option>
 
         @for (year of academicYears; track year.id) {
+
           <option [ngValue]="year.id">
             {{ year.name }}
           </option>
+
         }
 
       </select>
 
     </div>
+
+
+    <!-- CLASS -->
 
     <div class="filter-group">
 
@@ -59,51 +69,261 @@
         </option>
 
         @for (item of classes; track item.id) {
+
           <option [ngValue]="item.id">
             {{ item.name }}
           </option>
+
         }
 
       </select>
 
     </div>
 
+
+    <!-- SEARCH -->
+
+    <div class="filter-group filter-group-search">
+
+      <label for="feeSearch">
+        Search
+      </label>
+
+      <input
+        id="feeSearch"
+        type="text"
+        class="filter-input"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        placeholder="Student, roll no., class or section">
+
+
+    </div>
+
+
+    <!-- STATUS -->
+
+    <div class="filter-group">
+
+      <label for="feeStatus">
+        Fee Status
+      </label>
+
+      <select
+        id="feeStatus"
+        class="filter-select"
+        [(ngModel)]="statusFilter"
+        (change)="onStatusFilterChange()">
+
+        <option value="ALL">
+          All Status
+        </option>
+
+        <option value="PAID">
+          Paid
+        </option>
+
+        <option value="REMAINING">
+          Remaining
+        </option>
+
+        <option value="UNPAID">
+          Unpaid
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- FEE RANGE -->
+
+    <div class="filter-group">
+
+      <label for="feeRange">
+        Fee Range
+      </label>
+
+      <select
+        id="feeRange"
+        class="filter-select"
+        [(ngModel)]="feeRangeFilter"
+        (change)="onFeeRangeChange()">
+
+        <option value="ALL">
+          All Amounts
+        </option>
+
+        <option value="0_10000">
+          Below ₹10,000
+        </option>
+
+        <option value="10000_25000">
+          ₹10,000 – ₹25,000
+        </option>
+
+        <option value="25000_PLUS">
+          ₹25,000+
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- SORT -->
+
+    <div class="filter-group">
+
+      <label for="feeSort">
+        Sort By
+      </label>
+
+      <select
+        id="feeSort"
+        class="filter-select"
+        [(ngModel)]="sortField"
+        (change)="onSortChange()">
+
+        <option value="NONE">
+          Default
+        </option>
+
+        <option value="STUDENT_NAME">
+          Student Name
+        </option>
+
+        <option value="PAYABLE_AMOUNT">
+          Payable Amount
+        </option>
+
+        <option value="PAID_AMOUNT">
+          Paid Amount
+        </option>
+
+        <option value="REMAINING_AMOUNT">
+          Remaining Amount
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- SORT DIRECTION -->
+
+    <button
+      type="button"
+      class="sort-direction-button"
+      [disabled]="sortField === 'NONE'"
+      (click)="toggleSortDirection()">
+
+      {{ sortDirection === 'ASC' ? '↑ Ascending' : '↓ Descending' }}
+
+    </button>
+
+
+    <!-- RESET -->
+
+    <button
+      type="button"
+      class="reset-filter-button"
+      (click)="resetFilters()">
+
+      Reset Filters
+
+    </button>
+
   </section>
 
-  <!-- SUMMARY -->
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+
   <section class="summary-grid">
 
     <div class="summary-card">
-      <span>Total Students</span>
-      <strong>{{ studentFees.length }}</strong>
+
+      <span>
+        Total Students
+      </span>
+
+      <strong>
+        {{ filteredStudentFees.length }}
+      </strong>
+
     </div>
 
-    <div class="summary-card">
-      <span>Total Payable</span>
-      <strong>₹{{ totalPayable | number:'1.0-2' }}</strong>
-    </div>
 
     <div class="summary-card">
-      <span>Total Paid</span>
-      <strong>₹{{ totalPaid | number:'1.0-2' }}</strong>
+
+      <span>
+        Total Payable
+      </span>
+
+      <strong>
+        ₹{{ totalPayable | number:'1.0-2' }}
+      </strong>
+
     </div>
 
+
     <div class="summary-card">
-      <span>Total Remaining</span>
-      <strong>₹{{ totalRemaining | number:'1.0-2' }}</strong>
+
+      <span>
+        Total Paid
+      </span>
+
+      <strong>
+        ₹{{ totalPaid | number:'1.0-2' }}
+      </strong>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <span>
+        Total Remaining
+      </span>
+
+      <strong>
+        ₹{{ totalRemaining | number:'1.0-2' }}
+      </strong>
+
     </div>
 
   </section>
 
-  <!-- TABLE -->
+
+  <!-- =====================================================
+       TABLE
+  ====================================================== -->
+
   <section class="table-card">
 
     <div class="table-header">
+
       <div>
-        <h2>Student Fee Records</h2>
-        <span>{{ studentFees.length }} records</span>
+
+        <h2>
+          Student Fee Records
+        </h2>
+
+        <span>
+          {{ filteredStudentFees.length }}
+          {{
+            filteredStudentFees.length === 1
+              ? 'record'
+              : 'records'
+          }}
+        </span>
+
       </div>
+
     </div>
+
 
     @if (loading) {
 
@@ -111,10 +331,31 @@
         Loading student fees...
       </div>
 
-    } @else if (studentFees.length === 0) {
+    } @else if (filteredStudentFees.length === 0) {
 
       <div class="empty-state">
-        No student fee records found.
+
+        <div>
+          No student fee records found.
+        </div>
+
+        @if (
+          searchTerm ||
+          statusFilter !== 'ALL' ||
+          feeRangeFilter !== 'ALL'
+        ) {
+
+          <button
+            type="button"
+            class="empty-reset-button"
+            (click)="resetFilters()">
+
+            Clear Filters
+
+          </button>
+
+        }
+
       </div>
 
     } @else {
@@ -124,23 +365,60 @@
         <table>
 
           <thead>
+
             <tr>
-              <th>Roll No.</th>
-              <th>Student</th>
-              <th>Class</th>
-              <th>Original</th>
-              <th>Discount</th>
-              <th>Payable</th>
-              <th>Paid</th>
-              <th>Remaining</th>
-              <th>Status</th>
-              <th>Action</th>
+
+              <th>
+                Roll No.
+              </th>
+
+              <th>
+                Student
+              </th>
+
+              <th>
+                Class
+              </th>
+
+              <th>
+                Original
+              </th>
+
+              <th>
+                Discount
+              </th>
+
+              <th>
+                Payable
+              </th>
+
+              <th>
+                Paid
+              </th>
+
+              <th>
+                Remaining
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Action
+              </th>
+
             </tr>
+
           </thead>
+
 
           <tbody>
 
-            @for (fee of studentFees; track fee.id) {
+            @for (
+              fee of filteredStudentFees;
+              track fee.id
+            ) {
 
               <tr>
 
@@ -148,35 +426,45 @@
                   {{ fee.rollNumber }}
                 </td>
 
+
                 <td>
+
                   <div class="student-name">
                     {{ fee.studentName }}
                   </div>
+
                 </td>
+
 
                 <td>
                   {{ fee.className }} - {{ fee.sectionName }}
                 </td>
 
+
                 <td>
                   ₹{{ fee.originalAmount | number:'1.0-2' }}
                 </td>
+
 
                 <td>
                   ₹{{ fee.discountAmount | number:'1.0-2' }}
                 </td>
 
+
                 <td class="amount-strong">
                   ₹{{ fee.payableAmount | number:'1.0-2' }}
                 </td>
+
 
                 <td>
                   ₹{{ fee.paidAmount | number:'1.0-2' }}
                 </td>
 
+
                 <td>
                   ₹{{ fee.remainingAmount | number:'1.0-2' }}
                 </td>
+
 
                 <td>
 
@@ -190,38 +478,91 @@
 
                 </td>
 
-<td class="action-cell">
-  <div class="action-buttons">
 
-    <button
-      type="button"
-      class="action-button btn-view"
-      (click)="viewStudentFee(fee)">
-      View
-    </button>
+                <!-- ACTIONS -->
 
-@if (fee.remainingAmount > 0) {
-  <button
-    type="button"
-    class="action-button btn-add"
-    (click)="addPayment(fee)">
-    Add Payment
-  </button>
-} @else {
-  <span class="action-button action-placeholder">
-    —
-  </span>
-}
+                <td class="action-cell">
 
-    <button
-      type="button"
-      class="action-button btn-receipt"
-      (click)="viewReceipts(fee)">
-      Receipt
-    </button>
+                  <div class="action-menu">
 
-  </div>
-</td>
+                    <button
+                      type="button"
+                      class="action-menu-trigger"
+                      aria-label="Fee actions"
+                      title="Actions"
+                      (click)="toggleActionMenu(fee.id)">
+
+                      <span>⋮</span>
+
+                    </button>
+
+
+                    @if (
+                      openActionMenuId === fee.id
+                    ) {
+
+                      <div class="action-menu-dropdown">
+
+                        <button
+                          type="button"
+                          class="menu-item"
+                          (click)="viewStudentFee(fee)">
+
+                          <span class="menu-icon">
+                            ↗
+                          </span>
+
+                          <span>
+                            View
+                          </span>
+
+                        </button>
+
+
+                        @if (
+                          fee.remainingAmount > 0
+                        ) {
+
+                          <button
+                            type="button"
+                            class="menu-item"
+                            (click)="addPayment(fee)">
+
+                            <span class="menu-icon">
+                              ₹
+                            </span>
+
+                            <span>
+                              Add Payment
+                            </span>
+
+                          </button>
+
+                        }
+
+
+                        <button
+                          type="button"
+                          class="menu-item"
+                          (click)="viewReceipts(fee)">
+
+                          <span class="menu-icon">
+                            ▤
+                          </span>
+
+                          <span>
+                            Receipts
+                          </span>
+
+                        </button>
+
+                      </div>
+
+                    }
+
+                  </div>
+
+                </td>
 
               </tr>
 

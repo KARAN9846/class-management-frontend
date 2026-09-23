@@ -553,4 +553,7 @@ readonly router = inject(Router);
 
   }
 
+  goBackToTeacherManagement(): void {
+  this.router.navigate(['/admin/teachers']);
+}
 }

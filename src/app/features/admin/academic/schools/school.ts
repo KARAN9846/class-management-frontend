@@ -18,6 +18,9 @@ import {
   UpdateSchoolRequest
 } from './school.model';
 
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 import { SchoolService } from './services/school.service';
 
 @Component({
@@ -60,6 +63,8 @@ export class SchoolComponent implements OnInit {
   searchTerm = '';
 
   statusFilter: 'ALL' | 'ACTIVE' | 'INACTIVE' = 'ALL';
+
+  sortBy: 'NAME_ASC' | 'NAME_DESC' | 'CODE_ASC' | 'CODE_DESC' = 'NAME_ASC';
 
   showForm = false;
 
@@ -135,31 +140,152 @@ export class SchoolComponent implements OnInit {
 
   /* FILTER */
 
-  get filteredSchools(): School[] {
+get filteredSchools(): School[] {
 
-    return this.schools.filter(school => {
+  const search = this.searchTerm
+    .toLowerCase()
+    .trim();
 
-      const search = this.searchTerm
-        .toLowerCase()
-        .trim();
+  const filtered = this.schools.filter(school => {
 
-      const searchMatch =
-        !search ||
-        school.name.toLowerCase().includes(search) ||
-        (school.code ?? '').toLowerCase().includes(search) ||
-        (school.email ?? '').toLowerCase().includes(search) ||
-        (school.phone ?? '').toLowerCase().includes(search);
+    const searchMatch =
+      !search ||
+      school.name.toLowerCase().includes(search) ||
+      (school.code ?? '').toLowerCase().includes(search) ||
+      (school.email ?? '').toLowerCase().includes(search) ||
+      (school.phone ?? '').toLowerCase().includes(search);
 
-      const status =
-        school.isActive ? 'ACTIVE' : 'INACTIVE';
+    const status =
+      school.isActive ? 'ACTIVE' : 'INACTIVE';
 
-      const statusMatch =
-        this.statusFilter === 'ALL' ||
-        status === this.statusFilter;
+    const statusMatch =
+      this.statusFilter === 'ALL' ||
+      status === this.statusFilter;
 
-      return searchMatch && statusMatch;
+    return searchMatch && statusMatch;
+  });
+
+  return [...filtered].sort((a, b) => {
+
+    switch (this.sortBy) {
+
+      case 'NAME_DESC':
+        return b.name.localeCompare(a.name);
+
+      case 'CODE_ASC':
+        return (a.code ?? '').localeCompare(b.code ?? '');
+
+      case 'CODE_DESC':
+        return (b.code ?? '').localeCompare(a.code ?? '');
+
+      case 'NAME_ASC':
+      default:
+        return a.name.localeCompare(b.name);
+    }
+  });
+}
+
+  /* DOWNLOAD PDF */
+
+  downloadSchoolsPdf(): void {
+
+    const schools = this.filteredSchools;
+
+    if (!schools.length) {
+      return;
+    }
+
+    const doc = new jsPDF('landscape');
+
+    // Title
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('School List', 14, 18);
+
+    // Generated date
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+
+    doc.text(
+      `Generated on: ${new Date().toLocaleDateString('en-IN')}`,
+      14,
+      25
+    );
+
+    // Active filters
+    const filterText = [
+      this.searchTerm
+        ? `Search: ${this.searchTerm}`
+        : null,
+      this.statusFilter !== 'ALL'
+        ? `Status: ${this.statusFilter}`
+        : null
+    ]
+      .filter(Boolean)
+      .join(' | ');
+
+    if (filterText) {
+      doc.text(filterText, 14, 31);
+    }
+
+    // Table
+    autoTable(doc, {
+      startY: filterText ? 37 : 32,
+
+      head: [[
+        'School Name',
+        'Code',
+        'Address',
+        'Phone',
+        'Email',
+        'Status'
+      ]],
+
+      body: schools.map(school => [
+        school.name,
+        school.code ?? '-',
+        school.address ?? '-',
+        school.phone ?? '-',
+        school.email ?? '-',
+        school.isActive ? 'Active' : 'Inactive'
+      ]),
+
+      theme: 'grid',
+
+      styles: {
+        fontSize: 8,
+        cellPadding: 4
+      },
+
+      headStyles: {
+        fontStyle: 'bold'
+      },
+
+      alternateRowStyles: {
+        cellPadding: 4
+      },
+
+      margin: {
+        left: 14,
+        right: 14
+      }
     });
+
+    // Download
+    doc.save(
+      `schools-${this.getDownloadDate()}.pdf`
+    );
   }
+
+
+  private getDownloadDate(): string {
+
+    return new Date()
+      .toISOString()
+      .split('T')[0];
+  }
+
+
 
   /* TABLE ACTION */
 

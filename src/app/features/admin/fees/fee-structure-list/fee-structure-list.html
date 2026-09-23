@@ -1,6 +1,25 @@
 <div class="fee-structure-page">
 
   <!-- =====================================================
+       PAGE NAVIGATION
+  ====================================================== -->
+
+  <div class="page-navigation">
+
+    <button
+      type="button"
+      class="back-button"
+      (click)="goBackToFeeManagement()">
+
+      <span>←</span>
+      <span>Back to Fee Management</span>
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
        PAGE HEADER
   ====================================================== -->
 
@@ -77,7 +96,6 @@
 
   <section class="fee-card">
 
-
     <!-- ===================================================
          CARD HEADER
     ===================================================== -->
@@ -124,7 +142,6 @@
 
     <div class="filter-bar">
 
-
       <!-- ACADEMIC YEAR -->
 
       <div class="filter-group">
@@ -139,7 +156,9 @@
           [(ngModel)]="academicYearFilter"
           (change)="onAcademicYearChange()">
 
-<option [ngValue]="'ALL'">All Academic Years</option>
+          <option [ngValue]="'ALL'">
+            All Academic Years
+          </option>
 
           @for (
             year of academicYears;
@@ -187,7 +206,6 @@
 
       </div>
 
-
     </div>
 
 
@@ -208,8 +226,78 @@
 
     </div>
 
-
   </section>
 
-
 </div>
+
+
+<!-- =====================================================
+     CREATE FEE STRUCTURE MODAL
+====================================================== -->
+
+@if (isCreateModalOpen) {
+
+  <div
+    class="fee-modal-backdrop"
+    (click)="closeCreateModal()">
+
+    <div
+      class="fee-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="createFeeStructureTitle"
+      (click)="$event.stopPropagation()">
+
+
+      <!-- =================================================
+           MODAL HEADER
+      ================================================== -->
+
+      <div class="fee-modal-header">
+
+        <div>
+
+          <h2 id="createFeeStructureTitle">
+            Create Fee Structure
+          </h2>
+
+          <p>
+            Set the fee amount for a class and academic year.
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="fee-modal-close"
+          aria-label="Close"
+          title="Close"
+          (click)="closeCreateModal()">
+
+          ×
+
+        </button>
+
+      </div>
+
+
+      <!-- =================================================
+           MODAL BODY
+      ================================================== -->
+
+      <div class="fee-modal-body">
+
+        <app-fee-structure-create
+          [modal]="true"
+          (created)="onFeeStructureCreated()"
+          (cancelled)="closeCreateModal()">
+        </app-fee-structure-create>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

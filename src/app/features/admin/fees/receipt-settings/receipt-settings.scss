@@ -356,6 +356,44 @@
   animation: spin 0.8s linear infinite;
 }
 
+.page-navigation {
+  margin-bottom: 16px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 8px 12px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #475569;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.back-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.back-button span:first-child {
+  font-size: 16px;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

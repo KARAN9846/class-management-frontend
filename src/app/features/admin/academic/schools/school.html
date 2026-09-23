@@ -9,7 +9,7 @@
   </app-page-header>
 
 
-  <!-- FILTERS -->
+    <!-- FILTERS -->
 
   <div class="filter-card">
 
@@ -27,6 +27,34 @@
       <option value="INACTIVE">Inactive</option>
 
     </select>
+
+    <select
+  class="filter-select"
+  [(ngModel)]="sortBy">
+
+  <option value="NAME_ASC">Name A → Z</option>
+  <option value="NAME_DESC">Name Z → A</option>
+  <option value="CODE_ASC">Code A → Z</option>
+  <option value="CODE_DESC">Code Z → A</option>
+
+</select>
+
+
+    <!-- DOWNLOAD -->
+
+<button
+  type="button"
+  class="download-button"
+  [disabled]="filteredSchools.length === 0"
+  (click)="downloadSchoolsPdf()">
+
+  <span class="download-icon">
+    ↓
+  </span>
+
+  Download PDF
+
+</button>
 
   </div>
 

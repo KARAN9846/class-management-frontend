@@ -347,6 +347,202 @@
   border-radius: 10px;
 }
 
+.page-navigation {
+  margin-bottom: 16px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 8px 12px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #475569;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.back-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.back-button span:first-child {
+  font-size: 16px;
+}
+
+
+/* =====================================================
+   CREATE FEE STRUCTURE MODAL
+===================================================== */
+
+.fee-modal-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(15, 23, 42, 0.48);
+
+  overflow-y: auto;
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.fee-modal {
+  width: 100%;
+  max-width: 620px;
+
+  max-height: calc(100vh - 48px);
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.20);
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.fee-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 20px 22px;
+
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.fee-modal-header h2 {
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  color: #0f172a;
+}
+
+.fee-modal-header p {
+  margin: 5px 0 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #64748b;
+}
+
+
+/* =====================================================
+   CLOSE BUTTON
+===================================================== */
+
+.fee-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.fee-modal-close:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.fee-modal-close:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+
+/* =====================================================
+   BODY
+===================================================== */
+
+.fee-modal-body {
+  padding: 0;
+
+  overflow-y: auto;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 640px) {
+
+  .fee-modal-backdrop {
+    align-items: flex-end;
+
+    padding: 0;
+  }
+
+  .fee-modal {
+    max-width: none;
+
+    max-height: 92vh;
+
+    border-radius: 16px 16px 0 0;
+  }
+
+}
 
 // =====================================================
 // RESPONSIVE

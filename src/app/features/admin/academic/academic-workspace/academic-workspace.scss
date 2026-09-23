@@ -1,0 +1,842 @@
+.academic-workspace {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.workspace-header {
+  margin-bottom: 22px;
+}
+
+.workspace-eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.workspace-header h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.workspace-header p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.workspace-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 24px;
+  padding: 5px;
+  overflow-x: auto;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  background: #f8fafc;
+}
+
+.workspace-tabs button {
+  border: 0;
+  border-radius: 8px;
+
+  padding: 10px 16px;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  white-space: nowrap;
+
+  transition: 0.2s ease;
+}
+
+.workspace-tabs button:hover {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.workspace-tabs button.active {
+  background: #ffffff;
+  color: #0f172a;
+
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.workspace-content {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.overview-loading {
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+
+  margin-bottom: 12px;
+
+  border: 3px solid #e2e8f0;
+  border-top-color: #334155;
+
+  border-radius: 50%;
+
+  animation: academic-spin 0.8s linear infinite;
+}
+
+.overview-loading p {
+  margin: 0;
+
+  color: #64748b;
+  font-size: 13px;
+}
+
+@keyframes academic-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.overview-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  margin-bottom: 20px;
+  padding: 14px 16px;
+
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+
+  background: #fff7f7;
+}
+
+.error-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 28px;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 50%;
+
+  background: #fee2e2;
+  color: #b91c1c;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.overview-error strong {
+  display: block;
+
+  color: #991b1b;
+  font-size: 13px;
+}
+
+.overview-error p {
+  margin: 3px 0 0;
+
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   CURRENT ACADEMIC YEAR
+   ========================================================= */
+
+.current-year-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin-bottom: 18px;
+  padding: 20px 22px;
+
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f8fbff 0%,
+      #ffffff 100%
+    );
+}
+
+.current-year-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 48px;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 12px;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  font-size: 21px;
+}
+
+.current-year-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.current-year-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.current-year-content h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.current-year-content p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+.current-year-status {
+  flex-shrink: 0;
+}
+
+.current-year-status span {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: #ecfdf5;
+  color: #047857;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.statistics-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 22px;
+}
+
+.stat-card {
+  min-width: 0;
+
+  padding: 16px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.stat-card:hover {
+  border-color: #cbd5e1;
+
+  box-shadow:
+    0 6px 18px rgba(15, 23, 42, 0.06);
+
+  transform: translateY(-1px);
+}
+
+.stat-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 14px;
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 9px;
+
+  background: #f1f5f9;
+  color: #334155;
+
+  font-size: 16px;
+}
+
+.stat-arrow {
+  color: #94a3b8;
+
+  font-size: 15px;
+}
+
+.stat-value {
+  margin-bottom: 3px;
+
+  color: #0f172a;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.stat-label {
+  color: #64748b;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.overview-panel {
+  margin-bottom: 22px;
+
+  padding: 20px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 18px;
+}
+
+.panel-eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #94a3b8;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.panel-header h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.panel-header p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+.panel-action {
+  flex-shrink: 0;
+
+  border: 0;
+
+  padding: 7px 10px;
+
+  background: transparent;
+
+  color: #334155;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.panel-action:hover {
+  color: #0f172a;
+}
+
+
+/* =========================================================
+   CLASS STRUCTURE
+   ========================================================= */
+
+.class-structure-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+.class-structure-card {
+  padding: 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  background: #fafafa;
+}
+
+.class-header {
+  padding-bottom: 12px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.class-header h3 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.class-header span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #64748b;
+
+  font-size: 11px;
+}
+
+.class-details {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+
+  padding-top: 14px;
+}
+
+.detail-title {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 9px;
+
+  color: #475569;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.detail-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #94a3b8;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 5px 8px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+
+  background: #ffffff;
+
+  color: #334155;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tag small {
+  color: #94a3b8;
+
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.empty-detail {
+  color: #94a3b8;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   SCHOOLS
+   ========================================================= */
+
+.schools-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 10px;
+}
+
+.school-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 13px 14px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  background: #fafafa;
+}
+
+.school-card-main {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  min-width: 0;
+}
+
+.school-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 34px;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 8px;
+
+  background: #f1f5f9;
+  color: #475569;
+
+  font-size: 14px;
+}
+
+.school-card h3 {
+  margin: 0;
+
+  overflow: hidden;
+
+  color: #0f172a;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.school-code {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #94a3b8;
+
+  font-size: 10px;
+}
+
+.school-status {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  flex-shrink: 0;
+
+  color: #047857;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.school-status span {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #10b981;
+}
+
+.school-status.inactive {
+  color: #b45309;
+}
+
+.school-status.inactive span {
+  background: #f59e0b;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 34px 20px;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+
+  background: #fafafa;
+
+  text-align: center;
+}
+
+.empty-panel-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  margin-bottom: 10px;
+
+  border-radius: 10px;
+
+  background: #f1f5f9;
+  color: #64748b;
+
+  font-size: 17px;
+}
+
+.empty-panel h3 {
+  margin: 0;
+
+  color: #334155;
+
+  font-size: 14px;
+}
+
+.empty-panel p {
+  max-width: 420px;
+
+  margin: 5px 0 14px;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+.empty-panel button {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+
+  padding: 8px 12px;
+
+  background: #ffffff;
+  color: #334155;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.empty-panel button:hover {
+  background: #f8fafc;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .statistics-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .class-structure-list {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 768px) {
+
+  .academic-workspace {
+    padding: 16px;
+  }
+
+  .workspace-header h1 {
+    font-size: 24px;
+  }
+
+  .statistics-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .current-year-card {
+    align-items: flex-start;
+  }
+
+  .current-year-status {
+    display: none;
+  }
+
+  .class-details {
+    grid-template-columns: 1fr;
+  }
+
+  .schools-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .statistics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .current-year-card {
+    padding: 16px;
+  }
+
+  .current-year-icon {
+    display: none;
+  }
+
+  .panel-header {
+    flex-direction: column;
+  }
+
+  .panel-action {
+    padding-left: 0;
+  }
+
+}

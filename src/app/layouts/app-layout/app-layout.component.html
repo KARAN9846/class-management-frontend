@@ -13,73 +13,143 @@
     class="sidebar"
     [class.sidebar-open]="sidebarOpen">
 
-<!-- Logo -->
-<div class="sidebar-brand">
+    <!-- ================= BRAND ================= -->
+    <div class="sidebar-brand">
 
-  <div class="brand-logo">
-    <img
-      src="/assets/images/cms_logo.png"
-      alt="CMS Logo"
-      class="cms-logo"
-    />
-  </div>
+      <div class="brand-logo">
+        <img
+          src="/assets/images/cms_logo.png"
+          alt="CMS Logo"
+          class="cms-logo"
+        />
+      </div>
 
-  <div class="brand-text">
-    <strong>CMS</strong>
-    <span>Class Management</span>
-  </div>
-
-</div>
-
-
-
-<!-- Navigation -->
-<!-- Navigation -->
-<nav class="sidebar-nav">
-
-  @for (section of navigationSections; track section.title) {
-
-    <div class="nav-section">
-
-      <span class="nav-section-title">
-        {{ section.title }}
-      </span>
-
-
-      @for (item of section.items; track item.route) {
-
-<a
-  [routerLink]="item.route"
-  routerLinkActive="active"
-  [routerLinkActiveOptions]="{ exact: true }"
-  class="nav-item"
-  (click)="closeSidebar()"
->
-
-          <span class="nav-icon">
-            {{ item.icon }}
-          </span>
-
-          <span>
-            {{ item.label }}
-          </span>
-
-        </a>
-
-      }
+      <div class="brand-text">
+        <strong>CMS</strong>
+        <span>Class Management</span>
+      </div>
 
     </div>
 
-  }
 
-</nav>
+    <!-- ================= NAVIGATION ================= -->
+    <nav class="sidebar-nav">
 
-    <!-- Sidebar Bottom -->
+      @for (section of navigationSections; track section.title) {
+
+        <div class="nav-section">
+
+          <span class="nav-section-title">
+            {{ section.title }}
+          </span>
+
+          <div class="nav-items">
+
+            @for (item of section.items; track item.route) {
+
+              <a
+                [routerLink]="item.route"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="nav-item"
+                (click)="closeSidebar()">
+
+                <span class="nav-icon" aria-hidden="true">
+                  {{ item.icon }}
+                </span>
+
+                <span class="nav-label">
+                  {{ item.label }}
+                </span>
+
+              </a>
+
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+
+      <!-- ================= QUICK ACTIONS ================= -->
+      @if (userRole === 'Admin') {
+
+        <div class="quick-actions">
+
+          <div class="quick-actions-header">
+            <span class="quick-actions-title">Quick Actions</span>
+            <span class="quick-actions-subtitle">Common tasks</span>
+          </div>
+
+          <div class="quick-actions-list">
+
+            <a
+              routerLink="/admin/students/create"
+              class="quick-action"
+              (click)="closeSidebar()">
+
+              <span class="quick-action-icon">+</span>
+
+              <span class="quick-action-content">
+                <span class="quick-action-title">Add Student</span>
+                <span class="quick-action-description">
+                  Create student profile
+                </span>
+              </span>
+
+            </a>
+
+            <a
+              routerLink="/admin/teachers/create"
+              class="quick-action"
+              (click)="closeSidebar()">
+
+              <span class="quick-action-icon">+</span>
+
+              <span class="quick-action-content">
+                <span class="quick-action-title">Add Teacher</span>
+                <span class="quick-action-description">
+                  Create teacher account
+                </span>
+              </span>
+
+            </a>
+
+            <a
+              routerLink="/admin/fees"
+              class="quick-action"
+              (click)="closeSidebar()">
+
+              <span class="quick-action-icon">₹</span>
+
+              <span class="quick-action-content">
+                <span class="quick-action-title">Fee Management</span>
+                <span class="quick-action-description">
+                  Manage student fees
+                </span>
+              </span>
+
+            </a>
+
+          </div>
+
+        </div>
+
+      }
+
+    </nav>
+
+
+    <!-- ================= SIDEBAR BOTTOM ================= -->
     <div class="sidebar-bottom">
 
-      <div
-  class="user-card"
-  (click)="goToProfile()">
+      <button
+        type="button"
+        class="user-card"
+        (click)="goToProfile()"
+        aria-label="Open profile">
 
         <div class="user-avatar">
           {{ userInitial }}
@@ -97,8 +167,13 @@
 
         </div>
 
-      </div>
+        <span
+          class="user-card-arrow"
+          aria-hidden="true">
+          →
+        </span>
 
+      </button>
 
     </div>
 
@@ -108,32 +183,33 @@
   <!-- ================= MAIN AREA ================= -->
   <div class="main-area">
 
-    <!-- Header -->
-<header class="top-header">
+    <!-- ================= HEADER ================= -->
+    <header class="top-header">
 
-  <div class="header-left">
+      <div class="header-left">
 
-    <button
-      type="button"
-      class="menu-button"
-      aria-label="Open navigation"
-      (click)="toggleSidebar()">
+        <button
+          type="button"
+          class="menu-button"
+          aria-label="Open navigation"
+          (click)="toggleSidebar()">
 
-      <span></span>
-      <span></span>
-      <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
 
-    </button>
+        </button>
 
-  </div>
+      </div>
 
-  <div class="header-search-container">
-    <app-global-search></app-global-search>
-  </div>
+      <div class="header-search-container">
+        <app-global-search></app-global-search>
+      </div>
 
-</header>
+    </header>
 
-    <!-- Main Content -->
+
+    <!-- ================= MAIN CONTENT ================= -->
     <main class="content-area">
 
       <div class="content-container">
@@ -146,8 +222,12 @@
 
   </div>
 
+
+  <!-- ================= PROFILE MODAL ================= -->
   @if (profileOpen) {
-    <app-profile (closeProfile)="profileOpen = false"></app-profile>
+    <app-profile
+      (closeProfile)="profileOpen = false">
+    </app-profile>
   }
 
 </div>
