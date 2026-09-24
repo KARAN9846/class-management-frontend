@@ -18,6 +18,34 @@ import {
 } from '../services/teacher-assignment.service';
 
 
+interface AssignmentSubjectGroup {
+  subjectId: number;
+  subjectName: string;
+  assignment: TeacherAssignment;
+}
+
+interface AssignmentSectionGroup {
+  sectionId: number;
+  sectionName: string;
+  subjects: AssignmentSubjectGroup[];
+}
+
+interface AssignmentClassGroup {
+  classId: number;
+  className: string;
+  sections: AssignmentSectionGroup[];
+}
+
+interface TeacherAssignmentGroup {
+  teacherId: number;
+  teacherName: string;
+  academicYearId: number;
+  academicYearName: string;
+  assignmentsCount: number;
+  classes: AssignmentClassGroup[];
+}
+
+
 @Component({
   selector: 'app-teacher-assignment-list',
 
@@ -37,7 +65,8 @@ export class TeacherAssignmentList implements OnInit {
   private readonly service =
     inject(TeacherAssignmentService);
 
-readonly router = inject(Router);
+  readonly router =
+    inject(Router);
 
   private readonly cdr =
     inject(ChangeDetectorRef);
@@ -50,6 +79,10 @@ readonly router = inject(Router);
   allAssignments: TeacherAssignment[] = [];
 
   assignments: TeacherAssignment[] = [];
+
+  teacherGroups: TeacherAssignmentGroup[] = [];
+
+  filteredTeacherGroups: TeacherAssignmentGroup[] = [];
 
   loading = false;
 
@@ -99,9 +132,7 @@ readonly router = inject(Router);
   // =========================================================
 
   ngOnInit(): void {
-
     this.loadAssignments();
-
   }
 
 
@@ -126,6 +157,8 @@ readonly router = inject(Router);
           this.allAssignments =
             response.data ?? [];
 
+          this.buildTeacherGroups();
+
           this.currentPage = 1;
 
           this.applyFilters();
@@ -133,19 +166,21 @@ readonly router = inject(Router);
           this.loading = false;
 
           this.cdr.detectChanges();
-
         },
 
         error: (error) => {
 
           console.error(
-            'Failed to load teacher assignments:',
-            error
+            'Failed to load teacher assignments:'
           );
 
           this.allAssignments = [];
 
           this.assignments = [];
+
+          this.teacherGroups = [];
+
+          this.filteredTeacherGroups = [];
 
           this.loading = false;
 
@@ -154,10 +189,141 @@ readonly router = inject(Router);
             'Failed to load teacher assignments. Please try again.';
 
           this.cdr.detectChanges();
-
         }
 
       });
+
+  }
+
+
+  // =========================================================
+  // BUILD TEACHER GROUPS
+  // =========================================================
+
+  private buildTeacherGroups(): void {
+
+    const teacherMap =
+      new Map<string, TeacherAssignmentGroup>();
+
+
+    for (const assignment of this.allAssignments) {
+
+      const teacherKey =
+        `${assignment.teacherId}-${assignment.academicYearId}`;
+
+
+      let teacherGroup =
+        teacherMap.get(teacherKey);
+
+
+      if (!teacherGroup) {
+
+        teacherGroup = {
+
+          teacherId:
+            assignment.teacherId,
+
+          teacherName:
+            assignment.teacherName,
+
+          academicYearId:
+            assignment.academicYearId,
+
+          academicYearName:
+            assignment.academicYearName,
+
+          assignmentsCount: 0,
+
+          classes: []
+
+        };
+
+        teacherMap.set(
+          teacherKey,
+          teacherGroup
+        );
+
+      }
+
+
+      teacherGroup.assignmentsCount++;
+
+
+      let classGroup =
+        teacherGroup.classes.find(
+          item =>
+            item.classId === assignment.classId
+        );
+
+
+      if (!classGroup) {
+
+        classGroup = {
+
+          classId:
+            assignment.classId,
+
+          className:
+            assignment.className,
+
+          sections: []
+
+        };
+
+        teacherGroup.classes.push(
+          classGroup
+        );
+
+      }
+
+
+      let sectionGroup =
+        classGroup.sections.find(
+          item =>
+            item.sectionId === assignment.sectionId
+        );
+
+
+      if (!sectionGroup) {
+
+        sectionGroup = {
+
+          sectionId:
+            assignment.sectionId,
+
+          sectionName:
+            assignment.sectionName,
+
+          subjects: []
+
+        };
+
+        classGroup.sections.push(
+          sectionGroup
+        );
+
+      }
+
+
+      sectionGroup.subjects.push({
+
+        subjectId:
+          assignment.subjectId,
+
+        subjectName:
+          assignment.subjectName,
+
+        assignment
+
+      });
+
+    }
+
+
+    this.teacherGroups =
+      Array.from(
+        teacherMap.values()
+      );
 
   }
 
@@ -199,40 +365,85 @@ readonly router = inject(Router);
         .trim()
         .toLowerCase();
 
-    this.assignments =
-      this.allAssignments.filter(
-        assignment => {
 
-          const matchesSearch =
-            !search ||
-            assignment.teacherName
-              .toLowerCase()
-              .includes(search) ||
-            assignment.academicYearName
-              .toLowerCase()
-              .includes(search) ||
-            assignment.className
-              .toLowerCase()
-              .includes(search) ||
-            assignment.sectionName
-              .toLowerCase()
-              .includes(search) ||
-            assignment.subjectName
-              .toLowerCase()
-              .includes(search);
+    this.filteredTeacherGroups =
+      this.teacherGroups.filter(
+        teacher => {
 
           const matchesYear =
             !this.selectedAcademicYear ||
-            assignment.academicYearName ===
+            teacher.academicYearName ===
               this.selectedAcademicYear;
 
-          return (
-            matchesSearch &&
-            matchesYear
+
+          if (!matchesYear) {
+            return false;
+          }
+
+
+          if (!search) {
+            return true;
+          }
+
+
+          const teacherMatches =
+            teacher.teacherName
+              .toLowerCase()
+              .includes(search) ||
+            teacher.academicYearName
+              .toLowerCase()
+              .includes(search);
+
+
+          if (teacherMatches) {
+            return true;
+          }
+
+
+          return teacher.classes.some(
+            classGroup => {
+
+              const classMatches =
+                classGroup.className
+                  .toLowerCase()
+                  .includes(search);
+
+
+              if (classMatches) {
+                return true;
+              }
+
+
+              return classGroup.sections.some(
+                sectionGroup => {
+
+                  const sectionMatches =
+                    sectionGroup.sectionName
+                      .toLowerCase()
+                      .includes(search);
+
+
+                  if (sectionMatches) {
+                    return true;
+                  }
+
+
+                  return sectionGroup.subjects.some(
+                    subject =>
+                      subject.subjectName
+                        .toLowerCase()
+                        .includes(search)
+                  );
+
+                }
+              );
+
+            }
           );
 
         }
       );
+
 
     this.ensureValidPage();
 
@@ -247,11 +458,10 @@ readonly router = inject(Router);
 
     return Array.from(
       new Set(
-        this.allAssignments
-          .map(
-            assignment =>
-              assignment.academicYearName
-          )
+        this.allAssignments.map(
+          assignment =>
+            assignment.academicYearName
+        )
       )
     ).sort();
 
@@ -259,17 +469,18 @@ readonly router = inject(Router);
 
 
   // =========================================================
-  // PAGINATED DATA
+  // PAGINATED TEACHERS
   // =========================================================
 
-  get paginatedAssignments():
-    TeacherAssignment[] {
+  get paginatedTeacherGroups():
+    TeacherAssignmentGroup[] {
 
     const start =
       (this.currentPage - 1) *
       this.pageSize;
 
-    return this.assignments.slice(
+
+    return this.filteredTeacherGroups.slice(
       start,
       start + this.pageSize
     );
@@ -277,24 +488,35 @@ readonly router = inject(Router);
   }
 
 
+  // =========================================================
+  // TOTAL PAGES
+  // =========================================================
+
   get totalPages(): number {
 
     return Math.max(
       1,
+
       Math.ceil(
-        this.assignments.length /
+        this.filteredTeacherGroups.length /
         this.pageSize
       )
+
     );
 
   }
 
 
+  // =========================================================
+  // PAGE START
+  // =========================================================
+
   get pageStart(): number {
 
-    if (!this.assignments.length) {
+    if (!this.filteredTeacherGroups.length) {
       return 0;
     }
+
 
     return (
       (this.currentPage - 1) *
@@ -304,11 +526,19 @@ readonly router = inject(Router);
   }
 
 
+  // =========================================================
+  // PAGE END
+  // =========================================================
+
   get pageEnd(): number {
 
     return Math.min(
-      this.currentPage * this.pageSize,
-      this.assignments.length
+
+      this.currentPage *
+      this.pageSize,
+
+      this.filteredTeacherGroups.length
+
     );
 
   }
@@ -324,6 +554,7 @@ readonly router = inject(Router);
       return;
     }
 
+
     this.currentPage--;
 
   }
@@ -337,6 +568,7 @@ readonly router = inject(Router);
     ) {
       return;
     }
+
 
     this.currentPage++;
 
@@ -352,6 +584,7 @@ readonly router = inject(Router);
       return;
     }
 
+
     this.currentPage = page;
 
   }
@@ -361,9 +594,13 @@ readonly router = inject(Router);
 
     return Array.from(
       {
-        length: this.totalPages
+        length:
+          this.totalPages
       },
-      (_, index) => index + 1
+
+      (_, index) =>
+        index + 1
+
     );
 
   }
@@ -375,8 +612,10 @@ readonly router = inject(Router);
       this.currentPage >
       this.totalPages
     ) {
+
       this.currentPage =
         this.totalPages;
+
     }
 
   }
@@ -442,9 +681,39 @@ readonly router = inject(Router);
 
   }
 
+
+  // =========================================================
+  // MANAGE ASSIGNMENTS
+  // =========================================================
+
+  manageAssignments(
+    teacherId: number,
+    academicYearId: number
+  ): void {
+
+    this.closeActionMenu();
+
+    this.router.navigate([
+      '/admin/teacher-assignments',
+      'manage',
+      teacherId,
+      academicYearId
+    ]);
+
+  }
+
+
+  // =========================================================
+  // CREATE
+  // =========================================================
+
   createAssignment(): void {
-  this.router.navigate(['/admin/teacher-assignments/create']);
-}
+
+    this.router.navigate([
+      '/admin/teacher-assignments/create'
+    ]);
+
+  }
 
 
   // =========================================================
@@ -478,12 +747,15 @@ readonly router = inject(Router);
       return;
     }
 
+
     const assignment =
       this.pendingAssignment;
+
 
     this.deleting = true;
 
     this.errorMessage = '';
+
 
     this.service
       .delete(
@@ -500,14 +772,20 @@ readonly router = inject(Router);
                 assignment.id
             );
 
-          this.showDeleteDialog = false;
 
-          this.pendingAssignment = null;
+          this.showDeleteDialog =
+            false;
+
+          this.pendingAssignment =
+            null;
 
           this.deleting = false;
 
           this.successMessage =
             'Teacher assignment deleted successfully.';
+
+
+          this.buildTeacherGroups();
 
           this.applyFilters();
 
@@ -515,11 +793,11 @@ readonly router = inject(Router);
 
         },
 
+
         error: (error) => {
 
           console.error(
-            'Failed to delete teacher assignment:',
-            error
+            'Failed to delete teacher assignment:'
           );
 
           this.deleting = false;
@@ -547,13 +825,26 @@ readonly router = inject(Router);
       return;
     }
 
-    this.showDeleteDialog = false;
 
-    this.pendingAssignment = null;
+    this.showDeleteDialog =
+      false;
+
+    this.pendingAssignment =
+      null;
 
   }
 
+
+  // =========================================================
+  // BACK
+  // =========================================================
+
   goBackToTeacherManagement(): void {
-  this.router.navigate(['/admin/teachers']);
-}
+
+    this.router.navigate([
+      '/admin/teachers'
+    ]);
+
+  }
+
 }

@@ -132,8 +132,7 @@ receiptErrorMessage = '';
 
             error: error => {
                 console.error(
-                    'Failed to load receipt settings:',
-                    error
+                    'Failed to load receipt settings:'
                 );
 
                 this.institutionName = '';
@@ -156,7 +155,7 @@ receiptErrorMessage = '';
                 this.cdr.detectChanges();
             },
             error: error => {
-                console.error('Failed to load student workspace:', error);
+                console.error('Failed to load student workspace:');
 
                 this.student = null;
                 this.loading = false;
@@ -183,8 +182,7 @@ receiptErrorMessage = '';
                 },
                 error: error => {
                     console.error(
-                        'Failed to load student attendance:',
-                        error
+                        'Failed to load student attendance:'
                     );
 
                     this.attendance = [];
@@ -969,8 +967,7 @@ receiptErrorMessage = '';
 
                 error: error => {
                     console.error(
-                        'Failed to load student fees:',
-                        error
+                        'Failed to load student fees:'
                     );
 
                     this.feesLoading = false;
@@ -994,8 +991,7 @@ receiptErrorMessage = '';
 
                 error: error => {
                     console.error(
-                        'Failed to load fee payments:',
-                        error
+                        'Failed to load fee payments:'
                     );
 
                     this.feePayments = [];
@@ -1255,7 +1251,7 @@ savePaymentEdit(): void {
         this.cdr.detectChanges();
       },
       error: error => {
-        console.error('Update payment error:', error);
+        console.error('Update payment error:');
 
         this.paymentSaving = false;
 
@@ -1307,7 +1303,7 @@ savePaymentEdit(): void {
         window.URL.revokeObjectURL(url);
       },
       error: (error) => {
-        console.error('Receipt PDF download error:', error);
+        console.error('Receipt PDF download error:');
 
         this.receiptErrorMessage =
           error?.error?.message ||

@@ -22,6 +22,53 @@
 
   margin-bottom: 24px;
 }
+/* =========================================================
+   FEE MANAGEMENT PAGE TITLE
+   ========================================================= */
+
+.page-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+}
+
+.page-title-content {
+  min-width: 0;
+}
+
+.page-title-image {
+  width: 140px;
+  height: 120px;
+  flex: 0 0 140px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title-image img {
+  width: 160px;
+  height: 140px;
+  object-fit: contain;
+  display: block;
+}
+
+.page-title h1 {
+  margin: 4px 0 0;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-title p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
 
 
 /* =====================================================
@@ -64,6 +111,54 @@
   line-height: 1.5;
 
   color: #64748b;
+}
+
+/* =========================================================
+   FEE MANAGEMENT PAGE TITLE
+   ========================================================= */
+
+.page-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+}
+
+.page-title-content {
+  min-width: 0;
+}
+
+.page-title-image {
+  width: 140px;
+  height: 120px;
+  flex: 0 0 140px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title-image img {
+  width: 160px;
+  height: 140px;
+  object-fit: contain;
+  display: block;
+}
+
+.page-title h1 {
+  margin: 4px 0 0;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-title p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 
@@ -193,6 +288,54 @@
 /* =====================================================
    RESPONSIVE
 ===================================================== */
+
+/* =========================================================
+   FEE MANAGEMENT PAGE TITLE
+   ========================================================= */
+
+.page-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+}
+
+.page-title-content {
+  min-width: 0;
+}
+
+.page-title-image {
+  width: 140px;
+  height: 120px;
+  flex: 0 0 140px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title-image img {
+  width: 150px;
+  height: 130px;
+  object-fit: contain;
+  display: block;
+}
+
+.page-title h1 {
+  margin: 4px 0 0;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-title p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
 
 @media (max-width: 1100px) {
 

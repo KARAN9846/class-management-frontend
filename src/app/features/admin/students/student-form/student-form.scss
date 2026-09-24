@@ -257,6 +257,123 @@
 }
 
 /* =========================================================
+   FEE & CONCESSION
+   ========================================================= */
+
+.fee-summary {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.fee-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px 18px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.fee-label {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #475569;
+}
+
+.fee-value {
+  font-size: 18px;
+  font-weight: 700;
+
+  color: #111827;
+}
+
+.field-hint {
+  margin-top: 6px;
+
+  color: #64748b;
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.fee-calculation {
+  padding: 18px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.calculation-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 32px;
+
+  font-size: 14px;
+
+  color: #475569;
+}
+
+.calculation-row strong {
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.discount-row strong {
+  color: #dc2626;
+}
+
+.calculation-divider {
+  height: 1px;
+
+  margin: 12px 0;
+
+  background: #cbd5e1;
+}
+
+.payable-row {
+  font-size: 15px;
+}
+
+.payable-row span {
+  font-weight: 700;
+
+  color: #111827;
+}
+
+.payable-row strong {
+  font-size: 18px;
+  font-weight: 700;
+
+  color: #2563eb;
+}
+
+.fee-empty-state {
+  padding: 18px;
+
+  background: #f8fafc;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+
+  color: #64748b;
+
+  font-size: 14px;
+  text-align: center;
+}
+
+/* =========================================================
    FIELD ERROR
    ========================================================= */
 

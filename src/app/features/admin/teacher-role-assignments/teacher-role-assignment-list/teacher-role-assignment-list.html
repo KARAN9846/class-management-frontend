@@ -497,10 +497,10 @@
 
                 <div class="scope-count">
 
-                  {{ assignment.scopes?.length ?? 0 }}
+                  {{ assignment.scopes.length }}
 
                   {{
-                  (assignment.scopes?.length ?? 0) === 1
+                  assignment.scopes.length === 1
                   ? 'scope'
                   : 'scopes'
                   }}

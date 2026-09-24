@@ -16,6 +16,7 @@ import { SearchInputComponent } from '../../../../shared/components/search-input
 
 import { Attendance } from '../../../admin/attendance/models/attendance.model';
 import { StudentAttendance } from '../services/student-attendance';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-student-attendance',
@@ -24,7 +25,8 @@ import { StudentAttendance } from '../services/student-attendance';
   imports: [
     CommonModule,
     DataTableComponent,
-    SearchInputComponent
+    SearchInputComponent,
+    PaginationComponent
   ],
 
   templateUrl: './student-attendance.html',
@@ -39,6 +41,12 @@ export class StudentAttendanceComponent implements OnInit {
     inject(ChangeDetectorRef);
 
   attendance: Attendance[] = [];
+
+  allAttendance: Attendance[] = [];
+
+  currentPage = 1;
+
+  pageSize = 10;
 
   loading = false;
 
@@ -89,7 +97,11 @@ export class StudentAttendanceComponent implements OnInit {
       .getMyAttendance()
       .subscribe({
         next: (response) => {
-          this.attendance = response.data ?? [];
+          this.allAttendance = response.data ?? [];
+
+          this.currentPage = 1;
+
+          this.updatePagination();
 
           this.loading = false;
 
@@ -111,6 +123,26 @@ export class StudentAttendanceComponent implements OnInit {
         }
       });
   }
+
+  private updatePagination(): void {
+  const startIndex =
+    (this.currentPage - 1) * this.pageSize;
+
+  const endIndex =
+    startIndex + this.pageSize;
+
+  this.attendance =
+    this.allAttendance.slice(
+      startIndex,
+      endIndex
+    );
+}
+
+onPageChange(page: number): void {
+  this.currentPage = page;
+
+  this.updatePagination();
+}
 
   onSearchChange(value: string): void {
     this.search = value.trim().toLowerCase();

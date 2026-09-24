@@ -6,7 +6,7 @@ import {
   HostListener
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
@@ -71,6 +71,7 @@ interface StudentListRow extends Student {
 export class StudentList implements OnInit {
 
   readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   private readonly studentService = inject(StudentService);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -89,6 +90,7 @@ export class StudentList implements OnInit {
 
   loading = false;
   errorMessage = '';
+  successMessage = '';
 
   search = '';
 
@@ -346,11 +348,23 @@ export class StudentList implements OnInit {
   // INIT
   // =========================================================
 
-  ngOnInit(): void {
-    this.loadAcademicYears();
-    this.loadClasses();
-    this.loadStudents();
-  }
+ngOnInit(): void {
+  this.loadAcademicYears();
+  this.loadClasses();
+  this.loadStudents();
+
+  this.route.queryParams.subscribe(params => {
+    if (params['created'] === 'true') {
+      this.page = 0;
+      this.loadStudents();
+
+      this.router.navigate([], {
+        queryParams: {},
+        replaceUrl: true
+      });
+    }
+  });
+}
 
   // =========================================================
   // LOAD ACADEMIC YEARS
@@ -366,8 +380,7 @@ export class StudentList implements OnInit {
 
         error: (error) => {
           console.error(
-            'Failed to load academic years:',
-            error
+            'Failed to load academic years:'
           );
 
           this.academicYears = [];
@@ -389,8 +402,7 @@ export class StudentList implements OnInit {
 
         error: (error) => {
           console.error(
-            'Failed to load classes:',
-            error
+            'Failed to load classes:'
           );
 
           this.classes = [];
@@ -419,8 +431,7 @@ export class StudentList implements OnInit {
 
         error: (error) => {
           console.error(
-            'Failed to load sections:',
-            error
+            'Failed to load sections:'
           );
 
           this.sections = [];
@@ -458,8 +469,7 @@ export class StudentList implements OnInit {
 
         error: (error) => {
           console.error(
-            'Failed to load students:',
-            error
+            'Failed to load students:'
           );
 
           this.students = [];
@@ -500,8 +510,7 @@ export class StudentList implements OnInit {
 
           error: (error) => {
             console.error(
-              'Failed to load student fees:',
-              error
+              'Failed to load student fees:'
             );
 
             this.studentFees = [];
@@ -520,8 +529,7 @@ export class StudentList implements OnInit {
 
       error: (error) => {
         console.error(
-          'Failed to load attendance:',
-          error
+          'Failed to load attendance:'
         );
 
         this.attendanceRecords = [];
@@ -903,8 +911,7 @@ export class StudentList implements OnInit {
 
           error: (error) => {
             console.error(
-              'Failed to update student status:',
-              error
+              'Failed to update student status:'
             );
 
             this.errorMessage =
@@ -925,8 +932,7 @@ export class StudentList implements OnInit {
 
           error: (error) => {
             console.error(
-              'Failed to delete student:',
-              error
+              'Failed to delete student:'
             );
 
             this.errorMessage =
@@ -1007,7 +1013,7 @@ export class StudentList implements OnInit {
         },
 
         error: (error) => {
-          console.error('Failed to export students:', error);
+          console.error('Failed to delete student.');
 
           this.exporting = false;
           this.errorMessage =
@@ -1270,12 +1276,21 @@ export class StudentList implements OnInit {
     this.cdr.detectChanges();
   }
 
-  onStudentCreated(): void {
-    this.closeAddStudent();
+onStudentCreated(): void {
+  this.closeAddStudent();
 
-    this.page = 0;
-    this.loadStudents();
-  }
+  this.page = 0;
+  this.loadStudents();
+
+  this.successMessage = 'Student created successfully.';
+
+  this.cdr.detectChanges();
+
+  setTimeout(() => {
+    this.successMessage = '';
+    this.cdr.detectChanges();
+  }, 3000);
+}
 
   closeEditStudent(): void {
     this.editPopupOpen = false;

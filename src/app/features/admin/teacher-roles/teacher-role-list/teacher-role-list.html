@@ -284,11 +284,11 @@
                 <span class="permission-count-badge">
 
                   {{
-                  role.permissions?.length || 0
+                  role.permissions.length
                   }}
 
                   {{
-                  (role.permissions?.length || 0) === 1
+                  role.permissions.length === 1
                   ? 'permission'
                   : 'permissions'
                   }}
@@ -749,7 +749,7 @@
           <span class="permission-count">
 
             {{
-            selectedViewRole.permissions?.length || 0
+            selectedViewRole.permissions.length
             }}
 
           </span>
@@ -758,7 +758,7 @@
 
 
         @if (
-        selectedViewRole.permissions?.length
+        selectedViewRole.permissions.length
         ) {
 
         <div class="permission-list">
@@ -885,7 +885,7 @@
             <strong>
 
               {{
-              selectedViewRole.permissions?.length || 0
+              selectedViewRole.permissions.length
               }}
 
             </strong>

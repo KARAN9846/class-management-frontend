@@ -36,6 +36,75 @@
   line-height: 1.5;
 }
 
+/* =========================================================
+   ACADEMIC MANAGEMENT HEADER
+   ========================================================= */
+
+.workspace-header {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.workspace-header-content {
+  width: 100%;
+}
+
+.workspace-title-area {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.workspace-title-image {
+  width: 150px;
+  height: 130px;
+  flex: 0 0 140px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workspace-title-image img {
+  width: 180px;
+  height: 160px;
+  object-fit: contain;
+  display: block;
+}
+
+.workspace-title-content {
+  min-width: 0;
+}
+
+.workspace-eyebrow {
+  display: inline-block;
+  margin-bottom: 5px;
+
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.workspace-title-content h1 {
+  margin: 0;
+
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.workspace-title-content p {
+  max-width: 700px;
+  margin: 7px 0 0;
+
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 
 /* =========================================================
    TABS

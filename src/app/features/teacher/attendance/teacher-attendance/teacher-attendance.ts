@@ -18,10 +18,13 @@ import { PermissionService } from '../../../../core/auth/permission.service';
 
 import { Attendance } from '../../../admin/attendance/models/attendance.model';
 import { TeacherAttendance } from '../services/teacher-attendance';
+
 import {
   Router,
   RouterLink
 } from '@angular/router';
+
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-teacher-attendance',
@@ -31,7 +34,8 @@ import {
     CommonModule,
     DataTableComponent,
     SearchInputComponent,
-    RouterLink
+    RouterLink,
+    PaginationComponent
   ],
 
   templateUrl: './teacher-attendance.html',
@@ -42,8 +46,8 @@ export class TeacherAttendanceComponent implements OnInit {
   private readonly attendanceService =
     inject(TeacherAttendance);
 
-    private readonly router =
-  inject(Router);
+  private readonly router =
+    inject(Router);
 
   private readonly cdr =
     inject(ChangeDetectorRef);
@@ -51,21 +55,15 @@ export class TeacherAttendanceComponent implements OnInit {
   private readonly permissionService =
     inject(PermissionService);
 
-    canMarkAttendance(): boolean {
-  return this.permissionService.hasPermission(
-    'ATTENDANCE_MARK'
-  );
-}
-
-canEditAttendance(): boolean {
-  return this.permissionService.hasPermission(
-    'ATTENDANCE_EDIT'
-  );
-}
-
   attendance: Attendance[] = [];
 
   private allAttendance: Attendance[] = [];
+
+  filteredAttendanceCount = 0;
+
+  currentPage = 1;
+
+  pageSize = 10;
 
   loading = false;
 
@@ -75,11 +73,11 @@ canEditAttendance(): boolean {
 
   statusFilter: 'ALL' | 'PRESENT' | 'ABSENT' = 'ALL';
 
-dateFilter = '';
+  dateFilter = '';
 
-classFilter = 'ALL';
+  classFilter = 'ALL';
 
-sectionFilter = 'ALL';
+  sectionFilter = 'ALL';
 
   columns: TableColumn[] = [
     {
@@ -105,78 +103,96 @@ sectionFilter = 'ALL';
       align: 'center',
       type: 'status'
     },
-{
-  key: 'markedByTeacherName',
-  label: 'Marked By',
-  type: 'attendance-teacher'
-},
-{
-  key: 'lastUpdatedByTeacherName',
-  label: 'Last Updated By',
-  type: 'attendance-teacher'
-}
+    {
+      key: 'markedByTeacherName',
+      label: 'Marked By',
+      type: 'attendance-teacher'
+    },
+    {
+      key: 'lastUpdatedByTeacherName',
+      label: 'Last Updated By',
+      type: 'attendance-teacher'
+    }
   ];
 
-get actions(): TableAction[] {
-  return this.canEditAttendance()
-    ? [
-        {
-          label: 'Edit',
-          type: 'edit'
-        }
-      ]
-    : [];
-}
-
-
-onActionClick(event: any): void {
-
-  if (
-    event.action.type === 'edit' &&
-    this.canEditAttendance()
-  ) {
-
-    const attendanceId =
-      event.row.id;
-
-    this.router.navigate([
-      '/teacher/attendance/edit',
-      attendanceId
-    ]);
+  canMarkAttendance(): boolean {
+    return this.permissionService.hasPermission(
+      'ATTENDANCE_MARK'
+    );
   }
-}
 
-ngOnInit(): void {
-  this.permissionService
-    .loadMyPermissions()
-    .subscribe({
-      next: () => {
-        this.loadAttendance();
-      },
+  canEditAttendance(): boolean {
+    return this.permissionService.hasPermission(
+      'ATTENDANCE_EDIT'
+    );
+  }
 
-      error: (error) => {
-        console.error(
-          'Failed to load teacher permissions:',
-          error
-        );
+  get actions(): TableAction[] {
+    return this.canEditAttendance()
+      ? [
+          {
+            label: 'Edit',
+            type: 'edit'
+          }
+        ]
+      : [];
+  }
 
-        this.errorMessage =
-          'Failed to load attendance permissions.';
+  onActionClick(event: any): void {
 
-        this.cdr.detectChanges();
-      }
-    });
-}
+    if (
+      event.action.type === 'edit' &&
+      this.canEditAttendance()
+    ) {
+
+      const attendanceId =
+        event.row.id;
+
+      this.router.navigate([
+        '/teacher/attendance/edit',
+        attendanceId
+      ]);
+    }
+  }
+
+  ngOnInit(): void {
+
+    this.permissionService
+      .loadMyPermissions()
+      .subscribe({
+        next: () => {
+          this.loadAttendance();
+        },
+
+        error: (error) => {
+          console.error(
+            'Failed to load teacher permissions:',
+            error
+          );
+
+          this.errorMessage =
+            'Failed to load attendance permissions.';
+
+          this.cdr.detectChanges();
+        }
+      });
+  }
 
   loadAttendance(): void {
+
     this.loading = true;
+
     this.errorMessage = '';
 
     this.attendanceService
       .getAttendance()
       .subscribe({
+
         next: (response) => {
-          this.allAttendance = response.data ?? [];
+
+          this.allAttendance =
+            response.data ?? [];
+
           this.applySearch();
 
           this.loading = false;
@@ -185,6 +201,7 @@ ngOnInit(): void {
         },
 
         error: (error) => {
+
           console.error(
             'Failed to load teacher attendance:',
             error
@@ -200,12 +217,12 @@ ngOnInit(): void {
       });
   }
 
-  applySearch(): void {
-  const searchValue =
-    this.search.trim().toLowerCase();
+  private getFilteredAttendance(): Attendance[] {
 
-  this.attendance =
-    this.allAttendance.filter((item) => {
+    const searchValue =
+      this.search.trim().toLowerCase();
+
+    return this.allAttendance.filter((item) => {
 
       const matchesSection =
         this.sectionFilter === 'ALL' ||
@@ -239,61 +256,113 @@ ngOnInit(): void {
         matchesSection
       );
     });
-}
+  }
 
-get classOptions(): string[] {
-  return [
-    ...new Set(
-      this.allAttendance
-        .map(item => item.className)
-        .filter(Boolean)
-    )
-  ];
-}
+  applySearch(): void {
 
-get sectionOptions(): string[] {
-  return [
-    ...new Set(
-      this.allAttendance
-        .map(item => item.sectionName)
-        .filter(Boolean)
-    )
-  ];
-}
+    const filteredAttendance =
+      this.getFilteredAttendance();
 
-onStatusChange(value: string): void {
-  this.statusFilter =
-    value as 'ALL' | 'PRESENT' | 'ABSENT';
+    this.filteredAttendanceCount =
+      filteredAttendance.length;
 
-  this.applySearch();
-}
+    this.currentPage = 1;
 
-onDateChange(value: string): void {
-  this.dateFilter = value;
-  this.applySearch();
-}
+    this.attendance =
+      filteredAttendance.slice(
+        0,
+        this.pageSize
+      );
+  }
 
-onClassChange(value: string): void {
-  this.classFilter = value;
-  this.applySearch();
-}
+  onPageChange(page: number): void {
 
-onSectionChange(value: string): void {
-  this.sectionFilter = value;
-  this.applySearch();
-}
+    const filteredAttendance =
+      this.getFilteredAttendance();
 
-clearFilters(): void {
-  this.search = '';
-  this.statusFilter = 'ALL';
-  this.dateFilter = '';
-  this.classFilter = 'ALL';
-  this.sectionFilter = 'ALL';
+    this.currentPage = page;
 
-  this.applySearch();
-}
-onSearchChange(value: string): void {
-  this.search = value;
-  this.applySearch();
-}
+    const start =
+      (page - 1) * this.pageSize;
+
+    const end =
+      start + this.pageSize;
+
+    this.attendance =
+      filteredAttendance.slice(
+        start,
+        end
+      );
+  }
+
+  get classOptions(): string[] {
+    return [
+      ...new Set(
+        this.allAttendance
+          .map(item => item.className)
+          .filter(Boolean)
+      )
+    ];
+  }
+
+  get sectionOptions(): string[] {
+    return [
+      ...new Set(
+        this.allAttendance
+          .map(item => item.sectionName)
+          .filter(Boolean)
+      )
+    ];
+  }
+
+  onStatusChange(value: string): void {
+
+    this.statusFilter =
+      value as 'ALL' | 'PRESENT' | 'ABSENT';
+
+    this.applySearch();
+  }
+
+  onDateChange(value: string): void {
+
+    this.dateFilter = value;
+
+    this.applySearch();
+  }
+
+  onClassChange(value: string): void {
+
+    this.classFilter = value;
+
+    this.applySearch();
+  }
+
+  onSectionChange(value: string): void {
+
+    this.sectionFilter = value;
+
+    this.applySearch();
+  }
+
+  clearFilters(): void {
+
+    this.search = '';
+
+    this.statusFilter = 'ALL';
+
+    this.dateFilter = '';
+
+    this.classFilter = 'ALL';
+
+    this.sectionFilter = 'ALL';
+
+    this.applySearch();
+  }
+
+  onSearchChange(value: string): void {
+
+    this.search = value;
+
+    this.applySearch();
+  }
 }

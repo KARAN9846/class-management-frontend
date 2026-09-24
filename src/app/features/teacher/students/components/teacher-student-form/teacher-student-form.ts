@@ -78,11 +78,15 @@ export class TeacherStudentFormComponent implements OnInit {
   // PERMISSIONS
   // =========================================================
 
-  canViewStudent(): boolean {
-    return this.permissionService.hasPermission(
-      'STUDENT_VIEW'
-    );
-  }
+canViewStudent(): boolean {
+  return this.permissionService.hasAnyPermission([
+    'STUDENT_VIEW_NAME',
+    'STUDENT_VIEW_ROLL_NUMBER',
+    'STUDENT_VIEW_EMAIL',
+    'STUDENT_VIEW_PHONE',
+    'STUDENT_VIEW_STATUS'
+  ]);
+}
 
   canCreateStudent(): boolean {
     return this.permissionService.hasPermission(

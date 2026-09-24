@@ -547,6 +547,189 @@
 
         </div>
 
+                <!-- ================= FEE & CONCESSION ================= -->
+
+        @if (!isEditMode) {
+
+          <div class="section">
+
+            <div class="section-header">
+
+              <h2>
+                Fee & Concession
+              </h2>
+
+              <p>
+                Review the standard class fee and apply an admission concession if required.
+              </p>
+
+            </div>
+
+
+            @if (feeStructure) {
+
+              <div class="fee-summary">
+
+                <!-- ================= STANDARD FEE ================= -->
+
+                <div class="fee-item">
+
+                  <span class="fee-label">
+                    Standard Fee
+                  </span>
+
+                  <span class="fee-value">
+                    ₹{{ feeStructure.feeAmount | number:'1.2-2' }}
+                  </span>
+
+                </div>
+
+
+                <!-- ================= DISCOUNT TYPE ================= -->
+
+                <div class="form-grid">
+
+                  <div class="form-group">
+
+                    <label for="discountType">
+                      Discount Type
+                    </label>
+
+                    <select
+                      id="discountType"
+                      [value]="discountType"
+                      (change)="discountType = $any($event.target).value; onDiscountTypeChange()">
+
+                      <option value="NONE">
+                        No Discount
+                      </option>
+
+                      <option value="PERCENTAGE">
+                        Percentage
+                      </option>
+
+                      <option value="FIXED_AMOUNT">
+                        Fixed Amount
+                      </option>
+
+                    </select>
+
+                  </div>
+
+
+                  <!-- ================= DISCOUNT VALUE ================= -->
+
+                  <div class="form-group">
+
+                    <label for="discountValue">
+                      Discount Value
+                    </label>
+
+                    <input
+                      id="discountValue"
+                      type="number"
+                      min="0"
+                      [max]="discountType === 'PERCENTAGE' ? 100 : feeStructure.feeAmount"
+                      [value]="discountValue"
+                      [disabled]="discountType === 'NONE'"
+                      (input)="discountValue = +$any($event.target).value; onDiscountValueChange()"
+                      placeholder="Enter discount value" />
+
+                    <small class="field-hint">
+
+                      @if (discountType === 'PERCENTAGE') {
+                        Enter percentage from 0 to 100.
+                      } @else if (discountType === 'FIXED_AMOUNT') {
+                        Enter discount amount in rupees.
+                      } @else {
+                        No discount will be applied.
+                      }
+
+                    </small>
+
+                  </div>
+
+                </div>
+
+
+                <!-- ================= CALCULATION ================= -->
+
+                <div class="fee-calculation">
+
+                  <div class="calculation-row">
+
+                    <span>
+                      Original Fee
+                    </span>
+
+                    <strong>
+                      ₹{{ feeStructure.feeAmount | number:'1.2-2' }}
+                    </strong>
+
+                  </div>
+
+
+                  <div class="calculation-row discount-row">
+
+                    <span>
+                      Discount
+                    </span>
+
+                    <strong>
+                      - ₹{{ discountAmount | number:'1.2-2' }}
+                    </strong>
+
+                  </div>
+
+
+                  <div class="calculation-divider"></div>
+
+
+                  <div class="calculation-row payable-row">
+
+                    <span>
+                      Final Payable
+                    </span>
+
+                    <strong>
+                      ₹{{ payableAmount | number:'1.2-2' }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            } @else {
+
+              <div class="fee-empty-state">
+
+                @if (
+                  studentForm.get('academicYearId')?.value &&
+                  studentForm.get('classId')?.value
+                ) {
+
+                  <span>
+                    No active fee structure found for the selected class.
+                  </span>
+
+                } @else {
+
+                  <span>
+                    Select an academic year and class to view the fee.
+                  </span>
+
+                }
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
 
         <!-- ================= FORM ACTIONS ================= -->
 

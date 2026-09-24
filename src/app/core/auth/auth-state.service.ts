@@ -14,7 +14,7 @@ export class AuthStateService {
   constructor(
     private readonly tokenService: TokenService,
     private readonly authService: AuthService
-  ) {}
+  ) { }
 
   isAuthenticated(): boolean {
     return this.tokenService.hasToken();
@@ -32,7 +32,7 @@ export class AuthStateService {
 
     return this.authService.logout().pipe(
       finalize(() => {
-        this.tokenService.removeToken();
+        this.tokenService.removeAllTokens();
       })
     );
   }

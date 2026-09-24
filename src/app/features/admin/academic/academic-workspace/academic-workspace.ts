@@ -19,6 +19,7 @@ import { SchoolService } from '../schools/services/school.service';
 import { AcademicYearsComponent } from '../academic-years/academic-years';
 import { ClassesComponent } from '../classes/classes';
 import { SubjectsComponent } from '../subjects/subjects';
+import { PasswordManagementComponent } from '../password-management/password-management';
 
 
 type AcademicTab =
@@ -26,7 +27,8 @@ type AcademicTab =
   | 'academic-years'
   | 'schools'
   | 'classes'
-  | 'subjects';
+  | 'subjects'
+  | 'password-management';
 
 
 @Component({
@@ -37,7 +39,8 @@ type AcademicTab =
     AcademicYearsComponent,
     SchoolComponent,
     ClassesComponent,
-    SubjectsComponent
+    SubjectsComponent,
+    PasswordManagementComponent
   ],
   templateUrl: './academic-workspace.html',
   styleUrl: './academic-workspace.scss'

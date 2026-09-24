@@ -65,6 +65,10 @@ import {
 } from '../../academic/schools/services/school.service';
 
 
+import { FeeStructureService } from '../../fees/services/fee-structure.service';
+import { FeeStructure } from '../../fees/models/fee-structure.model';
+
+
 @Component({
   selector: 'app-student-form',
   standalone: true,
@@ -79,23 +83,23 @@ import {
 })
 export class StudentForm implements OnInit {
 
-@Input() popupMode = false;
+  @Input() popupMode = false;
 
-@Input() set studentIdForPopup(value: number | null) {
-  if (!this.popupMode || !value) {
-    return;
+  @Input() set studentIdForPopup(value: number | null) {
+    if (!this.popupMode || !value) {
+      return;
+    }
+
+    this.studentId = value;
+    this.isEditMode = true;
+
+    this.loadEditFormState();
+    this.loadStudent();
   }
 
-  this.studentId = value;
-  this.isEditMode = true;
+  @Output() closePopup = new EventEmitter<void>();
 
-  this.loadEditFormState();
-  this.loadStudent();
-}
-
-@Output() closePopup = new EventEmitter<void>();
-
-@Output() saved = new EventEmitter<void>();
+  @Output() saved = new EventEmitter<void>();
 
   private readonly fb = inject(FormBuilder);
 
@@ -119,8 +123,11 @@ export class StudentForm implements OnInit {
   private readonly sectionService =
     inject(SectionService);
 
-    private readonly schoolService =
-  inject(SchoolService);
+  private readonly schoolService =
+    inject(SchoolService);
+
+  private readonly feeStructureService =
+    inject(FeeStructureService);
 
 
   // =========================================================
@@ -141,20 +148,31 @@ export class StudentForm implements OnInit {
 
   successMessage = '';
 
+  feeStructure: FeeStructure | null = null;
+
+  discountType:
+    'NONE' | 'PERCENTAGE' | 'FIXED_AMOUNT' = 'NONE';
+
+  discountValue = 0;
+
+  discountAmount = 0;
+
+  payableAmount = 0;
+
 
   // =========================================================
   // DROPDOWN DATA
   // =========================================================
 
-academicYears: AcademicYear[] = [];
+  academicYears: AcademicYear[] = [];
 
-classes: AcademicClass[] = [];
+  classes: AcademicClass[] = [];
 
-sections: Section[] = [];
+  sections: Section[] = [];
 
-filteredClasses: AcademicClass[] = [];
+  filteredClasses: AcademicClass[] = [];
 
-schools: School[] = [];
+  schools: School[] = [];
 
 
   // =========================================================
@@ -220,16 +238,16 @@ schools: School[] = [];
       ]
     ],
 
-sectionId: [
-  null as number | null,
-  [
-    Validators.required
-  ]
-],
+    sectionId: [
+      null as number | null,
+      [
+        Validators.required
+      ]
+    ],
 
-schoolId: [
-  null as number | null
-]
+    schoolId: [
+      null as number | null
+    ]
 
   });
 
@@ -238,39 +256,39 @@ schoolId: [
   // INIT
   // =========================================================
 
-ngOnInit(): void {
+  ngOnInit(): void {
 
-  this.loadAcademicYears();
+    this.loadAcademicYears();
 
-  this.loadSchools();
+    this.loadSchools();
 
-  if (!this.popupMode) {
-    this.checkEditMode();
+    if (!this.popupMode) {
+      this.checkEditMode();
+    }
+
   }
 
-}
+  private loadEditFormState(): void {
 
-private loadEditFormState(): void {
+    this.studentForm
+      .get('password')
+      ?.clearValidators();
 
-  this.studentForm
-    .get('password')
-    ?.clearValidators();
+    this.studentForm
+      .get('password')
+      ?.updateValueAndValidity();
 
-  this.studentForm
-    .get('password')
-    ?.updateValueAndValidity();
+    this.studentForm
+      .get('rollNumber')
+      ?.setValidators([
+        Validators.required
+      ]);
 
-  this.studentForm
-    .get('rollNumber')
-    ?.setValidators([
-      Validators.required
-    ]);
+    this.studentForm
+      .get('rollNumber')
+      ?.updateValueAndValidity();
 
-  this.studentForm
-    .get('rollNumber')
-    ?.updateValueAndValidity();
-
-}
+  }
 
   // =========================================================
   // CHECK CREATE / EDIT MODE
@@ -356,7 +374,6 @@ private loadEditFormState(): void {
 
           console.error(
             'Failed to load academic years:',
-            error
           );
 
           this.handleError(
@@ -371,41 +388,40 @@ private loadEditFormState(): void {
   }
 
   // =========================================================
-// LOAD SCHOOLS
-// =========================================================
+  // LOAD SCHOOLS
+  // =========================================================
 
-loadSchools(): void {
+  loadSchools(): void {
 
-  this.schoolService
-    .getAll()
-    .subscribe({
+    this.schoolService
+      .getAll()
+      .subscribe({
 
-      next: (response) => {
+        next: (response) => {
 
-        this.schools =
-          response.data.content;
+          this.schools =
+            response.data.content;
 
-        this.cdr.detectChanges();
+          this.cdr.detectChanges();
 
-      },
+        },
 
-      error: (error) => {
+        error: (error) => {
 
-        console.error(
-          'Failed to load schools:',
-          error
-        );
+          console.error(
+            'Failed to load schools:',
+          );
 
-        this.handleError(
-          error,
-          'Failed to load schools.'
-        );
+          this.handleError(
+            error,
+            'Failed to load schools.'
+          );
 
-      }
+        }
 
-    });
+      });
 
-}
+  }
 
 
   // =========================================================
@@ -471,7 +487,6 @@ loadSchools(): void {
 
           console.error(
             'Failed to load classes:',
-            error
           );
 
           this.handleError(
@@ -529,13 +544,16 @@ loadSchools(): void {
 
           this.cdr.detectChanges();
 
+          if (!this.isEditMode) {
+            this.loadFeeStructure();
+          }
+
         },
 
         error: (error) => {
 
           console.error(
             'Failed to load sections:',
-            error
           );
 
           this.handleError(
@@ -624,16 +642,16 @@ loadSchools(): void {
                 student.classId
               ),
 
-sectionId:
-  Number(
-    student.sectionId
-  ),
+            sectionId:
+              Number(
+                student.sectionId
+              ),
 
-schoolId:
-  student.schoolId !== null &&
-  student.schoolId !== undefined
-    ? Number(student.schoolId)
-    : null
+            schoolId:
+              student.schoolId !== null &&
+                student.schoolId !== undefined
+                ? Number(student.schoolId)
+                : null
 
           });
 
@@ -691,7 +709,6 @@ schoolId:
 
                       console.error(
                         'Failed to load sections:',
-                        error
                       );
 
                       this.handleError(
@@ -709,7 +726,6 @@ schoolId:
 
                 console.error(
                   'Failed to load classes:',
-                  error
                 );
 
                 this.handleError(
@@ -727,18 +743,9 @@ schoolId:
 
           console.error(
             'Failed to load student:',
-            error
           );
 
-          console.error(
-            'Status:',
-            error?.status
-          );
 
-          console.error(
-            'Backend response:',
-            error?.error
-          );
 
 
           this.handleError(
@@ -834,15 +841,21 @@ schoolId:
           formValue.classId
         ),
 
-sectionId:
-  Number(
-    formValue.sectionId
-  ),
+      sectionId:
+        Number(
+          formValue.sectionId
+        ),
 
-schoolId:
-  formValue.schoolId
-    ? Number(formValue.schoolId)
-    : null
+      schoolId:
+        formValue.schoolId
+          ? Number(formValue.schoolId)
+          : null,
+
+      discountType:
+        this.discountType,
+
+      discountValue:
+        Number(this.discountValue) || 0
 
     };
 
@@ -851,30 +864,26 @@ schoolId:
       .createStudent(request)
       .subscribe({
 
-        next: () => {
+next: () => {
+  this.saving = false;
 
-          this.saving = false;
+  if (this.popupMode) {
+    this.saved.emit();
+    return;
+  }
 
-          this.successMessage =
-            'Student created successfully.';
+  this.successMessage = 'Student created successfully.';
+  this.cdr.detectChanges();
 
-          this.cdr.detectChanges();
-
-          setTimeout(() => {
-
-            this.router.navigate([
-              '/admin/students'
-            ]);
-
-          }, 800);
-
-        },
+  setTimeout(() => {
+    this.router.navigate(['/admin/students']);
+  }, 800);
+},
 
         error: (error) => {
 
           console.error(
             'Failed to create student:',
-            error
           );
 
 
@@ -958,15 +967,15 @@ schoolId:
           formValue.classId
         ),
 
-sectionId:
-  Number(
-    formValue.sectionId
-  ),
+      sectionId:
+        Number(
+          formValue.sectionId
+        ),
 
-schoolId:
-  formValue.schoolId
-    ? Number(formValue.schoolId)
-    : null
+      schoolId:
+        formValue.schoolId
+          ? Number(formValue.schoolId)
+          : null
 
     };
 
@@ -993,20 +1002,21 @@ schoolId:
           }
 
           setTimeout(() => {
-
-            this.router.navigate([
-              '/admin/students'
-            ]);
-
+            this.router.navigate(
+              ['/admin/students'],
+              {
+                queryParams: {
+                  created: 'true'
+                }
+              }
+            );
           }, 800);
-
         },
 
         error: (error) => {
 
           console.error(
             'Failed to update student:',
-            error
           );
 
 
@@ -1031,10 +1041,7 @@ schoolId:
     defaultMessage: string
   ): void {
 
-    console.error(
-      'Backend error:',
-      error
-    );
+console.error('Backend error:');
 
 
     this.errorMessages = [];
@@ -1248,6 +1255,138 @@ schoolId:
     );
 
   }
+  private loadFeeStructure(): void {
+
+    const academicYearId =
+      this.studentForm
+        .get('academicYearId')
+        ?.value;
+
+    const classId =
+      this.studentForm
+        .get('classId')
+        ?.value;
+
+    this.feeStructure = null;
+    this.discountAmount = 0;
+    this.payableAmount = 0;
+
+    if (!academicYearId || !classId) {
+      return;
+    }
+
+    this.feeStructureService
+      .getAll(Number(academicYearId))
+      .subscribe({
+
+        next: (feeStructures) => {
+
+          const matchingFee =
+            feeStructures.find(
+              fee =>
+                Number(fee.academicYearId) ===
+                Number(academicYearId) &&
+                Number(fee.classId) ===
+                Number(classId) &&
+                fee.isActive
+            );
+
+          this.feeStructure =
+            matchingFee ?? null;
+
+          this.calculateDiscount();
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Failed to load fee structure:',
+          );
+
+          this.feeStructure = null;
+          this.discountAmount = 0;
+          this.payableAmount = 0;
+
+          this.handleError(
+            error,
+            'Failed to load fee structure.'
+          );
+
+        }
+
+      });
+  }
+  calculateDiscount(): void {
+
+    const originalAmount =
+      Number(
+        this.feeStructure?.feeAmount ?? 0
+      );
+
+    const value =
+      Number(this.discountValue) || 0;
+
+    if (!originalAmount) {
+
+      this.discountAmount = 0;
+      this.payableAmount = 0;
+
+      return;
+    }
+
+    switch (this.discountType) {
+
+      case 'PERCENTAGE':
+
+        this.discountAmount =
+          originalAmount * value / 100;
+
+        break;
+
+      case 'FIXED_AMOUNT':
+
+        this.discountAmount =
+          value;
+
+        break;
+
+      case 'NONE':
+      default:
+
+        this.discountAmount = 0;
+
+        break;
+    }
+
+    this.discountAmount =
+      Math.min(
+        Math.max(this.discountAmount, 0),
+        originalAmount
+      );
+
+    this.payableAmount =
+      originalAmount -
+      this.discountAmount;
+  }
+
+  onDiscountTypeChange(): void {
+
+    if (this.discountType === 'NONE') {
+      this.discountValue = 0;
+    }
+
+    this.calculateDiscount();
+  }
 
 
+  onDiscountValueChange(): void {
+
+    if (this.discountValue < 0) {
+      this.discountValue = 0;
+    }
+
+    this.calculateDiscount();
+  }
 }

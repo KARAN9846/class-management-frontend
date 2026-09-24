@@ -20,6 +20,8 @@
 
 .dashboard-header {
   margin-bottom: 24px;
+  padding-bottom: 30px;
+
 
   h1 {
     margin: 0;
@@ -33,6 +35,54 @@
     color: #64748b;
     font-size: 12px;
   }
+}
+
+/* =========================================================
+   DASHBOARD PAGE TITLE
+   ========================================================= */
+
+.page-title-group {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.page-title-image {
+  width: 140px;
+  height: 120px;
+  flex: 0 0 120px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title-image img {
+  width: 140px;
+  height: 120px;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 20px ;
+}
+
+.page-title-content {
+  min-width: 0;
+}
+
+.page-title-content h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-title-content p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 

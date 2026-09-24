@@ -1,0 +1,263 @@
+<div class="page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <button
+        type="button"
+        class="back-button"
+        (click)="goBack()">
+        ← Back to Teacher Assignments
+      </button>
+
+      <div>
+        <h1>Manage Assignments</h1>
+
+        <p>
+          Assign classes, sections and subjects to
+          <strong>{{ teacherName || 'Teacher' }}</strong>
+          for
+          <strong>{{ academicYearName || 'Academic Year' }}</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (errorMessage) {
+    <div class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- Success -->
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading) {
+
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading assignment options...</p>
+    </div>
+
+  } @else {
+
+    <!-- Assignment Summary -->
+    <div class="summary-card">
+
+      <div class="summary-item">
+        <span class="summary-label">Teacher</span>
+        <span class="summary-value">
+          {{ teacherName || '—' }}
+        </span>
+      </div>
+
+      <div class="summary-item">
+        <span class="summary-label">Academic Year</span>
+        <span class="summary-value">
+          {{ academicYearName || '—' }}
+        </span>
+      </div>
+
+      <div class="summary-item">
+        <span class="summary-label">Selected Assignments</span>
+        <span class="summary-value selected-count">
+          {{ selectedCount }}
+        </span>
+      </div>
+
+    </div>
+
+    <!-- No Classes -->
+    @if (classes.length === 0) {
+
+      <div class="empty-state">
+        <div class="empty-icon">📚</div>
+
+        <h3>No classes found</h3>
+
+        <p>
+          No classes are available for this academic year.
+        </p>
+      </div>
+
+    } @else {
+
+      <!-- Classes -->
+      <div class="class-list">
+
+        @for (
+          managerClass of classes;
+          track managerClass.classroom.id
+        ) {
+
+          <section class="class-card">
+
+            <!-- Class Header -->
+            <div class="class-header">
+
+              <div class="class-title">
+                <div class="class-icon">
+                  {{ managerClass.classroom.name.charAt(0) }}
+                </div>
+
+                <div>
+                  <h2>
+                    {{ managerClass.classroom.name }}
+                  </h2>
+
+                  <p>
+                    {{ managerClass.sections.length }}
+                    section{{ managerClass.sections.length === 1 ? '' : 's' }}
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Sections -->
+            <div class="sections">
+
+              @for (
+                managerSection of managerClass.sections;
+                track managerSection.section.id
+              ) {
+
+                <div class="section-card">
+
+                  <div class="section-header">
+
+                    <div class="section-title">
+                      <span class="section-badge">
+                        {{ managerSection.section.name }}
+                      </span>
+
+                      <span class="section-label">
+                        Subjects
+                      </span>
+                    </div>
+
+                    <span class="section-count">
+                      {{
+                        managerSection.subjects
+                          .filter(subject => subject.selected)
+                          .length
+                      }}
+                      selected
+                    </span>
+
+                  </div>
+
+                  <!-- Subjects -->
+                  @if (managerSection.subjects.length === 0) {
+
+                    <div class="no-subjects">
+                      No subjects available for this class.
+                    </div>
+
+                  } @else {
+
+                    <div class="subject-grid">
+
+                      @for (
+                        managerSubject of managerSection.subjects;
+                        track managerSubject.subject.id
+                      ) {
+
+                        <button
+                          type="button"
+                          class="subject-option"
+                          [class.selected]="managerSubject.selected"
+                          (click)="toggleSubject(managerSubject)">
+
+                          <span
+                            class="subject-checkbox"
+                            [class.checked]="managerSubject.selected">
+
+                            @if (managerSubject.selected) {
+                              ✓
+                            }
+
+                          </span>
+
+                          <span class="subject-info">
+
+                            <span class="subject-name">
+                              {{ managerSubject.subject.name }}
+                            </span>
+
+                            @if (managerSubject.subject.code) {
+                              <span class="subject-code">
+                                {{ managerSubject.subject.code }}
+                              </span>
+                            }
+
+                          </span>
+
+                        </button>
+
+                      }
+
+                    </div>
+
+                  }
+
+                </div>
+
+              }
+
+            </div>
+
+          </section>
+
+        }
+
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+
+        <div class="selection-summary">
+          <strong>{{ selectedCount }}</strong>
+          assignment{{ selectedCount === 1 ? '' : 's' }} selected
+        </div>
+
+        <div class="action-buttons">
+
+          <button
+            type="button"
+            class="cancel-button"
+            [disabled]="saving"
+            (click)="cancel()">
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="save-button"
+            [disabled]="saving || loading"
+            (click)="save()">
+
+            @if (saving) {
+              <span class="button-spinner"></span>
+              Saving...
+            } @else {
+              Save Assignments
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  }
+
+</div>

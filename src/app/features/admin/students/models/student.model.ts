@@ -45,6 +45,9 @@ export interface CreateStudentRequest {
   sectionId: number;
 
   schoolId: number | null;
+
+  discountType: 'NONE' | 'PERCENTAGE' | 'FIXED_AMOUNT';
+  discountValue: number;
 }
 
 export interface UpdateStudentRequest {

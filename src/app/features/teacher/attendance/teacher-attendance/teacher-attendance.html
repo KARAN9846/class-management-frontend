@@ -153,8 +153,20 @@
         [showActions]="true"
         (actionClick)="onActionClick($event)">
       </app-data-table>
+      
 
     }
+
+    @if (filteredAttendanceCount > 0) {
+
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalItems]="filteredAttendanceCount"
+    [pageSize]="pageSize"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+
+}
 
   </div>
 

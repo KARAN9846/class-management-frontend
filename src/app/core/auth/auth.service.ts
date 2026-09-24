@@ -25,6 +25,13 @@ login(request: LoginRequest): Observable<LoginResponse> {
   );
 }
 
+refresh(refreshToken: string): Observable<LoginResponse> {
+  return this.http.post<LoginResponse>(
+    `${this.authUrl}/refresh`,
+    { refreshToken }
+  );
+}
+
 logout(): Observable<void> {
   return this.http.post<void>(
     `${this.authUrl}/logout`,

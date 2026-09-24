@@ -81,6 +81,7 @@ import { TeacherStudentFormComponent } from './features/teacher/students/compone
 import { TeacherAttendanceComponent } from './features/teacher/attendance/teacher-attendance/teacher-attendance';
 import { MarkAttendanceComponent } from './features/teacher/attendance/mark-attendance/mark-attendance';
 import { EditAttendanceComponent } from './features/teacher/attendance/edit-attendance/edit-attendance';
+import { TeacherAssignmentManager } from './features/admin/teacher-assignments/teacher-assignment-manager/teacher-assignment-manager';
 
 // STUDENT
 import { StudentDashboard } from './features/student/dashboard/student-dashboard/student-dashboard';
@@ -311,6 +312,14 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN'] }
       },
+
+      {
+        path: 'admin/teacher-assignments/manage/:teacherId/:academicYearId',
+        component: TeacherAssignmentManager,
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
+
       {
         path: 'admin/teacher-assignments/:id/view',
         component: AdminTeacherAssignmentView,

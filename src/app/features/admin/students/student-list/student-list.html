@@ -3,27 +3,36 @@
   <!-- =====================================================
        PAGE HEADER
        ===================================================== -->
-  <div class="page-header">
+<div class="page-header">
 
-    <div class="page-title">
+  <div class="page-title-group">
 
+    <div class="page-title-image">
+      <img
+        src="/assets/images/students.png"
+        alt="Students"
+      />
+    </div>
+
+    <div class="page-title-content">
       <h1>Students</h1>
 
       <p>
         Manage all students, admissions and academic records
       </p>
-
     </div>
 
-    <button type="button" class="add-btn" (click)="openAddStudent()">
-
-      <span class="add-icon">+</span>
-
-      Add Student
-
-    </button>
-
   </div>
+
+  <!-- Keep your existing Add Student button here -->
+  <button
+    type="button"
+    class="add-btn"
+    (click)="openAddStudent()">
+    + Add Student
+  </button>
+
+</div>
 
 
   <!-- =====================================================
@@ -242,6 +251,14 @@
 
     </div>
 
+    <!-- ===================================================
+     SUCCESS
+     =================================================== -->
+@if (successMessage) {
+  <div class="success-state">
+    ✓ {{ successMessage }}
+  </div>
+}
 
     <!-- ===================================================
          ERROR
@@ -297,7 +314,7 @@
 
           <div class="student-avatar">
 
-            {{ student.firstName?.charAt(0) || '' }}{{ student.lastName?.charAt(0) || '' }}
+            {{ student.firstName.charAt(0) || '' }}{{ student.lastName.charAt(0) || '' }}
 
           </div>
 

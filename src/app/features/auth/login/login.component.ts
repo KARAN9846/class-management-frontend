@@ -31,7 +31,7 @@ export class LoginComponent {
     private readonly router: Router,
     private readonly ngZone: NgZone,
     private readonly cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   login(): void {
 
@@ -53,92 +53,98 @@ export class LoginComponent {
       email: this.email.trim(),
       password: this.password
     })
-    .subscribe({
+      .subscribe({
 
-      next: (response: LoginResponse) => {
+        next: (response: LoginResponse) => {
 
-        this.ngZone.run(() => {
+          this.ngZone.run(() => {
 
-          console.log('Login successful:', response);
+            console.log('Login successful:', response);
 
-          this.isLoading = false;
+            this.isLoading = false;
 
-          const token = response.data.accessToken;
+            const token = response.data.accessToken;
 
-          this.tokenService.setToken(token);
+            this.tokenService.setToken(token);
 
-          const role = this.tokenService.getRole();
+            const refreshToken = response.data.refreshToken;
 
-          console.log('User role:', role);
+            if (refreshToken) {
+              this.tokenService.setRefreshToken(refreshToken);
+            }
 
-          switch (role) {
+            const role = this.tokenService.getRole();
 
-            case 'SUPER_ADMIN':
-              this.router.navigate(['/super-admin/dashboard']);
-              break;
+            console.log('User role:', role);
 
-            case 'ADMIN':
-              this.router.navigate(['/admin/dashboard']);
-              break;
+            switch (role) {
 
-            case 'TEACHER':
-              this.router.navigate(['/teacher/dashboard']);
-              break;
+              case 'SUPER_ADMIN':
+                this.router.navigate(['/super-admin/dashboard']);
+                break;
 
-            case 'STUDENT':
-              this.router.navigate(['/student/dashboard']);
-              break;
+              case 'ADMIN':
+                this.router.navigate(['/admin/dashboard']);
+                break;
 
-            default:
-              this.tokenService.removeToken();
+              case 'TEACHER':
+                this.router.navigate(['/teacher/dashboard']);
+                break;
+
+              case 'STUDENT':
+                this.router.navigate(['/student/dashboard']);
+                break;
+
+              default:
+                this.tokenService.removeAllTokens();
+
+                this.errorMessage =
+                  'Unable to determine your user role.';
+            }
+
+            this.cdr.detectChanges();
+          });
+        },
+
+        error: (error: HttpErrorResponse) => {
+
+          this.ngZone.run(() => {
+
+            console.error('Login failed:', error);
+
+            // STOP LOADING FIRST
+            this.isLoading = false;
+
+            // SET ERROR MESSAGE
+            if (error.status === 401) {
 
               this.errorMessage =
-                'Unable to determine your user role.';
-          }
+                'Invalid email or password. Please check your credentials and try again.';
 
-          this.cdr.detectChanges();
-        });
-      },
+            } else if (error.status === 403) {
 
-      error: (error: HttpErrorResponse) => {
+              this.errorMessage =
+                'You do not have permission to access the system.';
 
-        this.ngZone.run(() => {
+            } else if (error.status === 0) {
 
-          console.error('Login failed:', error);
+              this.errorMessage =
+                'Unable to connect to the server. Please try again later.';
 
-          // STOP LOADING FIRST
-          this.isLoading = false;
+            } else {
 
-          // SET ERROR MESSAGE
-          if (error.status === 401) {
+              this.errorMessage =
+                'Something went wrong. Please try again.';
+            }
 
-            this.errorMessage =
-              'Invalid email or password. Please check your credentials and try again.';
+            console.log('ERROR MESSAGE:', this.errorMessage);
+            console.log('LOADING:', this.isLoading);
 
-          } else if (error.status === 403) {
-
-            this.errorMessage =
-              'You do not have permission to access the system.';
-
-          } else if (error.status === 0) {
-
-            this.errorMessage =
-              'Unable to connect to the server. Please try again later.';
-
-          } else {
-
-            this.errorMessage =
-              'Something went wrong. Please try again.';
-          }
-
-          console.log('ERROR MESSAGE:', this.errorMessage);
-          console.log('LOADING:', this.isLoading);
-
-          // FORCE IMMEDIATE UI UPDATE
-          this.cdr.detectChanges();
-        });
-      }
-    });
+            // FORCE IMMEDIATE UI UPDATE
+            this.cdr.detectChanges();
+          });
+        }
+      });
   }
 
   togglePassword(): void {

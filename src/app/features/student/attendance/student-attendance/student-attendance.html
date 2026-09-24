@@ -16,41 +16,41 @@
 
     <div class="filter-area">
 
-      <app-search-input
-        placeholder="Search attendance..."
-        (searchChange)="onSearchChange($event)">
+      <app-search-input placeholder="Search attendance..." (searchChange)="onSearchChange($event)">
       </app-search-input>
 
     </div>
 
     @if (errorMessage) {
 
-      <div class="error-state">
-        {{ errorMessage }}
-      </div>
+    <div class="error-state">
+      {{ errorMessage }}
+    </div>
 
     }
 
     @if (!loading && attendance.length === 0) {
 
-      <div class="empty-state">
+    <div class="empty-state">
 
-        <h3>No attendance records found</h3>
+      <h3>No attendance records found</h3>
 
-        <p>
-          Your attendance records will appear here.
-        </p>
+      <p>
+        Your attendance records will appear here.
+      </p>
 
-      </div>
+    </div>
 
     } @else {
 
-      <app-data-table
-        [columns]="columns"
-        [data]="attendance"
-        [loading]="loading"
-        [showActions]="false">
-      </app-data-table>
+    <app-data-table [columns]="columns" [data]="attendance" [loading]="loading" [showActions]="false">
+    </app-data-table>
+
+    @if (allAttendance.length > 0) {
+    <app-pagination [currentPage]="currentPage" [totalItems]="allAttendance.length" [pageSize]="pageSize"
+      (pageChange)="onPageChange($event)">
+    </app-pagination>
+    }
 
     }
 

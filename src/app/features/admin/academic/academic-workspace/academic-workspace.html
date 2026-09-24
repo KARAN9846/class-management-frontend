@@ -4,22 +4,39 @@
   <!-- HEADER -->
   <!-- ===================================================== -->
 
-  <div class="workspace-header">
+<div class="workspace-header">
 
-    <div>
-      <span class="workspace-eyebrow">
-        ACADEMIC MANAGEMENT
-      </span>
+  <div class="workspace-header-content">
 
-      <h1>Academic Management</h1>
+    <div class="workspace-title-area">
 
-      <p>
-        Manage your academic structure, schools, classes,
-        sections and subjects from one workspace.
-      </p>
+      <div class="workspace-title-image">
+        <img
+          src="/assets/images/academics.png"
+          alt="Academic Management"
+        />
+      </div>
+
+      <div class="workspace-title-content">
+
+        <span class="workspace-eyebrow">
+          ACADEMIC MANAGEMENT
+        </span>
+
+        <h1>Academic Management</h1>
+
+        <p>
+          Manage your academic structure, schools, classes,
+          sections and subjects from one workspace.
+        </p>
+
+      </div>
+
     </div>
 
   </div>
+
+</div>
 
 
   <!-- ===================================================== -->
@@ -62,6 +79,13 @@
       (click)="setActiveTab('subjects')">
       Subjects
     </button>
+
+    <button
+  type="button"
+  [class.active]="activeTab === 'password-management'"
+  (click)="setActiveTab('password-management')">
+  Password Management
+</button>
 
   </div>
 
@@ -697,6 +721,12 @@
       <app-subjects></app-subjects>
 
     }
+
+    @if (activeTab === 'password-management') {
+
+  <app-password-management></app-password-management>
+
+}
 
   </div>
 
