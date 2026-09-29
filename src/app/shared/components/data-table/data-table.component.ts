@@ -41,7 +41,8 @@ export interface TableColumn {
     | 'date-time'
     | 'assignment-status'
     | 'attendance-teacher'
-    | 'attendance-last-updated';
+    | 'attendance-last-updated'
+    | 'resource-bars';
 }
 
 export interface TableAction {
@@ -309,6 +310,24 @@ export class DataTableComponent {
 
     return row[column.key];
   }
+
+  getResourceBarWidth(
+  value: number | null | undefined,
+  key: 'teacherCount' | 'studentCount' | 'classCount' | 'assignedRoleCount'
+): number {
+
+  const numericValue = Number(value) || 0;
+
+  const maxValue = Math.max(
+    ...this.data.map(row => Number(row?.[key]) || 0),
+    1
+  );
+
+  return Math.max(
+    numericValue > 0 ? 8 : 0,
+    Math.round((numericValue / maxValue) * 100)
+  );
+}
 
   getBooleanCellValue(
     row: any,

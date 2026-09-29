@@ -1,62 +1,176 @@
 <div class="page">
 
+  <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
+
   <div class="page-header">
 
-    <div>
-      <h1>Attendance</h1>
+    <div class="page-title-group">
 
-      <p>
-        View your attendance records
-      </p>
+      <div class="page-title-image">
+        <img
+          src="/assets/images/attendance.png"
+          alt="Attendance"
+        />
+      </div>
+
+      <div class="page-title-content">
+
+        <span class="page-title-eyebrow">
+          ATTENDANCE MANAGEMENT
+        </span>
+
+        <h1>
+          My Attendance
+        </h1>
+
+        <p>
+          Track your attendance records and academic presence
+        </p>
+
+      </div>
+
     </div>
 
   </div>
 
+
+  <!-- =====================================================
+       ATTENDANCE CONTENT
+       ===================================================== -->
+
   <div class="table-card">
 
-    <div class="filter-area">
+    <!-- SEARCH HEADER -->
 
-      <app-search-input placeholder="Search attendance..." (searchChange)="onSearchChange($event)">
-      </app-search-input>
+    <div class="table-toolbar">
+
+      <div class="toolbar-title">
+
+        <span class="toolbar-eyebrow">
+          ATTENDANCE RECORDS
+        </span>
+
+        <h2>
+          Attendance History
+        </h2>
+
+        <p>
+          View your attendance by academic year, class and date.
+        </p>
+
+      </div>
+
+      <div class="filter-area">
+
+        <app-search-input
+          placeholder="Search attendance..."
+          (searchChange)="onSearchChange($event)"
+        >
+        </app-search-input>
+
+      </div>
 
     </div>
+
+
+    <!-- ERROR -->
 
     @if (errorMessage) {
 
-    <div class="error-state">
-      {{ errorMessage }}
-    </div>
+      <div class="error-state">
+
+        <div class="error-icon">
+          !
+        </div>
+
+        <div>
+          <strong>
+            Unable to load attendance
+          </strong>
+
+          <p>
+            {{ errorMessage }}
+          </p>
+        </div>
+
+      </div>
 
     }
+
+
+    <!-- EMPTY -->
 
     @if (!loading && attendance.length === 0) {
 
-    <div class="empty-state">
+      <div class="empty-state">
 
-      <h3>No attendance records found</h3>
+        <div class="empty-icon">
+          ✓
+        </div>
 
-      <p>
-        Your attendance records will appear here.
-      </p>
+        <h3>
+          No attendance records found
+        </h3>
 
-    </div>
+        <p>
+          Your attendance records will appear here once
+          attendance has been marked.
+        </p>
+
+      </div>
 
     } @else {
 
-<app-data-table
-  [columns]="columns"
-  [data]="attendance"
-  [loading]="loading"
-  [showActions]="false"
-  [enableSearch]="true"
-  [searchPlaceholder]="'Search attendance...'">
-</app-data-table>
+      <!-- TABLE -->
 
-    @if (allAttendance.length > 0) {
-    <app-pagination [currentPage]="currentPage" [totalItems]="allAttendance.length" [pageSize]="pageSize"
-      (pageChange)="onPageChange($event)">
-    </app-pagination>
-    }
+      <div class="attendance-table-wrapper">
+
+        <app-data-table
+          [columns]="columns"
+          [data]="attendance"
+          [loading]="loading"
+          [showActions]="false"
+          [enableSearch]="true"
+          [searchPlaceholder]="'Search attendance...'"
+        >
+        </app-data-table>
+
+      </div>
+
+
+      <!-- PAGINATION -->
+
+      @if (allAttendance.length > 0) {
+
+        <div class="pagination-wrapper">
+
+          <div class="pagination-info">
+
+            Showing
+            <strong>
+              {{ attendance.length }}
+            </strong>
+            of
+            <strong>
+              {{ allAttendance.length }}
+            </strong>
+            attendance records
+
+          </div>
+
+          <app-pagination
+            [currentPage]="currentPage"
+            [totalItems]="allAttendance.length"
+            [pageSize]="pageSize"
+            (pageChange)="onPageChange($event)"
+          >
+          </app-pagination>
+
+        </div>
+
+      }
 
     }
 

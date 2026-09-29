@@ -4,38 +4,49 @@
        HEADER
        ===================================================== -->
 
-  <header class="dashboard-header">
+<!-- =========================================================
+     DASHBOARD HEADER
+     ========================================================= -->
 
-    <div class="header-content">
-      <span class="eyebrow">TEACHER PORTAL</span>
+<div class="page-header">
+
+  <div class="page-title-group">
+
+    <div class="page-title-image">
+      <img
+        src="/assets/images/dashboard.png"
+        alt="Teacher Dashboard"
+      />
+    </div>
+
+    <div class="page-title-content">
+
+      <span class="page-title-eyebrow">
+        TEACHER PORTAL
+      </span>
 
       <h1>Teacher Dashboard</h1>
 
       <p>
-        Monitor your teaching assignments and attendance activity.
+        Overview of your teaching workspace
       </p>
+
     </div>
 
-    <button
-      type="button"
-      class="refresh-button"
-      (click)="retry()"
-      [disabled]="loading"
-      aria-label="Refresh dashboard"
-    >
-      <svg
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
-        <path
-          d="M20 11a8.1 8.1 0 0 0-14.9-3.9L3 10m0 0V5m0 5h5M4 13a8.1 8.1 0 0 0 14.9 3.9L21 14m0 0v5m0-5h-5"
-        />
-      </svg>
+  </div>
 
-      <span>Refresh</span>
-    </button>
+  <button
+    type="button"
+    class="refresh-button"
+    aria-label="Refresh dashboard"
+    (click)="loadDashboard()">
 
-  </header>
+    <span class="refresh-icon">↻</span>
+    Refresh
+
+  </button>
+
+</div>
 
 
   <!-- =====================================================

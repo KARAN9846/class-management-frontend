@@ -1,7 +1,5 @@
 <div class="table-wrapper">
 
-
-
   @if (loading) {
 
   <div class="table-loading">
@@ -27,11 +25,16 @@
           track trackColumn($index, column)
           ) {
 
-          <th [style.width]="column.width" [class.text-center]="column.align === 'center'"
-            [class.text-right]="column.align === 'right'" [class.sticky-column]="
-    stickyFirstColumn && $index === 0
-  " [class.sortable-header]="column.sortable" [class.sort-active]="sortColumn === column.key"
-            (click)="toggleSort(column)">
+          <th
+            [style.width]="column.width"
+            [class.text-center]="column.align === 'center'"
+            [class.text-right]="column.align === 'right'"
+            [class.sticky-column]="stickyFirstColumn && $index === 0"
+            [class.sortable-header]="column.sortable"
+            [class.sort-active]="sortColumn === column.key"
+            (click)="toggleSort(column)"
+          >
+
             <span class="header-content">
 
               <span>
@@ -40,7 +43,12 @@
 
               @if (column.sortable) {
 
-              <span class="sort-indicator" [class.active]="sortColumn === column.key" aria-hidden="true">
+              <span
+                class="sort-indicator"
+                [class.active]="sortColumn === column.key"
+                aria-hidden="true"
+              >
+
                 @if (sortColumn !== column.key) {
                 ↕
                 } @else if (sortDirection === 'asc') {
@@ -48,11 +56,13 @@
                 } @else {
                 ↓
                 }
+
               </span>
 
               }
 
             </span>
+
           </th>
 
           }
@@ -86,18 +96,31 @@
           track trackColumn($index, column)
           ) {
 
-          <td [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'"
-            [class.sticky-column]="
-    stickyFirstColumn && $index === 0
-  ">
+          <td
+            [class.text-center]="column.align === 'center'"
+            [class.text-right]="column.align === 'right'"
+            [class.sticky-column]="stickyFirstColumn && $index === 0"
+          >
+
+            <!-- =====================================================
+                 STATUS
+                 ===================================================== -->
 
             @if (
             column.type === 'status' ||
             column.type === 'assignment-status'
             ) {
 
-            <app-status-badge [label]="getStatusLabel(row, column)" [variant]="getStatusVariant(row, column)">
+            <app-status-badge
+              [label]="getStatusLabel(row, column)"
+              [variant]="getStatusVariant(row, column)"
+            >
             </app-status-badge>
+
+
+            <!-- =====================================================
+                 PERMISSION COUNT
+                 ===================================================== -->
 
             } @else if (
             column.type === 'permission-count'
@@ -106,6 +129,11 @@
             <span class="permission-count">
               {{ row[column.key]?.length || 0 }}
             </span>
+
+
+            <!-- =====================================================
+                 PERMISSIONS
+                 ===================================================== -->
 
             } @else if (
             column.type === 'permissions'
@@ -136,6 +164,11 @@
 
             </div>
 
+
+            <!-- =====================================================
+                 DATE TIME
+                 ===================================================== -->
+
             } @else if (
             column.type === 'date-time'
             ) {
@@ -143,6 +176,11 @@
             <span class="date-cell">
               {{ formatDateTime(getCellValue(row, column)) }}
             </span>
+
+
+            <!-- =====================================================
+                 CURRENT
+                 ===================================================== -->
 
             } @else if (
             column.type === 'current'
@@ -155,6 +193,11 @@
             </span>
 
             }
+
+
+            <!-- =====================================================
+                 SECTIONS
+                 ===================================================== -->
 
             } @else if (
             column.type === 'sections'
@@ -173,33 +216,37 @@
 
                 {{ section.name }}
 
-                <button type="button" title="Edit" (click)="
-                                  onActionClick(
-                                    {
-                                      label: 'Edit Section',
-                                      type: 'edit-section'
-                                    },
-                                    section
-                                  )
-                                ">
-
+                <button
+                  type="button"
+                  title="Edit"
+                  (click)="
+                    onActionClick(
+                      {
+                        label: 'Edit Section',
+                        type: 'edit-section'
+                      },
+                      section
+                    )
+                  "
+                >
                   ✎
-
                 </button>
 
-                <button type="button" title="Delete" (click)="
-                                  onActionClick(
-                                    {
-                                      label: 'Delete Section',
-                                      type: 'delete-section',
-                                      danger: true
-                                    },
-                                    section
-                                  )
-                                ">
-
+                <button
+                  type="button"
+                  title="Delete"
+                  (click)="
+                    onActionClick(
+                      {
+                        label: 'Delete Section',
+                        type: 'delete-section',
+                        danger: true
+                      },
+                      section
+                    )
+                  "
+                >
                   ×
-
                 </button>
 
               </span>
@@ -216,6 +263,11 @@
 
             </div>
 
+
+            <!-- =====================================================
+                 ATTENDANCE TEACHER
+                 ===================================================== -->
+
             } @else if (
             column.type === 'attendance-teacher'
             ) {
@@ -223,6 +275,11 @@
             <span class="attendance-teacher-name">
               {{ getCellValue(row, column) }}
             </span>
+
+
+            <!-- =====================================================
+                 ATTENDANCE LAST UPDATED
+                 ===================================================== -->
 
             } @else if (
             column.type === 'attendance-last-updated'
@@ -242,20 +299,166 @@
 
             }
 
-            } @else if (column.type === 'student-name') {
+            
+            <!-- =====================================================
+                 RESOURCE BARS
+                 SuperAdmin Admin List
+                 ===================================================== -->
 
-            <div class="student-name-cell" role="link" tabindex="0" [title]="'Open ' + getCellValue(row, column)"
-              (click)="onStudentNameClick(row, $event)">
+            } @else if (
+            column.type === 'resource-bars'
+            ) {
+
+            <div
+              class="resource-bars"
+              [attr.title]="
+                'Teachers: ' + row['teacherCount'] +
+                ' | Students: ' + row['studentCount'] +
+                ' | Classes: ' + row['classCount'] +
+                ' | Roles: ' + row['assignedRoleCount']
+              "
+            >
+
+              <div class="resource-bar-row">
+
+                <span class="resource-bar-label">
+                  Teachers
+                </span>
+
+                <div class="resource-bar-track">
+
+                  <span
+                    class="resource-bar-fill teachers"
+                    [style.width.%]="
+                      getResourceBarWidth(
+                        row['teacherCount'],
+                        'teacherCount'
+                      )
+                    "
+                  >
+                  </span>
+
+                </div>
+
+                <span class="resource-bar-value">
+                  {{ row['teacherCount'] }}
+                </span>
+
+              </div>
+
+
+              <div class="resource-bar-row">
+
+                <span class="resource-bar-label">
+                  Students
+                </span>
+
+                <div class="resource-bar-track">
+
+                  <span
+                    class="resource-bar-fill students"
+                    [style.width.%]="
+                      getResourceBarWidth(
+                        row['studentCount'],
+                        'studentCount'
+                      )
+                    "
+                  >
+                  </span>
+
+                </div>
+
+                <span class="resource-bar-value">
+                  {{ row['studentCount'] }}
+                </span>
+
+              </div>
+
+
+              <div class="resource-bar-row">
+
+                <span class="resource-bar-label">
+                  Classes
+                </span>
+
+                <div class="resource-bar-track">
+
+                  <span
+                    class="resource-bar-fill classes"
+                    [style.width.%]="
+                      getResourceBarWidth(
+                        row['classCount'],
+                        'classCount'
+                      )
+                    "
+                  >
+                  </span>
+
+                </div>
+
+                <span class="resource-bar-value">
+                  {{ row['classCount'] }}
+                </span>
+
+              </div>
+
+
+              <div class="resource-bar-row">
+
+                <span class="resource-bar-label">
+                  Roles
+                </span>
+
+                <div class="resource-bar-track">
+
+                  <span
+                    class="resource-bar-fill roles"
+                    [style.width.%]="
+                      getResourceBarWidth(
+                        row['assignedRoleCount'],
+                        'assignedRoleCount'
+                      )
+                    "
+                  >
+                  </span>
+
+                </div>
+
+                <span class="resource-bar-value">
+                  {{ row['assignedRoleCount'] }}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 STUDENT NAME
+                 Only used by columns with type="student-name"
+                 ===================================================== -->
+
+            } @else if (
+            column.type === 'student-name'
+            ) {
+
+            <div
+              class="student-name-cell"
+              role="link"
+              tabindex="0"
+              [title]="'Open ' + getCellValue(row, column)"
+              (click)="onStudentNameClick(row, $event)"
+            >
 
               <div class="student-name-avatar">
 
                 {{
-                (
-                row['firstName']?.charAt(0) || ''
-                ) +
-                (
-                row['lastName']?.charAt(0) || ''
-                )
+                  (
+                    row['firstName']?.charAt(0) || ''
+                  ) +
+                  (
+                    row['lastName']?.charAt(0) || ''
+                  )
                 }}
 
               </div>
@@ -269,7 +472,11 @@
                 <span class="student-name-secondary">
 
                   Student
-                  <span class="student-name-separator">•</span>
+
+                  <span class="student-name-separator">
+                    •
+                  </span>
+
                   {{ row['rollNumber'] || 'No Roll No.' }}
 
                 </span>
@@ -278,12 +485,18 @@
 
             </div>
 
+
+            <!-- =====================================================
+                 NORMAL TEXT
+                 ===================================================== -->
+
             } @else {
 
-            <span class="text-cell" [title]="getCellValue(row, column)">
-
+            <span
+              class="text-cell"
+              [title]="getCellValue(row, column)"
+            >
               {{ getCellValue(row, column) }}
-
             </span>
 
 
@@ -306,19 +519,29 @@
           }
 
 
+          <!-- =======================================================
+               ACTIONS
+               ======================================================= -->
+
           @if (showActions) {
 
           <td class="actions-cell">
 
-            <button type="button" class="action-menu-trigger" aria-label="Open role actions" [attr.aria-expanded]="
-                        openActionRowId === getRowId(row, $index)
-                      " (click)="
-                        toggleActionMenu(
-                          row,
-                          $index,
-                          $event
-                        )
-                      ">
+            <button
+              type="button"
+              class="action-menu-trigger"
+              aria-label="Open role actions"
+              [attr.aria-expanded]="
+                openActionRowId === getRowId(row, $index)
+              "
+              (click)="
+                toggleActionMenu(
+                  row,
+                  $index,
+                  $event
+                )
+              "
+            >
 
               <span aria-hidden="true">
                 ⋮
@@ -336,12 +559,19 @@
 
         } @else {
 
+        <!-- =========================================================
+             EMPTY STATE
+             ========================================================== -->
+
         <tr>
 
-          <td class="empty-cell" [attr.colspan]="
-                  columns.length +
-                  (showActions ? 1 : 0)
-                ">
+          <td
+            class="empty-cell"
+            [attr.colspan]="
+              columns.length +
+              (showActions ? 1 : 0)
+            "
+          >
 
             <div class="empty-state">
 
@@ -373,30 +603,39 @@
 
 
   <!-- =========================================================
-         VIEWPORT-LEVEL ACTION MENU
-         IMPORTANT:
-         This is OUTSIDE .table-scroll.
-    ========================================================== -->
+       VIEWPORT-LEVEL ACTION MENU
+       IMPORTANT:
+       This is OUTSIDE .table-scroll.
+       ========================================================== -->
 
   @if (
   openActionRowId !== null &&
   actionMenuActions.length
   ) {
 
-  <div class="action-menu" [style.top.px]="actionMenuTop" [style.left.px]="actionMenuLeft"
-    (click)="$event.stopPropagation()">
+  <div
+    class="action-menu"
+    [style.top.px]="actionMenuTop"
+    [style.left.px]="actionMenuLeft"
+    (click)="$event.stopPropagation()"
+  >
 
     @for (
     action of actionMenuActions;
     track trackAction($index, action)
     ) {
 
-    <button type="button" class="action-menu-item" [class.danger]="action.danger" (click)="
-onActionMenuClick(
-  action,
-  openActionRow
-)
-            ">
+    <button
+      type="button"
+      class="action-menu-item"
+      [class.danger]="action.danger"
+      (click)="
+        onActionMenuClick(
+          action,
+          openActionRow
+        )
+      "
+    >
 
       @if (action.icon) {
 
@@ -420,8 +659,8 @@ onActionMenuClick(
 
 
   <!-- =========================================================
-         PAGINATION
-    ========================================================== -->
+       PAGINATION
+       ========================================================== -->
 
   @if (
   enablePagination &&
@@ -442,11 +681,14 @@ onActionMenuClick(
 
     <div class="pagination-controls">
 
-      <button type="button" class="pagination-button" [disabled]="currentPage === 1" (click)="previousPage()"
-        aria-label="Previous page">
-
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage === 1"
+        (click)="previousPage()"
+        aria-label="Previous page"
+      >
         ‹
-
       </button>
 
 
@@ -455,20 +697,26 @@ onActionMenuClick(
       track page
       ) {
 
-      <button type="button" class="pagination-page" [class.active]="currentPage === page" (click)="goToPage(page)">
-
+      <button
+        type="button"
+        class="pagination-page"
+        [class.active]="currentPage === page"
+        (click)="goToPage(page)"
+      >
         {{ page }}
-
       </button>
 
       }
 
 
-      <button type="button" class="pagination-button" [disabled]="currentPage === totalPages" (click)="nextPage()"
-        aria-label="Next page">
-
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage === totalPages"
+        (click)="nextPage()"
+        aria-label="Next page"
+      >
         ›
-
       </button>
 
     </div>

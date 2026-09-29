@@ -1,24 +1,28 @@
 <div class="page">
 
   <!-- ==================== PAGE HEADER ==================== -->
-  <div class="page-header">
+<div class="page-header">
+  <div class="page-title-group">
+    <div class="page-title-image">
+      <img
+        src="/assets/images/attendance.png"
+        alt="Attendance"
+      />
+    </div>
 
-    <div>
+    <div class="page-title-content">
+      <span class="page-title-eyebrow">
+        ATTENDANCE MANAGEMENT
+      </span>
+
       <h1>Attendance</h1>
 
       <p>
-        View student attendance records
+        Manage and monitor student attendance across your classes
       </p>
     </div>
-
-    <a
-      *ngIf="canMarkAttendance()"
-      class="mark-attendance-button"
-      routerLink="/teacher/attendance/mark">
-      Mark Attendance
-    </a>
-
   </div>
+</div>
 
 
   <!-- ==================== TABLE CARD ==================== -->

@@ -6,26 +6,50 @@
 
   <div class="page-header">
 
-    <div>
-      <h1>Assignments</h1>
+    <div class="page-title-group">
 
-      <p>
-        View your assignments, deadlines and academic tasks.
-      </p>
+      <div class="page-title-image">
+        <img
+          src="/assets/images/assignments.png"
+          alt="Assignments"
+        />
+      </div>
+
+      <div class="page-title-content">
+
+        <span class="page-title-eyebrow">
+          ASSIGNMENT MANAGEMENT
+        </span>
+
+        <h1>
+          My Assignments
+        </h1>
+
+        <p>
+          View your assignments, deadlines and academic tasks.
+        </p>
+
+      </div>
+
     </div>
 
   </div>
 
 
   <!-- =====================================================
-       SUMMARY CARDS
+       SUMMARY
        ===================================================== -->
 
   <div class="summary-grid">
 
     <div class="summary-card">
 
+      <div class="summary-icon total">
+        <span>✓</span>
+      </div>
+
       <div class="summary-content">
+
         <span class="summary-label">
           Total Assignments
         </span>
@@ -33,6 +57,7 @@
         <span class="summary-value">
           {{ totalCount }}
         </span>
+
       </div>
 
     </div>
@@ -40,7 +65,12 @@
 
     <div class="summary-card">
 
+      <div class="summary-icon upcoming">
+        <span>→</span>
+      </div>
+
       <div class="summary-content">
+
         <span class="summary-label">
           Upcoming
         </span>
@@ -48,6 +78,7 @@
         <span class="summary-value">
           {{ dueCount }}
         </span>
+
       </div>
 
     </div>
@@ -55,7 +86,12 @@
 
     <div class="summary-card">
 
+      <div class="summary-icon soon">
+        <span>!</span>
+      </div>
+
       <div class="summary-content">
+
         <span class="summary-label">
           Due Soon
         </span>
@@ -63,6 +99,7 @@
         <span class="summary-value">
           {{ dueSoonCount }}
         </span>
+
       </div>
 
     </div>
@@ -70,7 +107,12 @@
 
     <div class="summary-card">
 
+      <div class="summary-icon overdue">
+        <span>!</span>
+      </div>
+
       <div class="summary-content">
+
         <span class="summary-label">
           Overdue
         </span>
@@ -78,6 +120,7 @@
         <span class="summary-value">
           {{ overdueCount }}
         </span>
+
       </div>
 
     </div>
@@ -91,7 +134,10 @@
 
   <div class="assignment-card">
 
-    <!-- FILTER AREA -->
+
+    <!-- ===================================================
+         FILTER AREA
+         =================================================== -->
 
     <div class="filter-area">
 
@@ -99,7 +145,8 @@
 
         <app-search-input
           placeholder="Search assignments..."
-          (searchChange)="onSearchChange($event)">
+          (searchChange)="onSearchChange($event)"
+        >
         </app-search-input>
 
       </div>
@@ -113,7 +160,8 @@
 
         <select
           id="subjectFilter"
-          [(ngModel)]="selectedSubject">
+          [(ngModel)]="selectedSubject"
+        >
 
           <option value="ALL">
             All Subjects
@@ -134,64 +182,82 @@
     </div>
 
 
-    <!-- DUE FILTERS -->
+    <!-- ===================================================
+         STATUS FILTERS
+         =================================================== -->
 
     <div class="status-filters">
 
       <button
         type="button"
         [class.active]="selectedFilter === 'ALL'"
-        (click)="setFilter('ALL')">
-
+        (click)="setFilter('ALL')"
+      >
         All
-
       </button>
 
 
       <button
         type="button"
         [class.active]="selectedFilter === 'DUE'"
-        (click)="setFilter('DUE')">
-
+        (click)="setFilter('DUE')"
+      >
         Upcoming
-
       </button>
 
 
       <button
         type="button"
         [class.active]="selectedFilter === 'DUE_SOON'"
-        (click)="setFilter('DUE_SOON')">
-
+        (click)="setFilter('DUE_SOON')"
+      >
         Due Soon
-
       </button>
 
 
       <button
         type="button"
         [class.active]="selectedFilter === 'OVERDUE'"
-        (click)="setFilter('OVERDUE')">
-
+        (click)="setFilter('OVERDUE')"
+      >
         Overdue
-
       </button>
 
     </div>
 
 
-    <!-- ERROR -->
+    <!-- ===================================================
+         ERROR
+         =================================================== -->
 
     @if (errorMessage) {
 
       <div class="error-state">
-        {{ errorMessage }}
+
+        <span class="error-icon">
+          !
+        </span>
+
+        <div>
+
+          <strong>
+            Unable to load assignments
+          </strong>
+
+          <p>
+            {{ errorMessage }}
+          </p>
+
+        </div>
+
       </div>
 
     }
 
 
-    <!-- LOADING -->
+    <!-- ===================================================
+         LOADING
+         =================================================== -->
 
     @if (loading) {
 
@@ -209,6 +275,14 @@
 
             <div class="skeleton-line skeleton-text short"></div>
 
+            <div class="skeleton-details">
+
+              <div class="skeleton-detail"></div>
+              <div class="skeleton-detail"></div>
+              <div class="skeleton-detail"></div>
+
+            </div>
+
             <div class="skeleton-footer"></div>
 
           </div>
@@ -220,7 +294,9 @@
     }
 
 
-    <!-- EMPTY -->
+    <!-- ===================================================
+         EMPTY
+         =================================================== -->
 
     @else if (filteredAssignments.length === 0) {
 
@@ -243,7 +319,9 @@
     }
 
 
-    <!-- ASSIGNMENTS -->
+    <!-- ===================================================
+         ASSIGNMENTS
+         =================================================== -->
 
     @else {
 
@@ -255,6 +333,7 @@
         ) {
 
           <article class="assignment-item">
+
 
             <!-- CARD HEADER -->
 
@@ -283,10 +362,9 @@
                 [class.due-soon]="
                   !isOverdue(assignment) &&
                   isDueSoon(assignment)
-                ">
-
+                "
+              >
                 {{ getDueLabel(assignment) }}
-
               </span>
 
             </div>
@@ -364,9 +442,11 @@
                 {{ assignment.className }}
 
                 @if (assignment.sectionName) {
+
                   <span>
                     • {{ assignment.sectionName }}
                   </span>
+
                 }
 
               </div>
@@ -375,10 +455,10 @@
               <button
                 type="button"
                 class="view-button"
-                (click)="openDetails(assignment)">
-
+                (click)="openDetails(assignment)"
+              >
                 View Details
-
+                <span>→</span>
               </button>
 
             </div>
@@ -396,25 +476,32 @@
 </div>
 
 
-<!-- =====================================================
+<!-- =======================================================
      DETAILS MODAL
-     ===================================================== -->
+     ======================================================= -->
 
 @if (selectedAssignment) {
 
   <div
     class="modal-backdrop"
-    (click)="closeDetails()">
+    (click)="closeDetails()"
+  >
 
     <div
       class="details-modal"
-      (click)="$event.stopPropagation()">
+      (click)="$event.stopPropagation()"
+    >
+
 
       <!-- MODAL HEADER -->
 
       <div class="modal-header">
 
         <div>
+
+          <span class="modal-eyebrow">
+            ASSIGNMENT DETAILS
+          </span>
 
           <span class="modal-subject">
             {{ selectedAssignment.subjectName }}
@@ -431,10 +518,9 @@
           type="button"
           class="close-button"
           aria-label="Close"
-          (click)="closeDetails()">
-
+          (click)="closeDetails()"
+        >
           ×
-
         </button>
 
       </div>
@@ -496,7 +582,7 @@
             </span>
 
             <span class="modal-value">
-              {{ selectedAssignment.sectionName }}
+              {{ selectedAssignment.sectionName || '—' }}
             </span>
 
           </div>
@@ -536,16 +622,13 @@
 
             <span
               class="modal-status"
-              [class.overdue]="
-                isOverdue(selectedAssignment)
-              "
+              [class.overdue]="isOverdue(selectedAssignment)"
               [class.due-soon]="
                 !isOverdue(selectedAssignment) &&
                 isDueSoon(selectedAssignment)
-              ">
-
+              "
+            >
               {{ getDueLabel(selectedAssignment) }}
-
             </span>
 
           </div>
@@ -562,10 +645,9 @@
         <button
           type="button"
           class="close-modal-button"
-          (click)="closeDetails()">
-
+          (click)="closeDetails()"
+        >
           Close
-
         </button>
 
       </div>

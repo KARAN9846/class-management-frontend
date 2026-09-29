@@ -5,128 +5,286 @@
        ===================================================== -->
 
   <div class="page-header">
-    <div>
-      <h1>My Fees</h1>
-      <p>View your fee details, payments and receipts.</p>
+
+    <div class="page-title-group">
+
+      <div class="page-title-image">
+        <img
+          src="/assets/images/studentFees.png"
+          alt="Fees"
+        />
+      </div>
+
+      <div class="page-title-content">
+
+        <span class="page-title-eyebrow">
+          FEES MANAGEMENT
+        </span>
+
+        <h1>
+          My Fees
+        </h1>
+
+        <p>
+          View your fee details, payments and receipts.
+        </p>
+
+      </div>
+
     </div>
+
   </div>
+
+
+  <!-- =====================================================
+       LOADING
+       ===================================================== -->
+
+  @if (loading) {
+
+    <div class="state-card">
+
+      <div class="state-icon loading-icon">
+        …
+      </div>
+
+      <h3>
+        Loading fee details
+      </h3>
+
+      <p>
+        Please wait while your fee information is being loaded.
+      </p>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       ERROR
+       ===================================================== -->
+
+  @else if (errorMessage) {
+
+    <div class="state-card error">
+
+      <div class="state-icon error-icon">
+        !
+      </div>
+
+      <div>
+        <h3>
+          Unable to load fees
+        </h3>
+
+        <p>
+          {{ errorMessage }}
+        </p>
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       EMPTY
+       ===================================================== -->
+
+  @else if (fees.length === 0) {
+
+    <div class="state-card">
+
+      <div class="state-icon empty-icon">
+        ✓
+      </div>
+
+      <h3>
+        No fee records found
+      </h3>
+
+      <p>
+        Your fee information will appear here once it has been
+        assigned.
+      </p>
+
+    </div>
+
+  }
 
 
   <!-- =====================================================
        FEE LIST
        ===================================================== -->
 
-  @if (loading) {
-
-    <div class="state">
-      Loading fees...
-    </div>
-
-  } @else if (errorMessage) {
-
-    <div class="state error">
-      {{ errorMessage }}
-    </div>
-
-  } @else if (fees.length === 0) {
-
-    <div class="state">
-      No fee records found.
-    </div>
-
-  } @else {
+  @else {
 
     <div class="fee-list">
 
       @for (fee of fees; track fee.id) {
 
-        <div class="fee-card">
+        <section class="fee-card">
 
-          <!-- Fee Header -->
+          <!-- Fee Card Header -->
+
           <div class="fee-card-header">
 
-            <div>
-              <h2>{{ fee.academicYearName }}</h2>
+            <div class="fee-title">
+
+              <span class="card-eyebrow">
+                ACADEMIC FEE
+              </span>
+
+              <h2>
+                {{ fee.academicYearName }}
+              </h2>
 
               <p>
                 {{ fee.className }}
 
                 @if (fee.sectionName) {
-                  · {{ fee.sectionName }}
+                  <span class="separator">·</span>
+                  Section {{ fee.sectionName }}
                 }
               </p>
+
             </div>
 
-            <span
-              class="status"
-              [class]="getStatusClass(fee.status)">
-              {{ fee.status }}
-            </span>
+
+            <div class="fee-status-area">
+
+              <span class="status-label">
+                STATUS
+              </span>
+
+              <span
+                class="status"
+                [ngClass]="getStatusClass(fee.status)">
+                {{ fee.status }}
+              </span>
+
+            </div>
 
           </div>
 
 
           <!-- Fee Summary -->
+
           <div class="fee-summary">
 
             <div class="summary-item">
-              <span>Original Fee</span>
+
+              <span>
+                Original Fee
+              </span>
+
               <strong>
                 ₹{{ fee.originalAmount | number:'1.2-2' }}
               </strong>
+
             </div>
 
+
             <div class="summary-item">
-              <span>Discount</span>
+
+              <span>
+                Discount
+              </span>
+
               <strong>
                 ₹{{ fee.discountAmount | number:'1.2-2' }}
               </strong>
+
             </div>
 
-            <div class="summary-item">
-              <span>Payable</span>
+
+            <div class="summary-item highlight">
+
+              <span>
+                Payable Amount
+              </span>
+
               <strong>
                 ₹{{ fee.payableAmount | number:'1.2-2' }}
               </strong>
+
             </div>
 
-            <div class="summary-item">
-              <span>Paid</span>
+
+            <div class="summary-item paid">
+
+              <span>
+                Paid Amount
+              </span>
+
               <strong>
                 ₹{{ fee.paidAmount | number:'1.2-2' }}
               </strong>
+
             </div>
 
-            <div class="summary-item">
-              <span>Remaining</span>
+
+            <div class="summary-item remaining">
+
+              <span>
+                Remaining
+              </span>
+
               <strong>
                 ₹{{ fee.remainingAmount | number:'1.2-2' }}
               </strong>
+
             </div>
 
           </div>
 
 
-          <!-- Fee Footer -->
+          <!-- Card Footer -->
+
           <div class="fee-card-footer">
 
-            <span>
-              Roll No: {{ fee.rollNumber }}
-            </span>
+            <div class="fee-footer-info">
 
-            <div class="fee-actions">
+              <span class="footer-label">
+                PAYMENT STATUS
+              </span>
 
-              <button
-                type="button"
-                (click)="viewPayments(fee)">
-                View Payments
-              </button>
+              @if (fee.remainingAmount > 0) {
+
+                <span class="footer-message">
+                  Amount remaining for this fee
+                </span>
+
+              } @else {
+
+                <span class="footer-message success">
+                  Fee fully paid
+                </span>
+
+              }
 
             </div>
 
+
+            <button
+              type="button"
+              class="payments-button"
+              (click)="viewPayments(fee)">
+
+              <span>
+                View Payments
+              </span>
+
+              <span class="button-arrow">
+                →
+              </span>
+
+            </button>
+
           </div>
 
-        </div>
+        </section>
 
       }
 
@@ -136,137 +294,290 @@
 
 
   <!-- =====================================================
-       PAYMENT HISTORY
+       PAYMENT HISTORY POPUP
        ===================================================== -->
 
   @if (selectedFee && !showReceipt) {
 
-    <div class="payments-panel">
+    <div
+      class="payment-overlay"
+      (click)="closePayments()">
 
-      <div class="panel-header">
+      <div
+        class="payments-panel"
+        role="dialog"
+        aria-modal="true"
+        (click)="$event.stopPropagation()">
 
-        <div>
-          <h2>Payment History</h2>
 
-          <p>
-            {{ selectedFee.academicYearName }}
-            ·
-            {{ selectedFee.className }}
+        <!-- Popup Header -->
 
-            @if (selectedFee.sectionName) {
-              · {{ selectedFee.sectionName }}
-            }
-          </p>
+        <div class="panel-header">
+
+          <div class="panel-title">
+
+            <span class="panel-eyebrow">
+              PAYMENT HISTORY
+            </span>
+
+            <h2>
+              Payment Records
+            </h2>
+
+            <p>
+
+              {{ selectedFee.academicYearName }}
+              <span>·</span>
+              {{ selectedFee.className }}
+
+              @if (selectedFee.sectionName) {
+                <span>·</span>
+                {{ selectedFee.sectionName }}
+              }
+
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="close-button"
+            aria-label="Close payment history"
+            (click)="closePayments()">
+
+            ×
+
+          </button>
+
         </div>
 
-        <button
-          type="button"
-          class="close-button"
-          (click)="closePayments()">
-          ×
-        </button>
+
+        <!-- Payment Summary -->
+
+        <div class="payment-summary">
+
+          <div class="payment-summary-item">
+
+            <span>
+              Payable
+            </span>
+
+            <strong>
+              ₹{{ selectedFee.payableAmount | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+
+          <div class="payment-summary-item paid">
+
+            <span>
+              Paid
+            </span>
+
+            <strong>
+              ₹{{ selectedFee.paidAmount | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+
+          <div class="payment-summary-item remaining">
+
+            <span>
+              Remaining
+            </span>
+
+            <strong>
+              ₹{{ selectedFee.remainingAmount | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- Loading Payments -->
+
+        @if (paymentsLoading) {
+
+          <div class="state payment-state">
+
+            <div class="state-icon loading-icon">
+              …
+            </div>
+
+            <p>
+              Loading payment history...
+            </p>
+
+          </div>
+
+        }
+
+
+        <!-- No Payments -->
+
+        @else if (payments.length === 0) {
+
+          <div class="state payment-state">
+
+            <div class="state-icon empty-icon">
+              ✓
+            </div>
+
+            <h3>
+              No payments recorded
+            </h3>
+
+            <p>
+              No payment records are available for this fee yet.
+            </p>
+
+          </div>
+
+        }
+
+
+        <!-- Payment List -->
+
+        @else {
+
+          <div class="payment-list">
+
+            @for (payment of payments; track payment.id) {
+
+              <div class="payment-row">
+
+
+                <!-- Date -->
+
+                <div class="payment-item">
+
+                  <span>
+                    Payment Date
+                  </span>
+
+                  <strong>
+                    {{ payment.paymentDate }}
+                  </strong>
+
+                </div>
+
+
+                <!-- Amount -->
+
+                <div class="payment-item amount">
+
+                  <span>
+                    Payment Amount
+                  </span>
+
+                  <strong>
+                    ₹{{ payment.amount | number:'1.2-2' }}
+                  </strong>
+
+                </div>
+
+
+                <!-- Payment Method -->
+
+                <div class="payment-item">
+
+                  <span>
+                    Method
+                  </span>
+
+                  <strong>
+                    {{ payment.paymentMethod || '—' }}
+                  </strong>
+
+                </div>
+
+
+                <!-- Payment Type -->
+
+                <div class="payment-item">
+
+                  <span>
+                    Payment Type
+                  </span>
+
+                  <strong>
+                    {{ payment.paymentType || '—' }}
+                  </strong>
+
+                </div>
+
+
+                <!-- Remaining -->
+
+                <div class="payment-item">
+
+                  <span>
+                    Remaining
+                  </span>
+
+                  <strong>
+                    ₹{{ payment.remainingAmount | number:'1.2-2' }}
+                  </strong>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="payment-status-info">
+
+                  <span>
+                    Status
+                  </span>
+
+                  <strong
+                    class="payment-status"
+                    [ngClass]="getStatusClass(payment.status)">
+
+                    {{ payment.status }}
+
+                  </strong>
+
+
+                  @if (payment.revisionReason) {
+
+                    <small class="revision-reason">
+                      {{ payment.revisionReason }}
+                    </small>
+
+                  }
+
+                </div>
+
+
+                <!-- Receipt -->
+
+                <div class="receipt-action">
+
+                  <button
+                    type="button"
+                    class="receipt-button"
+                    (click)="viewReceiptForPayment(payment)">
+
+                    Receipt
+
+                  </button>
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        }
 
       </div>
-
-
-      @if (paymentsLoading) {
-
-        <div class="state">
-          Loading payments...
-        </div>
-
-      } @else if (payments.length === 0) {
-
-        <div class="state">
-          No payments found.
-        </div>
-
-      } @else {
-
-        <div class="payment-list">
-
-          @for (payment of payments; track payment.id) {
-
-<div class="payment-row">
-
-  <!-- Payment Amount -->
-  <div>
-    <span>Payment</span>
-
-    <strong>
-      ₹{{ payment.amount | number:'1.2-2' }}
-    </strong>
-
-    <small>
-      {{ payment.paymentDate | date:'dd MMM yyyy' }}
-    </small>
-  </div>
-
-  <!-- Payment Method -->
-  <div>
-    <span>Method</span>
-
-    <strong>
-      {{ payment.paymentMethod }}
-    </strong>
-
-    <small>
-      {{ payment.paymentType }}
-    </small>
-  </div>
-
-  <!-- Total Paid -->
-  <div>
-    <span>Total Paid</span>
-
-    <strong>
-      ₹{{ payment.totalPaidAmount | number:'1.2-2' }}
-    </strong>
-  </div>
-
-  <!-- Remaining -->
-  <div>
-    <span>Remaining</span>
-
-    <strong>
-      ₹{{ payment.remainingAmount | number:'1.2-2' }}
-    </strong>
-  </div>
-
-  <!-- Status & Revision Reason -->
-  <div class="payment-status-info">
-    <span>Status</span>
-
-    <strong
-      class="payment-status"
-      [ngClass]="getStatusClass(payment.status)">
-      {{ payment.status }}
-    </strong>
-
-    @if (payment.revisionReason) {
-      <small class="revision-reason">
-        {{ payment.revisionReason }}
-      </small>
-    }
-  </div>
-
-  <!-- Receipt -->
-  <div class="receipt-action">
-    <button
-      type="button"
-      class="receipt-button"
-      (click)="viewReceiptForPayment(payment)">
-      Receipt
-    </button>
-  </div>
-
-</div>
-
-          }
-
-        </div>
-
-      }
 
     </div>
 
@@ -279,270 +590,454 @@
 
   @if (showReceipt) {
 
-    <div class="receipt-overlay">
+    <div
+      class="receipt-overlay"
+      (click)="closeReceipt()">
 
-      <div class="receipt-modal">
+      <div
+        class="receipt-modal"
+        role="dialog"
+        aria-modal="true"
+        (click)="$event.stopPropagation()">
+
 
         <!-- Popup Header -->
+
         <div class="panel-header">
 
           <div>
-            <h2>Receipt</h2>
+
+            <span class="panel-eyebrow">
+              PAYMENT RECEIPT
+            </span>
+
+            <h2>
+              Receipt
+            </h2>
 
             @if (selectedFee) {
 
               <p>
+
                 {{ selectedFee.academicYearName }}
-                ·
+
+                <span>·</span>
+
                 {{ selectedFee.className }}
 
                 @if (selectedFee.sectionName) {
-                  · {{ selectedFee.sectionName }}
+
+                  <span>·</span>
+
+                  {{ selectedFee.sectionName }}
+
                 }
+
               </p>
 
             }
 
           </div>
 
+
           <button
             type="button"
             class="close-button"
+            aria-label="Close receipt"
             (click)="closeReceipt()">
+
             ×
+
           </button>
 
         </div>
 
 
         <!-- Loading -->
+
         @if (receiptLoading) {
 
           <div class="state">
-            Loading receipt...
+
+            <div class="state-icon loading-icon">
+              …
+            </div>
+
+            <p>
+              Loading receipt...
+            </p>
+
           </div>
 
         }
 
 
         <!-- No Receipt -->
+
         @else if (!receipt) {
 
           <div class="state">
-            No receipt found.
+
+            <div class="state-icon empty-icon">
+              !
+            </div>
+
+            <h3>
+              No receipt found
+            </h3>
+
+            <p>
+              A receipt could not be found for this payment.
+            </p>
+
           </div>
 
         }
 
 
         <!-- Receipt -->
+
         @else {
 
- <div class="receipt-card">
+          <div class="receipt-card">
 
-  <!-- Receipt Branding -->
-  <div class="receipt-branding">
 
-    <div class="receipt-branding-left">
+            <!-- Receipt Branding -->
 
-      @if (getReceiptImageUrl(receipt.logoPath); as logoUrl) {
-        <img
-          [src]="logoUrl"
-          alt="Institution Logo"
-          class="receipt-logo"
-        />
-      }
+            <div class="receipt-branding">
 
-      <div class="receipt-institution">
-        <h2>{{ receipt.institutionName }}</h2>
+              <div class="receipt-branding-left">
 
-        @if (receipt.institutionTagline) {
-          <p>{{ receipt.institutionTagline }}</p>
-        }
-      </div>
+                @if (getReceiptImageUrl(receipt.logoPath); as logoUrl) {
 
-    </div>
+                  <img
+                    [src]="logoUrl"
+                    alt="Institution Logo"
+                    class="receipt-logo"
+                  />
 
-    @if (getReceiptImageUrl(receipt.badgePath); as badgeUrl) {
-      <img
-        [src]="badgeUrl"
-        alt="Receipt Badge"
-        class="receipt-badge"
-      />
-    }
+                }
 
-  </div>
 
-  <!-- Receipt Title -->
-  <div class="receipt-title">
-    {{ receipt.receiptTitle }}
-  </div>
+                <div class="receipt-institution">
 
-  <!-- Receipt Header -->
-<div class="receipt-card-header">
+                  <h2>
+                    {{ receipt.institutionName }}
+                  </h2>
 
-  <div>
-    <span>Receipt Number</span>
-    <strong>
-      {{ receipt.receiptNumber }}
-    </strong>
-  </div>
+                  @if (receipt.institutionTagline) {
 
-  <div>
-    <span>Issued</span>
-    <strong>
-      {{ receipt.issuedAt | date:'dd MMM yyyy, hh:mm a' }}
-    </strong>
-  </div>
+                    <p>
+                      {{ receipt.institutionTagline }}
+                    </p>
 
-  <div>
-    <span>Status</span>
+                  }
 
-    <strong
-      class="receipt-status"
-      [ngClass]="getStatusClass(receipt.status)">
-      {{ receipt.status }}
-    </strong>
-  </div>
+                </div>
 
-</div>
+              </div>
 
-  <!-- Student Information -->
-  <div class="receipt-section">
 
-    <h3>Student Information</h3>
+              @if (getReceiptImageUrl(receipt.badgePath); as badgeUrl) {
 
-    <div class="receipt-grid">
+                <img
+                  [src]="badgeUrl"
+                  alt="Receipt Badge"
+                  class="receipt-badge"
+                />
 
-      <div>
-        <span>Student</span>
-        <strong>
-          {{ receipt.studentName }}
-        </strong>
-      </div>
+              }
 
-      <div>
-        <span>Roll No.</span>
-        <strong>
-          {{ receipt.studentRollNumber || '-' }}
-        </strong>
-      </div>
+            </div>
 
-      <div>
-        <span>Academic Year</span>
-        <strong>
-          {{ receipt.academicYear }}
-        </strong>
-      </div>
 
-      <div>
-        <span>Class</span>
-        <strong>
-          {{ receipt.className }}
-        </strong>
-      </div>
+            <!-- Receipt Title -->
 
-      <div>
-        <span>Section</span>
-        <strong>
-          {{ receipt.sectionName }}
-        </strong>
-      </div>
+            <div class="receipt-title">
 
-    </div>
+              {{ receipt.receiptTitle }}
 
-  </div>
+            </div>
 
-  <!-- Fee Summary -->
-  <div class="receipt-section">
 
-    <h3>Fee Summary</h3>
+            <!-- Receipt Header -->
 
-    <div class="receipt-amount-list">
+            <div class="receipt-card-header">
 
-      <div>
-        <span>Original Fee</span>
-        <strong>
-          ₹{{ receipt.originalFee | number:'1.2-2' }}
-        </strong>
-      </div>
+              <div>
 
-      <div>
-        <span>Student Discount</span>
-        <strong>
-          ₹{{ receipt.studentDiscount | number:'1.2-2' }}
-        </strong>
-      </div>
+                <span>
+                  Receipt Number
+                </span>
 
-      <div>
-        <span>Payable Amount</span>
-        <strong>
-          ₹{{ receipt.payableAmount | number:'1.2-2' }}
-        </strong>
-      </div>
+                <strong>
+                  {{ receipt.receiptNumber }}
+                </strong>
 
-      <div>
-        <span>Previous Paid</span>
-        <strong>
-          ₹{{ receipt.previousPaidAmount | number:'1.2-2' }}
-        </strong>
-      </div>
+              </div>
 
-      <div>
-        <span>Current Payment</span>
-        <strong>
-          ₹{{ receipt.paymentAmount | number:'1.2-2' }}
-        </strong>
-      </div>
 
-      <div>
-        <span>Total Paid</span>
-        <strong>
-          ₹{{ receipt.totalPaidAmount | number:'1.2-2' }}
-        </strong>
-      </div>
+              <div>
 
-      <div>
-        <span>Remaining</span>
-        <strong>
-          ₹{{ receipt.remainingAmount | number:'1.2-2' }}
-        </strong>
-      </div>
+                <span>
+                  Issued
+                </span>
 
-    </div>
+                <strong>
+                  {{ receipt.issuedAt | date:'dd MMM yyyy, hh:mm a' }}
+                </strong>
 
-  </div>
+              </div>
 
-            <!-- Payment Information -->
+
+              <div>
+
+                <span>
+                  Status
+                </span>
+
+                <strong
+                  class="receipt-status"
+                  [ngClass]="getStatusClass(receipt.status)">
+
+                  {{ receipt.status }}
+
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <!-- Student Information -->
+
             <div class="receipt-section">
 
-              <h3>Payment Information</h3>
+              <h3>
+                Student Information
+              </h3>
 
               <div class="receipt-grid">
 
                 <div>
-                  <span>Method</span>
+
+                  <span>
+                    Student
+                  </span>
+
+                  <strong>
+                    {{ receipt.studentName }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Roll No.
+                  </span>
+
+                  <strong>
+                    {{ receipt.studentRollNumber || '-' }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Academic Year
+                  </span>
+
+                  <strong>
+                    {{ receipt.academicYear }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Class
+                  </span>
+
+                  <strong>
+                    {{ receipt.className }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Section
+                  </span>
+
+                  <strong>
+                    {{ receipt.sectionName }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- Fee Summary -->
+
+            <div class="receipt-section">
+
+              <h3>
+                Fee Summary
+              </h3>
+
+              <div class="receipt-amount-list">
+
+                <div>
+
+                  <span>
+                    Original Fee
+                  </span>
+
+                  <strong>
+                    ₹{{ receipt.originalFee | number:'1.2-2' }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Student Discount
+                  </span>
+
+                  <strong>
+                    ₹{{ receipt.studentDiscount | number:'1.2-2' }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Payable Amount
+                  </span>
+
+                  <strong>
+                    ₹{{ receipt.payableAmount | number:'1.2-2' }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Previous Paid
+                  </span>
+
+                  <strong>
+                    ₹{{ receipt.previousPaidAmount | number:'1.2-2' }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Current Payment
+                  </span>
+
+                  <strong>
+                    ₹{{ receipt.paymentAmount | number:'1.2-2' }}
+                  </strong>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    Total Paid
+                  </span>
+
+                  <strong>
+                    ₹{{ receipt.totalPaidAmount | number:'1.2-2' }}
+                  </strong>
+
+                </div>
+
+
+                <div class="receipt-remaining">
+
+                  <span>
+                    Remaining
+                  </span>
+
+                  <strong>
+                    ₹{{ receipt.remainingAmount | number:'1.2-2' }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- Payment Information -->
+
+            <div class="receipt-section">
+
+              <h3>
+                Payment Information
+              </h3>
+
+              <div class="receipt-grid">
+
+                <div>
+
+                  <span>
+                    Method
+                  </span>
 
                   <strong>
                     {{ receipt.paymentMethod }}
                   </strong>
+
                 </div>
 
+
                 <div>
-                  <span>Payment Type</span>
+
+                  <span>
+                    Payment Type
+                  </span>
 
                   <strong>
                     {{ receipt.paymentType }}
                   </strong>
+
                 </div>
 
               </div>
+
 
               @if (receipt.notes) {
 
                 <div class="receipt-notes">
 
-                  <span>Notes</span>
+                  <span>
+                    Notes
+                  </span>
 
                   <p>
                     {{ receipt.notes }}
@@ -553,54 +1048,72 @@
               }
 
             </div>
+
+
             <!-- Signature & Stamp -->
-<div class="receipt-signature-area">
 
-  @if (getReceiptImageUrl(receipt.signaturePath); as signatureUrl) {
-    <div class="signature-block">
+            <div class="receipt-signature-area">
 
-      <img
-        [src]="signatureUrl"
-        alt="Authorized Signature"
-        class="receipt-signature"
-      />
+              @if (getReceiptImageUrl(receipt.signaturePath); as signatureUrl) {
 
-      @if (receipt.signatureName) {
-        <strong>
-          {{ receipt.signatureName }}
-        </strong>
-      }
+                <div class="signature-block">
 
-      @if (receipt.signatureDesignation) {
-        <span>
-          {{ receipt.signatureDesignation }}
-        </span>
-      }
+                  <img
+                    [src]="signatureUrl"
+                    alt="Authorized Signature"
+                    class="receipt-signature"
+                  />
 
-    </div>
-  }
+                  @if (receipt.signatureName) {
 
-  @if (getReceiptImageUrl(receipt.stampPath); as stampUrl) {
-    <img
-      [src]="stampUrl"
-      alt="Official Stamp"
-      class="receipt-stamp"
-    />
-  }
+                    <strong>
+                      {{ receipt.signatureName }}
+                    </strong>
 
-</div>
-</div>
+                  }
 
-<div class="receipt-modal-footer">
+                  @if (receipt.signatureDesignation) {
 
-  <button
-    type="button"
-    class="download-button"
-    (click)="downloadReceipt()">
-    Download PDF
-  </button>
+                    <span>
+                      {{ receipt.signatureDesignation }}
+                    </span>
 
-</div>
+                  }
+
+                </div>
+
+              }
+
+
+              @if (getReceiptImageUrl(receipt.stampPath); as stampUrl) {
+
+                <img
+                  [src]="stampUrl"
+                  alt="Official Stamp"
+                  class="receipt-stamp"
+                />
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- Receipt Footer -->
+
+          <div class="receipt-modal-footer">
+
+            <button
+              type="button"
+              class="download-button"
+              (click)="downloadReceipt()">
+
+              Download PDF
+
+            </button>
+
+          </div>
 
         }
 

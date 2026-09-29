@@ -1,282 +1,579 @@
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+// =========================================================
+// PAGE
+// =========================================================
+
+:host {
+  display: block;
+  width: 100%;
 }
+
+.page {
+  width: 100%;
+  height: calc(100vh - 110px);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 24px 8px 40px 24px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.page::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+// =========================================================
+// PAGE HEADER
+// =========================================================
 
 .page-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 
-  h1 {
-    margin: 0;
-    font-size: 28px;
-  }
-
-  p {
-    margin: 6px 0 0;
-    color: #6b7280;
-  }
+  margin-bottom: 4px;
 }
+
+.page-title-group {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  min-width: 0;
+}
+
+.page-title-image {
+  width: 140px;
+  height: 120px;
+
+  flex: 0 0 120px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title-image img {
+  width: 160px;
+  height: 140px;
+
+  object-fit: contain;
+
+  display: block;
+
+  margin-bottom: 10px;
+}
+
+.page-title-content {
+  min-width: 0;
+}
+
+.page-title-eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.page-title-content h1 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 28px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.page-title-content p {
+  margin: 7px 0 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+
+// =========================================================
+// FEE LIST
+// =========================================================
 
 .fee-list {
   display: grid;
+
   gap: 16px;
 }
 
+
+// =========================================================
+// FEE CARD
+// =========================================================
+
 .fee-card {
+  width: 100%;
+
+  box-sizing: border-box;
+
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+
+  border: 1px solid #e2e8f0;
+
   border-radius: 12px;
+
   padding: 20px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.04);
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
 }
+
+.fee-card:hover {
+  border-color: #d5e3f2;
+
+  box-shadow:
+    0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+
+// =========================================================
+// FEE CARD HEADER
+// =========================================================
 
 .fee-card-header {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
+  justify-content: space-between;
 
-  h2 {
-    margin: 0;
-    font-size: 18px;
-  }
+  gap: 20px;
 
-  p {
-    margin: 5px 0 0;
-    color: #6b7280;
-  }
+  padding-bottom: 18px;
+
+  border-bottom: 1px solid #e8edf3;
+}
+
+.fee-title {
+  min-width: 0;
+}
+
+.card-eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #94a3b8;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.fee-title h2 {
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.fee-title p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+.separator {
+  margin: 0 5px;
+
+  color: #cbd5e1;
+}
+
+.fee-status-area {
+  display: flex;
+  align-items: flex-end;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  flex-shrink: 0;
+}
+
+.status-label {
+  color: #94a3b8;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.07em;
 }
 
 .status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 72px;
+
   padding: 5px 10px;
+
   border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
 
-  &.paid {
-    background: #dcfce7;
-    color: #166534;
-  }
+  font-size: 10px;
+  font-weight: 700;
 
-  &.remaining {
-    background: #fef3c7;
-    color: #92400e;
-  }
-
-  &.unpaid {
-    background: #fee2e2;
-    color: #991b1b;
-  }
+  line-height: 1.2;
 }
+
+.status.paid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.remaining {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.unpaid {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+
+// =========================================================
+// FEE SUMMARY
+// =========================================================
 
 .fee-summary {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin-top: 20px;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 10px;
+
+  padding: 18px 0;
 }
 
 .summary-item {
-  padding: 14px;
-  background: #f9fafb;
-  border-radius: 8px;
+  min-width: 0;
 
-  span {
-    display: block;
-    font-size: 12px;
-    color: #6b7280;
-    margin-bottom: 5px;
-  }
+  padding: 13px 14px;
 
-  strong {
-    font-size: 16px;
-  }
+  border: 1px solid #e8edf3;
+
+  border-radius: 9px;
+
+  background: #f8fafc;
 }
 
-.fee-card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid #e5e7eb;
+.summary-item span {
+  display: block;
 
-  span {
-    color: #6b7280;
-    font-size: 14px;
-  }
+  margin-bottom: 6px;
 
-  button {
-    border: 0;
-    border-radius: 7px;
-    padding: 9px 14px;
-    cursor: pointer;
-  }
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 500;
 }
 
-.state {
-  padding: 40px;
-  text-align: center;
-  color: #6b7280;
-}
+.summary-item strong {
+  display: block;
 
-.state.error {
-  color: #b91c1c;
-}
+  color: #1e293b;
 
-.payments-panel {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
-}
+  font-size: 15px;
+  font-weight: 700;
 
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
-
-  h2 {
-    margin: 0;
-    font-size: 20px;
-  }
-
-  p {
-    margin: 5px 0 0;
-    color: #6b7280;
-  }
-}
-
-.close-button {
-  border: 0;
-  background: transparent;
-  font-size: 26px;
-  cursor: pointer;
-}
-
-.payment-list {
-  display: flex;
-  flex-direction: column;
-}
-
-.payment-row {
-  display: grid;
-  grid-template-columns: 1.2fr 1.2fr 1fr 1fr 1.3fr auto;
-  gap: 20px;
-  padding: 16px 20px;
-  border-bottom: 1px solid #f0f0f0;
-
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  span,
-  small {
-    color: #6b7280;
-    font-size: 13px;
-  }
-
-  .payment-status-info {
-    min-width: 0;
-  }
-
-  .payment-status {
-    width: fit-content;
-    padding: 4px 9px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-
-  .payment-status.verified {
-    background: #dcfce7;
-    color: #166534;
-  }
-
-  .payment-status.invalid {
-    background: #fee2e2;
-    color: #991b1b;
-  }
-
-  .revision-reason {
-    color: #6b7280;
-    font-size: 12px;
-    line-height: 1.4;
-    overflow-wrap: anywhere;
-  }
-
-  .receipt-action {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-}
-
-@media (max-width: 600px) {
-  .payment-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-
-  .fee-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .fee-card-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .payment-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* =====================================================
-   RECEIPT BUTTON
-   ===================================================== */
-
-.receipt-action {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.receipt-button {
-  border: 1px solid var(--primary-color, #2563eb);
-  background: transparent;
-  color: var(--primary-color, #2563eb);
-  padding: 7px 14px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
-.receipt-button:hover {
-  background: var(--primary-color, #2563eb);
-  color: #ffffff;
+.summary-item.highlight {
+  background: #f0f7ff;
+
+  border-color: #dbeafe;
+}
+
+.summary-item.highlight strong {
+  color: #2563eb;
+}
+
+.summary-item.paid {
+  background: #f0fdf4;
+
+  border-color: #dcfce7;
+}
+
+.summary-item.paid strong {
+  color: #15803d;
+}
+
+.summary-item.remaining {
+  background: #fffbeb;
+
+  border-color: #fef3c7;
+}
+
+.summary-item.remaining strong {
+  color: #b45309;
 }
 
 
-/* =====================================================
-   RECEIPT POPUP OVERLAY
-   ===================================================== */
+// =========================================================
+// FEE CARD FOOTER
+// =========================================================
 
+.fee-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-top: 15px;
+
+  border-top: 1px solid #e8edf3;
+}
+
+.fee-footer-info {
+  min-width: 0;
+}
+
+.footer-label {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #94a3b8;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.07em;
+}
+
+.footer-message {
+  color: #64748b;
+
+  font-size: 11px;
+}
+
+.footer-message.success {
+  color: #15803d;
+}
+
+.payments-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+
+  padding: 8px 13px;
+
+  border: 1px solid #bfdbfe;
+
+  border-radius: 7px;
+
+  background: #eff6ff;
+
+  color: #2563eb;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.payments-button:hover {
+  background: #2563eb;
+
+  border-color: #2563eb;
+
+  color: #ffffff;
+}
+
+.button-arrow {
+  font-size: 14px;
+
+  line-height: 1;
+}
+
+
+// =========================================================
+// STATES
+// =========================================================
+
+.state-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  min-height: 260px;
+
+  padding: 40px 20px;
+
+  box-sizing: border-box;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.state-card h3 {
+  margin: 0;
+
+  color: #334155;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.state-card p {
+  max-width: 400px;
+
+  margin: 7px 0 0;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+}
+
+.state-card.error {
+  flex-direction: row;
+
+  justify-content: flex-start;
+
+  gap: 12px;
+
+  min-height: auto;
+
+  padding: 14px 16px;
+
+  text-align: left;
+
+  background: #fef2f2;
+
+  border-color: #fecaca;
+}
+
+.state-card.error h3 {
+  color: #991b1b;
+}
+
+.state-card.error p {
+  color: #b91c1c;
+}
+
+
+// =========================================================
+// STATE ICON
+// =========================================================
+
+.state-icon {
+  display: grid;
+  place-items: center;
+
+  width: 46px;
+  height: 46px;
+
+  margin-bottom: 13px;
+
+  border-radius: 50%;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.state-card.error .state-icon {
+  margin-bottom: 0;
+}
+
+.loading-icon {
+  background: #eff6ff;
+
+  color: #2563eb;
+}
+
+.empty-icon {
+  background: #eff6ff;
+
+  color: #2563eb;
+}
+
+.error-icon {
+  background: #fee2e2;
+
+  color: #dc2626;
+}
+
+
+// =========================================================
+// PAYMENT OVERLAY
+// =========================================================
+
+.payment-overlay,
 .receipt-overlay {
   position: fixed;
+
   inset: 0;
+
   z-index: 1000;
 
   display: flex;
@@ -285,96 +582,623 @@
 
   padding: 24px;
 
-  background: rgba(0, 0, 0, 0.55);
+  box-sizing: border-box;
+
+  background: rgba(15, 23, 42, 0.48);
+
+  backdrop-filter: blur(2px);
 }
 
 
-/* =====================================================
-   RECEIPT POPUP
-   ===================================================== */
+// =========================================================
+// PAYMENT PANEL
+// =========================================================
 
-.receipt-modal {
-  width: min(720px, 100%);
+.payments-panel {
+  width: min(1100px, 100%);
+
   max-height: 90vh;
 
   display: flex;
   flex-direction: column;
 
   background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+
   border-radius: 12px;
 
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.25);
+    0 20px 50px rgba(15, 23, 42, 0.18);
 
   overflow: hidden;
 }
 
 
-/* =====================================================
-   RECEIPT CONTENT
-   ===================================================== */
+// =========================================================
+// PANEL HEADER
+// =========================================================
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid #e8edf3;
+
+  background: #ffffff;
+}
+
+.panel-title {
+  min-width: 0;
+}
+
+.panel-eyebrow {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #94a3b8;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.panel-header h2 {
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.panel-header p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 11px;
+}
+
+.panel-header p span {
+  margin: 0 4px;
+
+  color: #cbd5e1;
+}
+
+.close-button {
+  display: grid;
+  place-items: center;
+
+  width: 32px;
+  height: 32px;
+
+  flex: 0 0 32px;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 7px;
+
+  background: #f8fafc;
+
+  color: #64748b;
+
+  font-size: 20px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.close-button:hover {
+  background: #eff6ff;
+
+  color: #2563eb;
+}
+
+
+// =========================================================
+// PAYMENT SUMMARY
+// =========================================================
+
+.payment-summary {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 10px;
+
+  padding: 14px 20px;
+
+  background: #f8fafc;
+
+  border-bottom: 1px solid #e8edf3;
+}
+
+.payment-summary-item {
+  padding: 10px 12px;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+}
+
+.payment-summary-item span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #64748b;
+
+  font-size: 10px;
+}
+
+.payment-summary-item strong {
+  color: #1e293b;
+
+  font-size: 14px;
+}
+
+.payment-summary-item.paid strong {
+  color: #15803d;
+}
+
+.payment-summary-item.remaining strong {
+  color: #b45309;
+}
+
+
+// =========================================================
+// PAYMENT STATE
+// =========================================================
+
+.state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  min-height: 220px;
+
+  padding: 30px;
+
+  text-align: center;
+
+  color: #64748b;
+}
+
+.state .state-icon {
+  margin-bottom: 10px;
+}
+
+.state h3 {
+  margin: 0;
+
+  color: #334155;
+
+  font-size: 14px;
+}
+
+.state p {
+  margin: 5px 0 0;
+
+  font-size: 11px;
+}
+
+
+// =========================================================
+// PAYMENT LIST
+// =========================================================
+// =========================================================
+// PAYMENT LIST — SCROLLABLE
+// =========================================================
+
+.payment-list {
+  display: flex;
+  flex-direction: column;
+
+  /*
+   * Keep the Payment Records area scrollable.
+   * Header + payment summary remain visible.
+   */
+  max-height: 430px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.payment-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.payment-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.payment-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.payment-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.payment-row {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1.1fr
+    1fr
+    1fr
+    1.1fr
+    1fr
+    auto;
+
+  gap: 16px;
+
+  padding: 15px 20px;
+
+  border-bottom: 1px solid #e8edf3;
+
+  transition: background-color 0.15s ease;
+}
+
+.payment-row:nth-child(odd) {
+  background: #ffffff;
+}
+
+.payment-row:nth-child(even) {
+  background: #f8fbff;
+}
+
+.payment-row:hover {
+  background: #eef6ff;
+}
+
+.payment-item {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  gap: 4px;
+
+  min-width: 0;
+}
+
+.payment-item span,
+.payment-status-info > span {
+  color: #64748b;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.03em;
+}
+
+.payment-item strong {
+  color: #1e293b;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  overflow-wrap: anywhere;
+}
+
+.payment-item.amount strong {
+  color: #2563eb;
+
+  font-size: 12px;
+}
+
+.payment-status-info {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  gap: 4px;
+
+  min-width: 0;
+}
+
+.payment-status {
+  width: fit-content;
+
+  padding: 4px 8px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.payment-status.verified {
+  background: #dcfce7;
+
+  color: #166534;
+}
+
+.payment-status.invalid {
+  background: #fee2e2;
+
+  color: #991b1b;
+}
+
+.payment-status.pending {
+  background: #fef3c7;
+
+  color: #92400e;
+}
+
+.revision-reason {
+  color: #94a3b8;
+
+  font-size: 9px;
+
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+}
+
+
+// =========================================================
+// RECEIPT ACTION
+// =========================================================
+
+.receipt-action {
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.receipt-button {
+  padding: 7px 12px;
+
+  border: 1px solid #bfdbfe;
+
+  border-radius: 6px;
+
+  background: #eff6ff;
+
+  color: #2563eb;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.receipt-button:hover {
+  background: #2563eb;
+
+  border-color: #2563eb;
+
+  color: #ffffff;
+}
+
+
+// =========================================================
+// RECEIPT MODAL
+// =========================================================
+
+.receipt-modal {
+  width: min(720px, 100%);
+
+  max-height: 90vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.22);
+
+  overflow: hidden;
+}
+
+.receipt-modal > .panel-header {
+  flex-shrink: 0;
+}
+
+
+// =========================================================
+// RECEIPT CARD
+// =========================================================
 
 .receipt-card {
   padding: 24px;
 
   overflow-y: auto;
+
+  background: #ffffff;
 }
 
 
-/* =====================================================
-   RECEIPT HEADER
-   ===================================================== */
+// =========================================================
+// RECEIPT BRANDING
+// =========================================================
+
+.receipt-branding {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-bottom: 16px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.receipt-branding-left {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  min-width: 0;
+}
+
+.receipt-logo {
+  width: 48px;
+  height: 48px;
+
+  object-fit: contain;
+
+  flex-shrink: 0;
+}
+
+.receipt-institution {
+  min-width: 0;
+}
+
+.receipt-institution h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 18px;
+}
+
+.receipt-institution p {
+  margin: 4px 0 0;
+
+  color: #6b7280;
+
+  font-size: 12px;
+}
+
+.receipt-badge {
+  width: 42px;
+  height: 42px;
+
+  object-fit: contain;
+
+  flex-shrink: 0;
+}
+
+
+// =========================================================
+// RECEIPT TITLE
+// =========================================================
+
+.receipt-title {
+  padding: 14px 0;
+
+  text-align: center;
+
+  color: #374151;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  letter-spacing: 0.05em;
+
+  text-transform: uppercase;
+}
+
+
+// =========================================================
+// RECEIPT HEADER
+// =========================================================
 
 .receipt-card-header {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+
+  grid-template-columns: repeat(3, 1fr);
+
   gap: 20px;
 
-  padding-bottom: 18px;
+  padding: 15px 0 18px;
+
   border-bottom: 1px solid #e5e7eb;
+}
+
+.receipt-card-header > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.receipt-card-header span {
+  color: #6b7280;
+
+  font-size: 11px;
+}
+
+.receipt-card-header strong {
+  color: #111827;
+
+  font-size: 13px;
 }
 
 .receipt-status {
   width: fit-content;
+
   padding: 5px 10px;
+
   border-radius: 999px;
-  font-size: 12px !important;
+
+  font-size: 10px !important;
   font-weight: 700;
 }
 
-.receipt-status.valid {
+.receipt-status.valid,
+.receipt-status.verified {
   background: #dcfce7;
+
   color: #166534;
 }
 
 .receipt-status.invalid {
   background: #fee2e2;
+
   color: #991b1b;
 }
 
-.receipt-card-header div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
 
-.receipt-card-header span {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.receipt-card-header strong {
-  font-size: 14px;
-  color: #111827;
-}
-
-
-/* =====================================================
-   RECEIPT SECTION
-   ===================================================== */
+// =========================================================
+// RECEIPT SECTION
+// =========================================================
 
 .receipt-section {
   padding: 18px 0;
+
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -385,50 +1209,58 @@
 .receipt-section h3 {
   margin: 0 0 14px;
 
-  font-size: 13px;
-  font-weight: 700;
   color: #374151;
 
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+
   letter-spacing: 0.04em;
+
+  text-transform: uppercase;
 }
 
 
-/* =====================================================
-   RECEIPT GRID
-   ===================================================== */
+// =========================================================
+// RECEIPT GRID
+// =========================================================
 
 .receipt-grid {
   display: grid;
+
   grid-template-columns: repeat(2, 1fr);
+
   gap: 14px 24px;
 }
 
 .receipt-grid > div {
   display: flex;
   flex-direction: column;
+
   gap: 4px;
 }
 
 .receipt-grid span {
-  font-size: 11px;
   color: #6b7280;
+
+  font-size: 11px;
 }
 
 .receipt-grid strong {
-  font-size: 13px;
   color: #111827;
+
+  font-size: 13px;
 }
 
 
-/* =====================================================
-   RECEIPT AMOUNTS
-   ===================================================== */
+// =========================================================
+// RECEIPT AMOUNTS
+// =========================================================
 
 .receipt-amount-list {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+
+  gap: 8px;
 }
 
 .receipt-amount-list > div {
@@ -436,91 +1268,383 @@
   align-items: center;
   justify-content: space-between;
 
+  gap: 20px;
+
   padding: 7px 0;
 }
 
 .receipt-amount-list span {
-  font-size: 13px;
   color: #4b5563;
+
+  font-size: 12px;
 }
 
 .receipt-amount-list strong {
-  font-size: 13px;
   color: #111827;
+
+  font-size: 13px;
+}
+
+.receipt-remaining {
+  margin-top: 4px;
+
+  padding: 10px 12px !important;
+
+  border-radius: 7px;
+
+  background: #eff6ff;
+}
+
+.receipt-remaining span,
+.receipt-remaining strong {
+  color: #2563eb;
 }
 
 
-/* =====================================================
-   RECEIPT NOTES
-   ===================================================== */
+// =========================================================
+// RECEIPT NOTES
+// =========================================================
 
 .receipt-notes {
   margin-top: 14px;
+
   padding: 10px 12px;
 
-  background: #f9fafb;
+  background: #f8fafc;
+
   border-radius: 6px;
 }
 
 .receipt-notes span {
-  font-size: 11px;
   color: #6b7280;
+
+  font-size: 10px;
 }
 
 .receipt-notes p {
   margin: 5px 0 0;
 
-  font-size: 13px;
   color: #374151;
+
+  font-size: 12px;
+
+  line-height: 1.5;
 }
 
 
-/* =====================================================
-   POPUP FOOTER
-   ===================================================== */
+// =========================================================
+// SIGNATURE / STAMP
+// =========================================================
+
+.receipt-signature-area {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-top: 24px;
+}
+
+.signature-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 3px;
+}
+
+.receipt-signature {
+  width: 110px;
+  height: 45px;
+
+  object-fit: contain;
+
+  margin-bottom: 4px;
+}
+
+.signature-block strong {
+  color: #111827;
+
+  font-size: 12px;
+}
+
+.signature-block span {
+  color: #6b7280;
+
+  font-size: 11px;
+}
+
+.receipt-stamp {
+  width: 70px;
+  height: 70px;
+
+  object-fit: contain;
+}
+
+
+// =========================================================
+// RECEIPT FOOTER
+// =========================================================
 
 .receipt-modal-footer {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: flex-end;
 
   padding: 14px 24px;
 
   border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+
+  background: #f8fafc;
 }
-
-
-/* =====================================================
-   DOWNLOAD BUTTON
-   ===================================================== */
 
 .download-button {
   border: none;
-  background: #2563eb;
-  color: #ffffff;
 
   padding: 9px 18px;
-  border-radius: 6px;
 
-  font-size: 13px;
+  border-radius: 7px;
+
+  background: #2563eb;
+
+  color: #ffffff;
+
+  font-size: 12px;
   font-weight: 600;
 
   cursor: pointer;
 
-  transition: background 0.2s ease;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
 }
 
 .download-button:hover {
   background: #1d4ed8;
+
+  transform: translateY(-1px);
 }
 
 
-/* =====================================================
-   RESPONSIVE
-   ===================================================== */
+// =========================================================
+// RESPONSIVE — 800px
+// =========================================================
 
-@media (max-width: 640px) {
+@media (max-width: 800px) {
+
+  .page {
+    padding: 20px 6px 32px 18px;
+  }
+
+  .page-title-group {
+    gap: 14px;
+  }
+
+  .page-title-image {
+    width: 100px;
+    height: 90px;
+
+    flex-basis: 100px;
+  }
+
+  .page-title-image img {
+    width: 110px;
+    height: 95px;
+
+    margin-bottom: 10px;
+  }
+
+  .page-title-content h1 {
+    font-size: 24px;
+  }
+
+  .fee-summary {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .payment-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+}
+
+
+// =========================================================
+// RESPONSIVE — 600px
+// =========================================================
+
+@media (max-width: 600px) {
+
+  .page {
+    padding: 18px 6px 30px 18px;
+  }
+
+  .page-title-group {
+    align-items: flex-start;
+
+    gap: 10px;
+  }
+
+  .page-title-image {
+    width: 76px;
+    height: 72px;
+
+    flex: 0 0 76px;
+  }
+
+  .page-title-image img {
+    width: 76px;
+    height: 72px;
+
+    margin-bottom: 0;
+  }
+
+  .page-title-content h1 {
+    font-size: 21px;
+  }
+
+  .page-title-content p {
+    font-size: 11px;
+  }
+
+  .fee-card {
+    padding: 16px;
+  }
+
+  .fee-card-header {
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+  .fee-status-area {
+    align-items: flex-start;
+  }
+
+  .fee-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fee-card-footer {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+  .payments-button {
+    width: 100%;
+  }
+
+  .payment-summary {
+    grid-template-columns: 1fr;
+
+    padding: 12px 16px;
+  }
+
+  .payment-row {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+
+    padding: 15px 16px;
+  }
+
+  .receipt-action {
+    justify-content: flex-start;
+  }
+
+  .receipt-button {
+    width: 100%;
+  }
+
+  .receipt-card-header {
+    grid-template-columns: 1fr;
+  }
+
+  .receipt-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .receipt-modal-footer {
+    padding: 12px 16px;
+  }
+
+  .download-button {
+    width: 100%;
+  }
+
+  .payment-list {
+  max-height: 380px;
+}
+
+}
+
+
+// =========================================================
+// RESPONSIVE — 480px
+// =========================================================
+
+@media (max-width: 480px) {
+
+  .page {
+    padding: 14px 4px 28px 14px;
+  }
+
+  .page-title-image {
+    width: 64px;
+    height: 60px;
+
+    flex-basis: 64px;
+  }
+
+  .page-title-image img {
+    width: 64px;
+    height: 60px;
+  }
+
+  .page-title-content h1 {
+    font-size: 19px;
+  }
+
+  .page-title-content p {
+    font-size: 10px;
+  }
+
+  .fee-card {
+    padding: 14px;
+  }
+
+  .fee-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-item strong {
+    font-size: 14px;
+  }
+
+  .payment-overlay,
+  .receipt-overlay {
+    padding: 10px;
+  }
+
+  .payments-panel,
+  .receipt-modal {
+    max-height: 94vh;
+
+    border-radius: 10px;
+  }
+
+  .panel-header {
+    padding: 14px;
+  }
+
+  .receipt-card {
+    padding: 16px;
+  }
+
   .receipt-branding {
     align-items: flex-start;
   }
@@ -538,94 +1662,5 @@
   .receipt-signature-area {
     align-items: flex-start;
   }
-}
 
-.receipt-branding {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.receipt-branding-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.receipt-logo {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.receipt-institution h2 {
-  margin: 0;
-  font-size: 18px;
-  color: #111827;
-}
-
-.receipt-institution p {
-  margin: 4px 0 0;
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.receipt-badge {
-  width: 42px;
-  height: 42px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.receipt-title {
-  padding: 14px 0;
-  text-align: center;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: .05em;
-  color: #374151;
-  text-transform: uppercase;
-}
-
-.receipt-signature-area {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-  padding-top: 24px;
-}
-
-.signature-block {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
-}
-
-.receipt-signature {
-  width: 110px;
-  height: 45px;
-  object-fit: contain;
-  margin-bottom: 4px;
-}
-
-.signature-block strong {
-  font-size: 12px;
-  color: #111827;
-}
-
-.signature-block span {
-  font-size: 11px;
-  color: #6b7280;
-}
-
-.receipt-stamp {
-  width: 70px;
-  height: 70px;
-  object-fit: contain;
 }

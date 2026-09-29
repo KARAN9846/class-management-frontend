@@ -1,9 +1,11 @@
 import {
   AcademicStructureDashboardData,
   StudentDashboardData,
-AssignmentDashboardData,
+  AssignmentDashboardData,
   TeacherDashboardData,
-  AttendanceDashboardData,FinanceDashboardData
+  AttendanceDashboardData,
+  FinanceDashboardData,
+  SuperAdminDashboardData
 } from '../models/dashboard.model';
 
 import { Injectable, inject } from '@angular/core';
@@ -11,6 +13,8 @@ import { Observable } from 'rxjs';
 
 import { ApiService } from '../../../../core/services/api.service';
 import { ApiResponse } from '../../fees/models/fee-structure.model';
+
+
 
 
 export interface StudentDashboardResponse {
@@ -77,6 +81,12 @@ getAttendanceDashboard(): Observable<ApiResponse<AttendanceDashboardData>> {
 getFinanceDashboard(): Observable<ApiResponse<FinanceDashboardData>> {
   return this.apiService.get<ApiResponse<FinanceDashboardData>>(
     '/dashboard/finance'
+  );
+}
+
+getSuperAdminDashboard(): Observable<ApiResponse<SuperAdminDashboardData>> {
+  return this.apiService.get<ApiResponse<SuperAdminDashboardData>>(
+    '/dashboard/super-admin'
   );
 }
 }

@@ -2,7 +2,8 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
-  inject
+  inject,
+  HostListener,
 } from '@angular/core';
 
 import { Router } from '@angular/router';
@@ -96,6 +97,8 @@ export class TeacherStudentListComponent implements OnInit {
   students: TeacherStudent[] = [];
 
   selectedStudent: TeacherStudent | null = null;
+
+  openActionMenuStudentId: number | null = null;
 
   // =========================================================
   // TEACHER SCOPE OPTIONS
@@ -943,4 +946,25 @@ export class TeacherStudentListComponent implements OnInit {
   ): number {
     return student.studentId;
   }
+
+  toggleActionMenu(
+  studentId: number,
+  event: Event
+): void {
+  event.stopPropagation();
+
+  this.openActionMenuStudentId =
+    this.openActionMenuStudentId === studentId
+      ? null
+      : studentId;
+}
+
+closeActionMenu(): void {
+  this.openActionMenuStudentId = null;
+}
+
+@HostListener('document:click')
+onDocumentClick(): void {
+  this.closeActionMenu();
+}
 }

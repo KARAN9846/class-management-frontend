@@ -1,1 +1,652 @@
-<p>student-dashboard works!</p>
+<div class="student-dashboard">
+
+    <!-- =====================================================
+       PAGE HEADER
+       ===================================================== -->
+
+    <section class="dashboard-header">
+
+        <div class="header-content">
+
+            <div class="header-image">
+                <img src="/assets/images/dashboard.png" alt="Student Dashboard" />
+            </div>
+
+            <div class="header-text">
+
+                <span class="header-eyebrow">
+                    STUDENT PORTAL
+                </span>
+
+                <h1>
+                    Good morning, {{ studentName }} 👋
+                </h1>
+
+                <p>
+                    Here's your academic overview for
+                    {{ profile?.academicYear || 'the current academic year' }}.
+                </p>
+
+                <div class="student-meta">
+                    @if (profile?.className) {
+                    <span>
+                        {{ profile?.className }}
+                    </span>
+                    }
+
+                    @if (profile?.section) {
+                    <span>
+                        Section {{ profile?.section }}
+                    </span>
+                    }
+
+                    @if (profile?.rollNumber) {
+                    <span>
+                        Roll No. {{ profile?.rollNumber }}
+                    </span>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+       LOADING
+       ===================================================== -->
+
+    @if (loading) {
+
+    <div class="dashboard-loading">
+
+        <div class="loading-spinner"></div>
+
+        <span>
+            Loading your academic overview...
+        </span>
+
+    </div>
+
+    }
+
+
+    <!-- =====================================================
+       KPI CARDS
+       ===================================================== -->
+
+    <section class="kpi-grid">
+
+
+        <!-- ATTENDANCE -->
+
+        <article class="kpi-card attendance-card">
+
+            <div class="kpi-icon">
+                ✓
+            </div>
+
+            <div class="kpi-content">
+
+                <span class="kpi-label">
+                    Attendance
+                </span>
+
+                <strong class="kpi-value">
+                    {{ attendancePercentage }}%
+                </strong>
+
+                <span class="kpi-meta">
+                    {{ presentCount }} of
+                    {{ totalAttendance }} records present
+                </span>
+
+            </div>
+
+            <div class="kpi-accent"></div>
+
+        </article>
+
+
+        <!-- FEES -->
+
+        <article class="kpi-card fees-card">
+
+            <div class="kpi-icon">
+                ₹
+            </div>
+
+            <div class="kpi-content">
+
+                <span class="kpi-label">
+                    Fees Due
+                </span>
+
+                <strong class="kpi-value">
+                    ₹{{ formatCurrency(totalRemaining) }}
+                </strong>
+
+                <span class="kpi-meta">
+                    {{ feeStatus }}
+                </span>
+
+            </div>
+
+            <div class="kpi-accent"></div>
+
+        </article>
+
+
+        <!-- ACADEMIC -->
+
+        <article class="kpi-card academic-card">
+
+            <div class="kpi-icon">
+                #
+            </div>
+
+            <div class="kpi-content">
+
+                <span class="kpi-label">
+                    Academic Class
+                </span>
+
+                <strong class="kpi-value academic-value">
+                    {{ profile?.className || '—' }}
+                </strong>
+
+                <span class="kpi-meta">
+                    Section {{ profile?.section || '—' }}
+                </span>
+
+            </div>
+
+            <div class="kpi-accent"></div>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =====================================================
+       MAIN VISUAL GRID
+       ===================================================== -->
+
+    <section class="visual-grid">
+
+
+        <!-- ===================================================
+         ATTENDANCE RADIAL
+         =================================================== -->
+
+        <article class="dashboard-card attendance-overview">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        ATTENDANCE
+                    </span>
+
+                    <h2>
+                        Attendance Overview
+                    </h2>
+
+                    <p>
+                        Your overall attendance performance
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="attendance-visual">
+
+                <div class="radial-chart">
+
+                    <svg viewBox="0 0 100 100" aria-label="Attendance percentage">
+
+                        <circle class="radial-track" cx="50" cy="50" r="42"></circle>
+
+                        <circle class="radial-progress" cx="50" cy="50" r="42"
+                            [style.stroke-dasharray]="attendanceCircumference"
+                            [style.stroke-dashoffset]="attendanceDashOffset"></circle>
+
+                    </svg>
+
+                    <div class="radial-center">
+
+                        <strong>
+                            {{ attendancePercentage }}%
+                        </strong>
+
+                        <span>
+                            Present
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="attendance-stats">
+
+                    <div class="attendance-stat">
+
+                        <span class="stat-dot present"></span>
+
+                        <div>
+                            <strong>
+                                {{ presentCount }}
+                            </strong>
+
+                            <span>
+                                Present
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="attendance-stat">
+
+                        <span class="stat-dot absent"></span>
+
+                        <div>
+                            <strong>
+                                {{ absentCount }}
+                            </strong>
+
+                            <span>
+                                Absent
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="attendance-stat">
+
+                        <span class="stat-dot total"></span>
+
+                        <div>
+                            <strong>
+                                {{ totalAttendance }}
+                            </strong>
+
+                            <span>
+                                Total
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- ===================================================
+         FEE VISUAL
+         =================================================== -->
+
+        <article class="dashboard-card fee-overview">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        FEES
+                    </span>
+
+                    <h2>
+                        Fee Overview
+                    </h2>
+
+                    <p>
+                        Current payment position
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="fee-summary">
+
+                <div class="fee-main-value">
+
+                    <span>
+                        Remaining
+                    </span>
+
+                    <strong>
+                        ₹{{ formatCurrency(totalRemaining) }}
+                    </strong>
+
+                </div>
+
+
+                <div class="fee-progress">
+
+                    <div class="fee-progress-track">
+
+                        <div class="fee-progress-fill" [style.width.%]="feePaidPercentage"></div>
+
+                    </div>
+
+                    <div class="fee-progress-labels">
+
+                        <span>
+                            {{ feePaidPercentage }}% paid
+                        </span>
+
+                        <span>
+                            ₹{{ formatCurrency(totalPayable) }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="fee-breakdown">
+
+                    <div>
+
+                        <span>
+                            Payable
+                        </span>
+
+                        <strong>
+                            ₹{{ formatCurrency(totalPayable) }}
+                        </strong>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Paid
+                        </span>
+
+                        <strong>
+                            ₹{{ formatCurrency(totalPaid) }}
+                        </strong>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Remaining
+                        </span>
+
+                        <strong>
+                            ₹{{ formatCurrency(totalRemaining) }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =====================================================
+       ATTENDANCE TREND + INSIGHT
+       ===================================================== -->
+
+    <section class="lower-grid">
+
+
+        <!-- ATTENDANCE TREND -->
+
+        <article class="dashboard-card trend-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        RECENT ACTIVITY
+                    </span>
+
+                    <h2>
+                        Attendance Trend
+                    </h2>
+
+                    <p>
+                        Your latest attendance activity
+                    </p>
+
+                </div>
+
+                <div class="trend-legend">
+
+                    <span>
+                        <i class="legend-present"></i>
+                        Present
+                    </span>
+
+                    <span>
+                        <i class="legend-absent"></i>
+                        Absent
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="attendance-bars">
+
+                @if (attendanceTrend.length === 0) {
+
+                <div class="chart-empty">
+                    No attendance data available.
+                </div>
+
+                } @else {
+
+                @for (
+                record of attendanceTrend;
+                track record.id
+                ) {
+
+                <div class="trend-item">
+
+                    <div class="trend-date">
+                        {{ formatShortDate(record.attendanceDate) }}
+                    </div>
+
+                    <div class="trend-bar-area">
+
+                        <div class="trend-bar" [class.present-bar]="record.status === 'PRESENT'"
+                            [class.absent-bar]="record.status === 'ABSENT'">
+                        </div>
+
+                    </div>
+
+                    <span class="trend-status" [class.present-text]="record.status === 'PRESENT'"
+                        [class.absent-text]="record.status === 'ABSENT'">
+                        {{ record.status === 'PRESENT'
+                        ? 'Present'
+                        : 'Absent' }}
+                    </span>
+
+                </div>
+
+                }
+
+                }
+
+            </div>
+
+        </article>
+
+
+        <!-- ===================================================
+         RECENT ATTENDANCE
+         =================================================== -->
+
+        <article class="dashboard-card recent-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        ATTENDANCE LOG
+                    </span>
+
+                    <h2>
+                        Recent Attendance
+                    </h2>
+
+                </div>
+
+                <a class="view-link" routerLink="/student/attendance">
+                    View all →
+                </a>
+
+            </div>
+
+
+            <div class="attendance-list">
+
+                @if (recentAttendance.length === 0) {
+
+                <div class="list-empty">
+                    No attendance records available.
+                </div>
+
+                } @else {
+
+                @for (
+                record of recentAttendance;
+                track record.id
+                ) {
+
+                <div class="attendance-row">
+
+                    <div class="attendance-date-icon">
+                        {{ record.attendanceDate | date:'dd' }}
+                    </div>
+
+                    <div class="attendance-row-info">
+
+                        <strong>
+                            {{ formatDate(record.attendanceDate) }}
+                        </strong>
+
+                        <span>
+                            {{ record.className }}
+                            • Section {{ record.sectionName }}
+                        </span>
+
+                    </div>
+
+                    <span class="status-pill" [class.status-present]="record.status === 'PRESENT'"
+                        [class.status-absent]="record.status === 'ABSENT'">
+                        {{ record.status === 'PRESENT'
+                        ? 'Present'
+                        : 'Absent' }}
+                    </span>
+
+                </div>
+
+                }
+
+                }
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =====================================================
+       ACADEMIC PROFILE
+       ===================================================== -->
+
+    <section class="profile-strip">
+
+        <div class="profile-strip-icon">
+            🎓
+        </div>
+
+        <div class="profile-strip-content">
+
+            <span>
+                ACADEMIC PROFILE
+            </span>
+
+            <strong>
+                {{ profile?.className || 'Class not available' }}
+                ·
+                Section {{ profile?.section || '—' }}
+            </strong>
+
+        </div>
+
+
+        <div class="profile-details">
+
+            <div>
+
+                <span>
+                    Roll Number
+                </span>
+
+                <strong>
+                    {{ profile?.rollNumber || '—' }}
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Enrollment
+                </span>
+
+                <strong>
+                    {{ profile?.enrollmentNumber || '—' }}
+                </strong>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Academic Year
+                </span>
+
+                <strong>
+                    {{ profile?.academicYear || '—' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>

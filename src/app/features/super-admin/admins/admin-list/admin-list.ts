@@ -84,44 +84,23 @@ readonly columns: TableColumn[] = [
   {
     key: 'email',
     label: 'Administrator',
-    width: '22%',
+    width: '20%',
     sortable: true
   },
   {
     key: 'isActive',
     label: 'Status',
     type: 'status',
-    width: '12%',
+    width: '11%',
     align: 'center',
     sortable: true
   },
   {
-    key: 'teacherCount',
-    label: 'Teachers',
-    width: '10%',
-    align: 'center',
-    sortable: true
-  },
-  {
-    key: 'studentCount',
-    label: 'Students',
-    width: '10%',
-    align: 'center',
-    sortable: true
-  },
-  {
-    key: 'classCount',
-    label: 'Classes',
-    width: '10%',
-    align: 'center',
-    sortable: true
-  },
-  {
-    key: 'assignedRoleCount',
-    label: 'Roles',
-    width: '8%',
-    align: 'center',
-    sortable: true
+    key: 'resources',
+    label: 'Resources',
+    type: 'resource-bars',
+    width: '35%',
+    sortable: false
   }
 ];
 
@@ -141,6 +120,8 @@ getRowActions(admin: Admin): TableAction[] {
     }
   ];
 }
+
+
 
   /* =========================================================
      INIT

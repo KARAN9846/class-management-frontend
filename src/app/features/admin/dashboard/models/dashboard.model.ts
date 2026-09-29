@@ -172,3 +172,103 @@ export interface FinanceDashboardData {
   classWiseSummary: FinanceClassSummary[];
   monthlySummary: FinanceMonthlySummary[];
 }
+
+  // =========================================================
+// SUPER ADMIN DASHBOARD
+// =========================================================
+
+export interface SuperAdminDashboardData {
+  overview: SuperAdminOverview;
+  ratios: SuperAdminRatios;
+  resourceDistribution: SuperAdminResourceDistribution;
+  organizations: SuperAdminOrganizationSummary[];
+  organizationCreationTrend: SuperAdminOrganizationTrend[];
+  insights: SuperAdminInsight[];
+}
+
+export interface SuperAdminOverview {
+  totalOrganizations: number;
+  activeOrganizations: number;
+  inactiveOrganizations: number;
+  organizationActiveRate: number;
+
+  totalStudents: number;
+  activeStudents: number;
+  inactiveStudents: number;
+  studentActiveRate: number;
+
+  totalTeachers: number;
+  activeTeachers: number;
+  inactiveTeachers: number;
+  teacherActiveRate: number;
+
+  totalAcademicYears: number;
+  totalClasses: number;
+  totalSections: number;
+  totalSubjects: number;
+  totalRoleAssignments: number;
+}
+
+export interface SuperAdminRatios {
+  studentsPerTeacher: number;
+  studentsPerClass: number;
+  teachersPerClass: number;
+  studentsPerOrganization: number;
+  teachersPerOrganization: number;
+  classesPerOrganization: number;
+  sectionsPerClass: number;
+  subjectsPerClass: number;
+  rolesPerTeacher: number;
+}
+
+export interface SuperAdminResourceDistribution {
+  students: number;
+  teachers: number;
+  classes: number;
+  sections: number;
+  subjects: number;
+  roleAssignments: number;
+}
+
+export interface SuperAdminOrganizationSummary {
+  organizationId: number;
+  organizationName: string;
+  adminCode: string;
+  email: string;
+  active: boolean;
+  createdAt: string;
+
+  students: number;
+  activeStudents: number;
+
+  teachers: number;
+  activeTeachers: number;
+
+  classes: number;
+  sections: number;
+  subjects: number;
+
+  roleAssignments: number;
+  academicYears: number;
+
+  studentsPerTeacher: number;
+  studentsPerClass: number;
+  teachersPerClass: number;
+
+  needsAttention: boolean;
+  attentionCount: number;
+}
+
+export interface SuperAdminOrganizationTrend {
+  month: string;
+  organizationsCreated: number;
+}
+
+export interface SuperAdminInsight {
+  type: string;
+  severity: string;
+  title: string;
+  message: string;
+  organizationId?: number;
+  organizationName?: string;
+}

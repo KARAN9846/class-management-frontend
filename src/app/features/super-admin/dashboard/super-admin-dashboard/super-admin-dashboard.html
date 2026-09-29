@@ -1,1 +1,1076 @@
-<p>super-admin-dashboard works!</p>
+<div class="super-admin-dashboard">
+
+  <!-- =========================================================
+       PAGE HEADER
+       ========================================================= -->
+
+  <header class="dashboard-header">
+
+    <div class="header-content">
+
+      <div>
+        <div class="eyebrow">
+          SUPER ADMIN
+        </div>
+
+        <h1>
+          Platform Control Center
+        </h1>
+
+        <p>
+          Monitor organizations, users, academic resources and
+          platform-level operational intelligence.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="refresh-button"
+        (click)="refresh()"
+        [disabled]="loading"
+      >
+        <span
+          class="refresh-icon"
+          [class.spinning]="loading"
+        >
+          ↻
+        </span>
+
+        Refresh
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================================================
+       LOADING
+       ========================================================= -->
+
+  @if (loading) {
+
+    <section class="loading-state">
+
+      <div class="loading-header skeleton"></div>
+
+      <div class="loading-kpis">
+
+        @for (item of [1,2,3,4,5,6,7,8]; track item) {
+          <div class="kpi-skeleton">
+            <div class="skeleton skeleton-icon"></div>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-value"></div>
+          </div>
+        }
+
+      </div>
+
+      <div class="loading-panels">
+
+        <div class="panel-skeleton skeleton"></div>
+        <div class="panel-skeleton skeleton"></div>
+
+      </div>
+
+    </section>
+
+  }
+
+
+  <!-- =========================================================
+       ERROR
+       ========================================================= -->
+
+  @else if (error) {
+
+    <section class="error-state">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+        <h2>
+          Dashboard unavailable
+        </h2>
+
+        <p>
+          {{ error }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="refresh()"
+      >
+        Try Again
+      </button>
+
+    </section>
+
+  }
+
+
+  <!-- =========================================================
+       DASHBOARD
+       ========================================================= -->
+
+  @else if (dashboard) {
+
+    <!-- =======================================================
+         KPI GRID
+         ======================================================= -->
+
+    <section class="kpi-grid">
+
+      <!-- Organizations -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-top">
+          <span class="kpi-label">
+            Organizations
+          </span>
+
+          <span class="kpi-icon blue">
+            ORG
+          </span>
+        </div>
+
+        <div class="kpi-value">
+          {{ formatNumber(dashboard.overview.totalOrganizations) }}
+        </div>
+
+        <div class="kpi-meta">
+          <span class="positive">
+            {{ dashboard.overview.activeOrganizations }}
+            active
+          </span>
+
+          <span>
+            ·
+          </span>
+
+          <span>
+            {{ dashboard.overview.inactiveOrganizations }}
+            inactive
+          </span>
+        </div>
+
+      </article>
+
+
+      <!-- Students -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-top">
+          <span class="kpi-label">
+            Students
+          </span>
+
+          <span class="kpi-icon cyan">
+            STD
+          </span>
+        </div>
+
+        <div class="kpi-value">
+          {{ formatNumber(dashboard.overview.totalStudents) }}
+        </div>
+
+        <div class="kpi-meta">
+          <span class="positive">
+            {{ formatPercentage(dashboard.overview.studentActiveRate) }}
+            active
+          </span>
+        </div>
+
+      </article>
+
+
+      <!-- Teachers -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-top">
+          <span class="kpi-label">
+            Teachers
+          </span>
+
+          <span class="kpi-icon indigo">
+            TCH
+          </span>
+        </div>
+
+        <div class="kpi-value">
+          {{ formatNumber(dashboard.overview.totalTeachers) }}
+        </div>
+
+        <div class="kpi-meta">
+          <span class="positive">
+            {{ formatPercentage(dashboard.overview.teacherActiveRate) }}
+            active
+          </span>
+        </div>
+
+      </article>
+
+
+      <!-- Classes -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-top">
+          <span class="kpi-label">
+            Classes
+          </span>
+
+          <span class="kpi-icon purple">
+            CLS
+          </span>
+        </div>
+
+        <div class="kpi-value">
+          {{ formatNumber(dashboard.overview.totalClasses) }}
+        </div>
+
+        <div class="kpi-meta">
+          Platform-wide classes
+        </div>
+
+      </article>
+
+
+      <!-- Sections -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-top">
+          <span class="kpi-label">
+            Sections
+          </span>
+
+          <span class="kpi-icon violet">
+            SEC
+          </span>
+        </div>
+
+        <div class="kpi-value">
+          {{ formatNumber(dashboard.overview.totalSections) }}
+        </div>
+
+        <div class="kpi-meta">
+          {{ formatRatio(dashboard.ratios.sectionsPerClass) }}
+          sections / class
+        </div>
+
+      </article>
+
+
+      <!-- Subjects -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-top">
+          <span class="kpi-label">
+            Subjects
+          </span>
+
+          <span class="kpi-icon teal">
+            SUB
+          </span>
+        </div>
+
+        <div class="kpi-value">
+          {{ formatNumber(dashboard.overview.totalSubjects) }}
+        </div>
+
+        <div class="kpi-meta">
+          {{ formatRatio(dashboard.ratios.subjectsPerClass) }}
+          subjects / class
+        </div>
+
+      </article>
+
+
+      <!-- Role assignments -->
+
+      <article class="kpi-card">
+
+        <div class="kpi-top">
+          <span class="kpi-label">
+            Role Assignments
+          </span>
+
+          <span class="kpi-icon amber">
+            ACL
+          </span>
+        </div>
+
+        <div class="kpi-value">
+          {{ formatNumber(dashboard.overview.totalRoleAssignments) }}
+        </div>
+
+        <div class="kpi-meta">
+          Teacher authorization
+        </div>
+
+      </article>
+
+
+      <!-- Active organization rate -->
+
+      <article class="kpi-card highlight-card">
+
+        <div class="kpi-top">
+          <span class="kpi-label">
+            Organization Active Rate
+          </span>
+
+          <span class="kpi-icon green">
+            %
+          </span>
+        </div>
+
+        <div class="kpi-value">
+          {{ formatPercentage(
+            dashboard.overview.organizationActiveRate
+          ) }}
+        </div>
+
+        <div class="progress-track">
+          <span
+            class="progress-fill"
+            [style.width.%]="
+              dashboard.overview.organizationActiveRate
+            "
+          ></span>
+        </div>
+
+        <div class="kpi-meta">
+          Platform organization activity
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- =======================================================
+         MAIN ANALYTICS
+         ======================================================= -->
+
+    <section class="analytics-grid">
+
+      <!-- Organization Status -->
+
+      <article class="dashboard-card status-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>
+              Organization Status
+            </h2>
+
+            <p>
+              Current platform organization activity
+            </p>
+          </div>
+
+          <span class="card-badge">
+            {{ formatPercentage(
+              dashboard.overview.organizationActiveRate
+            ) }}
+            active
+          </span>
+
+        </div>
+
+        <div class="status-content">
+
+          <div class="donut-container">
+
+            <canvas
+              #organizationStatusChart
+            ></canvas>
+
+            <div class="donut-center">
+
+              <strong>
+                {{ dashboard.overview.totalOrganizations }}
+              </strong>
+
+              <span>
+                Organizations
+              </span>
+
+            </div>
+
+          </div>
+
+          <div class="status-legend">
+
+            <div class="legend-item">
+
+              <span class="legend-dot active"></span>
+
+              <div>
+                <strong>
+                  {{ dashboard.overview.activeOrganizations }}
+                </strong>
+
+                <span>
+                  Active
+                </span>
+              </div>
+
+            </div>
+
+            <div class="legend-item">
+
+              <span class="legend-dot inactive"></span>
+
+              <div>
+                <strong>
+                  {{ dashboard.overview.inactiveOrganizations }}
+                </strong>
+
+                <span>
+                  Inactive
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- Resource Distribution -->
+
+      <article class="dashboard-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>
+              Platform Resource Distribution
+            </h2>
+
+            <p>
+              Current resource volume across the platform
+            </p>
+          </div>
+
+        </div>
+
+        <div class="chart-container resource-chart">
+          <canvas #resourceChart></canvas>
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- =======================================================
+         RATIO ANALYTICS
+         ======================================================= -->
+
+    <section class="analytics-grid ratio-section">
+
+      <article class="dashboard-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>
+              Platform Ratios
+            </h2>
+
+            <p>
+              Derived from current platform-wide totals
+            </p>
+          </div>
+
+        </div>
+
+        <div class="ratio-grid">
+
+          <div class="ratio-item">
+            <span>Students / Teacher</span>
+            <strong>
+              {{ formatRatio(
+                dashboard.ratios.studentsPerTeacher
+              ) }}
+            </strong>
+          </div>
+
+          <div class="ratio-item">
+            <span>Students / Class</span>
+            <strong>
+              {{ formatRatio(
+                dashboard.ratios.studentsPerClass
+              ) }}
+            </strong>
+          </div>
+
+          <div class="ratio-item">
+            <span>Teachers / Class</span>
+            <strong>
+              {{ formatRatio(
+                dashboard.ratios.teachersPerClass
+              ) }}
+            </strong>
+          </div>
+
+          <div class="ratio-item">
+            <span>Students / Organization</span>
+            <strong>
+              {{ formatRatio(
+                dashboard.ratios.studentsPerOrganization
+              ) }}
+            </strong>
+          </div>
+
+          <div class="ratio-item">
+            <span>Teachers / Organization</span>
+            <strong>
+              {{ formatRatio(
+                dashboard.ratios.teachersPerOrganization
+              ) }}
+            </strong>
+          </div>
+
+          <div class="ratio-item">
+            <span>Classes / Organization</span>
+            <strong>
+              {{ formatRatio(
+                dashboard.ratios.classesPerOrganization
+              ) }}
+            </strong>
+          </div>
+
+          <div class="ratio-item">
+            <span>Sections / Class</span>
+            <strong>
+              {{ formatRatio(
+                dashboard.ratios.sectionsPerClass
+              ) }}
+            </strong>
+          </div>
+
+          <div class="ratio-item">
+            <span>Roles / Teacher</span>
+            <strong>
+              {{ formatRatio(
+                dashboard.ratios.rolesPerTeacher
+              ) }}
+            </strong>
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- Operational Summary -->
+
+      <article class="dashboard-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>
+              Operational Summary
+            </h2>
+
+            <p>
+              High-level platform structure
+            </p>
+          </div>
+
+        </div>
+
+        <div class="operational-list">
+
+          <div class="operational-row">
+            <span>
+              Academic Years
+            </span>
+
+            <strong>
+              {{ formatNumber(
+                dashboard.overview.totalAcademicYears
+              ) }}
+            </strong>
+          </div>
+
+          <div class="operational-row">
+            <span>
+              Classes
+            </span>
+
+            <strong>
+              {{ formatNumber(
+                dashboard.overview.totalClasses
+              ) }}
+            </strong>
+          </div>
+
+          <div class="operational-row">
+            <span>
+              Sections
+            </span>
+
+            <strong>
+              {{ formatNumber(
+                dashboard.overview.totalSections
+              ) }}
+            </strong>
+          </div>
+
+          <div class="operational-row">
+            <span>
+              Subjects
+            </span>
+
+            <strong>
+              {{ formatNumber(
+                dashboard.overview.totalSubjects
+              ) }}
+            </strong>
+          </div>
+
+          <div class="operational-row">
+            <span>
+              Teacher Role Assignments
+            </span>
+
+            <strong>
+              {{ formatNumber(
+                dashboard.overview.totalRoleAssignments
+              ) }}
+            </strong>
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- =======================================================
+         ORGANIZATION TREND
+         ======================================================= -->
+
+    @if (dashboard.organizationCreationTrend.length > 0) {
+
+      <section class="dashboard-card trend-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>
+              Organization Creation Trend
+            </h2>
+
+            <p>
+              Organizations created by month
+            </p>
+          </div>
+
+          <span class="card-badge neutral">
+            Historical
+          </span>
+
+        </div>
+
+        <div class="chart-container trend-chart">
+          <canvas #organizationTrendChart></canvas>
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- =======================================================
+         ORGANIZATION INTELLIGENCE
+         ======================================================= -->
+
+    <section class="dashboard-card organization-card">
+
+      <div class="card-header">
+
+        <div>
+          <h2>
+            Organization Intelligence
+          </h2>
+
+          <p>
+            Resource distribution and operational profile
+            of every organization
+          </p>
+        </div>
+
+        <span class="card-badge">
+          {{ dashboard.organizations.length }}
+          organizations
+        </span>
+
+      </div>
+
+
+      @if (dashboard.organizations.length > 0) {
+
+        <div class="organization-table-wrapper">
+
+          <table class="organization-table">
+
+            <thead>
+
+              <tr>
+                <th>Organization</th>
+                <th>Status</th>
+                <th>Students</th>
+                <th>Teachers</th>
+                <th>Classes</th>
+                <th>Sections</th>
+                <th>Subjects</th>
+                <th>Roles</th>
+                <th>Attention</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              @for (
+                organization of dashboard.organizations;
+                track trackByOrganizationId($index, organization)
+              ) {
+
+                <tr>
+
+                  <td>
+
+                    <div class="organization-name">
+
+                      <strong>
+                        {{ organization.organizationName }}
+                      </strong>
+
+                      <span>
+                        {{ organization.email }}
+                      </span>
+
+                    </div>
+
+                  </td>
+
+
+                  <td>
+
+                    <span
+                      class="status-pill"
+                      [class.active]="organization.active"
+                      [class.inactive]="!organization.active"
+                    >
+                      {{ organization.active
+                        ? 'Active'
+                        : 'Inactive' }}
+                    </span>
+
+                  </td>
+
+
+                  <td>
+
+                    <div class="resource-cell">
+
+                      <strong>
+                        {{ formatNumber(
+                          organization.students
+                        ) }}
+                      </strong>
+
+                      <div class="mini-bar">
+                        <span
+                          [style.width.%]="
+                            getStudentBarWidth(
+                              organization.students
+                            )
+                          "
+                        ></span>
+                      </div>
+
+                    </div>
+
+                  </td>
+
+
+                  <td>
+                    {{ formatNumber(
+                      organization.teachers
+                    ) }}
+                  </td>
+
+                  <td>
+                    {{ formatNumber(
+                      organization.classes
+                    ) }}
+                  </td>
+
+                  <td>
+                    {{ formatNumber(
+                      organization.sections
+                    ) }}
+                  </td>
+
+                  <td>
+                    {{ formatNumber(
+                      organization.subjects
+                    ) }}
+                  </td>
+
+                  <td>
+                    {{ formatNumber(
+                      organization.roleAssignments
+                    ) }}
+                  </td>
+
+
+                  <td>
+
+                    @if (organization.needsAttention) {
+
+                      <span class="attention-pill">
+                        {{ organization.attentionCount }}
+                        issue{{
+                          organization.attentionCount === 1
+                            ? ''
+                            : 's'
+                        }}
+                      </span>
+
+                    } @else {
+
+                      <span class="healthy-pill">
+                        Healthy
+                      </span>
+
+                    }
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      } @else {
+
+        <div class="empty-state">
+          No organizations found.
+        </div>
+
+      }
+
+    </section>
+
+
+    <!-- =======================================================
+         TOP ORGANIZATIONS + ATTENTION
+         ======================================================= -->
+
+    <section class="analytics-grid bottom-grid">
+
+      <!-- Top organizations -->
+
+      <article class="dashboard-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>
+              Largest Organizations
+            </h2>
+
+            <p>
+              Ranked by student population
+            </p>
+          </div>
+
+        </div>
+
+        <div class="ranking-list">
+
+          @for (
+            organization of topOrganizations;
+            track trackByOrganizationId($index, organization)
+          ) {
+
+            <div class="ranking-item">
+
+              <span class="rank-number">
+                {{ $index + 1 }}
+              </span>
+
+              <div class="ranking-content">
+
+                <strong>
+                  {{ organization.organizationName }}
+                </strong>
+
+                <div class="ranking-bar">
+
+                  <span
+                    [style.width.%]="
+                      getStudentBarWidth(
+                        organization.students
+                      )
+                    "
+                  ></span>
+
+                </div>
+
+              </div>
+
+              <strong class="ranking-value">
+                {{ formatNumber(
+                  organization.students
+                ) }}
+              </strong>
+
+            </div>
+
+          } @empty {
+
+            <div class="empty-state">
+              No organization data available.
+            </div>
+
+          }
+
+        </div>
+
+      </article>
+
+
+      <!-- Attention -->
+
+      <article class="dashboard-card">
+
+        <div class="card-header">
+
+          <div>
+            <h2>
+              Attention Required
+            </h2>
+
+            <p>
+              Explainable operational indicators
+            </p>
+          </div>
+
+          <span class="card-badge warning">
+            {{ attentionOrganizations.length }}
+          </span>
+
+        </div>
+
+
+        <div class="attention-list">
+
+          @for (
+            insight of dashboard.insights;
+            track trackByInsight($index, insight)
+          ) {
+
+            <div
+              class="attention-item"
+              [class.warning]="
+                insight.severity === 'WARNING'
+              "
+              [class.info]="
+                insight.severity === 'INFO'
+              "
+              [class.success]="
+                insight.severity === 'SUCCESS'
+              "
+            >
+
+              <div class="attention-indicator">
+                {{
+                  insight.severity === 'WARNING'
+                    ? '!'
+                    : insight.severity === 'SUCCESS'
+                      ? '✓'
+                      : 'i'
+                }}
+              </div>
+
+              <div>
+
+                <strong>
+                  {{ insight.title }}
+                </strong>
+
+                <p>
+                  {{ insight.message }}
+                </p>
+
+                @if (insight.organizationName) {
+
+                  <span class="insight-organization">
+                    {{ insight.organizationName }}
+                  </span>
+
+                }
+
+              </div>
+
+            </div>
+
+          } @empty {
+
+            <div class="all-good-state">
+
+              <div class="all-good-icon">
+                ✓
+              </div>
+
+              <strong>
+                No attention items
+              </strong>
+
+              <p>
+                No currently detected operational issues.
+              </p>
+
+            </div>
+
+          }
+
+        </div>
+
+      </article>
+
+    </section>
+
+  }
+
+</div>
