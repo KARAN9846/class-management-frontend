@@ -74,49 +74,56 @@ searchTerm = '';
      TABLE COLUMNS
      ========================================================= */
 
-  readonly columns: TableColumn[] = [
-    {
-      key: 'organizationName',
-      label: 'Organization',
-      width: '22%'
-    },
-    {
-      key: 'email',
-      label: 'Administrator',
-      width: '22%'
-    },
-    {
-      key: 'isActive',
-      label: 'Status',
-      type: 'status',
-      width: '12%',
-      align: 'center'
-    },
-    {
-      key: 'teacherCount',
-      label: 'Teachers',
-      width: '10%',
-      align: 'center'
-    },
-    {
-      key: 'studentCount',
-      label: 'Students',
-      width: '10%',
-      align: 'center'
-    },
-    {
-      key: 'classCount',
-      label: 'Classes',
-      width: '10%',
-      align: 'center'
-    },
-    {
-      key: 'assignedRoleCount',
-      label: 'Roles',
-      width: '8%',
-      align: 'center'
-    }
-  ];
+readonly columns: TableColumn[] = [
+  {
+    key: 'organizationName',
+    label: 'Organization',
+    width: '22%',
+    sortable: true
+  },
+  {
+    key: 'email',
+    label: 'Administrator',
+    width: '22%',
+    sortable: true
+  },
+  {
+    key: 'isActive',
+    label: 'Status',
+    type: 'status',
+    width: '12%',
+    align: 'center',
+    sortable: true
+  },
+  {
+    key: 'teacherCount',
+    label: 'Teachers',
+    width: '10%',
+    align: 'center',
+    sortable: true
+  },
+  {
+    key: 'studentCount',
+    label: 'Students',
+    width: '10%',
+    align: 'center',
+    sortable: true
+  },
+  {
+    key: 'classCount',
+    label: 'Classes',
+    width: '10%',
+    align: 'center',
+    sortable: true
+  },
+  {
+    key: 'assignedRoleCount',
+    label: 'Roles',
+    width: '8%',
+    align: 'center',
+    sortable: true
+  }
+];
 
 
   /* =========================================================

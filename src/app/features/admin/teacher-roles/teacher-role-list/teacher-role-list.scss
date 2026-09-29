@@ -531,10 +531,21 @@
   vertical-align: middle;
 }
 
-.roles-table tbody tr:hover {
-  background: #f8fafc;
+.roles-table tbody tr {
+  transition: background-color 0.15s ease;
 }
 
+.roles-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.roles-table tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
+.roles-table tbody tr:hover {
+  background: #eef6ff;
+}
 .roles-table tbody tr:last-child td {
   border-bottom: 0;
 }

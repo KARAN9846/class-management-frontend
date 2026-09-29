@@ -54,36 +54,42 @@ export class StudentAttendanceComponent implements OnInit {
 
   search = '';
 
-  columns: TableColumn[] = [
-    {
-      key: 'academicYearName',
-      label: 'Academic Year'
-    },
-    {
-      key: 'className',
-      label: 'Class'
-    },
-    {
-      key: 'sectionName',
-      label: 'Section',
-      align: 'center'
-    },
-    {
-      key: 'attendanceDate',
-      label: 'Date'
-    },
-    {
-      key: 'status',
-      label: 'Status',
-      align: 'center',
-      type: 'status'
-    },
-    {
-      key: 'markedByTeacherName',
-      label: 'Marked By',
-      type: 'attendance-teacher'
-    }
-  ];
+columns: TableColumn[] = [
+  {
+    key: 'academicYearName',
+    label: 'Academic Year',
+    sortable: true
+  },
+  {
+    key: 'className',
+    label: 'Class',
+    sortable: true
+  },
+  {
+    key: 'sectionName',
+    label: 'Section',
+    align: 'center',
+    sortable: true
+  },
+  {
+    key: 'attendanceDate',
+    label: 'Date',
+    sortable: true
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    align: 'center',
+    type: 'status',
+    sortable: true
+  },
+  {
+    key: 'markedByTeacherName',
+    label: 'Marked By',
+    type: 'attendance-teacher',
+    sortable: true
+  }
+];
 
   ngOnInit(): void {
     this.loadAttendance();

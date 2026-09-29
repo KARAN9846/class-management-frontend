@@ -14,6 +14,7 @@ export interface TableColumn {
   label: string;
   width?: string;
   align?: 'left' | 'center' | 'right';
+  sortable?: boolean;
 
   /**
    * Optional value formatter for display-only values.
@@ -21,20 +22,26 @@ export interface TableColumn {
    */
   value?: (row: any) => any;
 
-type?:
-  | 'text'
-  | 'student-name'
-  | 'status'
-  | 'fee-status'
-  | 'percentage'
-  | 'current'
-  | 'sections'
-  | 'permissions'
-  | 'permission-count'
-  | 'date-time'
-  | 'assignment-status'
-  | 'attendance-teacher'
-  | 'attendance-last-updated';
+  /**
+   * Optional raw value used only for sorting.
+   * Useful when display values are formatted strings.
+   */
+  sortValue?: (row: any) => any;
+
+  type?:
+    | 'text'
+    | 'student-name'
+    | 'status'
+    | 'fee-status'
+    | 'percentage'
+    | 'current'
+    | 'sections'
+    | 'permissions'
+    | 'permission-count'
+    | 'date-time'
+    | 'assignment-status'
+    | 'attendance-teacher'
+    | 'attendance-last-updated';
 }
 
 export interface TableAction {
@@ -61,26 +68,33 @@ export class DataTableComponent {
   @Input() loading = false;
 
   @Input() actions: TableAction[] = [];
-
   @Input() rowActions?: (row: any) => TableAction[];
 
-@Input() showActions = false;
+  @Input() showActions = false;
 
-/**
- * Keeps the first data column visible while
- * horizontally scrolling the table.
- */
-@Input() stickyFirstColumn = false;
+  /**
+   * Keeps the first data column visible while
+   * horizontally scrolling the table.
+   */
+  @Input() stickyFirstColumn = false;
 
-@Input() currentField?: string;
+  @Input() currentField?: string;
 
   @Input() enablePagination = false;
-  @Input() pageSize = 10;
+  @Input() pageSize = 50;
+
+  /**
+   * Kept for backward compatibility with existing
+   * DataTable consumers.
+   *
+   * Search is handled by individual table pages.
+   */
+  @Input() enableSearch = false;
+  @Input() searchPlaceholder = 'Search...';
 
   @Output() actionClick = new EventEmitter<any>();
 
   @Output() studentNameClick = new EventEmitter<number>();
-
 
   /* =========================================================
      PAGINATION
@@ -88,12 +102,14 @@ export class DataTableComponent {
 
   currentPage = 1;
 
+  sortColumn: string | null = null;
+  sortDirection: 'asc' | 'desc' | null = null;
+
   get totalItems(): number {
     return this.data.length;
   }
 
   get totalPages(): number {
-
     if (!this.enablePagination || this.totalItems === 0) {
       return 1;
     }
@@ -103,16 +119,93 @@ export class DataTableComponent {
     );
   }
 
+  get sortedData(): any[] {
+
+    if (!this.sortColumn || !this.sortDirection) {
+      return this.data;
+    }
+
+    const column = this.columns.find(
+      item => item.key === this.sortColumn
+    );
+
+    if (!column) {
+      return this.data;
+    }
+
+    return [...this.data].sort((a, b) => {
+
+      const aValue = column.sortValue
+        ? column.sortValue(a)
+        : this.getCellValue(a, column);
+
+      const bValue = column.sortValue
+        ? column.sortValue(b)
+        : this.getCellValue(b, column);
+
+      if (aValue == null && bValue == null) {
+        return 0;
+      }
+
+      if (aValue == null) {
+        return 1;
+      }
+
+      if (bValue == null) {
+        return -1;
+      }
+
+      let comparison = 0;
+
+      if (
+        typeof aValue === 'number' &&
+        typeof bValue === 'number'
+      ) {
+        comparison = aValue - bValue;
+
+      } else if (
+        aValue instanceof Date &&
+        bValue instanceof Date
+      ) {
+        comparison =
+          aValue.getTime() - bValue.getTime();
+
+      } else if (
+        typeof aValue === 'boolean' &&
+        typeof bValue === 'boolean'
+      ) {
+        comparison =
+          Number(aValue) - Number(bValue);
+
+      } else {
+        comparison = String(aValue).localeCompare(
+          String(bValue),
+          undefined,
+          {
+            numeric: true,
+            sensitivity: 'base'
+          }
+        );
+      }
+
+      return this.sortDirection === 'asc'
+        ? comparison
+        : -comparison;
+    });
+  }
+
   get displayedData(): any[] {
 
+    const sourceData = this.sortedData;
+
     if (!this.enablePagination) {
-      return this.data;
+      return sourceData;
     }
 
     const startIndex =
       (this.currentPage - 1) * this.pageSize;
 
-    return this.data.slice(
+    return sourceData.slice(
       startIndex,
       startIndex + this.pageSize
     );
@@ -124,8 +217,10 @@ export class DataTableComponent {
       return 0;
     }
 
-    return (this.currentPage - 1) *
-      this.pageSize + 1;
+    return (
+      (this.currentPage - 1) *
+      this.pageSize
+    ) + 1;
   }
 
   get displayEnd(): number {
@@ -174,29 +269,53 @@ export class DataTableComponent {
     this.goToPage(this.currentPage + 1);
   }
 
+  toggleSort(column: TableColumn): void {
+
+    if (!column.sortable) {
+      return;
+    }
+
+    if (this.sortColumn !== column.key) {
+
+      this.sortColumn = column.key;
+      this.sortDirection = 'asc';
+
+    } else if (this.sortDirection === 'asc') {
+
+      this.sortDirection = 'desc';
+
+    } else {
+
+      this.sortColumn = null;
+      this.sortDirection = null;
+    }
+
+    this.currentPage = 1;
+    this.closeActionMenu();
+  }
 
   /* =========================================================
      CELL HELPERS
      ========================================================= */
 
-getCellValue(
-  row: any,
-  column: TableColumn
-): any {
+  getCellValue(
+    row: any,
+    column: TableColumn
+  ): any {
 
-  if (column.value) {
-    return column.value(row);
+    if (column.value) {
+      return column.value(row);
+    }
+
+    return row[column.key];
   }
 
-  return row[column.key];
-}
   getBooleanCellValue(
     row: any,
     column: TableColumn
   ): boolean {
     return Boolean(row[column.key]);
   }
-
 
   /* =========================================================
      STATUS
@@ -258,7 +377,6 @@ getCellValue(
     }
   }
 
-
   /* =========================================================
      DATE
      ========================================================= */
@@ -290,7 +408,6 @@ getCellValue(
     ).format(date);
   }
 
-
   /* =========================================================
      CURRENT
      ========================================================= */
@@ -302,12 +419,12 @@ getCellValue(
       : false;
   }
 
-
   /* =========================================================
      ACTION MENU
      ========================================================= */
 
   openActionRowId: any = null;
+  openActionRow: any = null;
 
   actionMenuTop = 0;
   actionMenuLeft = 0;
@@ -391,11 +508,13 @@ getCellValue(
 
     this.actionMenuActions = actions;
     this.openActionRowId = rowId;
+    this.openActionRow = row;
   }
 
   closeActionMenu(): void {
 
     this.openActionRowId = null;
+    this.openActionRow = null;
     this.actionMenuActions = [];
   }
 
@@ -413,15 +532,16 @@ getCellValue(
   }
 
   onActionClick(
-  action: TableAction,
-  row: any
-): void {
+    action: TableAction,
+    row: any
+  ): void {
 
-  this.actionClick.emit({
-    action,
-    row
-  });
-}
+    this.actionClick.emit({
+      action,
+      row
+    });
+  }
+
   @HostListener('window:resize')
   handleWindowResize(): void {
 
@@ -434,7 +554,6 @@ getCellValue(
   handleDocumentClick(): void {
     this.closeActionMenu();
   }
-
 
   /* =========================================================
      ACTION HELPERS
@@ -454,7 +573,6 @@ getCellValue(
 
     return row?.id ?? index;
   }
-
 
   /* =========================================================
      TRACKING
@@ -488,18 +606,23 @@ getCellValue(
     return item?.id ?? index;
   }
 
-  onStudentNameClick(row: any, event: MouseEvent): void {
-  event.stopPropagation();
+  onStudentNameClick(
+    row: any,
+    event: MouseEvent
+  ): void {
 
-  const studentId = Number(row?.['id']);
+    event.stopPropagation();
 
-  if (!Number.isFinite(studentId) || studentId <= 0) {
-    return;
+    const studentId =
+      Number(row?.['id']);
+
+    if (
+      !Number.isFinite(studentId) ||
+      studentId <= 0
+    ) {
+      return;
+    }
+
+    this.studentNameClick.emit(studentId);
   }
-
-  this.studentNameClick.emit(studentId);
-}
-
-
-
 }

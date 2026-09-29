@@ -228,10 +228,21 @@
   border-bottom: 0;
 }
 
-.assignment-table tbody tr:hover {
-  background: #fafafa;
+.assignment-table tbody tr {
+  transition: background-color 0.15s ease;
 }
 
+.assignment-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.assignment-table tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
+.assignment-table tbody tr:hover {
+  background: #eef6ff;
+}
 /* ================================
    COLUMN WIDTHS
 ================================ */

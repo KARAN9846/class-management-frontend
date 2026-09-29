@@ -49,22 +49,25 @@
 
 
     <!-- Data Table -->
+<app-data-table
 
-    <app-data-table
+  [columns]="columns"
 
-      [columns]="columns"
+  [data]="assignments"
 
-      [data]="assignments"
+  [loading]="loading"
 
-      [loading]="loading"
+  [actions]="actions"
 
-      [actions]="actions"
+  [showActions]="true"
 
-      [showActions]="true"
+  [enableSearch]="true"
 
-      (actionClick)="onAction($event)">
+  [searchPlaceholder]="'Search assignments...'"
 
-    </app-data-table>
+  (actionClick)="onAction($event)">
+
+</app-data-table>
 
   </div>
 

@@ -343,11 +343,21 @@ td {
 tbody tr:last-child td {
   border-bottom: none;
 }
-
-tbody tr:hover {
-  background: #f8fafc;
+tbody tr {
+  transition: background-color 0.15s ease;
 }
 
+tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
+tbody tr:hover {
+  background: #eef6ff;
+}
 .amount-cell {
   color: #0f172a;
 

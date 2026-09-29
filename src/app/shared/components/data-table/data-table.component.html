@@ -1,5 +1,7 @@
 <div class="table-wrapper">
 
+
+
   @if (loading) {
 
   <div class="table-loading">
@@ -28,10 +30,29 @@
           <th [style.width]="column.width" [class.text-center]="column.align === 'center'"
             [class.text-right]="column.align === 'right'" [class.sticky-column]="
     stickyFirstColumn && $index === 0
-  ">
+  " [class.sortable-header]="column.sortable" [class.sort-active]="sortColumn === column.key"
+            (click)="toggleSort(column)">
+            <span class="header-content">
 
-            {{ column.label }}
+              <span>
+                {{ column.label }}
+              </span>
 
+              @if (column.sortable) {
+
+              <span class="sort-indicator" [class.active]="sortColumn === column.key" aria-hidden="true">
+                @if (sortColumn !== column.key) {
+                ↕
+                } @else if (sortDirection === 'asc') {
+                ↑
+                } @else {
+                ↓
+                }
+              </span>
+
+              }
+
+            </span>
           </th>
 
           }
@@ -223,44 +244,39 @@
 
             } @else if (column.type === 'student-name') {
 
-<div
-  class="student-name-cell"
-  role="link"
-  tabindex="0"
-  [title]="'Open ' + getCellValue(row, column)"
-  (click)="onStudentNameClick(row, $event)"
->
+            <div class="student-name-cell" role="link" tabindex="0" [title]="'Open ' + getCellValue(row, column)"
+              (click)="onStudentNameClick(row, $event)">
 
-  <div class="student-name-avatar">
+              <div class="student-name-avatar">
 
-    {{
-    (
-    row['firstName']?.charAt(0) || ''
-    ) +
-    (
-    row['lastName']?.charAt(0) || ''
-    )
-    }}
+                {{
+                (
+                row['firstName']?.charAt(0) || ''
+                ) +
+                (
+                row['lastName']?.charAt(0) || ''
+                )
+                }}
 
-  </div>
+              </div>
 
-  <div class="student-name-content">
+              <div class="student-name-content">
 
-    <span class="student-name-link">
-      {{ getCellValue(row, column) }}
-    </span>
+                <span class="student-name-link">
+                  {{ getCellValue(row, column) }}
+                </span>
 
-    <span class="student-name-secondary">
+                <span class="student-name-secondary">
 
-      Student
-      <span class="student-name-separator">•</span>
-      {{ row['rollNumber'] || 'No Roll No.' }}
+                  Student
+                  <span class="student-name-separator">•</span>
+                  {{ row['rollNumber'] || 'No Roll No.' }}
 
-    </span>
+                </span>
 
-  </div>
+              </div>
 
-</div>
+            </div>
 
             } @else {
 
@@ -376,13 +392,10 @@
     ) {
 
     <button type="button" class="action-menu-item" [class.danger]="action.danger" (click)="
-              onActionMenuClick(
-                action,
-                data.find(
-                  item =>
-                    (item?.id ?? -1) === openActionRowId
-                )
-              )
+onActionMenuClick(
+  action,
+  openActionRow
+)
             ">
 
       @if (action.icon) {

@@ -145,15 +145,16 @@
     <!-- ==================== TABLE ==================== -->
     @if (!loading && attendance.length > 0) {
 
-      <app-data-table
-        [columns]="columns"
-        [data]="attendance"
-        [loading]="loading"
-        [actions]="actions"
-        [showActions]="true"
-        (actionClick)="onActionClick($event)">
-      </app-data-table>
-      
+  <app-data-table
+  [columns]="columns"
+  [data]="attendance"
+  [loading]="loading"
+  [actions]="actions"
+  [showActions]="true"
+  [enableSearch]="true"
+  [searchPlaceholder]="'Search attendance...'"
+  (actionClick)="onActionClick($event)">
+</app-data-table>
 
     }
 

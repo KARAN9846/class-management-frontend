@@ -3,7 +3,11 @@ import {
   HttpInterceptorFn
 } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, switchMap, throwError } from 'rxjs';
+import {
+  catchError,
+  switchMap,
+  throwError
+} from 'rxjs';
 
 import { TokenService } from '../auth/token.service';
 import { AuthService } from '../auth/auth.service';
@@ -13,9 +17,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
   const authService = inject(AuthService);
 
+  /*
+   * Never try to refresh the refresh request itself.
+   */
+  const isRefreshRequest =
+    req.url.endsWith('/auth/refresh');
+
   const token = tokenService.getToken();
 
-  // No access token → send request normally
+  /*
+   * No access token → send request normally.
+   */
   if (!token) {
     return next(req);
   }
@@ -30,45 +42,75 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
     catchError((error: HttpErrorResponse) => {
 
-      // Only handle expired/invalid authentication
-      if (error.status !== 401) {
+      /*
+       * Never attempt another refresh for the
+       * refresh endpoint itself.
+       */
+      if (
+        error.status !== 401 ||
+        isRefreshRequest
+      ) {
         return throwError(() => error);
       }
 
-      const refreshToken = tokenService.getRefreshToken();
+      const refreshToken =
+        tokenService.getRefreshToken();
 
-      // No refresh token → user must login again
+      /*
+       * No refresh token → session is invalid.
+       */
       if (!refreshToken) {
         tokenService.removeAllTokens();
+
         return throwError(() => error);
       }
 
+      /*
+       * Refresh access token.
+       */
       return authService.refresh(refreshToken).pipe(
 
         switchMap(response => {
 
-          const newAccessToken = response.data?.accessToken;
+          const newAccessToken =
+            response.data?.accessToken;
 
+          /*
+           * Refresh response did not contain
+           * a valid access token.
+           */
           if (!newAccessToken) {
+
             tokenService.removeAllTokens();
+
             return throwError(() => error);
           }
 
-          // Store new access token
-          tokenService.setToken(newAccessToken);
+          /*
+           * Store new access token.
+           */
+          tokenService.setToken(
+            newAccessToken
+          );
 
-          // Backend currently returns the same refresh token.
-          // Keep it if one is returned.
+          /*
+           * Keep returned refresh token
+           * if backend provides one.
+           */
           if (response.data?.refreshToken) {
+
             tokenService.setRefreshToken(
               response.data.refreshToken
             );
           }
 
-          // Retry original request with new access token
+          /*
+           * Retry original request.
+           */
           const retryReq = req.clone({
             setHeaders: {
-              Authorization: `Bearer ${newAccessToken}`
+              Authorization:
+                `Bearer ${newAccessToken}`
             }
           });
 
@@ -76,10 +118,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         }),
 
         catchError(refreshError => {
-          // Refresh failed → session is no longer valid
+
+          /*
+           * Refresh failed → force login.
+           */
           tokenService.removeAllTokens();
 
-          return throwError(() => refreshError);
+          return throwError(
+            () => refreshError
+          );
         })
       );
     })

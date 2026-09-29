@@ -367,10 +367,21 @@ tbody tr:last-child td {
 }
 
 
-tbody tr:hover {
-  background: #f8fafc;
+tbody tr {
+  transition: background-color 0.15s ease;
 }
 
+tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
+tbody tr:hover {
+  background: #eef6ff;
+}
 
 .student-name {
   font-weight: 600;

@@ -745,8 +745,20 @@
   border-bottom: 0;
 }
 
+.attendance-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.attendance-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.attendance-table tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
 .attendance-table tbody tr:hover {
-  background: #f8fafc;
+  background: #eef6ff;
 }
 
 .attendance-status {
@@ -965,6 +977,22 @@
 
 .fee-payments-table tbody tr:last-child td {
   border-bottom: 0;
+}
+
+.fee-payments-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.fee-payments-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.fee-payments-table tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
+.fee-payments-table tbody tr:hover {
+  background: #eef6ff;
 }
 
 .payment-amount {

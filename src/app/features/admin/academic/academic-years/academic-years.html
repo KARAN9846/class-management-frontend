@@ -41,15 +41,18 @@
 
 
   <!-- DATA TABLE -->
-  <app-data-table
-    [columns]="columns"
-    [data]="filteredYears"
-    [loading]="loading"
-    [actions]="actions"
-    [showActions]="true"
-    currentField="isCurrent"
-    (actionClick)="onAction($event)">
-  </app-data-table>
+<!-- DATA TABLE -->
+<app-data-table
+  [columns]="columns"
+  [data]="filteredYears"
+  [loading]="loading"
+  [actions]="actions"
+  [showActions]="true"
+  [enableSearch]="true"
+  [searchPlaceholder]="'Search academic years...'"
+  currentField="isCurrent"
+  (actionClick)="onAction($event)">
+</app-data-table>
 
 
   <!-- ADD / EDIT MODAL -->

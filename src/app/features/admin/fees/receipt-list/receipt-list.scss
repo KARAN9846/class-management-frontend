@@ -102,17 +102,24 @@ td {
 }
 
 tbody tr {
-  transition: background 0.15s ease;
-
-  &:hover {
-    background: #f8fafc;
-  }
+  transition: background-color 0.15s ease;
 
   &:last-child td {
     border-bottom: 0;
   }
 }
 
+tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
+tbody tr:hover {
+  background: #eef6ff;
+}
 /* =========================
    RECEIPT
    ========================= */

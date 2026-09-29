@@ -79,125 +79,20 @@
       </div>
 
 
-      <div class="table-wrapper">
+<div class="table-wrapper">
 
-        <table>
+  <app-data-table
+    [columns]="columns"
+    [data]="receipts"
+    [loading]="loading"
+    [actions]="actions"
+    [showActions]="true"
+    [enableSearch]="true"
+    [searchPlaceholder]="'Search receipts...'"
+    (actionClick)="onActionClick($event)">
+  </app-data-table>
 
-          <thead>
-
-            <tr>
-              <th>Receipt No.</th>
-              <th>Date</th>
-              <th>Student</th>
-              <th>Payment</th>
-              <th>Method</th>
-              <th>Total Paid</th>
-              <th>Remaining</th>
-              <th>Actions</th>
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            @for (receipt of receipts; track receipt.id) {
-
-              <tr>
-
-                <td>
-                  <span class="receipt-number">
-                    {{ receipt.receiptNumber }}
-                  </span>
-                </td>
-
-
-                <td>
-                  {{ receipt.issuedAt | date:'dd MMM yyyy, hh:mm a' }}
-                </td>
-
-
-                <td>
-
-                  <div class="student-cell">
-
-                    <strong>
-                      {{ receipt.studentName }}
-                    </strong>
-
-                    @if (receipt.studentRollNumber) {
-                      <span>
-                        Roll {{ receipt.studentRollNumber }}
-                      </span>
-                    }
-
-                  </div>
-
-                </td>
-
-
-                <td>
-
-                  <strong>
-                    ₹{{ receipt.paymentAmount | number:'1.2-2' }}
-                  </strong>
-
-                </td>
-
-
-                <td>
-
-                  <span class="method-badge">
-                    {{ receipt.paymentMethod }}
-                  </span>
-
-                </td>
-
-
-                <td>
-                  ₹{{ receipt.totalPaidAmount | number:'1.2-2' }}
-                </td>
-
-
-                <td>
-                  ₹{{ receipt.remainingAmount | number:'1.2-2' }}
-                </td>
-
-
-                <td>
-
-                  <div class="actions">
-
-                    <!-- VIEW -->
-                    <button
-                      type="button"
-                      class="action-btn view"
-                      (click)="viewReceipt(receipt)">
-                      View
-                    </button>
-
-
-                    <!-- DOWNLOAD -->
-                    <button
-                      type="button"
-                      class="action-btn download"
-                      (click)="downloadReceipt(receipt)">
-                      Download
-                    </button>
-
-                  </div>
-
-                </td>
-
-              </tr>
-
-            }
-
-          </tbody>
-
-        </table>
-
-      </div>
+</div>
 
     </section>
 

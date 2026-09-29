@@ -251,17 +251,25 @@ table {
     vertical-align: middle;
   }
 
-  tbody tr {
-    transition: background 0.12s ease;
+tbody tr {
+  transition: background-color 0.12s ease;
 
-    &:hover {
-      background: #f8fafc;
-    }
-
-    &:last-child td {
-      border-bottom: 0;
-    }
+  &:nth-child(odd) {
+    background: #ffffff;
   }
+
+  &:nth-child(even) {
+    background: #f8fbff;
+  }
+
+  &:hover {
+    background: #eef6ff;
+  }
+
+  &:last-child td {
+    border-bottom: 0;
+  }
+}
 }
 
 // ======================================================

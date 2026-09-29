@@ -22,12 +22,12 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
   selector: 'app-attendance-overview',
   standalone: true,
 
-imports: [
-  CommonModule,
-  DataTableComponent,
-  SearchInputComponent,
-  PaginationComponent
-],
+  imports: [
+    CommonModule,
+    DataTableComponent,
+    SearchInputComponent,
+    PaginationComponent
+  ],
 
   templateUrl: './attendance-overview.html',
   styleUrl: './attendance-overview.scss'
@@ -44,11 +44,11 @@ export class AttendanceOverview implements OnInit {
 
   private allAttendance: Attendance[] = [];
 
- filteredAttendance: Attendance[] = [];
+  filteredAttendance: Attendance[] = [];
 
-currentPage = 1;
+  currentPage = 1;
 
-pageSize = 10;
+  pageSize = 10;
 
   loading = false;
 
@@ -64,44 +64,49 @@ pageSize = 10;
 
   sectionFilter = 'ALL';
 
-  columns: TableColumn[] = [
-    {
-      key: 'studentName',
-      label: 'Student'
-    },
-    {
-      key: 'className',
-      label: 'Class'
-    },
-    {
-      key: 'sectionName',
-      label: 'Section',
-      align: 'center'
-    },
-
-{
-  key: 'attendanceDate',
-  label: 'Date',
-  type: 'date-time'
-},
-{
-  key: 'status',
-  label: 'Status',
-  align: 'center',
-  type: 'status'
-},
-{
-  key: 'markedByTeacherName',
-  label: 'Marked By',
-  type: 'attendance-teacher'
-},
-
-{
-  key: 'lastUpdatedByTeacherName',
-  label: 'Last Updated By',
-  type: 'attendance-last-updated'
-}
-  ];
+columns: TableColumn[] = [
+  {
+    key: 'studentName',
+    label: 'Student',
+    sortable: true
+  },
+  {
+    key: 'className',
+    label: 'Class',
+    sortable: true
+  },
+  {
+    key: 'sectionName',
+    label: 'Section',
+    align: 'center',
+    sortable: true
+  },
+  {
+    key: 'attendanceDate',
+    label: 'Date',
+    type: 'date-time',
+    sortable: true
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    align: 'center',
+    type: 'status',
+    sortable: true
+  },
+  {
+    key: 'markedByTeacherName',
+    label: 'Marked By',
+    type: 'attendance-teacher',
+    sortable: true
+  },
+  {
+    key: 'lastUpdatedByTeacherName',
+    label: 'Last Updated By',
+    type: 'attendance-last-updated',
+    sortable: true
+  }
+];
 
   ngOnInit(): void {
     this.loadAttendance();
@@ -141,90 +146,90 @@ pageSize = 10;
       });
   }
 
-applySearch(): void {
-  const searchValue =
-    this.search.trim().toLowerCase();
+  applySearch(): void {
+    const searchValue =
+      this.search.trim().toLowerCase();
 
-  this.filteredAttendance =
-    this.allAttendance.filter((item) => {
+    this.filteredAttendance =
+      this.allAttendance.filter((item) => {
 
-      const matchesSection =
-        this.sectionFilter === 'ALL' ||
-        item.sectionName === this.sectionFilter;
+        const matchesSection =
+          this.sectionFilter === 'ALL' ||
+          item.sectionName === this.sectionFilter;
 
-      const matchesSearch =
-        !searchValue ||
-        item.studentName?.toLowerCase().includes(searchValue) ||
-        item.className?.toLowerCase().includes(searchValue) ||
-        item.sectionName?.toLowerCase().includes(searchValue) ||
-        item.markedByTeacherName?.toLowerCase().includes(searchValue) ||
-        item.status?.toLowerCase().includes(searchValue);
+        const matchesSearch =
+          !searchValue ||
+          item.studentName?.toLowerCase().includes(searchValue) ||
+          item.className?.toLowerCase().includes(searchValue) ||
+          item.sectionName?.toLowerCase().includes(searchValue) ||
+          item.markedByTeacherName?.toLowerCase().includes(searchValue) ||
+          item.status?.toLowerCase().includes(searchValue);
 
-      const matchesStatus =
-        this.statusFilter === 'ALL' ||
-        item.status === this.statusFilter;
+        const matchesStatus =
+          this.statusFilter === 'ALL' ||
+          item.status === this.statusFilter;
 
-      const matchesDate =
-        !this.dateFilter ||
-        item.attendanceDate === this.dateFilter;
+        const matchesDate =
+          !this.dateFilter ||
+          item.attendanceDate === this.dateFilter;
 
-      const matchesClass =
-        this.classFilter === 'ALL' ||
-        item.className === this.classFilter;
+        const matchesClass =
+          this.classFilter === 'ALL' ||
+          item.className === this.classFilter;
 
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesDate &&
-        matchesClass &&
-        matchesSection
+        return (
+          matchesSearch &&
+          matchesStatus &&
+          matchesDate &&
+          matchesClass &&
+          matchesSection
+        );
+      });
+
+    this.currentPage = 1;
+
+    this.updatePagination();
+  }
+
+  private updatePagination(): void {
+    const startIndex =
+      (this.currentPage - 1) * this.pageSize;
+
+    const endIndex =
+      startIndex + this.pageSize;
+
+    this.attendance =
+      this.filteredAttendance.slice(
+        startIndex,
+        endIndex
       );
-    });
+  }
 
-  this.currentPage = 1;
+  onPageChange(page: number): void {
+    this.currentPage = page;
 
-  this.updatePagination();
-}
+    this.updatePagination();
+  }
 
-private updatePagination(): void {
-  const startIndex =
-    (this.currentPage - 1) * this.pageSize;
+  get classOptions(): string[] {
+    return [
+      ...new Set(
+        this.allAttendance
+          .map(item => item.className)
+          .filter(Boolean)
+      )
+    ];
+  }
 
-  const endIndex =
-    startIndex + this.pageSize;
-
-  this.attendance =
-    this.filteredAttendance.slice(
-      startIndex,
-      endIndex
-    );
-}
-
-onPageChange(page: number): void {
-  this.currentPage = page;
-
-  this.updatePagination();
-}
-
-get classOptions(): string[] {
-  return [
-    ...new Set(
-      this.allAttendance
-        .map(item => item.className)
-        .filter(Boolean)
-    )
-  ];
-}
-
-get sectionOptions(): string[] {
-  return [
-    ...new Set(
-      this.allAttendance
-        .map(item => item.sectionName)
-        .filter(Boolean)
-    )
-  ];
-}
+  get sectionOptions(): string[] {
+    return [
+      ...new Set(
+        this.allAttendance
+          .map(item => item.sectionName)
+          .filter(Boolean)
+      )
+    ];
+  }
 
   onSearchChange(value: string): void {
     this.search = value;
@@ -232,33 +237,33 @@ get sectionOptions(): string[] {
   }
 
   onStatusChange(value: string): void {
-  this.statusFilter =
-    value as 'ALL' | 'PRESENT' | 'ABSENT';
+    this.statusFilter =
+      value as 'ALL' | 'PRESENT' | 'ABSENT';
 
-  this.applySearch();
-}
-onDateChange(value: string): void {
-  this.dateFilter = value;
-  this.applySearch();
-}
+    this.applySearch();
+  }
+  onDateChange(value: string): void {
+    this.dateFilter = value;
+    this.applySearch();
+  }
 
-onClassChange(value: string): void {
-  this.classFilter = value;
-  this.applySearch();
-}
+  onClassChange(value: string): void {
+    this.classFilter = value;
+    this.applySearch();
+  }
 
-onSectionChange(value: string): void {
-  this.sectionFilter = value;
-  this.applySearch();
-}
+  onSectionChange(value: string): void {
+    this.sectionFilter = value;
+    this.applySearch();
+  }
 
-clearFilters(): void {
-  this.search = '';
-  this.statusFilter = 'ALL';
-  this.dateFilter = '';
-  this.classFilter = 'ALL';
-  this.sectionFilter = 'ALL';
+  clearFilters(): void {
+    this.search = '';
+    this.statusFilter = 'ALL';
+    this.dateFilter = '';
+    this.classFilter = 'ALL';
+    this.sectionFilter = 'ALL';
 
-  this.applySearch();
-}
+    this.applySearch();
+  }
 }

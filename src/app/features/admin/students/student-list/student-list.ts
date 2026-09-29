@@ -159,50 +159,59 @@ export class StudentList implements OnInit {
     {
       key: 'rollNumber',
       label: 'Roll No.',
-      width: '120px'
+      width: '120px',
+      sortable: true
     },
     {
       key: 'schoolName',
       label: 'School',
       width: '180px',
-      type: 'text'
+      type: 'text',
+      sortable: true
     },
     {
       key: 'academicYearName',
       label: 'Academic Year',
-      width: '150px'
+      width: '150px',
+      sortable: true
     },
     {
       key: 'className',
       label: 'Class',
-      width: '120px'
+      width: '120px',
+      sortable: true
     },
     {
       key: 'sectionName',
       label: 'Section',
-      width: '120px'
+      width: '120px',
+      sortable: true
     },
     {
       key: 'isActive',
       label: 'Status',
       width: '110px',
-      type: 'status'
+      type: 'status',
+      sortable: true
     },
     {
       key: 'email',
       label: 'Email',
-      width: '220px'
+      width: '220px',
+      sortable: true
     },
     {
       key: 'phone',
       label: 'Phone',
-      width: '140px'
+      width: '140px',
+      sortable: true
     },
     {
       key: 'originalFee',
       label: 'Original Fee (₹)',
       width: '140px',
       align: 'right',
+      sortable: true,
       value: (row: StudentListRow) =>
         this.formatCurrency(row.originalFee)
     },
@@ -211,6 +220,7 @@ export class StudentList implements OnInit {
       label: 'Discount (₹)',
       width: '130px',
       align: 'right',
+      sortable: true,
       value: (row: StudentListRow) =>
         this.formatCurrency(row.discountAmount)
     },
@@ -219,14 +229,7 @@ export class StudentList implements OnInit {
       label: 'Payable (₹)',
       width: '130px',
       align: 'right',
-      value: (row: StudentListRow) =>
-        this.formatCurrency(row.payableAmount)
-    },
-    {
-      key: 'paidAmount',
-      label: 'Paid (₹)',
-      width: '120px',
-      align: 'right',
+      sortable: true,
       value: (row: StudentListRow) =>
         this.formatCurrency(row.paidAmount)
     },
@@ -251,7 +254,17 @@ export class StudentList implements OnInit {
       align: 'right',
       value: (row: StudentListRow) =>
         `${row.attendancePercentage}%`
-    }
+    },
+
+    {
+      key: 'studentName',
+      label: 'Name',
+      width: '240px',
+      type: 'student-name',
+      sortable: true,
+      value: (row: StudentListRow) =>
+        `${row.firstName ?? ''} ${row.lastName ?? ''}`.trim()
+    },
   ];
 
   // =========================================================
@@ -348,23 +361,23 @@ export class StudentList implements OnInit {
   // INIT
   // =========================================================
 
-ngOnInit(): void {
-  this.loadAcademicYears();
-  this.loadClasses();
-  this.loadStudents();
+  ngOnInit(): void {
+    this.loadAcademicYears();
+    this.loadClasses();
+    this.loadStudents();
 
-  this.route.queryParams.subscribe(params => {
-    if (params['created'] === 'true') {
-      this.page = 0;
-      this.loadStudents();
+    this.route.queryParams.subscribe(params => {
+      if (params['created'] === 'true') {
+        this.page = 0;
+        this.loadStudents();
 
-      this.router.navigate([], {
-        queryParams: {},
-        replaceUrl: true
-      });
-    }
-  });
-}
+        this.router.navigate([], {
+          queryParams: {},
+          replaceUrl: true
+        });
+      }
+    });
+  }
 
   // =========================================================
   // LOAD ACADEMIC YEARS
@@ -1276,21 +1289,21 @@ ngOnInit(): void {
     this.cdr.detectChanges();
   }
 
-onStudentCreated(): void {
-  this.closeAddStudent();
+  onStudentCreated(): void {
+    this.closeAddStudent();
 
-  this.page = 0;
-  this.loadStudents();
+    this.page = 0;
+    this.loadStudents();
 
-  this.successMessage = 'Student created successfully.';
+    this.successMessage = 'Student created successfully.';
 
-  this.cdr.detectChanges();
-
-  setTimeout(() => {
-    this.successMessage = '';
     this.cdr.detectChanges();
-  }, 3000);
-}
+
+    setTimeout(() => {
+      this.successMessage = '';
+      this.cdr.detectChanges();
+    }, 3000);
+  }
 
   closeEditStudent(): void {
     this.editPopupOpen = false;
@@ -1306,4 +1319,7 @@ onStudentCreated(): void {
     // search, filters or pagination.
     this.loadStudents();
   }
+
+
+
 }

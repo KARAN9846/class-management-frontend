@@ -69,21 +69,25 @@
     }
 
 
-    <app-data-table
+<app-data-table
 
-      [columns]="columns"
+  [columns]="columns"
 
-      [data]="assignments"
+  [data]="assignments"
 
-      [loading]="loading"
+  [enableSearch]="true"
 
-      [actions]="actions"
+  [searchPlaceholder]="'Search assignments...'"
 
-      [showActions]="true"
+  [loading]="loading"
 
-      (actionClick)="onAction($event)">
+  [actions]="actions"
 
-    </app-data-table>
+  [showActions]="true"
+
+  (actionClick)="onAction($event)">
+
+</app-data-table>
 
   </div>
 

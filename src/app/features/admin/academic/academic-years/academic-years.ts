@@ -27,13 +27,29 @@ export class AcademicYearsComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   /* TABLE CONFIG */
-  columns: TableColumn[] = [
-    { key: 'name', label: 'Academic Year' },
-    { key: 'startDate', label: 'Start Date' },
-    { key: 'endDate', label: 'End Date' },
-    { key: 'isActive', label: 'Status', type: 'status' }
-  ];
-
+columns: TableColumn[] = [
+  {
+    key: 'name',
+    label: 'Academic Year',
+    sortable: true
+  },
+  {
+    key: 'startDate',
+    label: 'Start Date',
+    sortable: true
+  },
+  {
+    key: 'endDate',
+    label: 'End Date',
+    sortable: true
+  },
+  {
+    key: 'isActive',
+    label: 'Status',
+    type: 'status',
+    sortable: true
+  }
+];
   actions: TableAction[] = [
     { label: 'Edit', type: 'edit' },
     { label: 'Set Current', type: 'current' },

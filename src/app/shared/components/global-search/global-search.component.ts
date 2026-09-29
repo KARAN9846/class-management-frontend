@@ -33,6 +33,7 @@ import {
     GlobalSearchResult,
     GlobalSearchTeacherQuickView
 } from './global-search.models';
+import { N } from '@angular/cdk/keycodes';
 
 
 @Component({
@@ -634,6 +635,7 @@ openSearch(): void {
                 )
                 % this.results.length;
 
+            this.scrollSelectedResultIntoView();
             return;
 
         }
@@ -656,6 +658,8 @@ openSearch(): void {
                     + this.results.length
                 )
                 % this.results.length;
+
+            this.scrollSelectedResultIntoView();
 
             return;
 
@@ -695,6 +699,24 @@ openSearch(): void {
         }
 
     }
+
+private scrollSelectedResultIntoView(): void {
+
+    setTimeout(() => {
+
+        const selectedElement =
+            document.querySelector(
+                '.search-results .search-result.selected'
+            ) as HTMLElement | null;
+
+        selectedElement?.scrollIntoView({
+            block: 'nearest',
+            behavior: 'smooth'
+        });
+
+    });
+
+}
 
 
     // =========================================================

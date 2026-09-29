@@ -627,10 +627,17 @@ tbody tr {
   transition: background-color 0.12s ease;
 }
 
-tbody tr:hover {
-  background: #fafcff;
+tbody tr:nth-child(odd) {
+  background: #ffffff;
 }
 
+tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
+tbody tr:hover {
+  background: #eef6ff;
+}
 tbody tr:last-child td {
   border-bottom: 0;
 }

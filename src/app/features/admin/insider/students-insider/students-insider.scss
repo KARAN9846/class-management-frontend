@@ -1586,10 +1586,21 @@
     background 0.12s ease;
 }
 
-.table-wrapper tbody tr:hover {
-  background: #fafafa;
+.table-wrapper tbody tr {
+  transition: background-color 0.12s ease;
 }
 
+.table-wrapper tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.table-wrapper tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
+.table-wrapper tbody tr:hover {
+  background: #eef6ff;
+}
 
 /* =========================================================
    STUDENT CELL

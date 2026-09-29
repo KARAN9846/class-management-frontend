@@ -2,290 +2,254 @@
 
 
 
-  <!-- =====================================================
+    <!-- =====================================================
        TABLE
   ====================================================== -->
 
-  <div class="table-card">
+    <div class="table-card">
 
-<div class="filter-area">
+        <div class="filter-area">
 
-  <div class="directory-info">
-    <h2>Teacher Directory</h2>
+            <div class="directory-info">
+                <h2>Teacher Directory</h2>
 
-    <p>
-      Search and manage all teachers.
-    </p>
-  </div>
+                <p>
+                    Search and manage all teachers.
+                </p>
+            </div>
 
-  <div class="filter-controls">
+            <div class="filter-controls">
 
-    <app-search-input
-      placeholder="Search by name, email or phone..."
-      (searchChange)="onSearch($event)">
-    </app-search-input>
+                <app-search-input placeholder="Search by name, email or phone..." (searchChange)="onSearch($event)">
+                </app-search-input>
 
-    <button
-      type="button"
-      class="add-btn"
-      (click)="router.navigate(['/admin/teachers/create'])">
+                <button type="button" class="add-btn" (click)="router.navigate(['/admin/teachers/create'])">
 
-      <span class="add-icon" aria-hidden="true">+</span>
-      <span>Add Teacher</span>
+                    <span class="add-icon" aria-hidden="true">+</span>
+                    <span>Add Teacher</span>
 
-    </button>
+                </button>
 
-  </div>
+            </div>
 
-</div>
+        </div>
 
-    <!-- Error -->
+        <!-- Error -->
 
-    @if (errorMessage) {
+        @if (errorMessage) {
 
-      <div class="error-state">
-        {{ errorMessage }}
-      </div>
+        <div class="error-state">
+            {{ errorMessage }}
+        </div>
 
-    }
+        }
 
 
-    <!-- Success -->
+        <!-- Success -->
 
-    @if (successMessage) {
+        @if (successMessage) {
 
-      <div class="success-state">
-        {{ successMessage }}
-      </div>
+        <div class="success-state">
+            {{ successMessage }}
+        </div>
 
-    }
-
-
-    <!-- Data Table -->
-
-    <app-data-table
-      [columns]="columns"
-      [data]="teachers"
-      [loading]="loading"
-      [actions]="actions"
-      [showActions]="true"
-      (actionClick)="onAction($event)">
-    </app-data-table>
+        }
 
 
-    <!-- Pagination -->
+        <!-- Data Table -->
 
-    <div class="pagination-area">
+        <app-data-table [columns]="columns" [data]="teachers" [enableSearch]="true"
+            [searchPlaceholder]="'Search teachers...'" [loading]="loading" [actions]="actions" [showActions]="true"
+            (actionClick)="onAction($event)">
+        </app-data-table>
 
-      <app-pagination
-        [currentPage]="page + 1"
-        [totalItems]="totalElements"
-        [pageSize]="size"
-        (pageChange)="onPageChange($event)">
-      </app-pagination>
+
+        <!-- Pagination -->
+
+        <div class="pagination-area">
+
+            <app-pagination [currentPage]="page + 1" [totalItems]="totalElements" [pageSize]="size"
+                (pageChange)="onPageChange($event)">
+            </app-pagination>
+
+        </div>
 
     </div>
 
-  </div>
 
-
-  <!-- =====================================================
+    <!-- =====================================================
        STATUS CONFIRMATION MODAL
   ====================================================== -->
 
-  @if (showStatusConfirm && selectedTeacher) {
+    @if (showStatusConfirm && selectedTeacher) {
 
-    <div
-      class="modal-backdrop"
-      (click)="cancelStatusChange()">
+    <div class="modal-backdrop" (click)="cancelStatusChange()">
 
-      <div
-        class="status-modal"
-        (click)="$event.stopPropagation()">
+        <div class="status-modal" (click)="$event.stopPropagation()">
 
 
-        <div class="modal-icon">
-          ?
-        </div>
+            <div class="modal-icon">
+                ?
+            </div>
 
 
-        <h2>
-          Change Teacher Status?
-        </h2>
+            <h2>
+                Change Teacher Status?
+            </h2>
 
 
-        <p>
+            <p>
 
-          Are you sure you want to
+                Are you sure you want to
 
-          <strong>
-            {{ selectedTeacher.isActive
-              ? 'deactivate'
-              : 'activate' }}
-          </strong>
+                <strong>
+                    {{ selectedTeacher.isActive
+                    ? 'deactivate'
+                    : 'activate' }}
+                </strong>
 
-          <strong>
-            {{ selectedTeacher.firstName }}
-            {{ selectedTeacher.lastName }}
-          </strong>?
+                <strong>
+                    {{ selectedTeacher.firstName }}
+                    {{ selectedTeacher.lastName }}
+                </strong>?
 
-        </p>
-
-
-        <div class="modal-actions">
-
-          <button
-            type="button"
-            class="cancel-btn"
-            [disabled]="statusChanging"
-            (click)="cancelStatusChange()">
-
-            Cancel
-
-          </button>
+            </p>
 
 
-          <button
-            type="button"
-            class="confirm-btn"
-            [disabled]="statusChanging"
-            (click)="confirmStatusChange()">
+            <div class="modal-actions">
 
-            @if (statusChanging) {
-              Updating...
-            } @else {
-              Confirm
-            }
+                <button type="button" class="cancel-btn" [disabled]="statusChanging" (click)="cancelStatusChange()">
 
-          </button>
+                    Cancel
+
+                </button>
+
+
+                <button type="button" class="confirm-btn" [disabled]="statusChanging" (click)="confirmStatusChange()">
+
+                    @if (statusChanging) {
+                    Updating...
+                    } @else {
+                    Confirm
+                    }
+
+                </button>
+
+            </div>
 
         </div>
-
-      </div>
 
     </div>
 
-  }
+    }
 
 
-  <!-- =====================================================
+    <!-- =====================================================
        DELETE CONFIRMATION MODAL
   ====================================================== -->
 
-  @if (showDeleteConfirm && selectedDeleteTeacher) {
+    @if (showDeleteConfirm && selectedDeleteTeacher) {
 
-    <div
-      class="modal-backdrop"
-      (click)="cancelDelete()">
+    <div class="modal-backdrop" (click)="cancelDelete()">
 
-      <div
-        class="delete-modal"
-        (click)="$event.stopPropagation()">
+        <div class="delete-modal" (click)="$event.stopPropagation()">
 
 
-        <!-- Warning Icon -->
+            <!-- Warning Icon -->
 
-        <div class="delete-modal-icon">
-          !
-        </div>
-
-
-        <!-- Title -->
-
-        <h2>
-          Delete Teacher?
-        </h2>
+            <div class="delete-modal-icon">
+                !
+            </div>
 
 
-        <!-- Message -->
+            <!-- Title -->
 
-        <p>
-
-          Are you sure you want to permanently delete
-
-          <strong>
-            {{ selectedDeleteTeacher.firstName }}
-            {{ selectedDeleteTeacher.lastName }}
-          </strong>?
-
-          <br>
-
-          This action cannot be undone.
-
-        </p>
+            <h2>
+                Delete Teacher?
+            </h2>
 
 
-        <!-- Teacher Information -->
+            <!-- Message -->
 
-        <div class="delete-teacher-info">
+            <p>
 
-          <div>
+                Are you sure you want to permanently delete
 
-            <span>
-              Teacher No.
-            </span>
+                <strong>
+                    {{ selectedDeleteTeacher.firstName }}
+                    {{ selectedDeleteTeacher.lastName }}
+                </strong>?
 
-            <strong>
-              {{ selectedDeleteTeacher.teacherNumber }}
-            </strong>
+                <br>
 
-          </div>
+                This action cannot be undone.
 
-
-          <div>
-
-            <span>
-              Email
-            </span>
-
-            <strong>
-              {{ selectedDeleteTeacher.email }}
-            </strong>
-
-          </div>
-
-        </div>
+            </p>
 
 
-        <!-- Actions -->
+            <!-- Teacher Information -->
 
-        <div class="modal-actions">
+            <div class="delete-teacher-info">
 
-          <button
-            type="button"
-            class="cancel-btn"
-            [disabled]="deleting"
-            (click)="cancelDelete()">
+                <div>
 
-            Cancel
+                    <span>
+                        Teacher No.
+                    </span>
 
-          </button>
+                    <strong>
+                        {{ selectedDeleteTeacher.teacherNumber }}
+                    </strong>
+
+                </div>
 
 
-          <button
-            type="button"
-            class="delete-confirm-btn"
-            [disabled]="deleting"
-            (click)="confirmDelete()">
+                <div>
 
-            @if (deleting) {
+                    <span>
+                        Email
+                    </span>
 
-              Deleting...
+                    <strong>
+                        {{ selectedDeleteTeacher.email }}
+                    </strong>
 
-            } @else {
+                </div>
 
-              Delete Teacher
+            </div>
 
-            }
 
-          </button>
+            <!-- Actions -->
+
+            <div class="modal-actions">
+
+                <button type="button" class="cancel-btn" [disabled]="deleting" (click)="cancelDelete()">
+
+                    Cancel
+
+                </button>
+
+
+                <button type="button" class="delete-confirm-btn" [disabled]="deleting" (click)="confirmDelete()">
+
+                    @if (deleting) {
+
+                    Deleting...
+
+                    } @else {
+
+                    Delete Teacher
+
+                    }
+
+                </button>
+
+            </div>
 
         </div>
-
-      </div>
 
     </div>
 
-  }
+    }
 
 </div>

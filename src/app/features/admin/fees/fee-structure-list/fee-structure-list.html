@@ -215,14 +215,16 @@
 
     <div class="table-container">
 
-      <app-data-table
-        [columns]="columns"
-        [data]="filteredFeeStructures"
-        [loading]="loading"
-        [rowActions]="getRowActions.bind(this)"
-        [showActions]="true"
-        (actionClick)="onActionClick($event)">
-      </app-data-table>
+<app-data-table
+  [columns]="columns"
+  [data]="filteredFeeStructures"
+  [enableSearch]="true"
+  [searchPlaceholder]="'Search fee structures...'"
+  [loading]="loading"
+  [rowActions]="getRowActions.bind(this)"
+  [showActions]="true"
+  (actionClick)="onActionClick($event)">
+</app-data-table>
 
     </div>
 

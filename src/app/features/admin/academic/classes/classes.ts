@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnInit,
+  inject
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -65,6 +71,8 @@ export class ClassesComponent implements OnInit {
   searchTerm = '';
 
   academicYearFilter: number | 'ALL' = 'ALL';
+
+  openActionMenuId: number | null = null;
 
 
   // =========================
@@ -330,6 +338,29 @@ sectionToDelete: Section | null = null;
   // =========================
   // ADD FORM
   // =========================
+
+  toggleActionMenu(
+  classId: number,
+  event: Event
+): void {
+
+  event.stopPropagation();
+
+  this.openActionMenuId =
+    this.openActionMenuId === classId
+      ? null
+      : classId;
+}
+
+@HostListener('document:click')
+onDocumentClick(): void {
+  this.closeActionMenu();
+}
+
+
+closeActionMenu(): void {
+  this.openActionMenuId = null;
+}
 
   openAddForm(): void {
 

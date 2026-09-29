@@ -10,6 +10,88 @@
 }
 
 
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 0 14px;
+}
+
+.table-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 320px;
+  max-width: 100%;
+}
+
+.table-search input {
+  width: 100%;
+  height: 40px;
+  padding: 0 38px 0 38px;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.table-search input::placeholder {
+  color: #94a3b8;
+}
+
+.table-search input:focus {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.search-icon {
+  position: absolute;
+  left: 13px;
+  z-index: 1;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.search-clear {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.search-clear:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.search-result-count {
+  color: #64748b;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 /* ============================================================
    TABLE
    ============================================================ */
@@ -19,9 +101,14 @@
 
   width: 100%;
 
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
   background: #ffffff;
 
-  overflow: visible;
+  overflow: hidden;
+
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 }
 
 .table-scroll {
@@ -29,6 +116,36 @@
 
   overflow-x: auto;
   overflow-y: visible;
+
+  border-radius: 11px 11px 0 0;
+}
+
+.table-scroll {
+  width: 100%;
+
+  overflow-x: auto;
+  overflow-y: visible;
+
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* WebKit browsers — Chrome / Safari / Edge */
+.table-scroll::-webkit-scrollbar {
+  height: 7px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+.table-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .data-table {
@@ -48,13 +165,17 @@
 }
 
 .data-table th {
-  height: 52px;
+  position: sticky;
+  top: 0;
+  z-index: 4;
 
+  height: 52px;
   padding: 0 22px;
 
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #dbe3ec;
 
-  color: #64748b;
+  background: #f8fafc;
+  color: #475569;
 
   font-size: 11px;
   font-weight: 700;
@@ -64,20 +185,27 @@
   text-transform: uppercase;
 
   white-space: nowrap;
+
+  vertical-align: middle;
+}
+
+/* Keep the sticky first column above the other header cells */
+.data-table thead th.sticky-column {
+  z-index: 6;
+  background: #f8fafc;
 }
 
 .data-table td {
-  height: 68px;
+  height: 64px;
+  padding: 9px 20px;
 
-  padding: 10px 20px;
+  border-bottom: 1px solid #e8edf3;
 
-  border-bottom: 1px solid var(--border);
-
-  color: var(--text);
+  color: #1e293b;
 
   font-size: 14px;
-
-  line-height: 1.4;
+  font-weight: 450;
+  line-height: 1.45;
 
   vertical-align: middle;
 }
@@ -124,8 +252,76 @@
   transition: background-color 0.15s ease;
 }
 
+.header-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.sortable-header:hover {
+  background: #f1f5ff;
+  color: #334155;
+}
+
+.sort-active {
+  color: #2563eb;
+}
+
+.sort-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 16px;
+  height: 16px;
+
+  color: #94a3b8;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.sort-indicator.active {
+  color: #2563eb;
+}
+/* ============================================================
+   ALTERNATING ROWS
+   Keeps the table easy to scan while matching the CMS theme.
+   ============================================================ */
+
+.data-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background: #eef6ff;
+}
+
+/* Hover remains slightly stronger than the normal row colors */
 .data-table tbody tr:hover {
-  background: #f8fbff;
+  background: #f8fafc;
+}
+/* Keep sticky first column synchronized with its row */
+.data-table tbody tr:nth-child(odd) td.sticky-column {
+  background: #ffffff;
+}
+
+.data-table tbody tr:nth-child(even) td.sticky-column {
+  background: #eef6ff;
+}
+
+.data-table tbody tr:hover td.sticky-column {
+  background: #f8fafc;
 }
 
 .data-table tbody tr:last-child td {
@@ -141,8 +337,13 @@
   display: block;
 
   width: 100%;
-
   overflow: hidden;
+
+  color: #334155;
+
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
 
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -330,9 +531,9 @@
   display: inline-flex;
   align-items: center;
 
-  min-height: 20px;
+  min-height: 22px;
 
-  padding: 3px 7px;
+  padding: 3px 8px;
 
   border: 1px solid #dbeafe;
   border-radius: 6px;
@@ -345,8 +546,16 @@
   line-height: 1.2;
 
   white-space: nowrap;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
+.permission-badge:hover {
+  border-color: #bfdbfe;
+  background: #eaf2ff;
+}
 .empty-permissions {
   color: var(--muted);
 
@@ -379,8 +588,8 @@
   align-items: center;
   justify-content: center;
 
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
 
   padding: 0;
 
@@ -388,9 +597,9 @@
   border-radius: 8px;
 
   background: transparent;
-  color: #475569;
+  color: #64748b;
 
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
 
   cursor: pointer;
@@ -398,15 +607,34 @@
   transition:
     background-color 0.15s ease,
     border-color 0.15s ease,
-    color 0.15s ease;
+    color 0.15s ease,
+    transform 0.15s ease;
 }
 
-.action-menu-trigger:hover,
-.action-menu-trigger[aria-expanded='true'] {
-  border-color: #dbeafe;
+.action-menu-trigger:hover {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #4f46e5;
+}
 
-  background: #eff6ff;
-  color: #2563eb;
+.action-menu-trigger[aria-expanded='true'] {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #4f46e5;
+  transform: rotate(0deg);
+}
+
+/* ============================================================
+   ACCESSIBILITY / KEYBOARD FOCUS
+   ============================================================ */
+
+.action-menu-trigger:focus-visible,
+.action-menu-item:focus-visible,
+.pagination-button:focus-visible,
+.pagination-page:focus-visible,
+.section-chip button:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
 }
 
 
@@ -520,15 +748,17 @@
   align-items: center;
   gap: 4px;
 
-  padding: 4px 8px;
+  padding: 4px 9px;
 
+  border: 1px solid #dbeafe;
   border-radius: 999px;
 
-  background: #eff6ff;
+  background: #f0f7ff;
   color: #1d4ed8;
 
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
+  line-height: 1.2;
 }
 
 .section-chip button {
@@ -559,10 +789,12 @@
 
 .current-badge {
   display: inline-flex;
+  align-items: center;
 
   margin-left: 8px;
   padding: 3px 8px;
 
+  border: 1px solid #bfdbfe;
   border-radius: 999px;
 
   background: #eff6ff;
@@ -570,6 +802,7 @@
 
   font-size: 10px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 
@@ -609,44 +842,50 @@
    ============================================================ */
 
 .empty-cell {
-  height: 240px !important;
-
+  height: 220px !important;
   padding: 0 !important;
 }
 
 .empty-state {
-  height: 240px;
+  height: 220px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  gap: 8px;
+  gap: 7px;
 }
 
 .empty-icon {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
+  margin-bottom: 3px;
 
-  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  background: #f8fafc;
   color: #94a3b8;
+
+  font-size: 20px;
 }
 
 .empty-state strong {
-  color: #111827;
+  color: #334155;
   font-size: 14px;
+  font-weight: 600;
 }
 
 .empty-state span {
   color: #94a3b8;
   font-size: 12px;
+  font-weight: 500;
 }
 
 
@@ -655,21 +894,23 @@
    ============================================================ */
 
 .table-loading {
-  height: 240px;
+  height: 220px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  gap: 12px;
+  gap: 10px;
 
   color: #64748b;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .loading-spinner {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
 
   border: 3px solid #dbeafe;
   border-top-color: #2563eb;
@@ -692,16 +933,19 @@
    PAGINATION
    ============================================================ */
 
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+
 .pagination {
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  min-height: 62px;
+  min-height: 58px;
+  padding: 0 20px;
 
-  padding: 0 22px;
-
-  border-top: 1px solid var(--border);
+  border-top: 1px solid #e8edf3;
 
   background: #ffffff;
 }
@@ -709,12 +953,13 @@
 .pagination-summary {
   color: #64748b;
   font-size: 12px;
+  font-weight: 500;
 }
 
 .pagination-controls {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 5px;
 }
 
 .pagination-button,
@@ -723,33 +968,39 @@
   align-items: center;
   justify-content: center;
 
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
 
   padding: 0;
 
-  border: 1px solid #dbe3ec;
+  border: 1px solid #e2e8f0;
   border-radius: 7px;
 
   background: #ffffff;
   color: #64748b;
 
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 
   cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .pagination-button {
-  font-size: 22px;
+  font-size: 19px;
 }
 
 .pagination-button:hover:not(:disabled),
 .pagination-page:hover {
-  border-color: #93c5fd;
-  background: #eff6ff;
-  color: #2563eb;
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #4f46e5;
 }
 
 .pagination-page.active {
@@ -762,7 +1013,6 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
-
 
 /* ============================================================
    MOBILE

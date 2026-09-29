@@ -110,12 +110,14 @@
 
 } @else {
 
-  <app-data-table
-    [columns]="columns"
-    [data]="attendance"
-    [loading]="loading"
-    [showActions]="false">
-  </app-data-table>
+<app-data-table
+  [columns]="columns"
+  [data]="attendance"
+  [enableSearch]="true"
+  [searchPlaceholder]="'Search attendance...'"
+  [loading]="loading"
+  [showActions]="false">
+</app-data-table>
 
   @if (filteredAttendance.length > 0) {
 

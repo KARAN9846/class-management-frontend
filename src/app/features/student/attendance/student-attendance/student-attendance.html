@@ -43,8 +43,14 @@
 
     } @else {
 
-    <app-data-table [columns]="columns" [data]="attendance" [loading]="loading" [showActions]="false">
-    </app-data-table>
+<app-data-table
+  [columns]="columns"
+  [data]="attendance"
+  [loading]="loading"
+  [showActions]="false"
+  [enableSearch]="true"
+  [searchPlaceholder]="'Search attendance...'">
+</app-data-table>
 
     @if (allAttendance.length > 0) {
     <app-pagination [currentPage]="currentPage" [totalItems]="allAttendance.length" [pageSize]="pageSize"

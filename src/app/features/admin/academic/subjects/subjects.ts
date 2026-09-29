@@ -6,12 +6,21 @@ import { Subject } from './subject.model';
 import { ClassService } from '../classes/class.service';
 import { AcademicClass } from '../classes/class.model';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import {
+  DataTableComponent,
+  TableAction,
+  TableColumn
+} from '../../../../shared/components/data-table/data-table.component';
 
 @Component({
   selector: 'app-subjects',
   standalone: true,
-  imports: [CommonModule, FormsModule,
-  ConfirmationDialogComponent],
+imports: [
+  CommonModule,
+  FormsModule,
+  ConfirmationDialogComponent,
+  DataTableComponent
+],
   templateUrl: './subjects.html',
   styleUrl: './subjects.scss'
 })
@@ -27,6 +36,42 @@ export class SubjectsComponent implements OnInit {
   editingSubject: Subject | null = null;
 
   subjects: Subject[] = [];
+
+  columns: TableColumn[] = [
+  {
+    key: 'name',
+    label: 'Subject',
+    sortable: true
+  },
+  {
+    key: 'code',
+    label: 'Code',
+    sortable: true
+  },
+  {
+    key: 'className',
+    label: 'Class',
+    sortable: true
+  },
+  {
+    key: 'academicYear',
+    label: 'Academic Year',
+    sortable: true
+  }
+];
+
+
+actions: TableAction[] = [
+  {
+    label: 'Edit',
+    type: 'edit'
+  },
+  {
+    label: 'Delete',
+    type: 'delete',
+    danger: true
+  }
+];
   classes: { id: number; name: string; academicYear: string }[] = [];
 
   loading = false;
@@ -243,5 +288,24 @@ confirmDeleteSubject(): void {
         this.cdr.markForCheck();
       }
     });
+}
+
+onActionClick(event: {
+  action: TableAction;
+  row: Subject;
+}): void {
+
+  const { action, row } = event;
+
+  switch (action.type) {
+
+    case 'edit':
+      this.openEditForm(row);
+      break;
+
+    case 'delete':
+      this.deleteSubject(row);
+      break;
+  }
 }
 }

@@ -93,40 +93,39 @@ export class TeacherList implements OnInit {
   // TABLE COLUMNS
   // =========================================================
 
-  columns: TableColumn[] = [
-
-    {
-      key: 'teacherNumber',
-      label: 'Teacher No.'
-    },
-
-    {
-      key: 'firstName',
-      label: 'First Name'
-    },
-
-    {
-      key: 'lastName',
-      label: 'Last Name'
-    },
-
-    {
-      key: 'email',
-      label: 'Email'
-    },
-
-    {
-      key: 'phone',
-      label: 'Phone'
-    },
-
-    {
-      key: 'isActive',
-      label: 'Status',
-      type: 'status'
-    }
-
-  ];
+columns: TableColumn[] = [
+  {
+    key: 'teacherNumber',
+    label: 'Teacher No.',
+    sortable: true
+  },
+  {
+    key: 'firstName',
+    label: 'First Name',
+    sortable: true
+  },
+  {
+    key: 'lastName',
+    label: 'Last Name',
+    sortable: true
+  },
+  {
+    key: 'email',
+    label: 'Email',
+    sortable: true
+  },
+  {
+    key: 'phone',
+    label: 'Phone',
+    sortable: true
+  },
+  {
+    key: 'isActive',
+    label: 'Status',
+    type: 'status',
+    sortable: true
+  }
+];
 
 
   // =========================================================

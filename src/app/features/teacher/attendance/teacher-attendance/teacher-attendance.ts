@@ -79,41 +79,48 @@ export class TeacherAttendanceComponent implements OnInit {
 
   sectionFilter = 'ALL';
 
-  columns: TableColumn[] = [
-    {
-      key: 'studentName',
-      label: 'Student'
-    },
-    {
-      key: 'className',
-      label: 'Class'
-    },
-    {
-      key: 'sectionName',
-      label: 'Section',
-      align: 'center'
-    },
-    {
-      key: 'attendanceDate',
-      label: 'Date'
-    },
-    {
-      key: 'status',
-      label: 'Status',
-      align: 'center',
-      type: 'status'
-    },
-    {
-      key: 'markedByTeacherName',
-      label: 'Marked By',
-      type: 'attendance-teacher'
-    },
-    {
-      key: 'lastUpdatedByTeacherName',
-      label: 'Last Updated By',
-      type: 'attendance-teacher'
-    }
-  ];
+columns: TableColumn[] = [
+  {
+    key: 'studentName',
+    label: 'Student',
+    sortable: true
+  },
+  {
+    key: 'className',
+    label: 'Class',
+    sortable: true
+  },
+  {
+    key: 'sectionName',
+    label: 'Section',
+    align: 'center',
+    sortable: true
+  },
+  {
+    key: 'attendanceDate',
+    label: 'Date',
+    sortable: true
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    align: 'center',
+    type: 'status',
+    sortable: true
+  },
+  {
+    key: 'markedByTeacherName',
+    label: 'Marked By',
+    type: 'attendance-teacher',
+    sortable: true
+  },
+  {
+    key: 'lastUpdatedByTeacherName',
+    label: 'Last Updated By',
+    type: 'attendance-teacher',
+    sortable: true
+  }
+];
 
   canMarkAttendance(): boolean {
     return this.permissionService.hasPermission(

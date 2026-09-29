@@ -157,31 +157,49 @@
 
               <!-- ACTIONS -->
 
-              <td class="actions-column">
+<td class="actions-column">
 
-                <div class="actions">
+  <div class="action-menu">
 
-                  <button
-                    type="button"
-                    class="action-btn"
-                    (click)="openEditForm(cls)">
+    <button
+      type="button"
+      class="action-menu-trigger"
+      title="Actions"
+      (click)="toggleActionMenu(cls.id, $event)">
 
-                    Edit
+      <span>⋮</span>
 
-                  </button>
+    </button>
 
-                  <button
-                    type="button"
-                    class="action-btn delete"
-                    (click)="deleteClass(cls)">
+    @if (openActionMenuId === cls.id) {
 
-                    Delete
+      <div class="action-menu-dropdown">
 
-                  </button>
+        <button
+          type="button"
+          class="action-menu-item"
+          (click)="openEditForm(cls); closeActionMenu()">
 
-                </div>
+          Edit
 
-              </td>
+        </button>
+
+        <button
+          type="button"
+          class="action-menu-item delete"
+          (click)="deleteClass(cls); closeActionMenu()">
+
+          Delete
+
+        </button>
+
+      </div>
+
+    }
+
+  </div>
+
+</td>
 
             </tr>
 
