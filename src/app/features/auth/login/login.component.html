@@ -123,26 +123,25 @@
             </label>
 
 
-            <button type="button" class="text-link forgot-link">
-              Forgot password?
-            </button>
+<button
+  type="button"
+  class="text-link forgot-link"
+  (click)="goToForgotPassword()">
+  Forgot password?
+</button>
 
           </div>
 
 
           <!-- LOGIN BUTTON -->
-<button
-  type="submit"
-  class="login-button"
-  [disabled]="isLoading"
->
-  @if (isLoading) {
-    <span class="spinner"></span>
-    <span>Signing in...</span>
-  } @else {
-    <span>Sign In</span>
-  }
-</button>
+          <button type="submit" class="login-button" [disabled]="isLoading">
+            @if (isLoading) {
+            <span class="spinner"></span>
+            <span>Signing in...</span>
+            } @else {
+            <span>Sign In</span>
+            }
+          </button>
 
         </form>
 

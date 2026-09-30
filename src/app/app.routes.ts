@@ -5,6 +5,8 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { permissionGuard } from './core/guards/permission.guard';
+import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
 
 // LAYOUT
 import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
@@ -100,6 +102,15 @@ export const routes: Routes = [
     path: 'login',
     component: LoginComponent
   },
+
+  {
+  path: 'forgot-password',
+  component: ForgotPasswordComponent
+  },
+  {
+  path: 'reset-password',
+  component: ResetPasswordComponent
+},
 
   {
     path: 'access-denied',

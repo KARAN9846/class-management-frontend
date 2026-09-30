@@ -38,4 +38,24 @@ logout(): Observable<void> {
     {}
   );
 }
+
+forgotPassword(email: string): Observable<void> {
+  return this.http.post<void>(
+    `${this.authUrl}/forgot-password`,
+    { email }
+  );
+}
+
+resetPassword(
+  token: string,
+  newPassword: string
+): Observable<void> {
+  return this.http.post<void>(
+    `${this.authUrl}/reset-password`,
+    {
+      token,
+      newPassword,
+    }
+  );
+}
 }

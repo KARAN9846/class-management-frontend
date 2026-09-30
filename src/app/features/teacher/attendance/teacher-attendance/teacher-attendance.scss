@@ -185,13 +185,40 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid #2563eb;
   border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  cursor: pointer;
   background: #2563eb;
-  color: #fff;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.mark-attendance-button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.18);
+}
+
+.mark-attendance-button:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.mark-attendance-button span {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
 }
 
 /* =========================

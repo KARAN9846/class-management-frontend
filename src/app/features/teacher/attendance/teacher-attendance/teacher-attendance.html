@@ -22,8 +22,16 @@
       </p>
     </div>
   </div>
-</div>
 
+  @if (canMarkAttendance()) {
+    <a
+      class="mark-attendance-button"
+      routerLink="/teacher/attendance/mark">
+      <span aria-hidden="true">+</span>
+      Mark Attendance
+    </a>
+  }
+</div>
 
   <!-- ==================== TABLE CARD ==================== -->
   <div class="table-card">

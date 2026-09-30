@@ -206,6 +206,229 @@
         <app-global-search></app-global-search>
       </div>
 
+      <!-- ADMIN NOTIFICATIONS -->
+@if (userRole === 'Admin') {
+  <div class="header-notification">
+
+    <button
+      type="button"
+      class="notification-button"
+      aria-label="Notifications"
+      [attr.aria-expanded]="notificationOpen"
+      (click)="toggleNotifications()"
+    >
+
+      <!-- Bell icon -->
+      <svg
+        class="notification-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path
+          d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+        />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </svg>
+
+      <!-- Notification count -->
+      @if (notificationCount > 0) {
+        <span class="notification-badge">
+          {{ notificationCount > 99 ? '99+' : notificationCount }}
+        </span>
+      }
+
+    </button>
+
+
+    @if (notificationOpen) {
+  <div class="notification-dropdown">
+
+    <!-- Header -->
+    <div class="notification-dropdown-header">
+
+      <div>
+        <h3>Notifications</h3>
+        <span>Today's absences</span>
+      </div>
+
+      @if (notificationCount > 0) {
+        <span class="notification-header-count">
+          {{ notificationCount }}
+        </span>
+      }
+
+    </div>
+
+    <!-- Content -->
+    <div class="notification-dropdown-content">
+
+      <!-- Loading -->
+      @if (notificationLoading) {
+
+        <div class="notification-state">
+          <span class="notification-spinner"></span>
+          <span>Loading today's absences...</span>
+        </div>
+
+      }
+
+      <!-- Error -->
+      @else if (notificationError) {
+
+        <div class="notification-state notification-error-state">
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+
+          <span>{{ notificationError }}</span>
+
+        </div>
+
+      }
+
+      <!-- Empty -->
+      @else if (absentNotifications.length === 0) {
+
+        <div class="notification-state notification-empty-state">
+
+          <div class="notification-empty-icon">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20 6 9 17l-5-5"></path>
+            </svg>
+
+          </div>
+
+          <strong>No absent students</strong>
+
+          <span>
+            Everyone is marked present today.
+          </span>
+
+        </div>
+
+      }
+
+      <!-- Absent students -->
+      @else {
+
+        <div class="notification-list">
+
+          @for (
+            notification of absentNotifications;
+            track notification.studentId
+          ) {
+
+            <button
+              type="button"
+              class="notification-item"
+              (click)="goToAttendance()"
+            >
+
+              <div class="notification-item-avatar">
+                {{ notification.studentName.charAt(0).toUpperCase() }}
+              </div>
+
+              <div class="notification-item-details">
+
+                <strong>
+                  {{ notification.studentName }}
+                </strong>
+
+                <span>
+                  Class {{ notification.className }}
+                  <span class="notification-separator">•</span>
+                  Section {{ notification.sectionName }}
+                  <span class="notification-separator">•</span>
+                  Roll {{ notification.rollNumber }}
+                </span>
+
+              </div>
+
+              <svg
+                class="notification-item-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+
+            </button>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+    <!-- Footer -->
+    @if (!notificationLoading && !notificationError) {
+
+      <div class="notification-dropdown-footer">
+
+        <button
+          type="button"
+          class="notification-view-all"
+          (click)="goToAttendance()"
+        >
+          View Attendance
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+
+        </button>
+
+      </div>
+
+    }
+
+  </div>
+}
+
+  </div>
+}
+
     </header>
 
 

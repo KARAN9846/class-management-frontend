@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+
 import {
   Router,
   RouterLink,
@@ -17,6 +17,21 @@ import {
 } from '../../core/navigation/navigation.config';
 
 import { GlobalSearchComponent } from '../../shared/components/global-search/global-search.component';
+
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  NgZone
+} from '@angular/core';
+
+import {
+  AbsentStudentNotification
+} from '../../core/models/notification.model';
+
+import {
+  NotificationService
+} from '../../core/services/notification.service';
 
 
 
@@ -43,15 +58,33 @@ export class AppLayoutComponent {
   userInitial = 'U';
 
   navigationSections: NavigationSection[] = [];
+  
+    // =====================================================
+  // ADMIN NOTIFICATIONS
+  // =====================================================
+
+  absentNotifications: AbsentStudentNotification[] = [];
+
+  notificationCount = 0;
+
+  notificationLoading = false;
+
+  notificationError = '';
+
+  notificationOpen = false;
 
   constructor(
-    private readonly tokenService: TokenService,
-    private readonly router: Router,
-    private readonly authStateService: AuthStateService,
-  ) {
-    this.loadUserInformation();
-    this.loadNavigation();
-  }
+  private readonly tokenService: TokenService,
+  private readonly router: Router,
+  private readonly authStateService: AuthStateService,
+  private readonly notificationService: NotificationService,
+  private readonly ngZone: NgZone,
+  private readonly cdr: ChangeDetectorRef
+) {
+  this.loadUserInformation();
+  this.loadNavigation();
+  this.loadAdminNotifications();
+}
 
 
   // =====================================================
@@ -143,4 +176,104 @@ logout(): void {
     this.sidebarOpen = false;
     this.profileOpen = true;
   }
+
+    // =====================================================
+  // ADMIN NOTIFICATIONS
+  // =====================================================
+
+  private loadAdminNotifications(): void {
+
+    if (this.userRole !== 'Admin') {
+      return;
+    }
+
+    this.notificationLoading = true;
+    this.notificationError = '';
+
+    this.notificationService
+      .getTodayAbsentStudents()
+      .subscribe({
+
+        next: (response) => {
+
+          this.ngZone.run(() => {
+
+            this.absentNotifications =
+              response.data ?? [];
+
+            this.notificationCount =
+              this.absentNotifications.length;
+
+            this.notificationLoading = false;
+
+            this.cdr.detectChanges();
+          });
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Failed to load admin notifications:',
+            error
+          );
+
+          this.ngZone.run(() => {
+
+            this.notificationLoading = false;
+
+            this.notificationError =
+              'Unable to load notifications.';
+
+            this.cdr.detectChanges();
+          });
+        }
+      });
+  }
+
+
+  toggleNotifications(): void {
+
+    this.notificationOpen =
+      !this.notificationOpen;
+
+    if (this.notificationOpen) {
+      this.loadAdminNotifications();
+    }
+  }
+
+
+  closeNotifications(): void {
+    this.notificationOpen = false;
+  }
+
+
+  goToAttendance(): void {
+
+    this.notificationOpen = false;
+
+    this.router.navigate([
+      '/admin/attendance'
+    ]);
+  }
+
+  @HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent): void {
+  if (!this.notificationOpen) {
+    return;
+  }
+
+  const target = event.target as HTMLElement | null;
+
+  if (!target) {
+    return;
+  }
+
+  const clickedInsideNotification =
+    target.closest('.header-notification') !== null ||
+    target.closest('.notification-dropdown') !== null;
+
+  if (!clickedInsideNotification) {
+    this.notificationOpen = false;
+  }
+}
 }

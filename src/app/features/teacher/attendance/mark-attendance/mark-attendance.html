@@ -4,12 +4,21 @@
        PAGE HEADER
        ===================================================== -->
 
-  <div class="page-header">
+<div class="page-header">
+
+  <div class="page-title-group">
+
+    <div class="page-title-image">
+      <img
+        src="/assets/images/attendance.png"
+        alt="Attendance"
+      />
+    </div>
 
     <div class="page-header-content">
 
       <div class="page-eyebrow">
-        Attendance Management
+        ATTENDANCE MANAGEMENT
       </div>
 
       <h1>Mark Attendance</h1>
@@ -20,15 +29,16 @@
 
     </div>
 
-    <a
-      class="back-button"
-      routerLink="/teacher/attendance">
-      <span aria-hidden="true">←</span>
-      Back to Attendance
-    </a>
-
   </div>
 
+  <a
+    class="back-button"
+    routerLink="/teacher/attendance">
+    <span aria-hidden="true">←</span>
+    Back to Attendance
+  </a>
+
+</div>
 
   <!-- =====================================================
        MAIN CARD
@@ -66,12 +76,8 @@
           Assignment
         </label>
 
-        <select
-          id="assignment"
-          class="form-control"
-          [(ngModel)]="selectedAssignmentId"
-          (ngModelChange)="onAssignmentChange()"
-          [disabled]="
+        <select id="assignment" class="form-control" [(ngModel)]="selectedAssignmentId"
+          (ngModelChange)="onAssignmentChange()" [disabled]="
             loadingAssignments ||
             markingAttendance
           ">
@@ -81,19 +87,19 @@
           </option>
 
           @for (
-            assignment of assignments;
-            track assignment.id
+          assignment of assignments;
+          track assignment.id
           ) {
 
-            <option [ngValue]="assignment.id">
+          <option [ngValue]="assignment.id">
 
-              {{ assignment.className }}
-              -
-              {{ assignment.sectionName }}
-              -
-              {{ assignment.subjectName }}
+            {{ assignment.className }}
+            -
+            {{ assignment.sectionName }}
+            -
+            {{ assignment.subjectName }}
 
-            </option>
+          </option>
 
           }
 
@@ -101,21 +107,21 @@
 
         @if (loadingAssignments) {
 
-          <span class="field-hint">
-            Loading your assignments...
-          </span>
+        <span class="field-hint">
+          Loading your assignments...
+        </span>
 
         } @else if (assignments.length === 0) {
 
-          <span class="field-hint warning">
-            No attendance assignments are available.
-          </span>
+        <span class="field-hint warning">
+          No attendance assignments are available.
+        </span>
 
         } @else {
 
-          <span class="field-hint">
-            Choose the class and subject you want to mark.
-          </span>
+        <span class="field-hint">
+          Choose the class and subject you want to mark.
+        </span>
 
         }
 
@@ -130,14 +136,8 @@
           Attendance Date
         </label>
 
-        <input
-          id="attendanceDate"
-          class="form-control"
-          type="date"
-          [(ngModel)]="attendanceDate"
-          [disabled]="markingAttendance"
-          [max]="today"
-        />
+        <input id="attendanceDate" class="form-control" type="date" [(ngModel)]="attendanceDate"
+          [disabled]="markingAttendance" [max]="today" />
 
         <span class="field-hint">
           Attendance can only be recorded for today or earlier.
@@ -154,40 +154,36 @@
 
     @if (successMessage) {
 
-      <div
-        class="feedback-message success-message"
-        role="status">
+    <div class="feedback-message success-message" role="status">
 
-        <span class="feedback-icon" aria-hidden="true">
-          ✓
-        </span>
+      <span class="feedback-icon" aria-hidden="true">
+        ✓
+      </span>
 
-        <div>
-          <strong>Attendance saved</strong>
-          <p>{{ successMessage }}</p>
-        </div>
-
+      <div>
+        <strong>Attendance saved</strong>
+        <p>{{ successMessage }}</p>
       </div>
+
+    </div>
 
     }
 
 
     @if (errorMessage) {
 
-      <div
-        class="feedback-message error-message"
-        role="alert">
+    <div class="feedback-message error-message" role="alert">
 
-        <span class="feedback-icon" aria-hidden="true">
-          !
-        </span>
+      <span class="feedback-icon" aria-hidden="true">
+        !
+      </span>
 
-        <div>
-          <strong>Unable to continue</strong>
-          <p>{{ errorMessage }}</p>
-        </div>
-
+      <div>
+        <strong>Unable to continue</strong>
+        <p>{{ errorMessage }}</p>
       </div>
+
+    </div>
 
     }
 
@@ -198,347 +194,327 @@
 
     @if (selectedAssignmentId) {
 
-      <div class="students-section">
+    <div class="students-section">
 
 
-        <!-- Students Header -->
+      <!-- Students Header -->
 
-        <div class="students-header">
+      <div class="students-header">
 
-          <div>
+        <div>
 
-            <h2>Student Attendance</h2>
+          <h2>Student Attendance</h2>
 
-            <p>
-              {{ students.length }}
-              {{ students.length === 1 ? 'student' : 'students' }}
-              in this assignment
-            </p>
-
-          </div>
-
-
-          @if (!loadingStudents && students.length > 0) {
-
-            <div class="attendance-summary">
-
-              <div class="summary-item">
-
-                <span class="summary-value">
-                  {{ students.length }}
-                </span>
-
-                <span class="summary-label">
-                  Total
-                </span>
-
-              </div>
-
-              <div class="summary-item present-summary">
-
-                <span class="summary-value">
-                  {{ getPresentCount() }}
-                </span>
-
-                <span class="summary-label">
-                  Present
-                </span>
-
-              </div>
-
-              <div class="summary-item absent-summary">
-
-                <span class="summary-value">
-                  {{ getAbsentCount() }}
-                </span>
-
-                <span class="summary-label">
-                  Absent
-                </span>
-
-              </div>
-
-            </div>
-
-          }
+          <p>
+            {{ students.length }}
+            {{ students.length === 1 ? 'student' : 'students' }}
+            in this assignment
+          </p>
 
         </div>
 
 
-        <!-- Loading -->
+        @if (!loadingStudents && students.length > 0) {
 
-        @if (loadingStudents) {
+        <div class="attendance-summary">
 
-          <div class="students-loading">
+          <div class="summary-item">
 
-            <div class="loading-spinner"></div>
+            <span class="summary-value">
+              {{ students.length }}
+            </span>
 
-            <div>
-
-              <strong>Loading students</strong>
-
-              <p>
-                Fetching students for this assignment...
-              </p>
-
-            </div>
+            <span class="summary-label">
+              Total
+            </span>
 
           </div>
 
-        }
+          <div class="summary-item present-summary">
 
+            <span class="summary-value">
+              {{ getPresentCount() }}
+            </span>
 
-        <!-- Empty -->
-
-        @if (
-          !loadingStudents &&
-          students.length === 0
-        ) {
-
-          <div class="empty-state">
-
-            <div class="empty-icon">
-              —
-            </div>
-
-            <h3>No students found</h3>
-
-            <p>
-              No students are available for this assignment
-              within your assigned scope.
-            </p>
+            <span class="summary-label">
+              Present
+            </span>
 
           </div>
 
-        }
+          <div class="summary-item absent-summary">
 
+            <span class="summary-value">
+              {{ getAbsentCount() }}
+            </span>
 
-        <!-- Student Table -->
-
-        @if (
-          !loadingStudents &&
-          students.length > 0
-        ) {
-
-          <div class="student-table">
-
-            <!-- Table Header -->
-
-            <div class="student-header">
-
-              <div class="student-col-roll">
-                Roll No.
-              </div>
-
-              <div class="student-col-name">
-                Student
-              </div>
-
-              <div class="student-col-status">
-                Attendance Status
-              </div>
-
-            </div>
-
-
-            <!-- Student Rows -->
-
-            @for (
-              student of students;
-              track student.studentId
-            ) {
-
-              <div class="student-row">
-
-                <!-- Roll Number -->
-
-                <div class="student-col-roll">
-
-                  <span class="mobile-label">
-                    Roll No.
-                  </span>
-
-                  <span class="roll-number">
-                    {{ student.rollNumber || '—' }}
-                  </span>
-
-                </div>
-
-
-                <!-- Student -->
-
-                <div class="student-col-name">
-
-                  <span class="mobile-label">
-                    Student
-                  </span>
-
-                  <div class="student-profile">
-
-                    <div class="student-avatar">
-
-                      {{
-                        (
-                          student.firstName.charAt(0) || ''
-                        ) +
-                        (
-                          student.lastName.charAt(0)|| ''
-                        )
-                      }}
-
-                    </div>
-
-                    <div>
-
-                      <div class="student-name">
-                        {{ student.firstName }}
-                        {{ student.lastName }}
-                      </div>
-
-                      <div class="student-id">
-                        Student ID: {{ student.studentId }}
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-                <!-- Attendance -->
-
-                <div class="student-col-status">
-
-                  <span class="mobile-label">
-                    Attendance Status
-                  </span>
-
-                  <div class="attendance-buttons">
-
-                    <button
-                      type="button"
-                      class="attendance-button present-button"
-                      [class.selected]="
-                        studentStatuses[
-                          student.studentId
-                        ] === 'PRESENT'
-                      "
-                      (click)="
-                        setStatus(
-                          student.studentId,
-                          'PRESENT'
-                        )
-                      "
-                      [disabled]="markingAttendance"
-                      [attr.aria-pressed]="
-                        studentStatuses[
-                          student.studentId
-                        ] === 'PRESENT'
-                      ">
-
-                      <span
-                        class="status-dot"
-                        aria-hidden="true">
-                      </span>
-
-                      Present
-
-                    </button>
-
-
-                    <button
-                      type="button"
-                      class="attendance-button absent-button"
-                      [class.selected]="
-                        studentStatuses[
-                          student.studentId
-                        ] === 'ABSENT'
-                      "
-                      (click)="
-                        setStatus(
-                          student.studentId,
-                          'ABSENT'
-                        )
-                      "
-                      [disabled]="markingAttendance"
-                      [attr.aria-pressed]="
-                        studentStatuses[
-                          student.studentId
-                        ] === 'ABSENT'
-                      ">
-
-                      <span
-                        class="status-dot"
-                        aria-hidden="true">
-                      </span>
-
-                      Absent
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            }
+            <span class="summary-label">
+              Absent
+            </span>
 
           </div>
 
-
-          <!-- =================================================
-               SUBMIT BAR
-               ================================================= -->
-
-          <div class="submit-area">
-
-            <div class="submit-info">
-
-              <strong>
-                Ready to save?
-              </strong>
-
-              <span>
-                {{ students.length }} students will be updated.
-              </span>
-
-            </div>
-
-
-            <button
-              type="button"
-              class="submit-button"
-              (click)="markAttendance()"
-              [disabled]="
-                markingAttendance ||
-                !canMarkAttendance()
-              ">
-
-              @if (markingAttendance) {
-
-                <span class="button-spinner"></span>
-
-                Saving Attendance...
-
-              } @else {
-
-                <span aria-hidden="true">
-                  ✓
-                </span>
-
-                Mark Attendance
-
-              }
-
-            </button>
-
-          </div>
+        </div>
 
         }
 
       </div>
+
+
+      <!-- Loading -->
+
+      @if (loadingStudents) {
+
+      <div class="students-loading">
+
+        <div class="loading-spinner"></div>
+
+        <div>
+
+          <strong>Loading students</strong>
+
+          <p>
+            Fetching students for this assignment...
+          </p>
+
+        </div>
+
+      </div>
+
+      }
+
+
+      <!-- Empty -->
+
+      @if (
+      !loadingStudents &&
+      students.length === 0
+      ) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          —
+        </div>
+
+        <h3>No students found</h3>
+
+        <p>
+          No students are available for this assignment
+          within your assigned scope.
+        </p>
+
+      </div>
+
+      }
+
+
+      <!-- Student Table -->
+
+      @if (
+      !loadingStudents &&
+      students.length > 0
+      ) {
+
+      <div class="student-table">
+
+        <!-- Table Header -->
+
+        <div class="student-header">
+
+          <div class="student-col-roll">
+            Roll No.
+          </div>
+
+          <div class="student-col-name">
+            Student
+          </div>
+
+          <div class="student-col-status">
+            Attendance Status
+          </div>
+
+        </div>
+
+
+        <!-- Student Rows -->
+
+        @for (
+        student of students;
+        track student.studentId
+        ) {
+
+        <div class="student-row">
+
+          <!-- Roll Number -->
+
+          <div class="student-col-roll">
+
+            <span class="mobile-label">
+              Roll No.
+            </span>
+
+            <span class="roll-number">
+              {{ student.rollNumber || '—' }}
+            </span>
+
+          </div>
+
+
+          <!-- Student -->
+
+          <div class="student-col-name">
+
+            <span class="mobile-label">
+              Student
+            </span>
+
+            <div class="student-profile">
+
+              <div class="student-avatar">
+
+                {{
+                (
+                student.firstName.charAt(0) || ''
+                ) +
+                (
+                student.lastName.charAt(0)|| ''
+                )
+                }}
+
+              </div>
+
+              <div>
+
+                <div class="student-name">
+                  {{ student.firstName }}
+                  {{ student.lastName }}
+                </div>
+
+                <div class="student-id">
+                  Student ID: {{ student.studentId }}
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- Attendance -->
+
+          <div class="student-col-status">
+
+            <span class="mobile-label">
+              Attendance Status
+            </span>
+
+            <div class="attendance-buttons">
+
+              <button type="button" class="attendance-button present-button" [class.selected]="
+                        studentStatuses[
+                          student.studentId
+                        ] === 'PRESENT'
+                      " (click)="
+                        setStatus(
+                          student.studentId,
+                          'PRESENT'
+                        )
+                      " [disabled]="markingAttendance" [attr.aria-pressed]="
+                        studentStatuses[
+                          student.studentId
+                        ] === 'PRESENT'
+                      ">
+
+                <span class="status-dot" aria-hidden="true">
+                </span>
+
+                Present
+
+              </button>
+
+
+              <button type="button" class="attendance-button absent-button" [class.selected]="
+                        studentStatuses[
+                          student.studentId
+                        ] === 'ABSENT'
+                      " (click)="
+                        setStatus(
+                          student.studentId,
+                          'ABSENT'
+                        )
+                      " [disabled]="markingAttendance" [attr.aria-pressed]="
+                        studentStatuses[
+                          student.studentId
+                        ] === 'ABSENT'
+                      ">
+
+                <span class="status-dot" aria-hidden="true">
+                </span>
+
+                Absent
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        }
+
+      </div>
+
+
+      <!-- =================================================
+               SUBMIT BAR
+               ================================================= -->
+
+      <div class="submit-area">
+
+        <div class="submit-info">
+
+          <strong>
+            Ready to save?
+          </strong>
+
+          <span>
+            {{ students.length }} students will be updated.
+          </span>
+
+        </div>
+
+
+        <button type="button" class="submit-button" (click)="markAttendance()" [disabled]="
+                markingAttendance ||
+                !canMarkAttendance()
+              ">
+
+          @if (markingAttendance) {
+
+          <span class="button-spinner"></span>
+
+          Saving Attendance...
+
+          } @else {
+
+          <span aria-hidden="true">
+            ✓
+          </span>
+
+          Mark Attendance
+
+          }
+
+        </button>
+
+      </div>
+
+      }
+
+    </div>
 
     }
 

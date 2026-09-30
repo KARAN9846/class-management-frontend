@@ -879,6 +879,454 @@
   box-sizing: border-box;
 }
 
+/* =====================================================
+   ADMIN NOTIFICATIONS
+   ===================================================== */
+
+.header-notification {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
+
+
+/* Notification button */
+
+.notification-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  padding: 0;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #475569;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #2563eb;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+}
+
+.notification-icon {
+  width: 20px;
+  height: 20px;
+}
+
+
+/* Notification badge */
+
+.notification-badge {
+  position: absolute;
+
+  top: -5px;
+  right: -5px;
+
+  min-width: 18px;
+  height: 18px;
+
+  padding: 0 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+
+  background: #dc2626;
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+
+/* =====================================================
+   DROPDOWN
+   ===================================================== */
+
+.notification-dropdown {
+  position: absolute;
+
+  top: calc(100% + 12px);
+  right: 0;
+
+  width: 380px;
+  max-width: calc(100vw - 32px);
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.12);
+
+  z-index: 1000;
+}
+
+
+/* Dropdown header */
+
+.notification-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px 18px;
+
+  border-bottom: 1px solid #e8edf3;
+
+  h3 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #64748b;
+
+    font-size: 12px;
+  }
+}
+
+.notification-header-count {
+  display: inline-flex !important;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 28px;
+  height: 28px;
+
+  margin: 0 !important;
+  padding: 0 8px;
+
+  border-radius: 8px;
+
+  background: #eff6ff;
+  color: #2563eb !important;
+
+  font-size: 12px !important;
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   CONTENT
+   ===================================================== */
+
+.notification-dropdown-content {
+  max-height: 390px;
+  overflow-y: auto;
+}
+
+
+/* Notification list */
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Individual notification */
+
+.notification-item {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 13px 16px;
+
+  border: 0;
+  border-bottom: 1px solid #f1f5f9;
+
+  background: #ffffff;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease;
+
+  &:hover {
+    background: #f8fbff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: -2px;
+  }
+}
+
+
+/* Student avatar */
+
+.notification-item-avatar {
+  flex: 0 0 36px;
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: #eff6ff;
+  color: #2563eb;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* Student details */
+
+.notification-item-details {
+  min-width: 0;
+
+  flex: 1;
+
+  strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #0f172a;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.notification-separator {
+  display: inline !important;
+
+  margin: 0 4px;
+
+  color: #cbd5e1 !important;
+}
+
+
+.notification-item-arrow {
+  flex: 0 0 auto;
+
+  width: 16px;
+  height: 16px;
+
+  color: #94a3b8;
+}
+
+
+/* =====================================================
+   STATES
+   ===================================================== */
+
+.notification-state {
+  min-height: 150px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 24px;
+
+  color: #64748b;
+
+  text-align: center;
+
+  font-size: 12px;
+}
+
+.notification-state svg {
+  width: 24px;
+  height: 24px;
+}
+
+.notification-state strong {
+  color: #334155;
+  font-size: 13px;
+}
+
+.notification-error-state {
+  color: #dc2626;
+}
+
+.notification-empty-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 3px;
+
+  border-radius: 10px;
+
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.notification-empty-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+
+/* Loading spinner */
+
+.notification-spinner {
+  width: 22px;
+  height: 22px;
+
+  border: 2px solid #e2e8f0;
+  border-top-color: #2563eb;
+
+  border-radius: 50%;
+
+  animation: notification-spin 0.7s linear infinite;
+}
+
+@keyframes notification-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.notification-dropdown-footer {
+  padding: 10px 16px;
+
+  border-top: 1px solid #e8edf3;
+}
+
+.notification-view-all {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 9px 12px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: #f8fafc;
+
+  color: #2563eb;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: #eff6ff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 700px) {
+
+  .header-notification {
+    margin-left: 10px;
+  }
+
+  .notification-dropdown {
+    position: fixed;
+
+    top: calc(var(--header-height, 64px) + 8px);
+    right: 16px;
+    left: 16px;
+
+    width: auto;
+    max-width: none;
+  }
+}
+
 
 /* =========================================================
    MOBILE SIDEBAR OVERLAY

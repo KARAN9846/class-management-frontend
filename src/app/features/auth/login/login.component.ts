@@ -150,4 +150,8 @@ export class LoginComponent {
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
+
+  goToForgotPassword(): void {
+  this.router.navigate(['/forgot-password']);
+}
 }

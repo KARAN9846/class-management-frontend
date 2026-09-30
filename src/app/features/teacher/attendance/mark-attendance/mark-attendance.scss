@@ -6,8 +6,8 @@
   min-height: 100%;
   padding: 24px;
   background: #f8fafc;
+  box-sizing: border-box;
 }
-
 
 /* =========================================================
    PAGE HEADER
@@ -15,40 +15,78 @@
 
 .page-header {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
   margin-bottom: 24px;
+  min-width: 0;
 }
+
+/* Left side: image + title */
+
+.page-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Attendance image */
+
+.page-title-image {
+  width: 140x;
+  height: 120px;
+  flex: 0 0 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title-image img {
+  width: 140px;
+  height: 120px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Title content */
 
 .page-header-content {
   min-width: 0;
 }
 
 .page-eyebrow {
-  margin-bottom: 6px;
-  font-size: 12px;
+  display: block;
+  margin-bottom: 4px;
+
+  font-size: 10px;
+  line-height: 1.2;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+
   color: #64748b;
 }
 
 .page-header h1 {
   margin: 0;
+
   font-size: 28px;
   line-height: 1.2;
   font-weight: 700;
+
   color: #0f172a;
 }
 
 .page-header p {
-  margin: 7px 0 0;
-  font-size: 14px;
+  margin: 6px 0 0;
+
+  font-size: 13px;
   line-height: 1.5;
+
   color: #64748b;
 }
-
 
 /* =========================================================
    BACK BUTTON
@@ -57,10 +95,13 @@
 .back-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+
   flex-shrink: 0;
 
-  padding: 10px 14px;
+  min-height: 40px;
+  padding: 0 14px;
 
   border: 1px solid #dbe2ea;
   border-radius: 8px;
@@ -68,12 +109,14 @@
   background: #ffffff;
 
   color: #334155;
+
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
 
   transition:
-    background 0.15s ease,
+    background-color 0.15s ease,
     border-color 0.15s ease,
     color 0.15s ease,
     box-shadow 0.15s ease;
@@ -83,13 +126,13 @@
   background: #f8fafc;
   border-color: #cbd5e1;
   color: #0f172a;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
 .back-button:focus-visible {
-  outline: 3px solid rgba(59, 130, 246, 0.18);
+  outline: 2px solid #93c5fd;
   outline-offset: 2px;
 }
-
 
 /* =========================================================
    MAIN CARD
@@ -107,7 +150,6 @@
     0 1px 2px rgba(15, 23, 42, 0.03),
     0 4px 12px rgba(15, 23, 42, 0.04);
 }
-
 
 /* =========================================================
    SECTION HEADER
@@ -137,14 +179,16 @@
   color: #64748b;
 }
 
-
 /* =========================================================
    FORM
    ========================================================= */
 
 .form-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
+  grid-template-columns:
+    minmax(0, 1.4fr)
+    minmax(260px, 0.8fr);
+
   gap: 20px;
 
   padding: 22px 24px 24px;
@@ -156,7 +200,6 @@
 
 .form-group label {
   display: block;
-
   margin-bottom: 7px;
 
   font-size: 13px;
@@ -184,7 +227,7 @@
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease,
-    background 0.15s ease;
+    background-color 0.15s ease;
 }
 
 .form-control:hover:not(:disabled) {
@@ -207,7 +250,6 @@
 
 .field-hint {
   display: block;
-
   margin-top: 6px;
 
   font-size: 12px;
@@ -219,7 +261,6 @@
 .field-hint.warning {
   color: #b45309;
 }
-
 
 /* =========================================================
    FEEDBACK MESSAGES
@@ -239,7 +280,6 @@
 
 .feedback-message strong {
   display: block;
-
   margin-bottom: 2px;
 
   font-size: 13px;
@@ -290,7 +330,6 @@
   color: #dc2626;
 }
 
-
 /* =========================================================
    STUDENTS SECTION
    ========================================================= */
@@ -323,7 +362,6 @@
   font-size: 12px;
   color: #64748b;
 }
-
 
 /* =========================================================
    ATTENDANCE SUMMARY
@@ -362,7 +400,6 @@
 
 .summary-label {
   display: block;
-
   margin-top: 2px;
 
   font-size: 10px;
@@ -381,7 +418,6 @@
   color: #dc2626;
 }
 
-
 /* =========================================================
    STUDENT TABLE
    ========================================================= */
@@ -398,7 +434,12 @@
 .student-header,
 .student-row {
   display: grid;
-  grid-template-columns: 110px minmax(260px, 1fr) minmax(250px, 0.75fr);
+
+  grid-template-columns:
+    110px
+    minmax(260px, 1fr)
+    minmax(250px, 0.75fr);
+
   align-items: center;
 }
 
@@ -427,7 +468,7 @@
 
   background: #ffffff;
 
-  transition: background 0.12s ease;
+  transition: background-color 0.12s ease;
 }
 
 .student-row + .student-row {
@@ -437,7 +478,6 @@
 .student-row:hover {
   background: #fafcff;
 }
-
 
 /* =========================================================
    STUDENT COLUMNS
@@ -473,7 +513,6 @@
   border-radius: 50%;
 
   background: #f1f5f9;
-
   color: #475569;
 
   font-size: 12px;
@@ -489,6 +528,7 @@
   line-height: 1.4;
 
   color: #1e293b;
+
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -501,7 +541,6 @@
 
   color: #94a3b8;
 }
-
 
 /* =========================================================
    ATTENDANCE BUTTONS
@@ -534,7 +573,6 @@
   border-radius: 6px;
 
   background: transparent;
-
   color: #64748b;
 
   font-family: inherit;
@@ -544,7 +582,7 @@
   cursor: pointer;
 
   transition:
-    background 0.15s ease,
+    background-color 0.15s ease,
     color 0.15s ease,
     box-shadow 0.15s ease;
 }
@@ -596,7 +634,6 @@
   outline-offset: 1px;
 }
 
-
 /* =========================================================
    MOBILE LABEL
    ========================================================= */
@@ -604,7 +641,6 @@
 .mobile-label {
   display: none;
 }
-
 
 /* =========================================================
    LOADING
@@ -624,7 +660,6 @@
   border-radius: 10px;
 
   background: #f8fafc;
-
   color: #475569;
 }
 
@@ -669,7 +704,6 @@
   }
 }
 
-
 /* =========================================================
    EMPTY STATE
    ========================================================= */
@@ -699,7 +733,6 @@
   border-radius: 50%;
 
   background: #e2e8f0;
-
   color: #64748b;
 
   font-size: 18px;
@@ -725,7 +758,6 @@
 
   color: #64748b;
 }
-
 
 /* =========================================================
    SUBMIT AREA
@@ -779,7 +811,6 @@
   border-radius: 8px;
 
   background: #2563eb;
-
   color: #ffffff;
 
   font-family: inherit;
@@ -792,7 +823,7 @@
     0 1px 2px rgba(37, 99, 235, 0.2);
 
   transition:
-    background 0.15s ease,
+    background-color 0.15s ease,
     border-color 0.15s ease,
     box-shadow 0.15s ease,
     transform 0.05s ease;
@@ -820,13 +851,11 @@
   opacity: 0.6;
 }
 
-
 /* =========================================================
    RESPONSIVE — TABLET
    ========================================================= */
 
 @media (max-width: 900px) {
-
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -838,16 +867,13 @@
       minmax(220px, 1fr)
       minmax(220px, 0.8fr);
   }
-
 }
-
 
 /* =========================================================
    RESPONSIVE — MOBILE
    ========================================================= */
 
 @media (max-width: 700px) {
-
   .page {
     padding: 16px;
   }
@@ -855,7 +881,22 @@
   .page-header {
     align-items: flex-start;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
+  }
+
+  .page-title-group {
+    width: 100%;
+  }
+
+  .page-title-image {
+    width: 56px;
+    height: 56px;
+    flex-basis: 56px;
+  }
+
+  .page-title-image img {
+    width: 56px;
+    height: 56px;
   }
 
   .page-header h1 {
@@ -902,7 +943,6 @@
 
   .student-row {
     display: block;
-
     padding: 15px;
   }
 
@@ -961,26 +1001,46 @@
   .submit-button {
     width: 100%;
   }
-
 }
-
 
 /* =========================================================
    SMALL MOBILE
    ========================================================= */
 
 @media (max-width: 420px) {
-
   .page {
     padding: 12px;
   }
 
-  .attendance-card {
-    border-radius: 10px;
+  .page-title-group {
+    gap: 10px;
+  }
+
+  .page-title-image {
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
+  }
+
+  .page-title-image img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .page-eyebrow {
+    font-size: 9px;
   }
 
   .page-header h1 {
     font-size: 22px;
+  }
+
+  .page-header p {
+    font-size: 12px;
+  }
+
+  .attendance-card {
+    border-radius: 10px;
   }
 
   .form-grid {
@@ -999,5 +1059,4 @@
     margin-left: 12px;
     margin-right: 12px;
   }
-
 }
