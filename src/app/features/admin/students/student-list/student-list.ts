@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { StudentImportComponent } from '../student-import/student-import';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 import {
@@ -63,7 +63,8 @@ interface StudentListRow extends Student {
     SearchInputComponent,
     ConfirmationDialogComponent,
     StudentQuickViewComponent,
-    StudentForm
+    StudentForm,
+    StudentImportComponent
   ],
   templateUrl: './student-list.html',
   styleUrl: './student-list.scss'
@@ -84,7 +85,7 @@ export class StudentList implements OnInit {
   editStudentId: number | null = null;
   editPopupOpen = false;
   addPopupOpen = false;
-
+  importPopupOpen = false;
 
   students: StudentListRow[] = [];
 
@@ -1288,6 +1289,19 @@ export class StudentList implements OnInit {
     this.addPopupOpen = false;
     this.cdr.detectChanges();
   }
+
+openStudentImport(): void {
+  this.importPopupOpen = true;
+}
+
+closeStudentImport(): void {
+  this.importPopupOpen = false;
+}
+
+onStudentsImported(): void {
+  this.importPopupOpen = false;
+  this.loadStudents();
+}
 
   onStudentCreated(): void {
     this.closeAddStudent();

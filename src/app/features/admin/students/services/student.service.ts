@@ -25,6 +25,31 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface StudentImportError {
+  rowNumber: number;
+  field: string;
+  message: string;
+}
+
+export interface StudentImportValidationResponse {
+  totalRows: number;
+  validRows: number;
+  errorRows: number;
+  errors: StudentImportError[];
+}
+
+export interface ImportedStudentCredential {
+  firstName: string;
+  lastName: string;
+  email: string;
+  temporaryPassword: string;
+}
+
+export interface StudentImportResult {
+  importedStudents: number;
+  students: ImportedStudentCredential[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -176,4 +201,45 @@ getStudents(
     );
   }
 
+  // =========================
+// BULK IMPORT
+// =========================
+
+downloadImportTemplate(): Observable<Blob> {
+  return this.api.getBlob(
+    '/students/import/template'
+  );
+}
+
+validateImport(
+  file: File
+): Observable<ApiResponse<StudentImportValidationResponse>> {
+
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  return this.api.postFormData<
+    ApiResponse<StudentImportValidationResponse>
+  >(
+    '/students/import/validate',
+    formData
+  );
+}
+
+importStudents(
+  file: File
+): Observable<ApiResponse<StudentImportResult>> {
+
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  return this.api.postFormData<
+    ApiResponse<StudentImportResult>
+  >(
+    '/students/import',
+    formData
+  );
+}
 }

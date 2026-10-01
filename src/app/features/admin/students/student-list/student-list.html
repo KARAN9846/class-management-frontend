@@ -3,36 +3,52 @@
   <!-- =====================================================
        PAGE HEADER
        ===================================================== -->
-<div class="page-header">
+  <div class="page-header">
 
-  <div class="page-title-group">
+    <div class="page-title-group">
 
-    <div class="page-title-image">
-      <img
-        src="/assets/images/students.png"
-        alt="Students"
-      />
+      <div class="page-title-image">
+        <img src="/assets/images/students.png" alt="Students" />
+      </div>
+
+      <div class="page-title-content">
+        <h1>Students</h1>
+
+        <p>
+          Manage all students, admissions and academic records
+        </p>
+      </div>
+
     </div>
 
-    <div class="page-title-content">
-      <h1>Students</h1>
+<div class="header-actions">
 
-      <p>
-        Manage all students, admissions and academic records
-      </p>
-    </div>
-
-  </div>
-
-  <!-- Keep your existing Add Student button here -->
   <button
     type="button"
     class="add-btn"
     (click)="openAddStudent()">
-    + Add Student
+
+    <span class="add-icon">+</span>
+
+    Add Student
+
+  </button>
+
+
+  <button
+    type="button"
+    class="secondary-header-button"
+    (click)="openStudentImport()">
+
+    <span>↑</span>
+
+    Import Students
+
   </button>
 
 </div>
+
+  </div>
 
 
   <!-- =====================================================
@@ -254,11 +270,11 @@
     <!-- ===================================================
      SUCCESS
      =================================================== -->
-@if (successMessage) {
-  <div class="success-state">
-    ✓ {{ successMessage }}
-  </div>
-}
+    @if (successMessage) {
+    <div class="success-state">
+      ✓ {{ successMessage }}
+    </div>
+    }
 
     <!-- ===================================================
          ERROR
@@ -453,6 +469,7 @@
   }
 
 
+
   <!-- =====================================================
      EDIT STUDENT POPUP
      ===================================================== -->
@@ -500,7 +517,8 @@
 
   }
 
-  @if (addPopupOpen) {
+
+   @if (addPopupOpen) {
   <div
     class="student-edit-overlay"
     (click)="closeAddStudent()">
@@ -547,6 +565,20 @@
     </div>
 
   </div>
-}
+  }
+
+
+  <!-- =====================================================
+       STUDENT IMPORT POPUP
+       ===================================================== -->
+
+  @if (importPopupOpen) {
+
+<app-student-import
+  (closed)="closeStudentImport()"
+  (imported)="onStudentsImported()">
+</app-student-import>
+
+  }
 
 </div>

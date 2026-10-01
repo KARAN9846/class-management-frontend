@@ -1,0 +1,364 @@
+<div class="import-overlay" (click)="close()">
+
+  <div
+    class="import-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="student-import-title"
+    (click)="$event.stopPropagation()">
+
+    <!-- HEADER -->
+    <div class="modal-header">
+
+      <div>
+        <h2 id="student-import-title">
+          Import Students
+        </h2>
+
+        <p>
+          Upload an Excel file to validate student records.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="close-button"
+        [disabled]="validating || downloadingTemplate"
+        (click)="close()"
+        aria-label="Close">
+
+        ×
+
+      </button>
+
+    </div>
+
+
+    <!-- BODY -->
+    <div class="modal-body">
+
+      <!-- INFO -->
+      <div class="info-box">
+
+        <div class="info-icon">
+          i
+        </div>
+
+        <div>
+          <strong>
+            Use the official Excel template
+          </strong>
+
+          <p>
+            Download the template first and enter student
+            information using the provided columns.
+          </p>
+        </div>
+
+      </div>
+
+
+      <!-- TEMPLATE -->
+      <div class="template-section">
+
+        <div>
+          <h3>
+            Step 1 — Download Template
+          </h3>
+
+          <p>
+            Use the template to keep the Excel format correct.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="downloadingTemplate"
+          (click)="downloadTemplate()">
+
+          @if (downloadingTemplate) {
+
+            <span class="button-spinner"></span>
+
+            Downloading...
+
+          } @else {
+
+            <span>↓</span>
+
+            Download Template
+
+          }
+
+        </button>
+
+      </div>
+
+
+      <!-- UPLOAD -->
+      <div class="upload-section">
+
+        <div class="section-heading">
+
+          <h3>
+            Step 2 — Upload Excel
+          </h3>
+
+          <p>
+            Select an <strong>.xlsx</strong> file.
+          </p>
+
+        </div>
+
+
+        @if (!selectedFile) {
+
+          <label
+            class="upload-area"
+            for="student-import-file">
+
+            <div class="upload-icon">
+              ↑
+            </div>
+
+            <strong>
+              Choose Excel file
+            </strong>
+
+            <span>
+              Click here to select your .xlsx file
+            </span>
+
+          </label>
+
+          <input
+            id="student-import-file"
+            type="file"
+            accept=".xlsx"
+            hidden
+            (change)="onFileSelected($event)" />
+
+        } @else {
+
+          <div class="selected-file">
+
+            <div class="file-icon">
+              XLSX
+            </div>
+
+            <div class="file-details">
+
+              <strong>
+                {{ selectedFile.name }}
+              </strong>
+
+              <span>
+                {{ selectedFile.size / 1024 | number:'1.0-0' }} KB
+              </span>
+
+            </div>
+
+            <button
+              type="button"
+              class="remove-file-button"
+              [disabled]="validating"
+              (click)="removeFile()">
+
+              Remove
+
+            </button>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- MESSAGES -->
+
+      @if (errorMessage) {
+
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
+
+      }
+
+
+      @if (successMessage) {
+
+        <div class="success-message">
+          {{ successMessage }}
+        </div>
+
+      }
+
+
+      <!-- VALIDATION SUMMARY -->
+
+      @if (validationResult) {
+
+        <div class="validation-section">
+
+          <div class="section-heading">
+
+            <h3>
+              Validation Result
+            </h3>
+
+            <p>
+              Review the result before importing students.
+            </p>
+
+          </div>
+
+
+          <div class="summary-grid">
+
+            <div class="summary-card">
+              <span>Total Rows</span>
+              <strong>
+                {{ validationResult.totalRows }}
+              </strong>
+            </div>
+
+            <div class="summary-card valid">
+              <span>Valid Rows</span>
+              <strong>
+                {{ validationResult.validRows }}
+              </strong>
+            </div>
+
+            <div class="summary-card error">
+              <span>Errors</span>
+              <strong>
+                {{ validationResult.errorRows }}
+              </strong>
+            </div>
+
+          </div>
+
+
+          @if (validationResult.errors.length > 0) {
+
+            <div class="errors-container">
+
+              <div class="errors-heading">
+                Row-level Errors
+              </div>
+
+              <div class="error-list">
+
+                @for (
+                  error of validationResult.errors;
+                  track trackError($index, error)
+                ) {
+
+                  <div class="row-error">
+
+                    <div class="error-row-number">
+                      Row {{ error.rowNumber }}
+                    </div>
+
+                    <div class="error-field">
+                      {{ error.field }}
+                    </div>
+
+                    <div class="error-description">
+                      {{ error.message }}
+                    </div>
+
+                  </div>
+
+                }
+
+              </div>
+
+            </div>
+
+          } @else {
+
+            <div class="validation-success">
+              ✓ All rows are valid and ready for import.
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+
+   <div class="modal-footer">
+
+  <button
+    type="button"
+    class="cancel-button"
+    [disabled]="validating || downloadingTemplate || importing"
+    (click)="close()">
+
+    Close
+
+  </button>
+
+  @if (!importResult) {
+
+    <button
+      type="button"
+      class="validate-button"
+      [disabled]="!selectedFile || validating || importing"
+      (click)="validateFile()">
+
+      @if (validating) {
+
+        <span class="button-spinner"></span>
+
+        Validating...
+
+      } @else {
+
+        Validate Excel
+
+      }
+
+    </button>
+
+  }
+
+  @if (
+    validationResult &&
+    validationResult.errorRows === 0 &&
+    !importResult
+  ) {
+
+    <button
+      type="button"
+      class="import-button"
+      [disabled]="importing"
+      (click)="importFile()">
+
+      @if (importing) {
+
+        <span class="button-spinner"></span>
+
+        Importing...
+
+      } @else {
+
+        Import Students
+
+      }
+
+    </button>
+
+  }
+
+</div>
+
+  </div>
+
+</div>

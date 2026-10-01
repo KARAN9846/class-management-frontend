@@ -6,6 +6,8 @@ import {
   RouterOutlet
 } from '@angular/router';
 
+import { interval, Subscription } from 'rxjs';
+
 import { ProfileComponent } from '../../features/profile/profile/profile';
 
 import { TokenService } from '../../core/auth/token.service';
@@ -22,7 +24,8 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
-  NgZone
+  NgZone,
+  OnDestroy
 } from '@angular/core';
 
 import {
@@ -48,7 +51,7 @@ import {
   templateUrl: './app-layout.component.html',
   styleUrl: './app-layout.component.scss'
 })
-export class AppLayoutComponent {
+export class AppLayoutComponent implements OnDestroy {
 
   sidebarOpen = false;
   profileOpen = false;
@@ -56,6 +59,9 @@ export class AppLayoutComponent {
   userName = 'User';
   userRole = 'User';
   userInitial = 'U';
+  private notificationPollingSubscription?: Subscription;
+
+private readonly notificationPollingInterval = 30_000;
 
   navigationSections: NavigationSection[] = [];
   
@@ -73,7 +79,7 @@ export class AppLayoutComponent {
 
   notificationOpen = false;
 
-  constructor(
+ constructor(
   private readonly tokenService: TokenService,
   private readonly router: Router,
   private readonly authStateService: AuthStateService,
@@ -84,6 +90,14 @@ export class AppLayoutComponent {
   this.loadUserInformation();
   this.loadNavigation();
   this.loadAdminNotifications();
+
+  if (this.userRole === 'Admin') {
+    this.notificationPollingSubscription = interval(
+      this.notificationPollingInterval
+    ).subscribe(() => {
+      this.loadAdminNotifications();
+    });
+  }
 }
 
 
@@ -230,6 +244,11 @@ logout(): void {
       });
   }
 
+  ngOnDestroy(): void {
+    if (this.notificationPollingSubscription) {
+      this.notificationPollingSubscription.unsubscribe();
+    }
+  }
 
   toggleNotifications(): void {
 

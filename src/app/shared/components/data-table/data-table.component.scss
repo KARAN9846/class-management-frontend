@@ -1084,23 +1084,379 @@
 }
 
 /* ============================================================
+   RESPONSIVE / MOBILE-FIRST
+   ============================================================ */
+
+/*
+ * The table remains a real table on mobile.
+ * Wide datasets can still scroll horizontally, but we avoid
+ * unnecessarily forcing the pagination and viewport to 760px.
+ */
+
+/* Better touch scrolling on all smaller screens */
+.table-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+  .table-toolbar {
+    gap: 12px;
+  }
+
+  .table-search {
+    width: 280px;
+  }
+
+  .data-table {
+    min-width: 900px;
+  }
+
+  .data-table th {
+    height: 48px;
+    padding-left: 16px;
+    padding-right: 16px;
+    font-size: 10px;
+  }
+
+  .data-table td {
+    height: 58px;
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .data-table th.sticky-column,
+  .data-table td.sticky-column,
+  .data-table thead th.sticky-column {
+    min-width: 175px;
+  }
+
+  .resource-bars {
+    min-width: 210px;
+  }
+
+}
+
+
+/* ============================================================
    MOBILE
    ============================================================ */
 
 @media (max-width: 700px) {
 
-  .data-table {
-    min-width: 760px;
+  .table-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 12px;
   }
 
-  .data-table th,
+  .table-search {
+    width: 100%;
+  }
+
+  .search-result-count {
+    align-self: flex-start;
+    font-size: 11px;
+  }
+
+  /*
+   * Keep the table scrollable when there are many columns.
+   * Do NOT force pagination to the table width.
+   */
+  .table-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+    width: 100%;
+  }
+
+  .data-table {
+    /*
+     * Smaller minimum width than desktop, but still enough
+     * room for complex tables.
+     */
+    min-width: 680px;
+  }
+
+  .data-table th {
+    height: 44px;
+
+    padding: 0 12px;
+
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+
   .data-table td {
-    padding-left: 14px;
-    padding-right: 14px;
+    height: 54px;
+
+    padding: 7px 12px;
+
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  /*
+   * Sticky first column remains important on mobile.
+   * Give it enough room for names and primary identifiers.
+   */
+  .data-table th.sticky-column,
+  .data-table td.sticky-column,
+  .data-table thead th.sticky-column {
+    min-width: 165px;
+  }
+
+  .data-table th.sticky-column,
+  .data-table td.sticky-column {
+    box-shadow:
+      2px 0 0 #e5e7eb,
+      5px 0 8px rgba(15, 23, 42, 0.04);
+  }
+
+  /* Better mobile text */
+  .text-cell {
+    font-size: 12px;
+  }
+
+  /* Student information */
+  .student-name-cell {
+    gap: 8px;
+  }
+
+  .student-name-avatar {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+    font-size: 11px;
+  }
+
+  .student-name-link {
+    font-size: 13px;
+  }
+
+  .student-name-secondary {
+    font-size: 10px;
+  }
+
+  /* Permissions */
+  .permission-list {
+    gap: 4px;
+  }
+
+  .permission-badge {
+    min-height: 21px;
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+
+  .permission-count {
+    min-width: 38px;
+    height: 30px;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  /* Sections */
+  .section-list {
+    gap: 4px;
+  }
+
+  .section-chip {
+    padding: 4px 7px;
+    font-size: 10px;
+  }
+
+  .section-chip button {
+    font-size: 11px;
+  }
+
+  /* Resource bars */
+  .resource-bars {
+    min-width: 200px;
+    gap: 5px;
+  }
+
+  .resource-bar-row {
+    grid-template-columns: 52px minmax(60px, 1fr) 26px;
+    gap: 5px;
+  }
+
+  .resource-bar-label {
+    font-size: 9px;
+  }
+
+  .resource-bar-value {
+    font-size: 10px;
+  }
+
+  /* Attendance */
+  .attendance-teacher-name {
+    padding: 3px 7px;
+    font-size: 11px;
+  }
+
+  .current-badge {
+    margin-left: 5px;
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+
+  /* Actions */
+  .actions-header {
+    width: 64px;
+  }
+
+  .actions-cell {
+    width: 64px;
+    padding-left: 6px !important;
+    padding-right: 8px !important;
+  }
+
+  .action-menu-trigger {
+    width: 36px;
+    height: 36px;
+    font-size: 19px;
+  }
+
+  /*
+   * Pagination must fit the viewport independently from
+   * the horizontally scrollable table.
+   */
+  .pagination {
+    width: 100%;
+    min-width: 0;
+    min-height: 56px;
+
+    padding: 8px 12px;
+
+    gap: 10px;
+
+    overflow: hidden;
+  }
+
+  .pagination-summary {
+    min-width: 0;
+
+    overflow: hidden;
+
+    font-size: 11px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pagination-controls {
+    flex: 0 0 auto;
+    gap: 4px;
+  }
+
+  .pagination-button,
+  .pagination-page {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+  }
+
+}
+
+
+/* ============================================================
+   SMALL MOBILE
+   ============================================================ */
+
+@media (max-width: 480px) {
+
+  .table-wrapper {
+    border-radius: 10px;
+  }
+
+  .table-scroll {
+    border-radius: 9px 9px 0 0;
+  }
+
+  .data-table {
+    min-width: 620px;
+  }
+
+  .data-table th {
+    height: 42px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .data-table td {
+    height: 52px;
+    padding: 6px 10px;
+  }
+
+  .data-table th.sticky-column,
+  .data-table td.sticky-column,
+  .data-table thead th.sticky-column {
+    min-width: 155px;
+  }
+
+  .student-name-avatar {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+
+  .student-name-link {
+    font-size: 12px;
+  }
+
+  .student-name-secondary {
+    font-size: 9px;
   }
 
   .pagination {
-    min-width: 760px;
+    min-height: 52px;
+    padding: 7px 8px;
+  }
+
+  .pagination-summary {
+    font-size: 10px;
+  }
+
+  .pagination-button,
+  .pagination-page {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+
+}
+
+
+/* ============================================================
+   VERY SMALL DEVICES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .pagination {
+    gap: 6px;
+  }
+
+  .pagination-summary {
+    max-width: 90px;
+  }
+
+  .pagination-controls {
+    gap: 3px;
+  }
+
+  .pagination-button,
+  .pagination-page {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+    font-size: 12px;
   }
 
 }
