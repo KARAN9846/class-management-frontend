@@ -2,26 +2,18 @@
 
   <!-- Mobile Overlay -->
   @if (sidebarOpen) {
-    <div
-      class="sidebar-overlay"
-      (click)="closeSidebar()">
-    </div>
+  <div class="sidebar-overlay" (click)="closeSidebar()">
+  </div>
   }
 
   <!-- ================= SIDEBAR ================= -->
-  <aside
-    class="sidebar"
-    [class.sidebar-open]="sidebarOpen">
+  <aside class="sidebar" [class.sidebar-open]="sidebarOpen">
 
     <!-- ================= BRAND ================= -->
     <div class="sidebar-brand">
 
       <div class="brand-logo">
-        <img
-          src="/assets/images/cms_logo.png"
-          alt="CMS Logo"
-          class="cms-logo"
-        />
+        <img src="/assets/images/cms_logo.png" alt="CMS Logo" class="cms-logo" />
       </div>
 
       <div class="brand-text">
@@ -37,38 +29,34 @@
 
       @for (section of navigationSections; track section.title) {
 
-        <div class="nav-section">
+      <div class="nav-section">
 
-          <span class="nav-section-title">
-            {{ section.title }}
-          </span>
+        <span class="nav-section-title">
+          {{ section.title }}
+        </span>
 
-          <div class="nav-items">
+        <div class="nav-items">
 
-            @for (item of section.items; track item.route) {
+          @for (item of section.items; track item.route) {
 
-              <a
-                [routerLink]="item.route"
-                routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }"
-                class="nav-item"
-                (click)="closeSidebar()">
+          <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-item" (click)="closeSidebar()">
 
-                <span class="nav-icon" aria-hidden="true">
-                  {{ item.icon }}
-                </span>
+            <span class="nav-icon" aria-hidden="true">
+              {{ item.icon }}
+            </span>
 
-                <span class="nav-label">
-                  {{ item.label }}
-                </span>
+            <span class="nav-label">
+              {{ item.label }}
+            </span>
 
-              </a>
+          </a>
 
-            }
-
-          </div>
+          }
 
         </div>
+
+      </div>
 
       }
 
@@ -76,66 +64,57 @@
       <!-- ================= QUICK ACTIONS ================= -->
       @if (userRole === 'Admin') {
 
-        <div class="quick-actions">
+      <div class="quick-actions">
 
-          <div class="quick-actions-header">
-            <span class="quick-actions-title">Quick Actions</span>
-            <span class="quick-actions-subtitle">Common tasks</span>
-          </div>
+        <div class="quick-actions-header">
+          <span class="quick-actions-title">Quick Actions</span>
+          <span class="quick-actions-subtitle">Common tasks</span>
+        </div>
 
-          <div class="quick-actions-list">
+        <div class="quick-actions-list">
 
-            <a
-              routerLink="/admin/students/create"
-              class="quick-action"
-              (click)="closeSidebar()">
+          <a routerLink="/admin/students/create" class="quick-action" (click)="closeSidebar()">
 
-              <span class="quick-action-icon">+</span>
+            <span class="quick-action-icon">+</span>
 
-              <span class="quick-action-content">
-                <span class="quick-action-title">Add Student</span>
-                <span class="quick-action-description">
-                  Create student profile
-                </span>
+            <span class="quick-action-content">
+              <span class="quick-action-title">Add Student</span>
+              <span class="quick-action-description">
+                Create student profile
               </span>
+            </span>
 
-            </a>
+          </a>
 
-            <a
-              routerLink="/admin/teachers/create"
-              class="quick-action"
-              (click)="closeSidebar()">
+          <a routerLink="/admin/teachers/create" class="quick-action" (click)="closeSidebar()">
 
-              <span class="quick-action-icon">+</span>
+            <span class="quick-action-icon">+</span>
 
-              <span class="quick-action-content">
-                <span class="quick-action-title">Add Teacher</span>
-                <span class="quick-action-description">
-                  Create teacher account
-                </span>
+            <span class="quick-action-content">
+              <span class="quick-action-title">Add Teacher</span>
+              <span class="quick-action-description">
+                Create teacher account
               </span>
+            </span>
 
-            </a>
+          </a>
 
-            <a
-              routerLink="/admin/fees"
-              class="quick-action"
-              (click)="closeSidebar()">
+          <a routerLink="/admin/fees" class="quick-action" (click)="closeSidebar()">
 
-              <span class="quick-action-icon">₹</span>
+            <span class="quick-action-icon">₹</span>
 
-              <span class="quick-action-content">
-                <span class="quick-action-title">Fee Management</span>
-                <span class="quick-action-description">
-                  Manage student fees
-                </span>
+            <span class="quick-action-content">
+              <span class="quick-action-title">Fee Management</span>
+              <span class="quick-action-description">
+                Manage student fees
               </span>
+            </span>
 
-            </a>
-
-          </div>
+          </a>
 
         </div>
+
+      </div>
 
       }
 
@@ -145,11 +124,7 @@
     <!-- ================= SIDEBAR BOTTOM ================= -->
     <div class="sidebar-bottom">
 
-      <button
-        type="button"
-        class="user-card"
-        (click)="goToProfile()"
-        aria-label="Open profile">
+      <button type="button" class="user-card" (click)="goToProfile()" aria-label="Open profile">
 
         <div class="user-avatar">
           {{ userInitial }}
@@ -167,9 +142,7 @@
 
         </div>
 
-        <span
-          class="user-card-arrow"
-          aria-hidden="true">
+        <span class="user-card-arrow" aria-hidden="true">
           →
         </span>
 
@@ -188,11 +161,7 @@
 
       <div class="header-left">
 
-        <button
-          type="button"
-          class="menu-button"
-          aria-label="Open navigation"
-          (click)="toggleSidebar()">
+        <button type="button" class="menu-button" aria-label="Open navigation" (click)="toggleSidebar()">
 
           <span></span>
           <span></span>
@@ -207,227 +176,262 @@
       </div>
 
       <!-- ADMIN NOTIFICATIONS -->
-@if (userRole === 'Admin') {
-  <div class="header-notification">
+      @if (userRole === 'Admin') {
+      <div class="header-notification">
 
-    <button
-      type="button"
-      class="notification-button"
-      aria-label="Notifications"
-      [attr.aria-expanded]="notificationOpen"
-      (click)="toggleNotifications()"
-    >
+        <button type="button" class="notification-button" aria-label="Notifications"
+          [attr.aria-expanded]="notificationOpen" (click)="toggleNotifications()">
 
-      <!-- Bell icon -->
-      <svg
-        class="notification-icon"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path
-          d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
-        />
-        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-      </svg>
-
-      <!-- Notification count -->
-      @if (notificationCount > 0) {
-        <span class="notification-badge">
-          {{ notificationCount > 99 ? '99+' : notificationCount }}
-        </span>
-      }
-
-    </button>
-
-
-    @if (notificationOpen) {
-  <div class="notification-dropdown">
-
-    <!-- Header -->
-    <div class="notification-dropdown-header">
-
-      <div>
-        <h3>Notifications</h3>
-        <span>Today's absences</span>
-      </div>
-
-      @if (notificationCount > 0) {
-        <span class="notification-header-count">
-          {{ notificationCount }}
-        </span>
-      }
-
-    </div>
-
-    <!-- Content -->
-    <div class="notification-dropdown-content">
-
-      <!-- Loading -->
-      @if (notificationLoading) {
-
-        <div class="notification-state">
-          <span class="notification-spinner"></span>
-          <span>Loading today's absences...</span>
-        </div>
-
-      }
-
-      <!-- Error -->
-      @else if (notificationError) {
-
-        <div class="notification-state notification-error-state">
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="9"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          <!-- Bell icon -->
+          <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
 
-          <span>{{ notificationError }}</span>
+          <!-- Notification count -->
+          @if (notificationCount > 0) {
+          <span class="notification-badge">
+            {{ notificationCount > 99 ? '99+' : notificationCount }}
+          </span>
+          }
 
-        </div>
+        </button>
 
-      }
 
-      <!-- Empty -->
-      @else if (absentNotifications.length === 0) {
+        @if (notificationOpen) {
+        <div class="notification-dropdown">
+          <!-- Header -->
+          <div class="notification-dropdown-header">
+            <div>
+              <h3>Notifications</h3>
+              <span>Absences &amp; pending attendance</span>
+            </div>
 
-        <div class="notification-state notification-empty-state">
-
-          <div class="notification-empty-icon">
-
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M20 6 9 17l-5-5"></path>
-            </svg>
-
+            @if (notificationCount > 0) {
+              <span class="notification-header-count">
+                {{ notificationCount }}
+              </span>
+            }
           </div>
 
-          <strong>No absent students</strong>
-
-          <span>
-            Everyone is marked present today.
-          </span>
-
-        </div>
-
-      }
-
-      <!-- Absent students -->
-      @else {
-
-        <div class="notification-list">
-
-          @for (
-            notification of absentNotifications;
-            track notification.studentId
-          ) {
+          <!-- Notification category tabs -->
+          <div class="notification-tabs" role="group" aria-label="Notification category">
+            <button
+              type="button"
+              class="notification-tab absent-tab"
+              [class.active]="activeNotificationTab === 'absent'"
+              [attr.aria-pressed]="activeNotificationTab === 'absent'"
+              (click)="setNotificationTab('absent')"
+            >
+              <span>Absent Students</span>
+              <span class="notification-tab-count">
+                {{ absentNotifications.length }}
+              </span>
+            </button>
 
             <button
               type="button"
-              class="notification-item"
-              (click)="goToAttendance()"
+              class="notification-tab pending-tab"
+              [class.active]="activeNotificationTab === 'pending'"
+              [attr.aria-pressed]="activeNotificationTab === 'pending'"
+              (click)="setNotificationTab('pending')"
             >
+              <span>Attendance Pending</span>
+              <span class="notification-tab-count">
+                {{ pendingAttendanceNotifications.length }}
+              </span>
+            </button>
+          </div>
 
-              <div class="notification-item-avatar">
-                {{ notification.studentName.charAt(0).toUpperCase() }}
-              </div>
+          <!-- Content -->
+          <div class="notification-dropdown-content">
 
-              <div class="notification-item-details">
+            <!-- Loading -->
+            @if (notificationLoading) {
+
+            <div class="notification-state">
+              <span class="notification-spinner"></span>
+              <span>Loading notifications...</span>
+            </div>
+
+            }
+
+            <!-- Error -->
+            @else if (notificationError) {
+
+            <div class="notification-state notification-error-state">
+
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+
+              <span>{{ notificationError }}</span>
+
+            </div>
+
+            }
+
+            <!-- Empty state for the selected tab -->
+            @else if (
+              activeNotificationTab === 'absent'
+                ? absentNotifications.length === 0
+                : pendingAttendanceNotifications.length === 0
+            ) {
+              <div class="notification-state notification-empty-state">
+                <div class="notification-empty-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 6 9 17l-5-5"></path>
+                  </svg>
+                </div>
 
                 <strong>
-                  {{ notification.studentName }}
+                  {{
+                    activeNotificationTab === 'absent'
+                      ? 'No absent students'
+                      : 'No pending attendance'
+                  }}
                 </strong>
 
                 <span>
-                  Class {{ notification.className }}
-                  <span class="notification-separator">•</span>
-                  Section {{ notification.sectionName }}
-                  <span class="notification-separator">•</span>
-                  Roll {{ notification.rollNumber }}
+                  {{
+                    activeNotificationTab === 'absent'
+                      ? 'No students are marked absent today.'
+                      : 'All class sections have completed attendance.'
+                  }}
                 </span>
-
               </div>
+            }
 
-              <svg
-                class="notification-item-arrow"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <polyline points="9 18 15 12 9 6"></polyline>
+            <!-- Notifications for the selected tab -->
+            @else {
+              <div class="notification-list">
+                @if (activeNotificationTab === 'absent') {
+                  <!-- Absent students -->
+                  @for (
+                    notification of absentNotifications;
+                    track notification.studentId
+                  ) {
+                    <button
+                      type="button"
+                      class="notification-item"
+                      (click)="goToAttendance()"
+                    >
+                      <div class="notification-item-avatar">
+                        {{ notification.studentName.charAt(0).toUpperCase() }}
+                      </div>
+
+                      <div class="notification-item-details">
+                        <strong>{{ notification.studentName }}</strong>
+
+                        <span>
+                          Class {{ notification.className }}
+                          <span class="notification-separator">•</span>
+                          Section {{ notification.sectionName }}
+                          <span class="notification-separator">•</span>
+                          Roll {{ notification.rollNumber }}
+                        </span>
+                      </div>
+
+                      <svg
+                        class="notification-item-arrow"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                  }
+                } @else {
+                  <!-- Attendance pending -->
+                  @for (
+                    notification of pendingAttendanceNotifications;
+                    track notification.classId + '-' + notification.sectionId
+                  ) {
+                    <button
+                      type="button"
+                      class="notification-item"
+                      (click)="goToAttendance()"
+                    >
+                      <div class="notification-item-avatar pending-avatar">!</div>
+
+                      <div class="notification-item-details">
+                        <strong>Attendance not completed</strong>
+
+                        <span>
+                          Class {{ notification.className }}
+                          <span class="notification-separator">•</span>
+                          Section {{ notification.sectionName }}
+                        </span>
+
+                        <span>
+                          Marked {{ notification.markedStudents }}/{{ notification.totalStudents }}
+                          <span class="notification-separator">•</span>
+                          {{ notification.pendingStudents }} pending
+                        </span>
+                      </div>
+
+                      <svg
+                        class="notification-item-arrow"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                  }
+                }
+              </div>
+            }
+
+          </div>
+
+          <!-- Footer -->
+          @if (!notificationLoading && !notificationError) {
+
+          <div class="notification-dropdown-footer">
+
+            <button type="button" class="notification-view-all" (click)="goToAttendance()">
+              View Attendance
+
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
 
             </button>
 
+          </div>
+
           }
 
         </div>
-
-      }
-
-    </div>
-
-    <!-- Footer -->
-    @if (!notificationLoading && !notificationError) {
-
-      <div class="notification-dropdown-footer">
-
-        <button
-          type="button"
-          class="notification-view-all"
-          (click)="goToAttendance()"
-        >
-          View Attendance
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-
-        </button>
+        }
 
       </div>
-
-    }
-
-  </div>
-}
-
-  </div>
-}
+      }
 
     </header>
 
@@ -448,9 +452,8 @@
 
   <!-- ================= PROFILE MODAL ================= -->
   @if (profileOpen) {
-    <app-profile
-      (closeProfile)="profileOpen = false">
-    </app-profile>
+  <app-profile (closeProfile)="profileOpen = false">
+  </app-profile>
   }
 
 </div>

@@ -29,7 +29,8 @@ import {
 } from '@angular/core';
 
 import {
-  AbsentStudentNotification
+  AbsentStudentNotification,
+  PendingAttendanceNotification
 } from '../../core/models/notification.model';
 
 import {
@@ -71,11 +72,15 @@ private readonly notificationPollingInterval = 30_000;
 
   absentNotifications: AbsentStudentNotification[] = [];
 
+  pendingAttendanceNotifications: PendingAttendanceNotification[] = [];
+
   notificationCount = 0;
 
   notificationLoading = false;
 
   notificationError = '';
+
+  activeNotificationTab: 'absent' | 'pending' = 'absent';
 
   notificationOpen = false;
 
@@ -195,54 +200,81 @@ logout(): void {
   // ADMIN NOTIFICATIONS
   // =====================================================
 
-  private loadAdminNotifications(): void {
-
-    if (this.userRole !== 'Admin') {
-      return;
-    }
-
-    this.notificationLoading = true;
-    this.notificationError = '';
-
-    this.notificationService
-      .getTodayAbsentStudents()
-      .subscribe({
-
-        next: (response) => {
-
-          this.ngZone.run(() => {
-
-            this.absentNotifications =
-              response.data ?? [];
-
-            this.notificationCount =
-              this.absentNotifications.length;
-
-            this.notificationLoading = false;
-
-            this.cdr.detectChanges();
-          });
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Failed to load admin notifications:',
-            error
-          );
-
-          this.ngZone.run(() => {
-
-            this.notificationLoading = false;
-
-            this.notificationError =
-              'Unable to load notifications.';
-
-            this.cdr.detectChanges();
-          });
-        }
-      });
+private loadAdminNotifications(): void {
+  if (this.userRole !== 'Admin') {
+    return;
   }
+
+  this.notificationLoading = true;
+  this.notificationError = '';
+
+  let absentLoaded = false;
+  let pendingLoaded = false;
+  let absentFailed = false;
+  let pendingFailed = false;
+
+  const updateLoadingState = (): void => {
+    this.notificationLoading = !(absentLoaded && pendingLoaded);
+
+    if (absentLoaded && pendingLoaded) {
+      this.notificationError = '';
+    } else if (absentFailed && pendingFailed) {
+      this.notificationError = 'Unable to load notifications.';
+    }
+  };
+
+  this.notificationService.getTodayAbsentStudents().subscribe({
+    next: response => {
+      this.ngZone.run(() => {
+        this.absentNotifications = response.data ?? [];
+        absentLoaded = true;
+
+        this.notificationCount =
+          this.absentNotifications.length +
+          this.pendingAttendanceNotifications.length;
+
+        updateLoadingState();
+        this.cdr.detectChanges();
+      });
+    },
+    error: error => {
+      console.error('Failed to load absent student notifications:', error);
+
+      this.ngZone.run(() => {
+        absentFailed = true;
+        absentLoaded = true;
+        updateLoadingState();
+        this.cdr.detectChanges();
+      });
+    }
+  });
+
+  this.notificationService.getPendingAttendance().subscribe({
+    next: response => {
+      this.ngZone.run(() => {
+        this.pendingAttendanceNotifications = response.data ?? [];
+        pendingLoaded = true;
+
+        this.notificationCount =
+          this.absentNotifications.length +
+          this.pendingAttendanceNotifications.length;
+
+        updateLoadingState();
+        this.cdr.detectChanges();
+      });
+    },
+    error: error => {
+      console.error('Failed to load pending attendance notifications:', error);
+
+      this.ngZone.run(() => {
+        pendingFailed = true;
+        pendingLoaded = true;
+        updateLoadingState();
+        this.cdr.detectChanges();
+      });
+    }
+  });
+}
 
   ngOnDestroy(): void {
     if (this.notificationPollingSubscription) {
@@ -294,5 +326,9 @@ onDocumentClick(event: MouseEvent): void {
   if (!clickedInsideNotification) {
     this.notificationOpen = false;
   }
+}
+
+setNotificationTab(tab: 'absent' | 'pending'): void {
+  this.activeNotificationTab = tab;
 }
 }

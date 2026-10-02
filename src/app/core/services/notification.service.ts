@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import {
   AbsentStudentNotification,
-  NotificationApiResponse
+  NotificationApiResponse,
+  PendingAttendanceApiResponse
 } from '../models/notification.model';
 
 @Injectable({
@@ -24,4 +25,13 @@ export class NotificationService {
       '/attendance/notifications/absent-today'
     );
   }
+
+  /**
+ * Get class sections where today's attendance is incomplete.
+ */
+getPendingAttendance(): Observable<PendingAttendanceApiResponse> {
+  return this.api.get<PendingAttendanceApiResponse>(
+    '/attendance/notifications/pending'
+  );
+}
 }

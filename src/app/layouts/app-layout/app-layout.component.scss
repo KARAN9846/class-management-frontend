@@ -1044,6 +1044,92 @@
 }
 
 
+/* Notification category tabs */
+.notification-tabs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e8edf3;
+  background: #ffffff;
+}
+
+.notification-tab {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: #f8fafc;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+
+  &.active.absent-tab {
+    background: #fff1ef;
+    border-color: #fecaca;
+    color: #b42318;
+  }
+
+  &.active.pending-tab {
+    background: #fff7e6;
+    border-color: #f3d28b;
+    color: #925c00;
+  }
+}
+
+.notification-tab-count {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.notification-tab.active.absent-tab .notification-tab-count {
+  background: #fee2e2;
+  color: #b42318;
+}
+
+.notification-tab.active.pending-tab .notification-tab-count {
+  background: #ffedc2;
+  color: #925c00;
+}
+
+/* Differentiate pending-attendance notifications */
+.notification-item-avatar.pending-avatar {
+  background: #fff7e6;
+  color: #925c00;
+}
+
+
 /* =====================================================
    CONTENT
    ===================================================== */
