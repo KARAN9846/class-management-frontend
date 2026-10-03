@@ -366,6 +366,8 @@ closeActionMenu(): void {
 
     this.editingClass = null;
 
+    this.errorMessage = '';
+
 
     this.form = {
 
@@ -395,6 +397,8 @@ closeActionMenu(): void {
   ): void {
 
     this.editingClass = cls;
+
+    this.errorMessage = '';
 
 
     this.form = {

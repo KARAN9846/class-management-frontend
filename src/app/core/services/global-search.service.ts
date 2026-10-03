@@ -1015,6 +1015,15 @@ if (role === 'ADMIN') {
             academicYearName:
               studentResponse.academicYearName,
 
+            gender:
+              studentResponse.gender,
+
+            boardMediumName:
+              studentResponse.boardMediumName,
+
+            branchName:
+              studentResponse.branchName,
+
             isActive:
               studentResponse.isActive
 
@@ -1462,6 +1471,9 @@ if (role === 'ADMIN') {
       className?: string | null;
       sectionName?: string | null;
       academicYearName?: string | null;
+      gender?: string | null;
+      boardMediumName?: string | null;
+      branchName?: string | null;
       isActive?: boolean | null;
     },
 
@@ -1566,6 +1578,15 @@ if (role === 'ADMIN') {
 
       academicYearName:
         student.academicYearName ?? undefined,
+
+      gender:
+        student.gender ?? undefined,
+
+      boardMediumName:
+        student.boardMediumName ?? undefined,
+
+      branchName:
+        student.branchName ?? undefined,
 
       isActive:
         student.isActive ?? undefined,

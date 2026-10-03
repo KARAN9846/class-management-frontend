@@ -135,6 +135,12 @@ export interface GlobalSearchStudentQuickView {
 
   academicYearName?: string;
 
+  gender?: string;
+
+  boardMediumName?: string;
+
+  branchName?: string;
+
   isActive?: boolean;
 
   attendance?: GlobalSearchStudentAttendance;

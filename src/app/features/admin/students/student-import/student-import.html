@@ -286,6 +286,135 @@
 
           }
 
+          <!-- SETUP PREVIEW -->
+          @if (
+            validationResult.errorRows === 0 &&
+            hasSetupItems()
+          ) {
+            <div class="setup-preview">
+
+              <h3>Setup Required Before Import</h3>
+
+              <p>
+                Review the records that will be created or reactivated
+                during import.
+              </p>
+
+              @if (validationResult.preview.branches.length > 0) {
+                <div class="setup-group">
+                  <strong>Branches to create</strong>
+                  <ul>
+                    @for (
+                      item of validationResult.preview.branches;
+                      track item
+                    ) {
+                      <li>{{ item }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              @if (validationResult.preview.boardMedia.length > 0) {
+                <div class="setup-group">
+                  <strong>Board / Medium records to create</strong>
+                  <ul>
+                    @for (
+                      item of validationResult.preview.boardMedia;
+                      track item
+                    ) {
+                      <li>{{ item }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              @if (validationResult.preview.schools.length > 0) {
+                <div class="setup-group">
+                  <strong>Schools to create</strong>
+                  <ul>
+                    @for (
+                      item of validationResult.preview.schools;
+                      track item
+                    ) {
+                      <li>{{ item }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              @if (validationResult.preview.classes.length > 0) {
+                <div class="setup-group">
+                  <strong>Classes to create</strong>
+                  <ul>
+                    @for (
+                      item of validationResult.preview.classes;
+                      track $index
+                    ) {
+                      <li>
+                        {{ item.name }} — {{ item.academicYear }}
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              @if (validationResult.preview.sections.length > 0) {
+                <div class="setup-group">
+                  <strong>Sections to create</strong>
+                  <ul>
+                    @for (
+                      item of validationResult.preview.sections;
+                      track $index
+                    ) {
+                      <li>
+                        {{ item.name }} — {{ item.className }}
+                        ({{ item.academicYear }})
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              @if (validationResult.preview.feeStructures.length > 0) {
+                <div class="setup-group">
+                  <strong>Fee structures to create or reactivate</strong>
+                  <ul>
+                    @for (
+                      item of validationResult.preview.feeStructures;
+                      track $index
+                    ) {
+                      <li>
+                        {{ item.className }} — {{ item.academicYear }}:
+                        {{ item.feeAmount === null
+                          ? 'Amount not provided'
+                          : (item.feeAmount | currency:'INR':'symbol') }}
+
+                        @if (item.reactivatingExisting) {
+                          (Existing fee structure will be reactivated)
+                        } @else {
+                          (New fee structure)
+                        }
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              <label class="setup-confirmation">
+                <input
+                  type="checkbox"
+                  [checked]="setupConfirmed"
+                  (change)="setupConfirmed = $any($event.target).checked" />
+
+                <span>
+                  I have reviewed these records and confirm that the
+                  required setup records may be created or reactivated.
+                </span>
+              </label>
+
+            </div>
+          }
+
         </div>
 
       }
@@ -338,7 +467,7 @@
     <button
       type="button"
       class="import-button"
-      [disabled]="importing"
+      [disabled]="importing || (hasSetupItems() && !setupConfirmed)"
       (click)="importFile()">
 
       @if (importing) {

@@ -284,6 +284,18 @@
 
             </div>
 
+            <div class="form-group">
+
+              <label for="gender">Gender</label>
+
+              <select id="gender" formControlName="gender">
+                <option [ngValue]="null">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+
+            </div>
+
 
             <!-- ================= PASSWORD ================= -->
 
@@ -372,6 +384,26 @@
 
   </select>
 
+</div>
+
+<div class="form-group">
+  <label for="boardMediumId">Board-Medium</label>
+  <select id="boardMediumId" formControlName="boardMediumId">
+    <option [ngValue]="null">Select Board-Medium</option>
+    @for (boardMedium of boardMedia; track boardMedium.id) {
+      <option [ngValue]="boardMedium.id">{{ boardMedium.name }}</option>
+    }
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="branchId">Branch</label>
+  <select id="branchId" formControlName="branchId">
+    <option [ngValue]="null">Select Branch</option>
+    @for (branch of branches; track branch.id) {
+      <option [ngValue]="branch.id">{{ branch.name }}</option>
+    }
+  </select>
 </div>
 
 

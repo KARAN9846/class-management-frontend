@@ -136,6 +136,18 @@ student
                ACADEMIC INFORMATION
           ================================================== -->
 
+            @if (student.gender) {
+            <div class="quick-view-section">
+                <div class="quick-view-section-title">Personal Information</div>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Gender</span>
+                        <strong>{{ student.gender }}</strong>
+                    </div>
+                </div>
+            </div>
+            }
+
             <div class="quick-view-section">
 
                 <div class="quick-view-section-title">
@@ -247,6 +259,20 @@ student
 
                     </div>
 
+                    }
+
+                    @if (student.boardMediumName) {
+                    <div class="detail-item">
+                        <span class="detail-label">Board-Medium</span>
+                        <strong>{{ student.boardMediumName }}</strong>
+                    </div>
+                    }
+
+                    @if (student.branchName) {
+                    <div class="detail-item">
+                        <span class="detail-label">Branch</span>
+                        <strong>{{ student.branchName }}</strong>
+                    </div>
                     }
 
                 </div>

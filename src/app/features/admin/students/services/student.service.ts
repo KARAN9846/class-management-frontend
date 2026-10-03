@@ -31,11 +31,37 @@ export interface StudentImportError {
   message: string;
 }
 
+
+export interface StudentImportPreview {
+  branches: string[];
+  boardMedia: string[];
+  schools: string[];
+
+  classes: {
+    academicYear: string;
+    name: string;
+  }[];
+
+  sections: {
+    academicYear: string;
+    className: string;
+    name: string;
+  }[];
+
+  feeStructures: {
+    academicYear: string;
+    className: string;
+    feeAmount: number | null;
+    reactivatingExisting: boolean;
+  }[];
+}
+
 export interface StudentImportValidationResponse {
   totalRows: number;
   validRows: number;
   errorRows: number;
   errors: StudentImportError[];
+  preview: StudentImportPreview;
 }
 
 export interface ImportedStudentCredential {

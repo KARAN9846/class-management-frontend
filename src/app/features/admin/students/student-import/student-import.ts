@@ -41,6 +41,8 @@ importResult: StudentImportResult | null = null;
 
   validationResult: StudentImportValidationResponse | null = null;
 
+  setupConfirmed = false;
+
   errorMessage = '';
   successMessage = '';
 
@@ -60,6 +62,9 @@ importResult: StudentImportResult | null = null;
   selectFile(file: File): void {
     this.clearMessages();
     this.validationResult = null;
+
+    this.setupConfirmed = false;
+this.importResult = null;
 
     if (!file.name.toLowerCase().endsWith('.xlsx')) {
       this.errorMessage =
@@ -87,6 +92,8 @@ importResult: StudentImportResult | null = null;
   removeFile(): void {
     this.selectedFile = null;
     this.validationResult = null;
+    this.setupConfirmed = false;
+this.importResult = null;
     this.clearMessages();
 
     this.cdr.detectChanges();
@@ -148,6 +155,7 @@ importResult: StudentImportResult | null = null;
 
     this.validating = true;
     this.validationResult = null;
+    this.setupConfirmed = false;
     this.clearMessages();
 
     this.studentService
@@ -189,14 +197,15 @@ importResult: StudentImportResult | null = null;
 
 
   importFile(): void {
-    if (
-      !this.selectedFile ||
-      this.importing ||
-      !this.validationResult ||
-      this.validationResult.errorRows > 0
-    ) {
-      return;
-    }
+if (
+  !this.selectedFile ||
+  this.importing ||
+  !this.validationResult ||
+  this.validationResult.errorRows > 0 ||
+  (this.hasSetupItems() && !this.setupConfirmed)
+) {
+  return;
+}
 
     this.importing = true;
     this.importResult = null;
@@ -237,6 +246,24 @@ importResult: StudentImportResult | null = null;
         }
       });
   }
+
+
+  hasSetupItems(): boolean {
+  const preview = this.validationResult?.preview;
+
+  if (!preview) {
+    return false;
+  }
+
+  return (
+    preview.branches.length > 0 ||
+    preview.boardMedia.length > 0 ||
+    preview.schools.length > 0 ||
+    preview.classes.length > 0 ||
+    preview.sections.length > 0 ||
+    preview.feeStructures.length > 0
+  );
+}
 
   close(): void {
     if (

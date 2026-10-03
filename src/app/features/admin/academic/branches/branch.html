@@ -1,0 +1,170 @@
+
+<section class="branch-page">
+  <app-page-header
+    title="Branches"
+    description="Manage the branches available to your students and teachers."
+    breadcrumb="Academics / Branches"
+    [showAction]="true"
+    actionLabel="Add Branch"
+    (actionClick)="openCreateForm()"
+  />
+
+  <div *ngIf="successMessage" class="alert alert-success" role="status">
+    {{ successMessage }}
+    <button type="button" class="alert-close" (click)="successMessage = ''">
+      &times;
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage && !showForm" class="alert alert-error" role="alert">
+    {{ errorMessage }}
+    <button type="button" class="alert-close" (click)="errorMessage = ''">
+      &times;
+    </button>
+  </div>
+
+  <div class="branch-toolbar">
+    <app-search-input
+      placeholder="Search branches..."
+      [ngModel]="searchTerm"
+      (searchChange)="onSearch($event)"
+    />
+
+    <select
+      class="status-filter"
+      aria-label="Filter branches by status"
+      [(ngModel)]="statusFilter"
+    >
+      <option value="ALL">All statuses</option>
+      <option value="ACTIVE">Active</option>
+      <option value="INACTIVE">Inactive</option>
+    </select>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [data]="filteredBranches"
+    [loading]="loading"
+    [actions]="actions"
+    [showActions]="true"
+    [enablePagination]="true"
+    [pageSize]="10"
+    (actionClick)="onTableAction($event)"
+  />
+
+  <div *ngIf="!loading && !filteredBranches.length" class="empty-state">
+    <h3>No branches found</h3>
+    <p>Try changing your search or create a new branch.</p>
+  </div>
+
+  <div *ngIf="showForm" class="modal-backdrop" (click)="closeForm()">
+    <section
+      class="branch-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="branch-modal-title"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="modal-header">
+        <div>
+          <h2 id="branch-modal-title">
+            {{ editingBranch ? 'Edit Branch' : 'Add Branch' }}
+          </h2>
+          <p>
+            {{ editingBranch ? 'Update the branch name.' : 'Add a branch to your institution.' }}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="icon-button"
+          aria-label="Close form"
+          [disabled]="saving"
+          (click)="closeForm()"
+        >
+          &times;
+        </button>
+      </header>
+
+      <form class="branch-form" (ngSubmit)="saveBranch()" #branchForm="ngForm">
+        <div class="form-field">
+          <label for="branch-name">Branch name <span>*</span></label>
+          <input
+            id="branch-name"
+            name="name"
+            type="text"
+            [(ngModel)]="form.name"
+            #nameInput="ngModel"
+            required
+            maxlength="100"
+            placeholder="e.g. Ahmedabad – Navrangpura"
+            autocomplete="off"
+            pattern=".*\S.*"
+            [class.invalid]="nameInput.invalid && nameInput.touched"
+            [attr.aria-invalid]="nameInput.invalid && nameInput.touched"
+            [attr.aria-describedby]="nameInput.invalid && nameInput.touched ? 'branch-name-error' : null"
+          />
+          @if (nameInput.invalid && nameInput.touched) {
+            <small class="field-error" id="branch-name-error">
+              @if (nameInput.hasError('required') || nameInput.hasError('pattern')) {
+                Enter a branch name containing at least one non-space character.
+              } @else {
+                Branch name cannot exceed 100 characters.
+              }
+            </small>
+          } @else {
+            <small class="field-hint">Use a clear, unique branch name.</small>
+          }
+        </div>
+
+        <div class="form-field" *ngIf="editingBranch">
+          <label for="branch-status">Status</label>
+          <select
+            id="branch-status"
+            name="status"
+            [(ngModel)]="form.status"
+            disabled
+          >
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+          <small class="field-hint">Status changes through the Deactivate action in the branch list.</small>
+        </div>
+
+        <div *ngIf="showForm && errorMessage" class="alert alert-error">
+          {{ errorMessage }}
+        </div>
+
+        <footer class="modal-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            [disabled]="saving"
+            (click)="closeForm()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="saving || branchForm.invalid || !form.name.trim()"
+          >
+            {{ saving ? 'Saving...' : editingBranch ? 'Save changes' : 'Create branch' }}
+          </button>
+        </footer>
+      </form>
+    </section>
+  </div>
+
+  <app-confirmation-dialog
+    [visible]="showDeleteDialog"
+    title="Deactivate Branch"
+    [message]="'Are you sure you want to deactivate ' + (branchToDelete?.name ?? 'this branch') + '?'"
+    confirmLabel="Deactivate"
+    cancelLabel="Cancel"
+    [danger]="true"
+    (confirmed)="confirmDeactivate()"
+    (cancelled)="cancelDeactivate()"
+  />
+</section>

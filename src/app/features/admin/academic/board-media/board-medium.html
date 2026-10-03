@@ -1,0 +1,166 @@
+
+<div class="board-medium-page">
+  <app-page-header
+    title="Board / Medium"
+    description="Manage educational boards and teaching mediums."
+    [showAction]="true"
+    actionLabel="Add Board / Medium"
+    (actionClick)="openCreateForm()"
+  ></app-page-header>
+
+  @if (successMessage) {
+    <div class="alert alert-success" role="status">
+      {{ successMessage }}
+      <button type="button" class="alert-close" (click)="successMessage = ''">
+        &times;
+      </button>
+    </div>
+  }
+
+  @if (errorMessage && !showForm) {
+    <div class="alert alert-error" role="alert">
+      {{ errorMessage }}
+      <button type="button" class="alert-close" (click)="errorMessage = ''">
+        &times;
+      </button>
+    </div>
+  }
+
+  <section class="filter-card">
+    <div class="search-wrapper">
+      <app-search-input
+        placeholder="Search board or medium..."
+        (searchChange)="onSearchChange($event)"
+      ></app-search-input>
+    </div>
+
+    <div class="status-filter">
+      <label for="board-medium-status">Status</label>
+      <select
+        id="board-medium-status"
+        [ngModel]="statusFilter"
+        (ngModelChange)="onStatusChange($event)"
+      >
+        <option value="ALL">All statuses</option>
+        <option value="ACTIVE">Active</option>
+        <option value="INACTIVE">Inactive</option>
+      </select>
+    </div>
+  </section>
+
+  @if (errorMessage && !showForm && boardMedia.length === 0) {
+    <div class="empty-state">
+      <p>{{ errorMessage }}</p>
+      <button type="button" class="btn btn-secondary" (click)="loadBoardMedia()">
+        Retry
+      </button>
+    </div>
+  } @else if (!loading && filteredBoardMedia.length === 0) {
+    <div class="empty-state">
+      <h3>No Board / Medium records found</h3>
+      <p>
+        {{ searchTerm || statusFilter !== 'ALL'
+          ? 'Try changing your search or status filter.'
+          : 'Add your first Board / Medium to get started.' }}
+      </p>
+      @if (!searchTerm && statusFilter === 'ALL') {
+        <button type="button" class="btn btn-primary" (click)="openCreateForm()">
+          Add Board / Medium
+        </button>
+      }
+    </div>
+  } @else {
+    <app-data-table
+      [columns]="columns"
+      [data]="filteredBoardMedia"
+      [loading]="loading"
+      [actions]="actions"
+      [showActions]="true"
+      [enablePagination]="true"
+      [pageSize]="10"
+      (actionClick)="onTableAction($event)"
+    ></app-data-table>
+  }
+</div>
+
+@if (showForm) {
+  <div class="modal-backdrop" (click)="closeForm()">
+    <section
+      class="form-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="board-medium-form-title"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="modal-header">
+        <div>
+          <h2 id="board-medium-form-title">
+            {{ editingBoardMedium ? 'Edit Board / Medium' : 'Add Board / Medium' }}
+          </h2>
+          <p>Enter the board and medium combination.</p>
+        </div>
+
+        <button
+          type="button"
+          class="icon-button"
+          aria-label="Close form"
+          [disabled]="saving"
+          (click)="closeForm()"
+        >
+          &times;
+        </button>
+      </header>
+
+      <form (ngSubmit)="saveBoardMedium()">
+        @if (errorMessage) {
+          <div class="alert alert-error" role="alert">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <div class="form-group">
+          <label for="board-medium-name">
+            Board / Medium Name <span class="required">*</span>
+          </label>
+          <input
+            id="board-medium-name"
+            type="text"
+            name="name"
+            [(ngModel)]="form.name"
+            placeholder="e.g. GSEB – English Medium"
+            maxlength="150"
+            required
+            autofocus
+          />
+          <small>Example: GSEB – English Medium</small>
+        </div>
+
+        <footer class="modal-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            [disabled]="saving"
+            (click)="closeForm()"
+          >
+            Cancel
+          </button>
+
+          <button type="submit" class="btn btn-primary" [disabled]="saving">
+            {{ saving ? 'Saving...' : editingBoardMedium ? 'Save Changes' : 'Create' }}
+          </button>
+        </footer>
+      </form>
+    </section>
+  </div>
+}
+
+<app-confirmation-dialog
+  [visible]="showDeleteDialog"
+  [title]="'Deactivate Board / Medium'"
+  [message]="'Are you sure you want to deactivate ' + (boardMediumToDelete?.name ?? 'this record') + '?'"
+  [confirmLabel]="'Deactivate'"
+  [cancelLabel]="'Cancel'"
+  [danger]="true"
+  (confirmed)="confirmDeactivate()"
+  (cancelled)="cancelDelete()"
+></app-confirmation-dialog>

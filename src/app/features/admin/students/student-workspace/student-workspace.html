@@ -345,6 +345,11 @@
                 </div>
 
                 <div class="detail-card">
+                    <span>Gender</span>
+                    <strong>{{ student.gender || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
                     <span>Status</span>
                     <strong>
                         {{ student.isActive ? 'Active' : 'Inactive' }}
@@ -382,6 +387,16 @@
                 <div class="detail-card">
                     <span>Section</span>
                     <strong>{{ student.sectionName || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Board-Medium</span>
+                    <strong>{{ student.boardMediumName || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Branch</span>
+                    <strong>{{ student.branchName || '—' }}</strong>
                 </div>
 
                 <div class="detail-card">

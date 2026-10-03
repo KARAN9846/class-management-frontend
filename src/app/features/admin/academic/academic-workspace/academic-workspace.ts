@@ -20,12 +20,16 @@ import { AcademicYearsComponent } from '../academic-years/academic-years';
 import { ClassesComponent } from '../classes/classes';
 import { SubjectsComponent } from '../subjects/subjects';
 import { PasswordManagementComponent } from '../password-management/password-management';
+import { BranchComponent } from '../branches/branch';
+import { BoardMediumComponent } from '../board-media/board-medium';
 
 
 type AcademicTab =
   | 'overview'
   | 'academic-years'
   | 'schools'
+  | 'branches'
+  | 'board-medium'
   | 'classes'
   | 'subjects'
   | 'password-management';
@@ -34,14 +38,16 @@ type AcademicTab =
 @Component({
   selector: 'app-academic-workspace',
   standalone: true,
-  imports: [
-    CommonModule,
-    AcademicYearsComponent,
-    SchoolComponent,
-    ClassesComponent,
-    SubjectsComponent,
-    PasswordManagementComponent
-  ],
+imports: [
+  CommonModule,
+  AcademicYearsComponent,
+  SchoolComponent,
+  ClassesComponent,
+  SubjectsComponent,
+  PasswordManagementComponent,
+  BranchComponent,
+  BoardMediumComponent,
+],
   templateUrl: './academic-workspace.html',
   styleUrl: './academic-workspace.scss'
 })

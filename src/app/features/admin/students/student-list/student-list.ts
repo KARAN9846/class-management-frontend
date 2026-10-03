@@ -189,6 +189,24 @@ export class StudentList implements OnInit {
       sortable: true
     },
     {
+      key: 'gender',
+      label: 'Gender',
+      width: '110px',
+      sortable: true
+    },
+    {
+      key: 'boardMediumName',
+      label: 'Board-Medium',
+      width: '160px',
+      sortable: true
+    },
+    {
+      key: 'branchName',
+      label: 'Branch',
+      width: '140px',
+      sortable: true
+    },
+    {
       key: 'isActive',
       label: 'Status',
       width: '110px',
@@ -279,6 +297,9 @@ export class StudentList implements OnInit {
     'academicYearName',
     'className',
     'sectionName',
+    'gender',
+    'boardMediumName',
+    'branchName',
     'isActive',
     'email',
     'phone',

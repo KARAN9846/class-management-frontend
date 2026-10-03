@@ -4,39 +4,36 @@
   <!-- HEADER -->
   <!-- ===================================================== -->
 
-<div class="workspace-header">
+  <div class="workspace-header">
 
-  <div class="workspace-header-content">
+    <div class="workspace-header-content">
 
-    <div class="workspace-title-area">
+      <div class="workspace-title-area">
 
-      <div class="workspace-title-image">
-        <img
-          src="/assets/images/academics.png"
-          alt="Academic Management"
-        />
-      </div>
+        <div class="workspace-title-image">
+          <img src="/assets/images/academics.png" alt="Academic Management" />
+        </div>
 
-      <div class="workspace-title-content">
+        <div class="workspace-title-content">
 
-        <span class="workspace-eyebrow">
-          ACADEMIC MANAGEMENT
-        </span>
+          <span class="workspace-eyebrow">
+            ACADEMIC MANAGEMENT
+          </span>
 
-        <h1>Academic Management</h1>
+          <h1>Academic Management</h1>
 
-        <p>
-          Manage your academic structure, schools, classes,
-          sections and subjects from one workspace.
-        </p>
+          <p>
+            Manage your academic structure, schools, classes,
+            sections and subjects from one workspace.
+          </p>
+
+        </div>
 
       </div>
 
     </div>
 
   </div>
-
-</div>
 
 
   <!-- ===================================================== -->
@@ -45,47 +42,38 @@
 
   <div class="workspace-tabs">
 
-    <button
-      type="button"
-      [class.active]="activeTab === 'overview'"
-      (click)="setActiveTab('overview')">
+    <button type="button" [class.active]="activeTab === 'overview'" (click)="setActiveTab('overview')">
       Overview
     </button>
 
-    <button
-      type="button"
-      [class.active]="activeTab === 'academic-years'"
-      (click)="setActiveTab('academic-years')">
+    <button type="button" [class.active]="activeTab === 'academic-years'" (click)="setActiveTab('academic-years')">
       Academic Years
     </button>
 
-    <button
-      type="button"
-      [class.active]="activeTab === 'schools'"
-      (click)="setActiveTab('schools')">
+    <button type="button" [class.active]="activeTab === 'schools'" (click)="setActiveTab('schools')">
       Schools
     </button>
 
-    <button
-      type="button"
-      [class.active]="activeTab === 'classes'"
-      (click)="setActiveTab('classes')">
+    <button type="button" [class.active]="activeTab === 'branches'" (click)="setActiveTab('branches')">
+      Branches
+    </button>
+
+    <button type="button" [class.active]="activeTab === 'board-medium'" (click)="setActiveTab('board-medium')">
+      Board / Medium
+    </button>
+
+    <button type="button" [class.active]="activeTab === 'classes'" (click)="setActiveTab('classes')">
       Classes
     </button>
 
-    <button
-      type="button"
-      [class.active]="activeTab === 'subjects'"
-      (click)="setActiveTab('subjects')">
+    <button type="button" [class.active]="activeTab === 'subjects'" (click)="setActiveTab('subjects')">
       Subjects
     </button>
 
-    <button
-  type="button"
-  [class.active]="activeTab === 'password-management'"
-  (click)="setActiveTab('password-management')">
-  Password Management
-</button>
+    <button type="button" [class.active]="activeTab === 'password-management'"
+      (click)="setActiveTab('password-management')">
+      Password Management
+    </button>
 
   </div>
 
@@ -103,15 +91,15 @@
 
     @if (loading && activeTab === 'overview') {
 
-      <div class="overview-loading">
+    <div class="overview-loading">
 
-        <div class="loading-spinner"></div>
+      <div class="loading-spinner"></div>
 
-        <p>
-          Loading academic overview...
-        </p>
+      <p>
+        Loading academic overview...
+      </p>
 
-      </div>
+    </div>
 
     }
 
@@ -121,30 +109,30 @@
     <!-- =================================================== -->
 
     @if (
-      errorMessage &&
-      !loading &&
-      activeTab === 'overview'
+    errorMessage &&
+    !loading &&
+    activeTab === 'overview'
     ) {
 
-      <div class="overview-error">
+    <div class="overview-error">
 
-        <div class="error-icon">
-          !
-        </div>
+      <div class="error-icon">
+        !
+      </div>
 
-        <div>
+      <div>
 
-          <strong>
-            Unable to load some academic information
-          </strong>
+        <strong>
+          Unable to load some academic information
+        </strong>
 
-          <p>
-            {{ errorMessage }}
-          </p>
-
-        </div>
+        <p>
+          {{ errorMessage }}
+        </p>
 
       </div>
+
+    </div>
 
     }
 
@@ -154,527 +142,501 @@
     <!-- =================================================== -->
 
     @if (
-      activeTab === 'overview' &&
-      !loading &&
-      academicData
+    activeTab === 'overview' &&
+    !loading &&
+    academicData
     ) {
 
-      <div class="overview-section">
+    <div class="overview-section">
 
 
-        <!-- =============================================== -->
-        <!-- CURRENT ACADEMIC YEAR -->
-        <!-- =============================================== -->
+      <!-- =============================================== -->
+      <!-- CURRENT ACADEMIC YEAR -->
+      <!-- =============================================== -->
 
-        <div class="current-year-card">
+      <div class="current-year-card">
 
-          <div class="current-year-icon">
-            ▣
+        <div class="current-year-icon">
+          ▣
+        </div>
+
+        <div class="current-year-content">
+
+          <span class="current-year-label">
+            CURRENT ACADEMIC YEAR
+          </span>
+
+          <h2>
+            {{ academicData.currentAcademicYear || 'Not set' }}
+          </h2>
+
+          <p>
+            The currently active academic year for your
+            academic structure.
+          </p>
+
+        </div>
+
+        <div class="current-year-status">
+          <span>
+            Current
+          </span>
+        </div>
+
+      </div>
+
+
+      <!-- =============================================== -->
+      <!-- STATISTICS -->
+      <!-- =============================================== -->
+
+      <div class="statistics-grid">
+
+
+        <!-- Academic Years -->
+
+        <button type="button" class="stat-card" (click)="setActiveTab('academic-years')">
+
+          <div class="stat-card-top">
+
+            <div class="stat-icon">
+              ◫
+            </div>
+
+            <span class="stat-arrow">
+              →
+            </span>
+
           </div>
 
-          <div class="current-year-content">
+          <div class="stat-value">
+            {{ academicData.totalAcademicYears }}
+          </div>
 
-            <span class="current-year-label">
-              CURRENT ACADEMIC YEAR
+          <div class="stat-label">
+            Academic Years
+          </div>
+
+        </button>
+
+
+        <!-- Classes -->
+
+        <button type="button" class="stat-card" (click)="setActiveTab('classes')">
+
+          <div class="stat-card-top">
+
+            <div class="stat-icon">
+              ▤
+            </div>
+
+            <span class="stat-arrow">
+              →
+            </span>
+
+          </div>
+
+          <div class="stat-value">
+            {{ academicData.totalClasses }}
+          </div>
+
+          <div class="stat-label">
+            Classes
+          </div>
+
+        </button>
+
+
+        <!-- Sections -->
+
+        <button type="button" class="stat-card">
+
+          <div class="stat-card-top">
+
+            <div class="stat-icon">
+              ▥
+            </div>
+
+          </div>
+
+          <div class="stat-value">
+            {{ academicData.totalSections }}
+          </div>
+
+          <div class="stat-label">
+            Sections
+          </div>
+
+        </button>
+
+
+        <!-- Subjects -->
+
+        <button type="button" class="stat-card" (click)="setActiveTab('subjects')">
+
+          <div class="stat-card-top">
+
+            <div class="stat-icon">
+              ▦
+            </div>
+
+            <span class="stat-arrow">
+              →
+            </span>
+
+          </div>
+
+          <div class="stat-value">
+            {{ academicData.totalSubjects }}
+          </div>
+
+          <div class="stat-label">
+            Subjects
+          </div>
+
+        </button>
+
+
+        <!-- Schools -->
+
+        <button type="button" class="stat-card" (click)="setActiveTab('schools')">
+
+          <div class="stat-card-top">
+
+            <div class="stat-icon">
+              ▧
+            </div>
+
+            <span class="stat-arrow">
+              →
+            </span>
+
+          </div>
+
+          <div class="stat-value">
+            {{ schools.length }}
+          </div>
+
+          <div class="stat-label">
+            Schools
+          </div>
+
+        </button>
+
+      </div>
+
+
+      <!-- =============================================== -->
+      <!-- ACADEMIC STRUCTURE -->
+      <!-- =============================================== -->
+
+      <section class="overview-panel">
+
+        <div class="panel-header">
+
+          <div>
+
+            <span class="panel-eyebrow">
+              ACADEMIC STRUCTURE
             </span>
 
             <h2>
-              {{ academicData.currentAcademicYear || 'Not set' }}
+              Classes, Sections & Subjects
             </h2>
 
             <p>
-              The currently active academic year for your
-              academic structure.
+              View how your academic structure is organised.
             </p>
 
           </div>
 
-          <div class="current-year-status">
-            <span>
-              Current
+          <button type="button" class="panel-action" (click)="setActiveTab('classes')">
+            Manage Classes →
+          </button>
+
+        </div>
+
+
+        @if (hasClasses) {
+
+        <div class="class-structure-list">
+
+          @for (
+          classItem of classes;
+          track classItem.id
+          ) {
+
+          <div class="class-structure-card">
+
+
+            <!-- CLASS HEADER -->
+
+            <div class="class-header">
+
+              <div>
+
+                <h3>
+                  {{ classItem.name }}
+                </h3>
+
+                <span>
+                  {{ classItem.sectionCount }}
+                  {{
+                  classItem.sectionCount === 1
+                  ? 'Section'
+                  : 'Sections'
+                  }}
+
+                  ·
+
+                  {{ classItem.subjectCount }}
+                  {{
+                  classItem.subjectCount === 1
+                  ? 'Subject'
+                  : 'Subjects'
+                  }}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- CLASS DETAILS -->
+
+            <div class="class-details">
+
+
+              <!-- SECTIONS -->
+
+              <div class="detail-group">
+
+                <div class="detail-title">
+                  <span class="detail-dot"></span>
+                  Sections
+                </div>
+
+                @if (classItem.sections.length) {
+
+                <div class="tag-list">
+
+                  @for (
+                  section of classItem.sections;
+                  track section.id
+                  ) {
+
+                  <span class="tag">
+                    {{ section.name }}
+                  </span>
+
+                  }
+
+                </div>
+
+                } @else {
+
+                <span class="empty-detail">
+                  No sections
+                </span>
+
+                }
+
+              </div>
+
+
+              <!-- SUBJECTS -->
+
+              <div class="detail-group">
+
+                <div class="detail-title">
+                  <span class="detail-dot"></span>
+                  Subjects
+                </div>
+
+                @if (classItem.subjects.length) {
+
+                <div class="tag-list">
+
+                  @for (
+                  subject of classItem.subjects;
+                  track subject.id
+                  ) {
+
+                  <span class="tag">
+                    {{ subject.name }}
+
+                    @if (subject.code) {
+                    <small>
+                      {{ subject.code }}
+                    </small>
+                    }
+
+                  </span>
+
+                  }
+
+                </div>
+
+                } @else {
+
+                <span class="empty-detail">
+                  No subjects
+                </span>
+
+                }
+
+              </div>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+        } @else {
+
+        <div class="empty-panel">
+
+          <div class="empty-panel-icon">
+            ▤
+          </div>
+
+          <h3>
+            No classes configured
+          </h3>
+
+          <p>
+            Create your first class to build the academic
+            structure.
+          </p>
+
+          <button type="button" (click)="setActiveTab('classes')">
+            Manage Classes
+          </button>
+
+        </div>
+
+        }
+
+      </section>
+
+
+      <!-- =============================================== -->
+      <!-- SCHOOLS -->
+      <!-- =============================================== -->
+
+      <section class="overview-panel">
+
+        <div class="panel-header">
+
+          <div>
+
+            <span class="panel-eyebrow">
+              SOURCE SCHOOLS
             </span>
-          </div>
 
-        </div>
-
-
-        <!-- =============================================== -->
-        <!-- STATISTICS -->
-        <!-- =============================================== -->
-
-        <div class="statistics-grid">
-
-
-          <!-- Academic Years -->
-
-          <button
-            type="button"
-            class="stat-card"
-            (click)="setActiveTab('academic-years')">
-
-            <div class="stat-card-top">
-
-              <div class="stat-icon">
-                ◫
-              </div>
-
-              <span class="stat-arrow">
-                →
-              </span>
-
-            </div>
-
-            <div class="stat-value">
-              {{ academicData.totalAcademicYears }}
-            </div>
-
-            <div class="stat-label">
-              Academic Years
-            </div>
-
-          </button>
-
-
-          <!-- Classes -->
-
-          <button
-            type="button"
-            class="stat-card"
-            (click)="setActiveTab('classes')">
-
-            <div class="stat-card-top">
-
-              <div class="stat-icon">
-                ▤
-              </div>
-
-              <span class="stat-arrow">
-                →
-              </span>
-
-            </div>
-
-            <div class="stat-value">
-              {{ academicData.totalClasses }}
-            </div>
-
-            <div class="stat-label">
-              Classes
-            </div>
-
-          </button>
-
-
-          <!-- Sections -->
-
-          <button
-            type="button"
-            class="stat-card">
-
-            <div class="stat-card-top">
-
-              <div class="stat-icon">
-                ▥
-              </div>
-
-            </div>
-
-            <div class="stat-value">
-              {{ academicData.totalSections }}
-            </div>
-
-            <div class="stat-label">
-              Sections
-            </div>
-
-          </button>
-
-
-          <!-- Subjects -->
-
-          <button
-            type="button"
-            class="stat-card"
-            (click)="setActiveTab('subjects')">
-
-            <div class="stat-card-top">
-
-              <div class="stat-icon">
-                ▦
-              </div>
-
-              <span class="stat-arrow">
-                →
-              </span>
-
-            </div>
-
-            <div class="stat-value">
-              {{ academicData.totalSubjects }}
-            </div>
-
-            <div class="stat-label">
-              Subjects
-            </div>
-
-          </button>
-
-
-          <!-- Schools -->
-
-          <button
-            type="button"
-            class="stat-card"
-            (click)="setActiveTab('schools')">
-
-            <div class="stat-card-top">
-
-              <div class="stat-icon">
-                ▧
-              </div>
-
-              <span class="stat-arrow">
-                →
-              </span>
-
-            </div>
-
-            <div class="stat-value">
-              {{ schools.length }}
-            </div>
-
-            <div class="stat-label">
+            <h2>
               Schools
-            </div>
+            </h2>
 
+            <p>
+              Schools from which students are enrolled.
+            </p>
+
+          </div>
+
+          <button type="button" class="panel-action" (click)="setActiveTab('schools')">
+            Manage Schools →
           </button>
 
         </div>
 
 
-        <!-- =============================================== -->
-        <!-- ACADEMIC STRUCTURE -->
-        <!-- =============================================== -->
+        @if (hasSchools) {
 
-        <section class="overview-panel">
+        <div class="schools-grid">
 
-          <div class="panel-header">
+          @for (
+          school of schools;
+          track school.id
+          ) {
 
-            <div>
+          <div class="school-card">
 
-              <span class="panel-eyebrow">
-                ACADEMIC STRUCTURE
-              </span>
+            <div class="school-card-main">
 
-              <h2>
-                Classes, Sections & Subjects
-              </h2>
-
-              <p>
-                View how your academic structure is organised.
-              </p>
-
-            </div>
-
-            <button
-              type="button"
-              class="panel-action"
-              (click)="setActiveTab('classes')">
-              Manage Classes →
-            </button>
-
-          </div>
-
-
-          @if (hasClasses) {
-
-            <div class="class-structure-list">
-
-              @for (
-                classItem of classes;
-                track classItem.id
-              ) {
-
-                <div class="class-structure-card">
-
-
-                  <!-- CLASS HEADER -->
-
-                  <div class="class-header">
-
-                    <div>
-
-                      <h3>
-                        {{ classItem.name }}
-                      </h3>
-
-                      <span>
-                        {{ classItem.sectionCount }}
-                        {{
-                          classItem.sectionCount === 1
-                            ? 'Section'
-                            : 'Sections'
-                        }}
-
-                        ·
-
-                        {{ classItem.subjectCount }}
-                        {{
-                          classItem.subjectCount === 1
-                            ? 'Subject'
-                            : 'Subjects'
-                        }}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-
-                  <!-- CLASS DETAILS -->
-
-                  <div class="class-details">
-
-
-                    <!-- SECTIONS -->
-
-                    <div class="detail-group">
-
-                      <div class="detail-title">
-                        <span class="detail-dot"></span>
-                        Sections
-                      </div>
-
-                      @if (classItem.sections.length) {
-
-                        <div class="tag-list">
-
-                          @for (
-                            section of classItem.sections;
-                            track section.id
-                          ) {
-
-                            <span class="tag">
-                              {{ section.name }}
-                            </span>
-
-                          }
-
-                        </div>
-
-                      } @else {
-
-                        <span class="empty-detail">
-                          No sections
-                        </span>
-
-                      }
-
-                    </div>
-
-
-                    <!-- SUBJECTS -->
-
-                    <div class="detail-group">
-
-                      <div class="detail-title">
-                        <span class="detail-dot"></span>
-                        Subjects
-                      </div>
-
-                      @if (classItem.subjects.length) {
-
-                        <div class="tag-list">
-
-                          @for (
-                            subject of classItem.subjects;
-                            track subject.id
-                          ) {
-
-                            <span class="tag">
-                              {{ subject.name }}
-
-                              @if (subject.code) {
-                                <small>
-                                  {{ subject.code }}
-                                </small>
-                              }
-
-                            </span>
-
-                          }
-
-                        </div>
-
-                      } @else {
-
-                        <span class="empty-detail">
-                          No subjects
-                        </span>
-
-                      }
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              }
-
-            </div>
-
-          } @else {
-
-            <div class="empty-panel">
-
-              <div class="empty-panel-icon">
-                ▤
-              </div>
-
-              <h3>
-                No classes configured
-              </h3>
-
-              <p>
-                Create your first class to build the academic
-                structure.
-              </p>
-
-              <button
-                type="button"
-                (click)="setActiveTab('classes')">
-                Manage Classes
-              </button>
-
-            </div>
-
-          }
-
-        </section>
-
-
-        <!-- =============================================== -->
-        <!-- SCHOOLS -->
-        <!-- =============================================== -->
-
-        <section class="overview-panel">
-
-          <div class="panel-header">
-
-            <div>
-
-              <span class="panel-eyebrow">
-                SOURCE SCHOOLS
-              </span>
-
-              <h2>
-                Schools
-              </h2>
-
-              <p>
-                Schools from which students are enrolled.
-              </p>
-
-            </div>
-
-            <button
-              type="button"
-              class="panel-action"
-              (click)="setActiveTab('schools')">
-              Manage Schools →
-            </button>
-
-          </div>
-
-
-          @if (hasSchools) {
-
-            <div class="schools-grid">
-
-              @for (
-                school of schools;
-                track school.id
-              ) {
-
-                <div class="school-card">
-
-                  <div class="school-card-main">
-
-                    <div class="school-icon">
-                      ▧
-                    </div>
-
-                    <div>
-
-                      <h3>
-                        {{ school.name }}
-                      </h3>
-
-                      @if (school.code) {
-
-                        <span class="school-code">
-                          {{ school.code }}
-                        </span>
-
-                      }
-
-                    </div>
-
-                  </div>
-
-
-                  <div
-                    class="school-status"
-                    [class.inactive]="!school.isActive">
-
-                    <span></span>
-
-                    {{
-                      school.isActive
-                        ? 'Active'
-                        : 'Inactive'
-                    }}
-
-                  </div>
-
-                </div>
-
-              }
-
-            </div>
-
-          } @else {
-
-            <div class="empty-panel">
-
-              <div class="empty-panel-icon">
+              <div class="school-icon">
                 ▧
               </div>
 
-              <h3>
-                No schools configured
-              </h3>
+              <div>
 
-              <p>
-                Add schools to identify where your students
-                come from.
-              </p>
+                <h3>
+                  {{ school.name }}
+                </h3>
 
-              <button
-                type="button"
-                (click)="setActiveTab('schools')">
-                Manage Schools
-              </button>
+                @if (school.code) {
+
+                <span class="school-code">
+                  {{ school.code }}
+                </span>
+
+                }
+
+              </div>
 
             </div>
 
+
+            <div class="school-status" [class.inactive]="!school.isActive">
+
+              <span></span>
+
+              {{
+              school.isActive
+              ? 'Active'
+              : 'Inactive'
+              }}
+
+            </div>
+
+          </div>
+
           }
 
-        </section>
+        </div>
+
+        } @else {
+
+        <div class="empty-panel">
+
+          <div class="empty-panel-icon">
+            ▧
+          </div>
+
+          <h3>
+            No schools configured
+          </h3>
+
+          <p>
+            Add schools to identify where your students
+            come from.
+          </p>
+
+          <button type="button" (click)="setActiveTab('schools')">
+            Manage Schools
+          </button>
+
+        </div>
+
+        }
+
+      </section>
 
 
-      </div>
+    </div>
 
     }
 
@@ -685,7 +647,7 @@
 
     @if (activeTab === 'academic-years') {
 
-      <app-academic-years></app-academic-years>
+    <app-academic-years></app-academic-years>
 
     }
 
@@ -696,10 +658,19 @@
 
     @if (activeTab === 'schools') {
 
-      <app-school></app-school>
+    <app-school></app-school>
 
     }
 
+    <!-- Branches -->
+    @if (activeTab === 'branches') {
+    <app-branch></app-branch>
+    }
+
+    <!-- Board / Medium -->
+    @if (activeTab === 'board-medium') {
+    <app-board-medium></app-board-medium>
+    }
 
     <!-- =================================================== -->
     <!-- CLASSES -->
@@ -707,7 +678,7 @@
 
     @if (activeTab === 'classes') {
 
-      <app-classes></app-classes>
+    <app-classes></app-classes>
 
     }
 
@@ -718,15 +689,15 @@
 
     @if (activeTab === 'subjects') {
 
-      <app-subjects></app-subjects>
+    <app-subjects></app-subjects>
 
     }
 
     @if (activeTab === 'password-management') {
 
-  <app-password-management></app-password-management>
+    <app-password-management></app-password-management>
 
-}
+    }
 
   </div>
 

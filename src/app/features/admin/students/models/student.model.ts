@@ -17,7 +17,13 @@ export interface Student {
   sectionName: string;
 
   schoolId: number | null;
-schoolName: string | null;
+  schoolName: string | null;
+
+  gender: 'Male' | 'Female' | null;
+  branchId: number | null;
+  branchName: string | null;
+  boardMediumId: number | null;
+  boardMediumName: string | null;
 }
 
 export interface StudentDetails extends Student {
@@ -46,6 +52,10 @@ export interface CreateStudentRequest {
 
   schoolId: number | null;
 
+  gender: 'Male' | 'Female' | null;
+  branchId: number | null;
+  boardMediumId: number | null;
+
   discountType: 'NONE' | 'PERCENTAGE' | 'FIXED_AMOUNT';
   discountValue: number;
 }
@@ -62,4 +72,8 @@ export interface UpdateStudentRequest {
   sectionId: number;
 
   schoolId: number | null;
+
+  gender: 'Male' | 'Female' | null;
+  branchId: number | null;
+  boardMediumId: number | null;
 }

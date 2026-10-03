@@ -642,7 +642,14 @@ form {
   font-weight: 700;
 }
 
+.class-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .form-group {
+  min-width: 0;
   margin-bottom: 18px;
 
   label {
@@ -687,7 +694,39 @@ form {
     &:hover {
       border-color: #9ca3af;
     }
+
+    &.invalid {
+      border-color: #dc2626;
+    }
+
+    &[aria-invalid='true']:focus {
+      box-shadow: 0 0 0 3px #fee2e2;
+    }
   }
+}
+
+.required {
+  color: #dc2626;
+}
+
+.field-error,
+.form-error {
+  color: #b91c1c;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.field-error {
+  display: block;
+  margin-top: 6px;
+}
+
+.form-error {
+  padding: 11px 13px;
+  margin: 18px 22px 0;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
 }
 
 // =====================================================
@@ -748,9 +787,9 @@ form {
 }
 
 .form-section-row {
-  display: flex;
-  align-items: center;
-
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 32px;
+  align-items: start;
   gap: 10px;
 }
 
@@ -773,9 +812,11 @@ form {
   font-weight: 700;
 }
 
-.form-section-row input {
-  flex: 1;
+.section-input-group {
+  min-width: 0;
+}
 
+.section-input-group input {
   width: 100%;
   height: 42px;
 
@@ -872,6 +913,18 @@ form {
       text-decoration: underline;
     }
   }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 // =====================================================
@@ -974,6 +1027,16 @@ form {
   .section-form-header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .class-details-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .form-section-row {
+    grid-template-columns: 28px minmax(0, 1fr) 32px;
+    gap: 8px;
   }
 
   .add-section-btn {

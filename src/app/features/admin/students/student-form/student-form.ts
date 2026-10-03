@@ -64,6 +64,10 @@ import {
   SchoolService
 } from '../../academic/schools/services/school.service';
 
+import { BoardMedium } from '../../academic/board-media/board-medium.model';
+import { BoardMediumService } from '../../academic/board-media/services/board-medium.service';
+import { Branch } from '../../academic/branches/branch.model';
+import { BranchService } from '../../academic/branches/services/branch.service';
 
 import { FeeStructureService } from '../../fees/services/fee-structure.service';
 import { FeeStructure } from '../../fees/models/fee-structure.model';
@@ -126,6 +130,12 @@ export class StudentForm implements OnInit {
   private readonly schoolService =
     inject(SchoolService);
 
+  private readonly boardMediumService =
+    inject(BoardMediumService);
+
+  private readonly branchService =
+    inject(BranchService);
+
   private readonly feeStructureService =
     inject(FeeStructureService);
 
@@ -174,6 +184,10 @@ export class StudentForm implements OnInit {
 
   schools: School[] = [];
 
+  boardMedia: BoardMedium[] = [];
+
+  branches: Branch[] = [];
+
 
   // =========================================================
   // FORM
@@ -217,6 +231,10 @@ export class StudentForm implements OnInit {
       ]
     ],
 
+    gender: [
+      null as 'Male' | 'Female' | null
+    ],
+
     password: [
       '',
       [
@@ -247,6 +265,14 @@ export class StudentForm implements OnInit {
 
     schoolId: [
       null as number | null
+    ],
+
+    boardMediumId: [
+      null as number | null
+    ],
+
+    branchId: [
+      null as number | null
     ]
 
   });
@@ -261,6 +287,10 @@ export class StudentForm implements OnInit {
     this.loadAcademicYears();
 
     this.loadSchools();
+
+    this.loadBoardMedia();
+
+    this.loadBranches();
 
     if (!this.popupMode) {
       this.checkEditMode();
@@ -421,6 +451,36 @@ export class StudentForm implements OnInit {
 
       });
 
+  }
+
+  loadBoardMedia(): void {
+    this.boardMediumService
+      .getAll(0, 100, 'name,asc')
+      .subscribe({
+        next: response => {
+          this.boardMedia = (response.content ?? [])
+            .filter(item => item.isActive);
+          this.cdr.detectChanges();
+        },
+        error: error => {
+          this.handleError(error, 'Failed to load Board-Medium options.');
+        }
+      });
+  }
+
+  loadBranches(): void {
+    this.branchService
+      .getAll(0, 100, 'name,asc')
+      .subscribe({
+        next: response => {
+          this.branches = (response.content ?? [])
+            .filter(item => item.isActive);
+          this.cdr.detectChanges();
+        },
+        error: error => {
+          this.handleError(error, 'Failed to load Branch options.');
+        }
+      });
   }
 
 
@@ -632,6 +692,9 @@ export class StudentForm implements OnInit {
             phone:
               student.phone,
 
+            gender:
+              student.gender,
+
             academicYearId:
               Number(
                 student.academicYearId
@@ -651,6 +714,16 @@ export class StudentForm implements OnInit {
               student.schoolId !== null &&
                 student.schoolId !== undefined
                 ? Number(student.schoolId)
+                : null,
+
+            boardMediumId:
+              student.boardMediumId != null
+                ? Number(student.boardMediumId)
+                : null,
+
+            branchId:
+              student.branchId != null
+                ? Number(student.branchId)
                 : null
 
           });
@@ -851,6 +924,19 @@ export class StudentForm implements OnInit {
           ? Number(formValue.schoolId)
           : null,
 
+      gender:
+        formValue.gender,
+
+      branchId:
+        formValue.branchId != null
+          ? Number(formValue.branchId)
+          : null,
+
+      boardMediumId:
+        formValue.boardMediumId != null
+          ? Number(formValue.boardMediumId)
+          : null,
+
       discountType:
         this.discountType,
 
@@ -975,6 +1061,19 @@ next: () => {
       schoolId:
         formValue.schoolId
           ? Number(formValue.schoolId)
+          : null,
+
+      gender:
+        formValue.gender,
+
+      branchId:
+        formValue.branchId != null
+          ? Number(formValue.branchId)
+          : null,
+
+      boardMediumId:
+        formValue.boardMediumId != null
+          ? Number(formValue.boardMediumId)
           : null
 
     };
