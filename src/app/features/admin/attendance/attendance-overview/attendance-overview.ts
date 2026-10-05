@@ -48,7 +48,7 @@ export class AttendanceOverview implements OnInit {
 
   currentPage = 1;
 
-  pageSize = 10;
+  pageSize = 50;
 
   loading = false;
 

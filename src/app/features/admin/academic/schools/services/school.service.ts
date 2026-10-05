@@ -35,7 +35,7 @@ export class SchoolService {
   getAll(): Observable<ApiResponse<PageResponse<School>>> {
 
     return this.api.get<ApiResponse<PageResponse<School>>>(
-      `${this.endpoint}?page=0&size=10&sort=createdAt,desc`
+      `${this.endpoint}?page=0&size=50&sort=createdAt,desc`
     );
   }
 

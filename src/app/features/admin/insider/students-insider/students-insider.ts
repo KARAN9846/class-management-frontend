@@ -332,7 +332,7 @@ export class StudentsInsider implements OnInit {
 
     currentPage = 1;
 
-    pageSize = 25;
+    pageSize = 50;
 
     readonly pageSizeOptions = [
         10,

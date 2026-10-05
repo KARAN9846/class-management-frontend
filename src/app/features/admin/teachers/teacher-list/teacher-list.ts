@@ -75,7 +75,7 @@ export class TeacherList implements OnInit {
 
   page = 0;
 
-  size = 10;
+  size = 50;
 
   totalElements = 0;
 

@@ -122,7 +122,7 @@ export class TeacherStudentListComponent implements OnInit {
 
   currentPage = 0;
 
-  pageSize = 10;
+  pageSize = 50;
 
   totalElements = 0;
 

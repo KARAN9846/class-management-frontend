@@ -1,135 +1,79 @@
 <div class="import-overlay" (click)="close()">
-
   <div
     class="import-modal"
     role="dialog"
     aria-modal="true"
     aria-labelledby="student-import-title"
-    (click)="$event.stopPropagation()">
-
+    (click)="$event.stopPropagation()"
+  >
     <!-- HEADER -->
     <div class="modal-header">
-
       <div>
-        <h2 id="student-import-title">
-          Import Students
-        </h2>
-
-        <p>
-          Upload an Excel file to validate student records.
-        </p>
+        <h2 id="student-import-title">Import Students</h2>
+        <p>Upload an Excel file to validate student records.</p>
       </div>
 
       <button
         type="button"
         class="close-button"
-        [disabled]="validating || downloadingTemplate"
+        [disabled]="validating || downloadingTemplate || importing"
         (click)="close()"
-        aria-label="Close">
-
+        aria-label="Close"
+      >
         ×
-
       </button>
-
     </div>
-
 
     <!-- BODY -->
     <div class="modal-body">
-
       <!-- INFO -->
       <div class="info-box">
-
-        <div class="info-icon">
-          i
-        </div>
+        <div class="info-icon">i</div>
 
         <div>
-          <strong>
-            Use the official Excel template
-          </strong>
-
+          <strong>Use the official Excel template</strong>
           <p>
             Download the template first and enter student
             information using the provided columns.
           </p>
         </div>
-
       </div>
-
 
       <!-- TEMPLATE -->
       <div class="template-section">
-
         <div>
-          <h3>
-            Step 1 — Download Template
-          </h3>
-
-          <p>
-            Use the template to keep the Excel format correct.
-          </p>
+          <h3>Step 1 — Download Template</h3>
+          <p>Use the template to keep the Excel format correct.</p>
         </div>
 
         <button
           type="button"
           class="secondary-button"
           [disabled]="downloadingTemplate"
-          (click)="downloadTemplate()">
-
+          (click)="downloadTemplate()"
+        >
           @if (downloadingTemplate) {
-
             <span class="button-spinner"></span>
-
             Downloading...
-
           } @else {
-
             <span>↓</span>
-
             Download Template
-
           }
-
         </button>
-
       </div>
-
 
       <!-- UPLOAD -->
       <div class="upload-section">
-
         <div class="section-heading">
-
-          <h3>
-            Step 2 — Upload Excel
-          </h3>
-
-          <p>
-            Select an <strong>.xlsx</strong> file.
-          </p>
-
+          <h3>Step 2 — Upload Excel</h3>
+          <p>Select an <strong>.xlsx</strong> file.</p>
         </div>
 
-
         @if (!selectedFile) {
-
-          <label
-            class="upload-area"
-            for="student-import-file">
-
-            <div class="upload-icon">
-              ↑
-            </div>
-
-            <strong>
-              Choose Excel file
-            </strong>
-
-            <span>
-              Click here to select your .xlsx file
-            </span>
-
+          <label class="upload-area" for="student-import-file">
+            <div class="upload-icon">↑</div>
+            <strong>Choose Excel file</strong>
+            <span>Click here to select your .xlsx file</span>
           </label>
 
           <input
@@ -137,127 +81,80 @@
             type="file"
             accept=".xlsx"
             hidden
-            (change)="onFileSelected($event)" />
-
+            (change)="onFileSelected($event)"
+          />
         } @else {
-
           <div class="selected-file">
-
-            <div class="file-icon">
-              XLSX
-            </div>
+            <div class="file-icon">XLSX</div>
 
             <div class="file-details">
-
-              <strong>
-                {{ selectedFile.name }}
-              </strong>
-
+              <strong>{{ selectedFile.name }}</strong>
               <span>
                 {{ selectedFile.size / 1024 | number:'1.0-0' }} KB
               </span>
-
             </div>
 
             <button
               type="button"
               class="remove-file-button"
-              [disabled]="validating"
-              (click)="removeFile()">
-
+              [disabled]="validating || importing"
+              (click)="removeFile()"
+            >
               Remove
-
             </button>
-
           </div>
-
         }
-
       </div>
 
-
       <!-- MESSAGES -->
-
       @if (errorMessage) {
-
         <div class="error-message">
           {{ errorMessage }}
         </div>
-
       }
 
-
       @if (successMessage) {
-
         <div class="success-message">
           {{ successMessage }}
         </div>
-
       }
 
-
       <!-- VALIDATION SUMMARY -->
-
       @if (validationResult) {
-
         <div class="validation-section">
-
           <div class="section-heading">
-
-            <h3>
-              Validation Result
-            </h3>
-
-            <p>
-              Review the result before importing students.
-            </p>
-
+            <h3>Validation Result</h3>
+            <p>Review the result before importing students.</p>
           </div>
 
-
           <div class="summary-grid">
-
             <div class="summary-card">
               <span>Total Rows</span>
-              <strong>
-                {{ validationResult.totalRows }}
-              </strong>
+              <strong>{{ validationResult.totalRows }}</strong>
             </div>
 
             <div class="summary-card valid">
               <span>Valid Rows</span>
-              <strong>
-                {{ validationResult.validRows }}
-              </strong>
+              <strong>{{ validationResult.validRows }}</strong>
             </div>
 
             <div class="summary-card error">
               <span>Errors</span>
-              <strong>
-                {{ validationResult.errorRows }}
-              </strong>
+              <strong>{{ validationResult.errorRows }}</strong>
             </div>
-
           </div>
 
-
+          <!-- VALIDATION ERRORS -->
           @if (validationResult.errors.length > 0) {
-
             <div class="errors-container">
-
-              <div class="errors-heading">
-                Row-level Errors
-              </div>
+              <div class="errors-heading">Row-level Errors</div>
 
               <div class="error-list">
-
                 @for (
                   error of validationResult.errors;
                   track trackError($index, error)
                 ) {
-
                   <div class="row-error">
-
                     <div class="error-row-number">
                       Row {{ error.rowNumber }}
                     </div>
@@ -269,225 +166,398 @@
                     <div class="error-description">
                       {{ error.message }}
                     </div>
-
                   </div>
-
                 }
-
               </div>
-
             </div>
-
           } @else {
-
             <div class="validation-success">
               ✓ All rows are valid and ready for import.
             </div>
-
           }
 
-          <!-- SETUP PREVIEW -->
+          <!-- SETUP REVIEW -->
           @if (
             validationResult.errorRows === 0 &&
             hasSetupItems()
           ) {
             <div class="setup-preview">
-
-              <h3>Setup Required Before Import</h3>
+              <h3>Step 3 — Review Required Setup</h3>
 
               <p>
-                Review the records that will be created or reactivated
-                during import.
+                Select the records you approve for creation or
+                reactivation. Complete any required dates and fee
+                amounts before continuing.
               </p>
 
+              <!-- BRANCHES -->
               @if (validationResult.preview.branches.length > 0) {
                 <div class="setup-group">
                   <strong>Branches to create</strong>
-                  <ul>
-                    @for (
-                      item of validationResult.preview.branches;
-                      track item
-                    ) {
-                      <li>{{ item }}</li>
-                    }
-                  </ul>
+
+                  @for (
+                    item of validationResult.preview.branches;
+                    track item
+                  ) {
+                    <label class="setup-item">
+                      <input
+                        type="checkbox"
+                        [checked]="isSetupApproved(
+                          getSetupKey('branch', item)
+                        )"
+                        (change)="updateSetupApproval(
+                          getSetupKey('branch', item),
+                          $any($event.target).checked
+                        )"
+                      />
+
+                      <span>{{ item }}</span>
+                    </label>
+                  }
                 </div>
               }
 
+              <!-- BOARD / MEDIUM -->
               @if (validationResult.preview.boardMedia.length > 0) {
                 <div class="setup-group">
                   <strong>Board / Medium records to create</strong>
-                  <ul>
-                    @for (
-                      item of validationResult.preview.boardMedia;
-                      track item
-                    ) {
-                      <li>{{ item }}</li>
-                    }
-                  </ul>
+
+                  @for (
+                    item of validationResult.preview.boardMedia;
+                    track item
+                  ) {
+                    <label class="setup-item">
+                      <input
+                        type="checkbox"
+                        [checked]="isSetupApproved(
+                          getSetupKey('boardMedium', item)
+                        )"
+                        (change)="updateSetupApproval(
+                          getSetupKey('boardMedium', item),
+                          $any($event.target).checked
+                        )"
+                      />
+
+                      <span>{{ item }}</span>
+                    </label>
+                  }
                 </div>
               }
 
+              <!-- SCHOOLS -->
               @if (validationResult.preview.schools.length > 0) {
                 <div class="setup-group">
                   <strong>Schools to create</strong>
-                  <ul>
-                    @for (
-                      item of validationResult.preview.schools;
-                      track item
-                    ) {
-                      <li>{{ item }}</li>
-                    }
-                  </ul>
+
+                  @for (
+                    item of validationResult.preview.schools;
+                    track item
+                  ) {
+                    <label class="setup-item">
+                      <input
+                        type="checkbox"
+                        [checked]="isSetupApproved(
+                          getSetupKey('school', item)
+                        )"
+                        (change)="updateSetupApproval(
+                          getSetupKey('school', item),
+                          $any($event.target).checked
+                        )"
+                      />
+
+                      <span>{{ item }}</span>
+                    </label>
+                  }
                 </div>
               }
 
+              <!-- ACADEMIC YEARS -->
+              @if (validationResult.preview.academicYears.length > 0) {
+                <div class="setup-group">
+                  <strong>Academic Years to create</strong>
+
+                  @for (
+                    item of validationResult.preview.academicYears;
+                    track item.name
+                  ) {
+                    <div class="academic-year-setup">
+                      <label class="setup-item">
+                        <input
+                          type="checkbox"
+                          [checked]="isSetupApproved(
+                            getSetupKey('academicYear', item.name)
+                          )"
+                          (change)="updateSetupApproval(
+                            getSetupKey('academicYear', item.name),
+                            $any($event.target).checked
+                          )"
+                        />
+
+                        <span>{{ item.name }}</span>
+                      </label>
+
+                      <label>
+                        Start Date
+                        <input
+                          type="date"
+                          [value]="item.startDate ?? ''"
+                          (change)="updateAcademicYearDate(
+                            item.name,
+                            'startDate',
+                            $any($event.target).value
+                          )"
+                          required
+                        />
+                      </label>
+
+                      <label>
+                        End Date
+                        <input
+                          type="date"
+                          [value]="item.endDate ?? ''"
+                          (change)="updateAcademicYearDate(
+                            item.name,
+                            'endDate',
+                            $any($event.target).value
+                          )"
+                          required
+                        />
+                      </label>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- CLASSES -->
               @if (validationResult.preview.classes.length > 0) {
                 <div class="setup-group">
                   <strong>Classes to create</strong>
-                  <ul>
-                    @for (
-                      item of validationResult.preview.classes;
-                      track $index
-                    ) {
-                      <li>
+
+                  @for (
+                    item of validationResult.preview.classes;
+                    track $index
+                  ) {
+                    <label class="setup-item">
+                      <input
+                        type="checkbox"
+                        [checked]="isSetupApproved(
+                          getSetupKey(
+                            'class',
+                            item.academicYear,
+                            item.name
+                          )
+                        )"
+                        (change)="updateSetupApproval(
+                          getSetupKey(
+                            'class',
+                            item.academicYear,
+                            item.name
+                          ),
+                          $any($event.target).checked
+                        )"
+                      />
+
+                      <span>
                         {{ item.name }} — {{ item.academicYear }}
-                      </li>
-                    }
-                  </ul>
+                      </span>
+                    </label>
+                  }
                 </div>
               }
 
+              <!-- SECTIONS -->
               @if (validationResult.preview.sections.length > 0) {
                 <div class="setup-group">
                   <strong>Sections to create</strong>
-                  <ul>
-                    @for (
-                      item of validationResult.preview.sections;
-                      track $index
-                    ) {
-                      <li>
+
+                  @for (
+                    item of validationResult.preview.sections;
+                    track $index
+                  ) {
+                    <label class="setup-item">
+                      <input
+                        type="checkbox"
+                        [checked]="isSetupApproved(
+                          getSetupKey(
+                            'section',
+                            item.academicYear,
+                            item.className,
+                            item.name
+                          )
+                        )"
+                        (change)="updateSetupApproval(
+                          getSetupKey(
+                            'section',
+                            item.academicYear,
+                            item.className,
+                            item.name
+                          ),
+                          $any($event.target).checked
+                        )"
+                      />
+
+                      <span>
                         {{ item.name }} — {{ item.className }}
                         ({{ item.academicYear }})
-                      </li>
-                    }
-                  </ul>
+                      </span>
+                    </label>
+                  }
                 </div>
               }
 
+              <!-- FEE STRUCTURES -->
               @if (validationResult.preview.feeStructures.length > 0) {
                 <div class="setup-group">
-                  <strong>Fee structures to create or reactivate</strong>
-                  <ul>
-                    @for (
-                      item of validationResult.preview.feeStructures;
-                      track $index
-                    ) {
-                      <li>
-                        {{ item.className }} — {{ item.academicYear }}:
-                        {{ item.feeAmount === null
-                          ? 'Amount not provided'
-                          : (item.feeAmount | currency:'INR':'symbol') }}
+                  <strong>Fee Structures to Create or Reactivate</strong>
 
-                        @if (item.reactivatingExisting) {
-                          (Existing fee structure will be reactivated)
-                        } @else {
-                          (New fee structure)
-                        }
-                      </li>
-                    }
-                  </ul>
+                  @for (
+                    item of validationResult.preview.feeStructures;
+                    track $index
+                  ) {
+                    <div class="fee-structure-setup">
+                      <label class="setup-item">
+                        <input
+                          type="checkbox"
+                          [checked]="isSetupApproved(
+                            getSetupKey(
+                              'fee',
+                              item.academicYear,
+                              item.className
+                            )
+                          )"
+                          (change)="updateSetupApproval(
+                            getSetupKey(
+                              'fee',
+                              item.academicYear,
+                              item.className
+                            ),
+                            $any($event.target).checked
+                          )"
+                        />
+
+                        <span>
+                          {{ item.className }} — {{ item.academicYear }}
+                        </span>
+                      </label>
+
+                      <label>
+                        Fee Amount (₹)
+                        <input
+                          type="number"
+                          min="0.01"
+                          step="0.01"
+                          [value]="getFeeAmount(
+                            item.academicYear,
+                            item.className,
+                            item.feeAmount
+                          ) ?? ''"
+                          (input)="updateFeeAmount(
+                            item.academicYear,
+                            item.className,
+                            $any($event.target).value
+                          )"
+                          placeholder="Enter fee amount"
+                          required
+                        />
+                      </label>
+
+                      @if (item.reactivatingExisting) {
+                        <small>
+                          Existing inactive fee structure will be
+                          reactivated.
+                        </small>
+                      } @else {
+                        <small>
+                          A new fee structure will be created.
+                        </small>
+                      }
+                    </div>
+                  }
                 </div>
               }
 
-              <label class="setup-confirmation">
-                <input
-                  type="checkbox"
-                  [checked]="setupConfirmed"
-                  (change)="setupConfirmed = $any($event.target).checked" />
+              <!-- FINAL CONFIRMATION -->
+              <div class="final-setup-confirmation">
+                <h3>Step 4 — Final Confirmation</h3>
 
-                <span>
-                  I have reviewed these records and confirm that the
-                  required setup records may be created or reactivated.
-                </span>
-              </label>
+                <p>
+                  Review your selections and confirm before creating
+                  setup records and importing students.
+                </p>
 
+                <label class="setup-confirmation">
+                  <input
+                    type="checkbox"
+                    [checked]="setupConfirmed"
+                    (change)="setupConfirmed =
+                      $any($event.target).checked"
+                  />
+
+                  <span>
+                    I have reviewed and approve the selected setup
+                    records and confirm that the student import may
+                    proceed.
+                  </span>
+                </label>
+              </div>
             </div>
           }
-
         </div>
-
       }
-
     </div>
 
+    <!-- FOOTER -->
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="cancel-button"
+        [disabled]="validating || downloadingTemplate || importing"
+        (click)="close()"
+      >
+        Close
+      </button>
 
-   <div class="modal-footer">
-
-  <button
-    type="button"
-    class="cancel-button"
-    [disabled]="validating || downloadingTemplate || importing"
-    (click)="close()">
-
-    Close
-
-  </button>
-
-  @if (!importResult) {
-
-    <button
-      type="button"
-      class="validate-button"
-      [disabled]="!selectedFile || validating || importing"
-      (click)="validateFile()">
-
-      @if (validating) {
-
-        <span class="button-spinner"></span>
-
-        Validating...
-
-      } @else {
-
-        Validate Excel
-
+      @if (!importResult) {
+        <button
+          type="button"
+          class="validate-button"
+          [disabled]="!selectedFile || validating || importing"
+          (click)="validateFile()"
+        >
+          @if (validating) {
+            <span class="button-spinner"></span>
+            Validating...
+          } @else {
+            Validate Excel
+          }
+        </button>
       }
 
-    </button>
-
-  }
-
-  @if (
-    validationResult &&
-    validationResult.errorRows === 0 &&
-    !importResult
-  ) {
-
-    <button
-      type="button"
-      class="import-button"
-      [disabled]="importing || (hasSetupItems() && !setupConfirmed)"
-      (click)="importFile()">
-
-      @if (importing) {
-
-        <span class="button-spinner"></span>
-
-        Importing...
-
-      } @else {
-
-        Import Students
-
+      @if (
+        validationResult &&
+        validationResult.errorRows === 0 &&
+        !importResult
+      ) {
+        <button
+          type="button"
+          class="import-button"
+[disabled]="
+  importing ||
+  (
+    hasSetupItems() &&
+    (!setupConfirmed || !canProceedWithSetup())
+  )
+"
+          (click)="importFile()"
+        >
+          @if (importing) {
+            <span class="button-spinner"></span>
+            Importing...
+          } @else {
+            Create Setup & Import Students
+          }
+        </button>
       }
-
-    </button>
-
-  }
-
-</div>
-
+    </div>
   </div>
-
 </div>

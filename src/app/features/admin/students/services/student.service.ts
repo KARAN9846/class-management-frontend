@@ -31,11 +31,35 @@ export interface StudentImportError {
   message: string;
 }
 
+export interface BulkUpdateStudentRequest {
+  studentIds: number[];
+  selectedFields: string[];
+
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  gender?: 'Male' | 'Female' | null;
+
+  schoolId?: number | null;
+  branchId?: number | null;
+  boardMediumId?: number | null;
+
+  academicYearId?: number;
+  classId?: number;
+  sectionId?: number;
+}
+
 
 export interface StudentImportPreview {
   branches: string[];
   boardMedia: string[];
   schools: string[];
+
+  academicYears: {
+    name: string;
+    startDate: string | null;
+    endDate: string | null;
+  }[];
 
   classes: {
     academicYear: string;
@@ -76,6 +100,49 @@ export interface StudentImportResult {
   students: ImportedStudentCredential[];
 }
 
+export interface StudentImportSetupRequest {
+  branches: {
+    name: string;
+    approved: boolean;
+  }[];
+
+  boardMedia: {
+    name: string;
+    approved: boolean;
+  }[];
+
+  schools: {
+    name: string;
+    approved: boolean;
+  }[];
+
+  academicYears: {
+    name: string;
+    startDate: string | null;
+    endDate: string | null;
+    approved: boolean;
+  }[];
+
+  classes: {
+    academicYear: string;
+    name: string;
+    approved: boolean;
+  }[];
+
+  sections: {
+    academicYear: string;
+    className: string;
+    name: string;
+    approved: boolean;
+  }[];
+
+  feeStructures: {
+    academicYear: string;
+    className: string;
+    feeAmount: number | null;
+    approved: boolean;
+  }[];
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -89,19 +156,25 @@ export class StudentService {
 
 getStudents(
   page = 0,
-  size = 10,
+    size = 50,
   search = '',
   academicYearId?: number,
   classId?: number,
-  sectionId?: number
+  sectionId?: number,
+  sortBy: string | null = 'firstName',
+  sortDirection: 'asc' | 'desc' | null = 'asc'
 ): Observable<ApiResponse<StudentPage>> {
 
   let params = new HttpParams()
     .set('page', page)
     .set('size', size)
-    .set('search', search)
-    .set('sortBy', 'firstName')
-    .set('sortDirection', 'asc');
+    .set('search', search);
+
+  if (sortBy && sortDirection) {
+    params = params
+      .set('sortBy', sortBy)
+      .set('sortDirection', sortDirection);
+  }
 
   if (academicYearId != null) {
     params = params.set(
@@ -196,6 +269,16 @@ getStudents(
     );
   }
 
+  bulkUpdateStudents(
+  request: BulkUpdateStudentRequest
+): Observable<ApiResponse<StudentDetails[]>> {
+
+  return this.api.patch<ApiResponse<StudentDetails[]>>(
+    '/students/bulk',
+    request
+  );
+}
+
 
   // =========================
   // UPDATE STATUS
@@ -254,12 +337,20 @@ validateImport(
 }
 
 importStudents(
-  file: File
+  file: File,
+  setupRequest: StudentImportSetupRequest
 ): Observable<ApiResponse<StudentImportResult>> {
 
   const formData = new FormData();
 
   formData.append('file', file);
+  formData.append(
+    'setupRequest',
+    new Blob(
+      [JSON.stringify(setupRequest)],
+      { type: 'application/json' }
+    )
+  );
 
   return this.api.postFormData<
     ApiResponse<StudentImportResult>

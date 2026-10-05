@@ -21,7 +21,10 @@ import { SearchInputComponent } from '../../../../shared/components/search-input
 import { StudentQuickViewComponent } from '../../../../shared/components/student-quick-view/student-quick-view.component';
 
 import { Student } from '../models/student.model';
-import { StudentService } from '../services/student.service';
+import {
+  BulkUpdateStudentRequest,
+  StudentService
+} from '../services/student.service';
 
 import { AcademicYearService } from '../../academic/academic-years/services/academic-year.service';
 import { AcademicYear } from '../../academic/academic-years/academic-year.model';
@@ -32,6 +35,15 @@ import { AcademicClass } from '../../academic/classes/class.model';
 import { SectionService } from '../../academic/classes/section.service';
 import { Section } from '../../academic/classes/section.model';
 
+import { School } from '../../academic/schools/school.model';
+import { SchoolService } from '../../academic/schools/services/school.service';
+
+import { Branch } from '../../academic/branches/branch.model';
+import { BranchService } from '../../academic/branches/services/branch.service';
+
+import { BoardMedium } from '../../academic/board-media/board-medium.model';
+import { BoardMediumService } from '../../academic/board-media/services/board-medium.service';
+
 import { AttendanceService } from '../../attendance/services/attendance.service';
 import { Attendance } from '../../attendance/models/attendance.model';
 
@@ -39,6 +51,11 @@ import { StudentFeeService } from '../../fees/services/student-fee.service';
 import { StudentFee } from '../../fees/models/student-fee.model';
 
 import { StudentForm } from '../student-form/student-form';
+
+import {
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 
 interface StudentListRow extends Student {
   enrollmentNumber: string;
@@ -56,16 +73,17 @@ interface StudentListRow extends Student {
 @Component({
   selector: 'app-student-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    DataTableComponent,
-    PaginationComponent,
-    SearchInputComponent,
-    ConfirmationDialogComponent,
-    StudentQuickViewComponent,
-    StudentForm,
-    StudentImportComponent
-  ],
+imports: [
+  CommonModule,
+  FormsModule,
+  DataTableComponent,
+  PaginationComponent,
+  SearchInputComponent,
+  ConfirmationDialogComponent,
+  StudentQuickViewComponent,
+  StudentForm,
+  StudentImportComponent
+],
   templateUrl: './student-list.html',
   styleUrl: './student-list.scss'
 })
@@ -79,6 +97,9 @@ export class StudentList implements OnInit {
   private readonly academicYearService = inject(AcademicYearService);
   private readonly classService = inject(ClassService);
   private readonly sectionService = inject(SectionService);
+  private readonly schoolService = inject(SchoolService);
+  private readonly branchService = inject(BranchService);
+  private readonly boardMediumService = inject(BoardMediumService);
   private readonly attendanceService = inject(AttendanceService);
   private readonly studentFeeService = inject(StudentFeeService);
 
@@ -87,7 +108,81 @@ export class StudentList implements OnInit {
   addPopupOpen = false;
   importPopupOpen = false;
 
+  bulkEditOpen = false;
+bulkEditStep: 'edit' | 'preview' = 'edit';
+
+bulkUpdating = false;
+
+bulkSelectedFields = new Set<string>();
+
+bulkFirstName = '';
+bulkLastName = '';
+bulkPhone = '';
+bulkGender: 'Male' | 'Female' | null = null;
+
+bulkSchoolId: number | null = null;
+bulkBranchId: number | null = null;
+bulkBoardMediumId: number | null = null;
+
+bulkAcademicYearId: number | null = null;
+bulkClassId: number | null = null;
+bulkSectionId: number | null = null;
+
+bulkFilteredClasses: AcademicClass[] = [];
+bulkSections: Section[] = [];
+
+schools: School[] = [];
+branches: Branch[] = [];
+boardMedia: BoardMedium[] = [];
+
+
+bulkEditableFields = [
+  {
+    key: 'firstName',
+    label: 'First Name'
+  },
+  {
+    key: 'lastName',
+    label: 'Last Name'
+  },
+  {
+    key: 'phone',
+    label: 'Phone'
+  },
+  {
+    key: 'gender',
+    label: 'Gender'
+  },
+  {
+    key: 'schoolId',
+    label: 'School'
+  },
+  {
+    key: 'branchId',
+    label: 'Branch'
+  },
+  {
+    key: 'boardMediumId',
+    label: 'Board Medium'
+  },
+  {
+    key: 'academicYearId',
+    label: 'Academic Year'
+  },
+  {
+    key: 'classId',
+    label: 'Class'
+  },
+  {
+    key: 'sectionId',
+    label: 'Section'
+  }
+];
+
   students: StudentListRow[] = [];
+
+  selectedStudentIds: number[] = [];
+  bulkSelectionMode = false;
 
   loading = false;
   errorMessage = '';
@@ -121,8 +216,10 @@ export class StudentList implements OnInit {
   // =========================================================
 
   page = 0;
-  size = 10;
+  size = 50;
   totalElements = 0;
+  sortBy: string | null = null;
+  sortDirection: 'asc' | 'desc' | null = null;
 
   // =========================================================
   // CONFIRMATION DIALOG
@@ -154,6 +251,7 @@ export class StudentList implements OnInit {
       label: 'Name',
       width: '240px',
       type: 'student-name',
+      sortable: true,
       value: (row: StudentListRow) =>
         `${row.firstName ?? ''} ${row.lastName ?? ''}`.trim()
     },
@@ -273,16 +371,6 @@ export class StudentList implements OnInit {
       align: 'right',
       value: (row: StudentListRow) =>
         `${row.attendancePercentage}%`
-    },
-
-    {
-      key: 'studentName',
-      label: 'Name',
-      width: '240px',
-      type: 'student-name',
-      sortable: true,
-      value: (row: StudentListRow) =>
-        `${row.firstName ?? ''} ${row.lastName ?? ''}`.trim()
     },
   ];
 
@@ -491,7 +579,9 @@ export class StudentList implements OnInit {
         this.search,
         this.selectedAcademicYearId ?? undefined,
         this.selectedClassId ?? undefined,
-        this.selectedSectionId ?? undefined
+        this.selectedSectionId ?? undefined,
+        this.sortBy,
+        this.sortDirection
       )
       .subscribe({
         next: (response) => {
@@ -819,6 +909,344 @@ export class StudentList implements OnInit {
 
     this.loadStudents();
   }
+
+  onSortChange(event: {
+    sortBy: string | null;
+    sortDirection: 'asc' | 'desc' | null;
+  }): void {
+    this.sortBy = event.sortBy;
+    this.sortDirection = event.sortDirection;
+    this.page = 0;
+
+    this.loadStudents();
+  }
+
+  onStudentSelectionChange(selectedIds: number[]): void {
+  this.selectedStudentIds = selectedIds;
+}
+
+get selectedStudentCount(): number {
+  return this.selectedStudentIds.length;
+}
+
+clearStudentSelection(): void {
+  this.selectedStudentIds = [];
+}
+
+toggleBulkSelectionMode(): void {
+  this.bulkSelectionMode = !this.bulkSelectionMode;
+
+  if (!this.bulkSelectionMode) {
+    this.clearStudentSelection();
+  }
+}
+
+openBulkEdit(): void {
+  if (!this.selectedStudentIds.length) {
+    return;
+  }
+
+  this.bulkEditStep = 'edit';
+  this.bulkEditOpen = true;
+  this.bulkSelectedFields.clear();
+
+  this.resetBulkEditValues();
+  this.loadBulkEditOptions();
+}
+
+private loadBulkEditOptions(): void {
+  this.schoolService
+    .getAll()
+    .subscribe({
+      next: response => {
+        this.schools = response.data.content;
+        this.cdr.detectChanges();
+      },
+      error: error => {
+        console.error('Failed to load schools:', error);
+        this.schools = [];
+      }
+    });
+
+  this.branchService
+    .getAll(0, 100, 'name,asc')
+    .subscribe({
+      next: response => {
+        this.branches = (response.content ?? [])
+          .filter((branch: Branch) => branch.isActive);
+        this.cdr.detectChanges();
+      },
+      error: error => {
+        console.error('Failed to load branches:', error);
+        this.branches = [];
+      }
+    });
+
+  this.boardMediumService
+    .getAll(0, 100, 'name,asc')
+    .subscribe({
+      next: response => {
+        this.boardMedia = (response.content ?? [])
+          .filter((boardMedium: BoardMedium) => boardMedium.isActive);
+        this.cdr.detectChanges();
+      },
+      error: error => {
+        console.error('Failed to load board-media:', error);
+        this.boardMedia = [];
+      }
+    });
+}
+
+closeBulkEdit(): void {
+  if (this.bulkUpdating) {
+    return;
+  }
+
+  this.bulkEditOpen = false;
+  this.bulkEditStep = 'edit';
+}
+
+toggleBulkField(field: string): void {
+  if (this.bulkSelectedFields.has(field)) {
+    this.bulkSelectedFields.delete(field);
+  } else {
+    this.bulkSelectedFields.add(field);
+  }
+}
+
+isBulkFieldSelected(field: string): boolean {
+  return this.bulkSelectedFields.has(field);
+}
+
+private resetBulkEditValues(): void {
+  this.bulkFirstName = '';
+  this.bulkLastName = '';
+  this.bulkPhone = '';
+  this.bulkGender = null;
+
+  this.bulkSchoolId = null;
+  this.bulkBranchId = null;
+  this.bulkBoardMediumId = null;
+
+  this.bulkAcademicYearId = null;
+  this.bulkClassId = null;
+  this.bulkSectionId = null;
+
+  this.bulkFilteredClasses = [];
+  this.bulkSections = [];
+}
+
+onBulkAcademicYearChange(): void {
+  this.bulkClassId = null;
+  this.bulkSectionId = null;
+
+  this.bulkFilteredClasses = [];
+  this.bulkSections = [];
+
+  if (this.bulkAcademicYearId === null) {
+    return;
+  }
+
+  this.bulkFilteredClasses = this.classes.filter(
+    classroom =>
+      Number(classroom.academicYearId) ===
+      Number(this.bulkAcademicYearId)
+  );
+}
+
+onBulkClassChange(): void {
+  this.bulkSectionId = null;
+  this.bulkSections = [];
+
+  if (this.bulkClassId === null) {
+    return;
+  }
+
+  this.sectionService
+    .getSections(this.bulkClassId)
+    .subscribe({
+      next: response => {
+        this.bulkSections = response.data;
+        this.cdr.detectChanges();
+      },
+      error: error => {
+        console.error(
+          'Failed to load bulk edit sections:',
+          error
+        );
+
+        this.bulkSections = [];
+      }
+    });
+}
+
+getBulkSchoolName(): string {
+  return this.schools.find(
+    school => school.id === this.bulkSchoolId
+  )?.name ?? 'No School';
+}
+
+getBulkBranchName(): string {
+  return this.branches.find(
+    branch => branch.id === this.bulkBranchId
+  )?.name ?? 'No Branch';
+}
+
+getBulkBoardMediumName(): string {
+  return this.boardMedia.find(
+    board => board.id === this.bulkBoardMediumId
+  )?.name ?? 'No Board Medium';
+}
+
+getBulkAcademicYearName(): string {
+  return this.academicYears.find(
+    year => year.id === this.bulkAcademicYearId
+  )?.name ?? '';
+}
+
+getBulkClassName(): string {
+  return this.bulkFilteredClasses.find(
+    classroom => classroom.id === this.bulkClassId
+  )?.name ?? '';
+}
+
+getBulkSectionName(): string {
+  return this.bulkSections.find(
+    section => section.id === this.bulkSectionId
+  )?.name ?? '';
+}
+
+previewBulkEdit(): void {
+  if (!this.bulkSelectedFields.size) {
+    this.errorMessage =
+      'Select at least one field to update.';
+    return;
+  }
+
+  if (
+    this.bulkSelectedFields.has('firstName') &&
+    !this.bulkFirstName.trim()
+  ) {
+    this.errorMessage =
+      'First name cannot be empty.';
+    return;
+  }
+
+  if (
+    this.bulkSelectedFields.has('lastName') &&
+    !this.bulkLastName.trim()
+  ) {
+    this.errorMessage =
+      'Last name cannot be empty.';
+    return;
+  }
+
+  const academicFields = [
+    'academicYearId',
+    'classId',
+    'sectionId'
+  ];
+
+  const hasAcademicField = academicFields.some(
+    field => this.bulkSelectedFields.has(field)
+  );
+
+  if (hasAcademicField) {
+    const allAcademicFieldsSelected =
+      academicFields.every(
+        field => this.bulkSelectedFields.has(field)
+      );
+
+    if (!allAcademicFieldsSelected) {
+      this.errorMessage =
+        'Select Academic Year, Class and Section together.';
+      return;
+    }
+
+    if (
+      this.bulkAcademicYearId === null ||
+      this.bulkClassId === null ||
+      this.bulkSectionId === null
+    ) {
+      this.errorMessage =
+        'Academic Year, Class and Section are required.';
+      return;
+    }
+  }
+
+  this.errorMessage = '';
+  this.bulkEditStep = 'preview';
+}
+
+saveBulkEdit(): void {
+  const selectedFields = Array.from(this.bulkSelectedFields);
+  const request: BulkUpdateStudentRequest = {
+    studentIds: [...this.selectedStudentIds],
+    selectedFields
+  };
+
+  if (this.bulkSelectedFields.has('firstName')) {
+    request.firstName = this.bulkFirstName.trim();
+  }
+  if (this.bulkSelectedFields.has('lastName')) {
+    request.lastName = this.bulkLastName.trim();
+  }
+  if (this.bulkSelectedFields.has('phone')) {
+    request.phone = this.bulkPhone.trim();
+  }
+  if (this.bulkSelectedFields.has('gender')) {
+    request.gender = this.bulkGender;
+  }
+  if (this.bulkSelectedFields.has('schoolId')) {
+    request.schoolId = this.bulkSchoolId;
+  }
+  if (this.bulkSelectedFields.has('branchId')) {
+    request.branchId = this.bulkBranchId;
+  }
+  if (this.bulkSelectedFields.has('boardMediumId')) {
+    request.boardMediumId = this.bulkBoardMediumId;
+  }
+  if (
+    this.bulkSelectedFields.has('academicYearId') &&
+    this.bulkAcademicYearId !== null
+  ) {
+    request.academicYearId = this.bulkAcademicYearId;
+  }
+  if (
+    this.bulkSelectedFields.has('classId') &&
+    this.bulkClassId !== null
+  ) {
+    request.classId = this.bulkClassId;
+  }
+  if (
+    this.bulkSelectedFields.has('sectionId') &&
+    this.bulkSectionId !== null
+  ) {
+    request.sectionId = this.bulkSectionId;
+  }
+
+  this.bulkUpdating = true;
+  this.errorMessage = '';
+
+  this.studentService
+    .bulkUpdateStudents(request)
+    .subscribe({
+      next: response => {
+        this.bulkUpdating = false;
+        this.successMessage = response.message;
+        this.closeBulkEdit();
+        this.selectedStudentIds = [];
+        this.loadStudents();
+      },
+      error: error => {
+        this.bulkUpdating = false;
+        this.errorMessage =
+          error?.error?.message ??
+          'Failed to update students. Please try again.';
+        this.cdr.detectChanges();
+      }
+    });
+}
 
   // =========================================================
   // TABLE ACTIONS

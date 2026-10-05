@@ -29,7 +29,7 @@ export class TeacherService {
 
   getTeachers(
     page = 0,
-    size = 10,
+    size = 50,
     search = ''
   ): Observable<TeacherListResponse> {
 

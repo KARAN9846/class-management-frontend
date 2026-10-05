@@ -12,7 +12,7 @@ export class PaginationComponent {
 
   @Input() totalItems = 0;
 
-  @Input() pageSize = 10;
+  @Input() pageSize = 50;
 
   @Input() maxVisiblePages = 5;
 

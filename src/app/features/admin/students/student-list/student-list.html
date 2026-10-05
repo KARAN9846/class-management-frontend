@@ -21,32 +21,26 @@
 
     </div>
 
-<div class="header-actions">
+    <div class="header-actions">
 
-  <button
-    type="button"
-    class="add-btn"
-    (click)="openAddStudent()">
+      <button type="button" class="add-btn" (click)="openAddStudent()">
 
-    <span class="add-icon">+</span>
+        <span class="add-icon">+</span>
 
-    Add Student
+        Add Student
 
-  </button>
+      </button>
 
 
-  <button
-    type="button"
-    class="secondary-header-button"
-    (click)="openStudentImport()">
+      <button type="button" class="secondary-header-button" (click)="openStudentImport()">
 
-    <span>↑</span>
+        <span>↑</span>
 
-    Import Students
+        Import Students
 
-  </button>
+      </button>
 
-</div>
+    </div>
 
   </div>
 
@@ -60,6 +54,8 @@
          TOOLBAR
          =================================================== -->
     <div class="student-toolbar">
+
+      <div class="toolbar-primary-row">
 
       <!-- Search -->
       <div class="search-area">
@@ -136,6 +132,8 @@
           Clear
         </button>
         }
+
+      </div>
 
       </div>
 
@@ -263,6 +261,11 @@
 
         </div>
 
+        <button type="button" class="toolbar-action-btn" [class.active]="bulkSelectionMode"
+          [attr.aria-pressed]="bulkSelectionMode" (click)="toggleBulkSelectionMode()">
+          Bulk Action
+        </button>
+
       </div>
 
     </div>
@@ -287,13 +290,53 @@
 
     }
 
+    <!-- ===================================================
+     BULK SELECTION TOOLBAR
+     =================================================== -->
+@if (selectedStudentCount > 0) {
+  <div class="bulk-selection-toolbar">
+
+    <div class="bulk-selection-info">
+      <span class="bulk-selection-count">
+        {{ selectedStudentCount }}
+      </span>
+
+      <span>
+        {{ selectedStudentCount === 1 ? 'student' : 'students' }}
+        selected
+      </span>
+    </div>
+
+    <div class="bulk-selection-actions">
+
+      <button
+        type="button"
+        class="bulk-clear-btn"
+        (click)="clearStudentSelection()">
+        Clear
+      </button>
+
+      <button
+        type="button"
+        class="bulk-edit-btn"
+        (click)="openBulkEdit()">
+        ✎ Bulk Edit
+      </button>
+
+    </div>
+
+  </div>
+}
+
 
     <!-- ===================================================
          TABLE VIEW
          =================================================== -->
     @if (viewMode === 'table') {
     <app-data-table [columns]="visibleColumns" [data]="students" [loading]="loading" [actions]="actions"
-      [showActions]="true" [stickyFirstColumn]="true" (actionClick)="onAction($event)"
+      [showActions]="true" [stickyFirstColumn]="true" [enableSelection]="bulkSelectionMode" [selectedRowIds]="selectedStudentIds"
+      [serverSideSorting]="true" (sortChange)="onSortChange($event)"
+      (selectionChange)="onStudentSelectionChange($event)" (actionClick)="onAction($event)"
       (studentNameClick)="openStudentWorkspace($event)">
     </app-data-table>
 
@@ -533,16 +576,10 @@
   }
 
 
-   @if (addPopupOpen) {
-  <div
-    class="student-edit-overlay"
-    (click)="closeAddStudent()">
+  @if (addPopupOpen) {
+  <div class="student-edit-overlay" (click)="closeAddStudent()">
 
-    <div
-      class="student-edit-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="addStudentTitle"
+    <div class="student-edit-modal" role="dialog" aria-modal="true" aria-labelledby="addStudentTitle"
       (click)="$event.stopPropagation()">
 
       <div class="student-edit-modal-header">
@@ -557,11 +594,7 @@
           </p>
         </div>
 
-        <button
-          type="button"
-          class="student-edit-close"
-          aria-label="Close"
-          (click)="closeAddStudent()">
+        <button type="button" class="student-edit-close" aria-label="Close" (click)="closeAddStudent()">
           ×
         </button>
 
@@ -569,10 +602,7 @@
 
       <div class="student-edit-modal-body">
 
-        <app-student-form
-          [popupMode]="true"
-          (closePopup)="closeAddStudent()"
-          (saved)="onStudentCreated()">
+        <app-student-form [popupMode]="true" (closePopup)="closeAddStudent()" (saved)="onStudentCreated()">
         </app-student-form>
 
       </div>
@@ -589,11 +619,523 @@
 
   @if (importPopupOpen) {
 
-<app-student-import
-  (closed)="closeStudentImport()"
-  (imported)="onStudentsImported()">
-</app-student-import>
+  <app-student-import (closed)="closeStudentImport()" (imported)="onStudentsImported()">
+  </app-student-import>
 
   }
+
+  <!-- ===================================================
+     BULK EDIT DRAWER
+     =================================================== -->
+@if (bulkEditOpen) {
+
+  <div
+    class="bulk-edit-backdrop"
+    (click)="closeBulkEdit()">
+
+    <aside
+      class="bulk-edit-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bulkEditTitle"
+      (click)="$event.stopPropagation()">
+
+      <!-- HEADER -->
+      <div class="bulk-edit-header">
+
+        <div>
+          <h2 id="bulkEditTitle">Bulk Edit Students</h2>
+
+          <p>
+            {{ selectedStudentCount }}
+            {{ selectedStudentCount === 1 ? 'student' : 'students' }}
+            selected
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="bulk-edit-close"
+          [disabled]="bulkUpdating"
+          (click)="closeBulkEdit()"
+          aria-label="Close">
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- BODY -->
+      <div class="bulk-edit-body">
+
+        @if (bulkEditStep === 'edit') {
+
+          <div class="bulk-edit-section">
+
+            <div class="bulk-edit-section-title">
+              Select fields to update
+            </div>
+
+            <p class="bulk-edit-help">
+              Only selected fields will be changed.
+              Other student information will remain unchanged.
+            </p>
+
+
+            <!-- FIRST NAME -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('firstName')"
+                  (change)="toggleBulkField('firstName')">
+
+                <span>First Name</span>
+              </label>
+
+              @if (isBulkFieldSelected('firstName')) {
+                <input
+                  type="text"
+                  class="bulk-input"
+                  [(ngModel)]="bulkFirstName"
+                  placeholder="Enter first name">
+              }
+
+            </div>
+
+
+            <!-- LAST NAME -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('lastName')"
+                  (change)="toggleBulkField('lastName')">
+
+                <span>Last Name</span>
+              </label>
+
+              @if (isBulkFieldSelected('lastName')) {
+                <input
+                  type="text"
+                  class="bulk-input"
+                  [(ngModel)]="bulkLastName"
+                  placeholder="Enter last name">
+              }
+
+            </div>
+
+
+            <!-- PHONE -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('phone')"
+                  (change)="toggleBulkField('phone')">
+
+                <span>Phone</span>
+              </label>
+
+              @if (isBulkFieldSelected('phone')) {
+                <input
+                  type="text"
+                  class="bulk-input"
+                  [(ngModel)]="bulkPhone"
+                  placeholder="Enter phone number">
+              }
+
+            </div>
+
+
+            <!-- GENDER -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('gender')"
+                  (change)="toggleBulkField('gender')">
+
+                <span>Gender</span>
+              </label>
+
+              @if (isBulkFieldSelected('gender')) {
+                <select
+                  class="bulk-input"
+                  [(ngModel)]="bulkGender">
+
+                  <option [ngValue]="null">
+                    Select gender
+                  </option>
+
+                  <option value="Male">
+                    Male
+                  </option>
+
+                  <option value="Female">
+                    Female
+                  </option>
+
+                </select>
+              }
+
+            </div>
+
+
+            <!-- SCHOOL -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('schoolId')"
+                  (change)="toggleBulkField('schoolId')">
+
+                <span>School</span>
+              </label>
+
+              @if (isBulkFieldSelected('schoolId')) {
+                <select
+                  class="bulk-input"
+                  [(ngModel)]="bulkSchoolId">
+
+                  <option [ngValue]="null">
+                    No School
+                  </option>
+
+                  @for (school of schools; track school.id) {
+                    <option [ngValue]="school.id">
+                      {{ school.name }}
+                    </option>
+                  }
+
+                </select>
+              }
+
+            </div>
+
+
+            <!-- BRANCH -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('branchId')"
+                  (change)="toggleBulkField('branchId')">
+
+                <span>Branch</span>
+              </label>
+
+              @if (isBulkFieldSelected('branchId')) {
+                <select
+                  class="bulk-input"
+                  [(ngModel)]="bulkBranchId">
+
+                  <option [ngValue]="null">
+                    No Branch
+                  </option>
+
+                  @for (branch of branches; track branch.id) {
+                    <option [ngValue]="branch.id">
+                      {{ branch.name }}
+                    </option>
+                  }
+
+                </select>
+              }
+
+            </div>
+
+
+            <!-- BOARD MEDIUM -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('boardMediumId')"
+                  (change)="toggleBulkField('boardMediumId')">
+
+                <span>Board Medium</span>
+              </label>
+
+              @if (isBulkFieldSelected('boardMediumId')) {
+                <select
+                  class="bulk-input"
+                  [(ngModel)]="bulkBoardMediumId">
+
+                  <option [ngValue]="null">
+                    No Board Medium
+                  </option>
+
+                  @for (board of boardMedia; track board.id) {
+                    <option [ngValue]="board.id">
+                      {{ board.name }}
+                    </option>
+                  }
+
+                </select>
+              }
+
+            </div>
+
+
+            <!-- ACADEMIC YEAR -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('academicYearId')"
+                  (change)="toggleBulkField('academicYearId')">
+
+                <span>Academic Year</span>
+              </label>
+
+              @if (isBulkFieldSelected('academicYearId')) {
+                <select
+                  class="bulk-input"
+                  [(ngModel)]="bulkAcademicYearId"
+                  (ngModelChange)="onBulkAcademicYearChange()">
+
+                  <option [ngValue]="null">
+                    Select academic year
+                  </option>
+
+                  @for (year of academicYears; track year.id) {
+                    <option [ngValue]="year.id">
+                      {{ year.name }}
+                    </option>
+                  }
+
+                </select>
+              }
+
+            </div>
+
+
+            <!-- CLASS -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('classId')"
+                  (change)="toggleBulkField('classId')">
+
+                <span>Class</span>
+              </label>
+
+              @if (isBulkFieldSelected('classId')) {
+                <select
+                  class="bulk-input"
+                  [(ngModel)]="bulkClassId"
+                  (ngModelChange)="onBulkClassChange()">
+
+                  <option [ngValue]="null">
+                    Select class
+                  </option>
+
+                  @for (classroom of bulkFilteredClasses; track classroom.id) {
+                    <option [ngValue]="classroom.id">
+                      {{ classroom.name }}
+                    </option>
+                  }
+
+                </select>
+              }
+
+            </div>
+
+
+            <!-- SECTION -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('sectionId')"
+                  (change)="toggleBulkField('sectionId')">
+
+                <span>Section</span>
+              </label>
+
+              @if (isBulkFieldSelected('sectionId')) {
+                <select
+                  class="bulk-input"
+                  [(ngModel)]="bulkSectionId">
+
+                  <option [ngValue]="null">
+                    Select section
+                  </option>
+
+                  @for (section of bulkSections; track section.id) {
+                    <option [ngValue]="section.id">
+                      {{ section.name }}
+                    </option>
+                  }
+
+                </select>
+              }
+
+            </div>
+
+          </div>
+
+        } @else {
+
+          <!-- PREVIEW -->
+          <div class="bulk-preview">
+
+            <div class="bulk-preview-title">
+              Review Changes
+            </div>
+
+            <p class="bulk-edit-help">
+              The following changes will be applied to
+              <strong>{{ selectedStudentCount }}</strong>
+              selected students.
+            </p>
+
+            <div class="bulk-preview-list">
+
+              @if (isBulkFieldSelected('firstName')) {
+                <div>
+                  <strong>First Name:</strong>
+                  {{ bulkFirstName }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('lastName')) {
+                <div>
+                  <strong>Last Name:</strong>
+                  {{ bulkLastName }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('phone')) {
+                <div>
+                  <strong>Phone:</strong>
+                  {{ bulkPhone || 'Clear phone' }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('gender')) {
+                <div>
+                  <strong>Gender:</strong>
+                  {{ bulkGender || 'Clear gender' }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('schoolId')) {
+                <div>
+                  <strong>School:</strong>
+                  {{ getBulkSchoolName() }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('branchId')) {
+                <div>
+                  <strong>Branch:</strong>
+                  {{ getBulkBranchName() }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('boardMediumId')) {
+                <div>
+                  <strong>Board Medium:</strong>
+                  {{ getBulkBoardMediumName() }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('academicYearId')) {
+                <div>
+                  <strong>Academic Year:</strong>
+                  {{ getBulkAcademicYearName() }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('classId')) {
+                <div>
+                  <strong>Class:</strong>
+                  {{ getBulkClassName() }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('sectionId')) {
+                <div>
+                  <strong>Section:</strong>
+                  {{ getBulkSectionName() }}
+                </div>
+              }
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- FOOTER -->
+      <div class="bulk-edit-footer">
+
+        @if (bulkEditStep === 'edit') {
+
+          <button
+            type="button"
+            class="bulk-secondary-btn"
+            [disabled]="bulkUpdating"
+            (click)="closeBulkEdit()">
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="bulk-primary-btn"
+            [disabled]="bulkUpdating"
+            (click)="previewBulkEdit()">
+            Preview Changes
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="bulk-secondary-btn"
+            [disabled]="bulkUpdating"
+            (click)="bulkEditStep = 'edit'">
+            Back
+          </button>
+
+          <button
+            type="button"
+            class="bulk-primary-btn"
+            [disabled]="bulkUpdating"
+            (click)="saveBulkEdit()">
+
+            @if (bulkUpdating) {
+              Updating...
+            } @else {
+              Confirm Update
+            }
+
+          </button>
+
+        }
+
+      </div>
+
+    </aside>
+
+  </div>
+
+}
 
 </div>

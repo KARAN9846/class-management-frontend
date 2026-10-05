@@ -19,7 +19,7 @@ export class BoardMediumService {
 
   getAll(
     page = 0,
-    size = 10,
+    size = 50,
     sort = 'name,asc',
   ): Observable<BoardMediumPageResponse> {
     return this.api.get<BoardMediumPageResponse>(

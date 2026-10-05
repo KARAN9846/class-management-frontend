@@ -55,7 +55,7 @@ onRoleFilterChange(
   /* PAGINATION */
 
 currentPage = 1;
-pageSize = 10;
+pageSize = 50;
 
 get totalPages(): number {
   return Math.max(

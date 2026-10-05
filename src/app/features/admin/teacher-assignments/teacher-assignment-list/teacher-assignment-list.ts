@@ -124,7 +124,7 @@ export class TeacherAssignmentList implements OnInit {
 
   currentPage = 1;
 
-  pageSize = 10;
+  pageSize = 50;
 
 
   // =========================================================

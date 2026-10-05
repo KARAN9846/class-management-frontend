@@ -72,6 +72,8 @@ export class DataTableComponent {
   @Input() rowActions?: (row: any) => TableAction[];
 
   @Input() showActions = false;
+  @Input() enableSelection = false;
+  @Input() selectedRowIds: number[] = [];
 
   /**
    * Keeps the first data column visible while
@@ -83,6 +85,7 @@ export class DataTableComponent {
 
   @Input() enablePagination = false;
   @Input() pageSize = 50;
+  @Input() serverSideSorting = false;
 
   /**
    * Kept for backward compatibility with existing
@@ -94,8 +97,59 @@ export class DataTableComponent {
   @Input() searchPlaceholder = 'Search...';
 
   @Output() actionClick = new EventEmitter<any>();
+  @Output() selectionChange = new EventEmitter<number[]>();
+  @Output() sortChange = new EventEmitter<{
+    sortBy: string | null;
+    sortDirection: 'asc' | 'desc' | null;
+  }>();
 
   @Output() studentNameClick = new EventEmitter<number>();
+
+  isRowSelected(row: any): boolean {
+  return this.selectedRowIds.includes(row.id);
+}
+
+toggleRowSelection(row: any): void {
+  if (!row?.id) {
+    return;
+  }
+
+  const selected = new Set(this.selectedRowIds);
+
+  if (selected.has(row.id)) {
+    selected.delete(row.id);
+  } else {
+    selected.add(row.id);
+  }
+
+  this.selectionChange.emit(Array.from(selected));
+}
+
+isAllDisplayedRowsSelected(): boolean {
+  if (!this.displayedData.length) {
+    return false;
+  }
+
+  return this.displayedData.every(row =>
+    this.selectedRowIds.includes(row.id)
+  );
+}
+
+toggleSelectAllDisplayedRows(): void {
+  const selected = new Set(this.selectedRowIds);
+
+  if (this.isAllDisplayedRowsSelected()) {
+    this.displayedData.forEach(row => selected.delete(row.id));
+  } else {
+    this.displayedData.forEach(row => {
+      if (row?.id) {
+        selected.add(row.id);
+      }
+    });
+  }
+
+  this.selectionChange.emit(Array.from(selected));
+}
 
   /* =========================================================
      PAGINATION
@@ -121,6 +175,10 @@ export class DataTableComponent {
   }
 
   get sortedData(): any[] {
+
+    if (this.serverSideSorting) {
+      return this.data;
+    }
 
     if (!this.sortColumn || !this.sortDirection) {
       return this.data;
@@ -293,6 +351,13 @@ export class DataTableComponent {
 
     this.currentPage = 1;
     this.closeActionMenu();
+
+    if (this.serverSideSorting) {
+      this.sortChange.emit({
+        sortBy: this.sortColumn,
+        sortDirection: this.sortDirection
+      });
+    }
   }
 
   /* =========================================================

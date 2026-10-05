@@ -1083,6 +1083,20 @@
   cursor: not-allowed;
 }
 
+.selection-header,
+.selection-cell {
+  width: 44px;
+  min-width: 44px;
+  text-align: center;
+}
+
+.selection-header input,
+.selection-cell input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
 /* ============================================================
    RESPONSIVE / MOBILE-FIRST
    ============================================================ */

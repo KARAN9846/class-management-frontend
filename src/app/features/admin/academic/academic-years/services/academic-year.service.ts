@@ -35,7 +35,7 @@ export class AcademicYearService {
   getAll(): Observable<ApiResponse<PageResponse<AcademicYear>>> {
 
     return this.api.get<ApiResponse<PageResponse<AcademicYear>>>(
-      `${this.endpoint}?page=0&size=10&sort=createdAt,desc`
+      `${this.endpoint}?page=0&size=50&sort=createdAt,desc`
     );
   }
 

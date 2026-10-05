@@ -20,20 +20,25 @@
 
         <tr>
 
+          @if (enableSelection) {
+          <th class="selection-header">
+            <input type="checkbox" [checked]="isAllDisplayedRowsSelected()" [indeterminate]="
+        selectedRowIds.length > 0 &&
+        !isAllDisplayedRowsSelected()
+      " (click)="$event.stopPropagation()" (change)="toggleSelectAllDisplayedRows()"
+              aria-label="Select all visible students" />
+          </th>
+          }
+
           @for (
           column of columns;
           track trackColumn($index, column)
           ) {
 
-          <th
-            [style.width]="column.width"
-            [class.text-center]="column.align === 'center'"
-            [class.text-right]="column.align === 'right'"
-            [class.sticky-column]="stickyFirstColumn && $index === 0"
-            [class.sortable-header]="column.sortable"
-            [class.sort-active]="sortColumn === column.key"
-            (click)="toggleSort(column)"
-          >
+          <th [style.width]="column.width" [class.text-center]="column.align === 'center'"
+            [class.text-right]="column.align === 'right'" [class.sticky-column]="stickyFirstColumn && $index === 0"
+            [class.sortable-header]="column.sortable" [class.sort-active]="sortColumn === column.key"
+            (click)="toggleSort(column)">
 
             <span class="header-content">
 
@@ -43,11 +48,7 @@
 
               @if (column.sortable) {
 
-              <span
-                class="sort-indicator"
-                [class.active]="sortColumn === column.key"
-                aria-hidden="true"
-              >
+              <span class="sort-indicator" [class.active]="sortColumn === column.key" aria-hidden="true">
 
                 @if (sortColumn !== column.key) {
                 ↕
@@ -91,16 +92,20 @@
 
         <tr>
 
+          @if (enableSelection) {
+          <td class="selection-cell">
+            <input type="checkbox" [checked]="isRowSelected(row)" (click)="$event.stopPropagation()"
+              (change)="toggleRowSelection(row)" [attr.aria-label]="'Select ' + getCellValue(row, columns[0])" />
+          </td>
+          }
+
           @for (
           column of columns;
           track trackColumn($index, column)
           ) {
 
-          <td
-            [class.text-center]="column.align === 'center'"
-            [class.text-right]="column.align === 'right'"
-            [class.sticky-column]="stickyFirstColumn && $index === 0"
-          >
+          <td [class.text-center]="column.align === 'center'" [class.text-right]="column.align === 'right'"
+            [class.sticky-column]="stickyFirstColumn && $index === 0">
 
             <!-- =====================================================
                  STATUS
@@ -111,10 +116,7 @@
             column.type === 'assignment-status'
             ) {
 
-            <app-status-badge
-              [label]="getStatusLabel(row, column)"
-              [variant]="getStatusVariant(row, column)"
-            >
+            <app-status-badge [label]="getStatusLabel(row, column)" [variant]="getStatusVariant(row, column)">
             </app-status-badge>
 
 
@@ -216,10 +218,7 @@
 
                 {{ section.name }}
 
-                <button
-                  type="button"
-                  title="Edit"
-                  (click)="
+                <button type="button" title="Edit" (click)="
                     onActionClick(
                       {
                         label: 'Edit Section',
@@ -227,15 +226,11 @@
                       },
                       section
                     )
-                  "
-                >
+                  ">
                   ✎
                 </button>
 
-                <button
-                  type="button"
-                  title="Delete"
-                  (click)="
+                <button type="button" title="Delete" (click)="
                     onActionClick(
                       {
                         label: 'Delete Section',
@@ -244,8 +239,7 @@
                       },
                       section
                     )
-                  "
-                >
+                  ">
                   ×
                 </button>
 
@@ -299,7 +293,7 @@
 
             }
 
-            
+
             <!-- =====================================================
                  RESOURCE BARS
                  SuperAdmin Admin List
@@ -309,15 +303,12 @@
             column.type === 'resource-bars'
             ) {
 
-            <div
-              class="resource-bars"
-              [attr.title]="
+            <div class="resource-bars" [attr.title]="
                 'Teachers: ' + row['teacherCount'] +
                 ' | Students: ' + row['studentCount'] +
                 ' | Classes: ' + row['classCount'] +
                 ' | Roles: ' + row['assignedRoleCount']
-              "
-            >
+              ">
 
               <div class="resource-bar-row">
 
@@ -327,15 +318,12 @@
 
                 <div class="resource-bar-track">
 
-                  <span
-                    class="resource-bar-fill teachers"
-                    [style.width.%]="
+                  <span class="resource-bar-fill teachers" [style.width.%]="
                       getResourceBarWidth(
                         row['teacherCount'],
                         'teacherCount'
                       )
-                    "
-                  >
+                    ">
                   </span>
 
                 </div>
@@ -355,15 +343,12 @@
 
                 <div class="resource-bar-track">
 
-                  <span
-                    class="resource-bar-fill students"
-                    [style.width.%]="
+                  <span class="resource-bar-fill students" [style.width.%]="
                       getResourceBarWidth(
                         row['studentCount'],
                         'studentCount'
                       )
-                    "
-                  >
+                    ">
                   </span>
 
                 </div>
@@ -383,15 +368,12 @@
 
                 <div class="resource-bar-track">
 
-                  <span
-                    class="resource-bar-fill classes"
-                    [style.width.%]="
+                  <span class="resource-bar-fill classes" [style.width.%]="
                       getResourceBarWidth(
                         row['classCount'],
                         'classCount'
                       )
-                    "
-                  >
+                    ">
                   </span>
 
                 </div>
@@ -411,15 +393,12 @@
 
                 <div class="resource-bar-track">
 
-                  <span
-                    class="resource-bar-fill roles"
-                    [style.width.%]="
+                  <span class="resource-bar-fill roles" [style.width.%]="
                       getResourceBarWidth(
                         row['assignedRoleCount'],
                         'assignedRoleCount'
                       )
-                    "
-                  >
+                    ">
                   </span>
 
                 </div>
@@ -442,23 +421,18 @@
             column.type === 'student-name'
             ) {
 
-            <div
-              class="student-name-cell"
-              role="link"
-              tabindex="0"
-              [title]="'Open ' + getCellValue(row, column)"
-              (click)="onStudentNameClick(row, $event)"
-            >
+            <div class="student-name-cell" role="link" tabindex="0" [title]="'Open ' + getCellValue(row, column)"
+              (click)="onStudentNameClick(row, $event)">
 
               <div class="student-name-avatar">
 
                 {{
-                  (
-                    row['firstName']?.charAt(0) || ''
-                  ) +
-                  (
-                    row['lastName']?.charAt(0) || ''
-                  )
+                (
+                row['firstName']?.charAt(0) || ''
+                ) +
+                (
+                row['lastName']?.charAt(0) || ''
+                )
                 }}
 
               </div>
@@ -492,10 +466,7 @@
 
             } @else {
 
-            <span
-              class="text-cell"
-              [title]="getCellValue(row, column)"
-            >
+            <span class="text-cell" [title]="getCellValue(row, column)">
               {{ getCellValue(row, column) }}
             </span>
 
@@ -527,21 +498,15 @@
 
           <td class="actions-cell">
 
-            <button
-              type="button"
-              class="action-menu-trigger"
-              aria-label="Open role actions"
-              [attr.aria-expanded]="
+            <button type="button" class="action-menu-trigger" aria-label="Open role actions" [attr.aria-expanded]="
                 openActionRowId === getRowId(row, $index)
-              "
-              (click)="
+              " (click)="
                 toggleActionMenu(
                   row,
                   $index,
                   $event
                 )
-              "
-            >
+              ">
 
               <span aria-hidden="true">
                 ⋮
@@ -565,13 +530,10 @@
 
         <tr>
 
-          <td
-            class="empty-cell"
-            [attr.colspan]="
+          <td class="empty-cell" [attr.colspan]="
               columns.length +
               (showActions ? 1 : 0)
-            "
-          >
+            ">
 
             <div class="empty-state">
 
@@ -613,29 +575,20 @@
   actionMenuActions.length
   ) {
 
-  <div
-    class="action-menu"
-    [style.top.px]="actionMenuTop"
-    [style.left.px]="actionMenuLeft"
-    (click)="$event.stopPropagation()"
-  >
+  <div class="action-menu" [style.top.px]="actionMenuTop" [style.left.px]="actionMenuLeft"
+    (click)="$event.stopPropagation()">
 
     @for (
     action of actionMenuActions;
     track trackAction($index, action)
     ) {
 
-    <button
-      type="button"
-      class="action-menu-item"
-      [class.danger]="action.danger"
-      (click)="
+    <button type="button" class="action-menu-item" [class.danger]="action.danger" (click)="
         onActionMenuClick(
           action,
           openActionRow
         )
-      "
-    >
+      ">
 
       @if (action.icon) {
 
@@ -681,13 +634,8 @@
 
     <div class="pagination-controls">
 
-      <button
-        type="button"
-        class="pagination-button"
-        [disabled]="currentPage === 1"
-        (click)="previousPage()"
-        aria-label="Previous page"
-      >
+      <button type="button" class="pagination-button" [disabled]="currentPage === 1" (click)="previousPage()"
+        aria-label="Previous page">
         ‹
       </button>
 
@@ -697,25 +645,15 @@
       track page
       ) {
 
-      <button
-        type="button"
-        class="pagination-page"
-        [class.active]="currentPage === page"
-        (click)="goToPage(page)"
-      >
+      <button type="button" class="pagination-page" [class.active]="currentPage === page" (click)="goToPage(page)">
         {{ page }}
       </button>
 
       }
 
 
-      <button
-        type="button"
-        class="pagination-button"
-        [disabled]="currentPage === totalPages"
-        (click)="nextPage()"
-        aria-label="Next page"
-      >
+      <button type="button" class="pagination-button" [disabled]="currentPage === totalPages" (click)="nextPage()"
+        aria-label="Next page">
         ›
       </button>
 
