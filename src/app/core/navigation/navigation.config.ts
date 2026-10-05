@@ -49,12 +49,12 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
             title: 'INSIDER',
             items: [
                 {
-                    label: 'Students Insider',
+                    label: 'Student Insights',
                     route: '/admin/insider/students',
                     icon: '◉'
                 },
                 {
-                    label: 'Fees Insider',
+                    label: 'Fees Insights',
                     route: '/admin/fees-insider',
                     icon: '₹'
                 }
@@ -84,7 +84,7 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
             title: 'MANAGEMENT',
             items: [
                 {
-                    label: 'Teacher Management',
+                    label: 'Teachers',
                     route: '/admin/teachers',
                     icon: '♙'
                 },
