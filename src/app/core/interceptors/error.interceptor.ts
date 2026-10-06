@@ -91,25 +91,16 @@ export const errorInterceptor: HttpInterceptorFn = (
           // =================================================
           // SERVER ERRORS
           // =================================================
+          //
+          // API server errors belong to the calling feature.
+          // Rethrow them unchanged so local CRUD handlers can
+          // show a safe backend message without leaving the page.
 
           case 500:
           case 501:
           case 502:
           case 503:
           case 504:
-
-            if (
-              !currentUrl.startsWith(
-                '/server-error'
-              )
-            ) {
-
-              void router.navigate([
-                '/server-error'
-              ]);
-
-            }
-
             break;
 
 
