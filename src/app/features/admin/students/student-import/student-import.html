@@ -90,7 +90,7 @@
             <div class="file-details">
               <strong>{{ selectedFile.name }}</strong>
               <span>
-                {{ selectedFile.size / 1024 | number:'1.0-0' }} KB
+                {{ selectedFileSizeKb }} KB
               </span>
             </div>
 
@@ -176,10 +176,271 @@
             </div>
           }
 
+          @if (
+            validationResult.errorRows === 0 &&
+            resolutionWorkspaceActive &&
+            resolutionIssues.length > 0
+          ) {
+            <section
+              class="resolution-workspace"
+              aria-labelledby="resolution-workspace-title"
+            >
+              <div class="resolution-heading">
+                <div>
+                  <span class="step-eyebrow">Step 3 — Resolve</span>
+                  <h3 id="resolution-workspace-title">
+                    Resolve Import Data
+                  </h3>
+                  <p>Review each grouped issue and choose how it should be resolved.</p>
+                </div>
+
+                <div class="resolution-progress-text" aria-live="polite">
+                  {{ resolvedResolutionCount }} of {{ resolutionIssues.length }} resolved
+                </div>
+              </div>
+
+              <div class="resolution-summary" aria-label="Resolution status">
+                <div>
+                  <span>Issues</span>
+                  <strong>{{ resolutionIssues.length }}</strong>
+                </div>
+                <div>
+                  <span>Resolved</span>
+                  <strong>{{ resolvedResolutionCount }}</strong>
+                </div>
+                <div>
+                  <span>Remaining</span>
+                  <strong>{{ unresolvedResolutionCount }}</strong>
+                </div>
+                <div>
+                  <span>Affected students</span>
+                  <strong title="Affected row identities are not provided by the validation response">—</strong>
+                </div>
+              </div>
+
+              <div class="resolution-list">
+                @for (group of groupedResolutionIssues; track group.label) {
+                  <section class="resolution-group">
+                    <h4>{{ group.label }}</h4>
+                    @for (issue of group.issues; track getResolutionKey(issue)) {
+                  <article
+                    class="resolution-card"
+                    [class.resolved]="isResolutionDecisionValid(issue)"
+                  >
+                    <div class="resolution-card-header">
+                      <div>
+                        <span class="issue-type">
+                          {{ getResolutionTypeLabel(issue) }}
+                        </span>
+                        <h4>{{ issue.sourceValue }}</h4>
+
+                        @if (issue.academicYear || issue.className) {
+                          <div class="issue-context">
+                            @if (issue.academicYear) {
+                              <span>Academic Year: {{ issue.academicYear }}</span>
+                            }
+                            @if (issue.className) {
+                              <span>Class: {{ issue.className }}</span>
+                            }
+                          </div>
+                        }
+                      </div>
+
+                      <div class="issue-impact">
+                        <strong>{{ issue.affectedRowCount }}</strong>
+                        <span>
+                          {{ issue.affectedRowCount === 1 ? 'student affected' : 'students affected' }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div
+                      class="decision-options"
+                      role="group"
+                      [attr.aria-label]="'Resolution for ' + issue.sourceValue"
+                    >
+                      <button
+                        type="button"
+                        class="decision-option"
+                        [class.selected]="isResolutionActionSelected(issue, 'MAP')"
+                        [attr.aria-pressed]="isResolutionActionSelected(issue, 'MAP')"
+                        (click)="selectResolutionAction(issue, 'MAP')"
+                      >
+                        <strong>Map to existing</strong>
+                      </button>
+
+                      <button
+                        type="button"
+                        class="decision-option"
+                        [class.selected]="isResolutionActionSelected(issue, 'CREATE')"
+                        [attr.aria-pressed]="isResolutionActionSelected(issue, 'CREATE')"
+                        (click)="selectResolutionAction(issue, 'CREATE')"
+                      >
+                        <strong>Create new</strong>
+                      </button>
+
+                      <button
+                        type="button"
+                        class="decision-option danger"
+                        [class.selected]="isResolutionActionSelected(issue, 'SKIP')"
+                        [attr.aria-pressed]="isResolutionActionSelected(issue, 'SKIP')"
+                        (click)="selectResolutionAction(issue, 'SKIP')"
+                      >
+                        <strong>Skip affected rows</strong>
+                      </button>
+                    </div>
+
+                    @if (isResolutionActionSelected(issue, 'MAP')) {
+                      <div class="decision-detail map-placeholder">
+                        @if (isMapCandidateLoading(issue)) {
+                          <div class="candidate-state" role="status">
+                            <span class="button-spinner"></span>
+                            Loading valid existing records...
+                          </div>
+                        } @else if (getMapCandidateError(issue)) {
+                          <div class="candidate-state candidate-error" role="alert">
+                            <span>{{ getMapCandidateError(issue) }}</span>
+                          </div>
+                        } @else {
+                          @if (getMapCandidatesForIssue(issue).length > 0) {
+                            <label [for]="'map-target-' + $index">
+                              Select an existing record
+                            </label>
+                            <select
+                              [id]="'map-target-' + $index"
+                              [value]="getResolutionDecision(issue)?.targetId ?? ''"
+                              (change)="selectMapCandidate(
+                                issue,
+                                $any($event.target).value
+                              )"
+                            >
+                              <option value="">Choose a record</option>
+                              @for (
+                                candidate of getMapCandidatesForIssue(issue);
+                                track candidate.id
+                              ) {
+                                <option [value]="candidate.id">
+                                  {{ candidate.label }}
+                                </option>
+                              }
+                            </select>
+                          } @else {
+                            <div class="candidate-state candidate-empty">
+                              No valid existing records available.
+                            </div>
+                          }
+                        }
+                      </div>
+                    }
+
+                    @if (isResolutionActionSelected(issue, 'CREATE')) {
+                      <div class="decision-detail create-form">
+                        <strong>Create new {{ getResolutionTypeLabel(issue) }}</strong>
+                        <small>Will be created when the import is confirmed.</small>
+
+<div class="create-fields">
+  @if (issue.masterDataType === 'ACADEMIC_YEAR') {
+    <label>
+      <span>Start Date</span>
+      <input
+        type="date"
+        [value]="getResolutionCreateData(issue).startDate ?? ''"
+        (input)="updateAcademicYearDate(
+          issue.sourceValue,
+          'startDate',
+          $any($event.target).value
+        )"
+      />
+    </label>
+
+    <label>
+      <span>End Date</span>
+      <input
+        type="date"
+        [value]="getResolutionCreateData(issue).endDate ?? ''"
+        (input)="updateAcademicYearDate(
+          issue.sourceValue,
+          'endDate',
+          $any($event.target).value
+        )"
+      />
+    </label>
+  }
+
+  @if (issue.masterDataType === 'FEE_STRUCTURE') {
+    <label>
+      <span>Fee Amount</span>
+      <input
+        type="number"
+        min="0.01"
+        step="0.01"
+        [value]="getResolutionCreateData(issue).feeAmount ?? ''"
+        (input)="updateFeeAmount(
+          issue.academicYear ?? '',
+          issue.className ?? '',
+          $any($event.target).value
+        )"
+      />
+    </label>
+  }
+</div>
+
+                        @if (getCreateValidationError(issue); as createError) {
+                          <div class="field-error">{{ createError }}</div>
+                        }
+
+                      </div>
+                    }
+
+                    @if (isResolutionActionSelected(issue, 'SKIP')) {
+                      <div class="decision-detail skip-warning" role="status">
+                        <strong>Rows will be skipped</strong>
+                        <p>
+                          These {{ issue.affectedRowCount }} affected
+                          {{ issue.affectedRowCount === 1 ? 'row will' : 'rows will' }}
+                          not be imported.
+                        </p>
+                      </div>
+                    }
+
+                    <div class="resolution-card-status" aria-live="polite">
+                      @if (isResolutionDecisionValid(issue)) {
+                        <span class="status-complete">✓ Resolution complete</span>
+                      } @else {
+                        <span class="status-pending">Action required</span>
+                      }
+                    </div>
+                  </article>
+                    }
+                  </section>
+                }
+              </div>
+
+              <div class="resolution-actions">
+                <button
+                  type="button"
+                  class="cancel-button"
+                  (click)="backFromResolution()"
+                >
+                  Back
+                </button>
+                <button
+                  type="button"
+                  class="validate-button"
+                  [disabled]="!allResolutionIssuesResolved"
+                  (click)="continueFromResolution()"
+                >
+                  Continue to Preview
+                </button>
+              </div>
+            </section>
+          }
+
           <!-- SETUP REVIEW -->
           @if (
             validationResult.errorRows === 0 &&
-            hasSetupItems()
+            hasSetupItems() &&
+            (!resolutionIssues.length || resolutionWorkspaceCompleted)
           ) {
             <div class="setup-preview">
               <h3>Step 3 — Review Required Setup</h3>
@@ -536,6 +797,24 @@
       @if (
         validationResult &&
         validationResult.errorRows === 0 &&
+        resolutionIssues.length > 0 &&
+        !resolutionWorkspaceActive &&
+        !resolutionWorkspaceCompleted &&
+        !importResult
+      ) {
+        <button
+          type="button"
+          class="validate-button"
+          (click)="openResolutionWorkspace()"
+        >
+          Resolve Issues
+        </button>
+      }
+
+      @if (
+        validationResult &&
+        validationResult.errorRows === 0 &&
+        (!resolutionIssues.length || resolutionWorkspaceCompleted) &&
         !importResult
       ) {
         <button

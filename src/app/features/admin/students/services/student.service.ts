@@ -31,6 +31,34 @@ export interface StudentImportError {
   message: string;
 }
 
+export type StudentImportResolutionAction = 'MAP' | 'CREATE' | 'SKIP';
+
+export type StudentImportResolutionMasterDataType =
+  | 'BRANCH'
+  | 'BOARD_MEDIUM'
+  | 'SCHOOL'
+  | 'ACADEMIC_YEAR'
+  | 'CLASS'
+  | 'SECTION'
+  | 'FEE_STRUCTURE';
+
+export interface StudentImportResolutionIssue {
+  masterDataType: StudentImportResolutionMasterDataType;
+  sourceValue: string;
+  affectedRowCount: number;
+  academicYear: string | null;
+  className: string | null;
+}
+
+export interface StudentImportResolutionDecision {
+  masterDataType: StudentImportResolutionMasterDataType;
+  sourceValue: string;
+  academicYear: string | null;
+  className: string | null;
+  action: StudentImportResolutionAction;
+  targetId: number | null;
+}
+
 export interface BulkUpdateStudentRequest {
   studentIds: number[];
   selectedFields: string[];
@@ -78,6 +106,8 @@ export interface StudentImportPreview {
     feeAmount: number | null;
     reactivatingExisting: boolean;
   }[];
+
+  resolutionIssues: StudentImportResolutionIssue[];
 }
 
 export interface StudentImportValidationResponse {
@@ -97,6 +127,7 @@ export interface ImportedStudentCredential {
 
 export interface StudentImportResult {
   importedStudents: number;
+  skippedStudents: number;
   students: ImportedStudentCredential[];
 }
 
@@ -142,6 +173,8 @@ export interface StudentImportSetupRequest {
     feeAmount: number | null;
     approved: boolean;
   }[];
+
+  resolutionDecisions?: StudentImportResolutionDecision[];
 }
 @Injectable({
   providedIn: 'root'

@@ -37,7 +37,7 @@ import { TeacherList } from './features/admin/teachers/teacher-list/teacher-list
 import { TeacherDetails } from './features/admin/teachers/teacher-details/teacher-details';
 import { TeacherForm } from './features/admin/teachers/teacher-form/teacher-form';
 
-import { StudentList } from './features/admin/students/student-list/student-list';
+
 import { StudentForm } from './features/admin/students/student-form/student-form';
 
 import { TeacherRoleList } from './features/admin/teacher-roles/teacher-role-list/teacher-role-list';
@@ -58,6 +58,8 @@ import { TeacherAssignmentView as AdminTeacherAssignmentView } from './features/
 import { StudentWorkspace } from './features/admin/students/student-workspace/student-workspace';
 import { AcademicWorkspaceComponent } from './features/admin/academic/academic-workspace/academic-workspace';
 import { TeacherManagementComponent } from './features/admin/teachers/teacher-management/teacher-management';
+
+
 
 // FEES
 import { FeeStructureList } from './features/admin/fees/fee-structure-list/fee-structure-list';
@@ -229,12 +231,14 @@ export const routes: Routes = [
 
       // --------------------- STUDENTS ----------------------
 
-      {
-        path: 'admin/students',
-        component: StudentList,
-        canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
-      },
+{
+  path: 'admin/students',
+  loadComponent: () =>
+    import('./features/admin/students/student-list/student-list')
+      .then(m => m.StudentList),
+  canActivate: [roleGuard],
+  data: { roles: ['ADMIN'] }
+},
 
       {
         path: 'admin/students/create',
