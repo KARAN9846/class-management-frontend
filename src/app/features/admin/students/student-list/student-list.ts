@@ -115,9 +115,6 @@ bulkUpdating = false;
 
 bulkSelectedFields = new Set<string>();
 
-bulkFirstName = '';
-bulkLastName = '';
-bulkPhone = '';
 bulkGender: 'Male' | 'Female' | null = null;
 
 bulkSchoolId: number | null = null;
@@ -137,18 +134,6 @@ boardMedia: BoardMedium[] = [];
 
 
 bulkEditableFields = [
-  {
-    key: 'firstName',
-    label: 'First Name'
-  },
-  {
-    key: 'lastName',
-    label: 'Last Name'
-  },
-  {
-    key: 'phone',
-    label: 'Phone'
-  },
   {
     key: 'gender',
     label: 'Gender'
@@ -1019,9 +1004,6 @@ isBulkFieldSelected(field: string): boolean {
 }
 
 private resetBulkEditValues(): void {
-  this.bulkFirstName = '';
-  this.bulkLastName = '';
-  this.bulkPhone = '';
   this.bulkGender = null;
 
   this.bulkSchoolId = null;
@@ -1123,24 +1105,6 @@ previewBulkEdit(): void {
     return;
   }
 
-  if (
-    this.bulkSelectedFields.has('firstName') &&
-    !this.bulkFirstName.trim()
-  ) {
-    this.errorMessage =
-      'First name cannot be empty.';
-    return;
-  }
-
-  if (
-    this.bulkSelectedFields.has('lastName') &&
-    !this.bulkLastName.trim()
-  ) {
-    this.errorMessage =
-      'Last name cannot be empty.';
-    return;
-  }
-
   const academicFields = [
     'academicYearId',
     'classId',
@@ -1179,21 +1143,16 @@ previewBulkEdit(): void {
 }
 
 saveBulkEdit(): void {
-  const selectedFields = Array.from(this.bulkSelectedFields);
+  const selectedFields = Array.from(this.bulkSelectedFields).filter(
+    field => this.bulkEditableFields.some(
+      editableField => editableField.key === field
+    )
+  );
   const request: BulkUpdateStudentRequest = {
     studentIds: [...this.selectedStudentIds],
     selectedFields
   };
 
-  if (this.bulkSelectedFields.has('firstName')) {
-    request.firstName = this.bulkFirstName.trim();
-  }
-  if (this.bulkSelectedFields.has('lastName')) {
-    request.lastName = this.bulkLastName.trim();
-  }
-  if (this.bulkSelectedFields.has('phone')) {
-    request.phone = this.bulkPhone.trim();
-  }
   if (this.bulkSelectedFields.has('gender')) {
     request.gender = this.bulkGender;
   }

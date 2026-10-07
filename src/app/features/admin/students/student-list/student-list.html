@@ -682,75 +682,6 @@
             </p>
 
 
-            <!-- FIRST NAME -->
-            <div class="bulk-field">
-
-              <label class="bulk-field-check">
-                <input
-                  type="checkbox"
-                  [checked]="isBulkFieldSelected('firstName')"
-                  (change)="toggleBulkField('firstName')">
-
-                <span>First Name</span>
-              </label>
-
-              @if (isBulkFieldSelected('firstName')) {
-                <input
-                  type="text"
-                  class="bulk-input"
-                  [(ngModel)]="bulkFirstName"
-                  placeholder="Enter first name">
-              }
-
-            </div>
-
-
-            <!-- LAST NAME -->
-            <div class="bulk-field">
-
-              <label class="bulk-field-check">
-                <input
-                  type="checkbox"
-                  [checked]="isBulkFieldSelected('lastName')"
-                  (change)="toggleBulkField('lastName')">
-
-                <span>Last Name</span>
-              </label>
-
-              @if (isBulkFieldSelected('lastName')) {
-                <input
-                  type="text"
-                  class="bulk-input"
-                  [(ngModel)]="bulkLastName"
-                  placeholder="Enter last name">
-              }
-
-            </div>
-
-
-            <!-- PHONE -->
-            <div class="bulk-field">
-
-              <label class="bulk-field-check">
-                <input
-                  type="checkbox"
-                  [checked]="isBulkFieldSelected('phone')"
-                  (change)="toggleBulkField('phone')">
-
-                <span>Phone</span>
-              </label>
-
-              @if (isBulkFieldSelected('phone')) {
-                <input
-                  type="text"
-                  class="bulk-input"
-                  [(ngModel)]="bulkPhone"
-                  placeholder="Enter phone number">
-              }
-
-            </div>
-
-
             <!-- GENDER -->
             <div class="bulk-field">
 
@@ -1003,27 +934,6 @@
             </p>
 
             <div class="bulk-preview-list">
-
-              @if (isBulkFieldSelected('firstName')) {
-                <div>
-                  <strong>First Name:</strong>
-                  {{ bulkFirstName }}
-                </div>
-              }
-
-              @if (isBulkFieldSelected('lastName')) {
-                <div>
-                  <strong>Last Name:</strong>
-                  {{ bulkLastName }}
-                </div>
-              }
-
-              @if (isBulkFieldSelected('phone')) {
-                <div>
-                  <strong>Phone:</strong>
-                  {{ bulkPhone || 'Clear phone' }}
-                </div>
-              }
 
               @if (isBulkFieldSelected('gender')) {
                 <div>
