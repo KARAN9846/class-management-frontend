@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Output,
@@ -49,6 +50,7 @@ interface StudentImportMapCandidate {
 export class StudentImportComponent {
 
   private readonly studentService = inject(StudentService);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly branchService = inject(BranchService);
   private readonly boardMediumService = inject(BoardMediumService);
   private readonly schoolService = inject(SchoolService);
@@ -454,6 +456,7 @@ export class StudentImportComponent {
       next: candidates => {
         this.mapCandidates.set(key, candidates);
         this.mapCandidateLoading.delete(key);
+        this.cdr.detectChanges();
       },
       error: error => {
         this.mapCandidates.set(key, []);
@@ -465,7 +468,7 @@ export class StudentImportComponent {
             'Unable to load existing records. Please try again.'
         );
         this.setResolutionDecision(issue, 'MAP', null);
-      
+        this.cdr.detectChanges();
       }
     });
   }
