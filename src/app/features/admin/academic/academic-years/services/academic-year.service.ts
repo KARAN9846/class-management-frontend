@@ -32,10 +32,13 @@ export class AcademicYearService {
 
   private readonly endpoint = '/academic-years';
 
-  getAll(): Observable<ApiResponse<PageResponse<AcademicYear>>> {
+  getAll(
+    page = 0,
+    size = 50
+  ): Observable<ApiResponse<PageResponse<AcademicYear>>> {
 
     return this.api.get<ApiResponse<PageResponse<AcademicYear>>>(
-      `${this.endpoint}?page=0&size=50&sort=createdAt,desc`
+      `${this.endpoint}?page=${page}&size=${size}&sort=createdAt,desc`
     );
   }
 

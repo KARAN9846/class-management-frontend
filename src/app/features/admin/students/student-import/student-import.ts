@@ -6,7 +6,19 @@ import {
   inject
 } from '@angular/core';
 
-import { Observable, forkJoin, map, of, shareReplay, switchMap } from 'rxjs';
+import {
+  Observable,
+  EMPTY,
+  catchError,
+  expand,
+  forkJoin,
+  map,
+  of,
+  reduce,
+  shareReplay,
+  switchMap,
+  throwError
+} from 'rxjs';
 import { BranchService } from '../../academic/branches/services/branch.service';
 import { BoardMediumService } from '../../academic/board-media/services/board-medium.service';
 import { SchoolService } from '../../academic/schools/services/school.service';
@@ -184,6 +196,7 @@ export class StudentImportComponent {
           this.downloadingTemplate = false;
           this.successMessage =
             'Excel template downloaded successfully.';
+          this.cdr.detectChanges();
 
         },
 
@@ -198,6 +211,7 @@ export class StudentImportComponent {
           this.errorMessage =
             error?.error?.message ||
             'Failed to download the Excel template. Please try again.';
+          this.cdr.detectChanges();
 
        
         }
@@ -209,6 +223,7 @@ export class StudentImportComponent {
       return;
     }
 
+    this.resetFileSpecificState();
     this.validating = true;
     this.validationResult = null;
     this.setupConfirmed = false;
@@ -233,6 +248,7 @@ export class StudentImportComponent {
             this.successMessage =
               'Excel file validation completed successfully.';
           }
+          this.cdr.detectChanges();
 
 
         },
@@ -252,6 +268,7 @@ export class StudentImportComponent {
           this.errorMessage =
             backendMessage ||
             'Failed to validate the Excel file. Please check the file and try again.';
+          this.cdr.detectChanges();
 
         }
       });
@@ -368,6 +385,7 @@ export class StudentImportComponent {
           this.successMessage =
             `${this.importResult.importedStudents} student(s) imported successfully.`;
 
+          this.cdr.detectChanges();
           this.imported.emit();
 
      
@@ -388,6 +406,7 @@ export class StudentImportComponent {
           this.errorMessage =
             backendMessage ||
             'Failed to import students. Please try again.';
+          this.cdr.detectChanges();
 
         }
       });
@@ -861,33 +880,49 @@ export class StudentImportComponent {
     switch (issue.masterDataType) {
       case 'BRANCH':
         return this.cachedCandidates('BRANCH', () =>
-          this.branchService.getAll(0, 1000).pipe(
-          map(page => page.content
+          this.loadAllCandidatePages(page => this.branchService.getAll(page)).pipe(
+          map(items => items
             .filter(item => item.isActive)
-            .map(item => ({ id: item.id, label: item.name })))
+            .map(item => ({
+              id: item.id,
+              label: item.name
+            })))
           ));
       case 'BOARD_MEDIUM':
         return this.cachedCandidates('BOARD_MEDIUM', () =>
-          this.boardMediumService.getAll(0, 1000).pipe(
-          map(page => page.content
+          this.loadAllCandidatePages(page => this.boardMediumService.getAll(page)).pipe(
+          map(items => items
             .filter(item => item.isActive)
-            .map(item => ({ id: item.id, label: item.name })))
+            .map(item => ({
+              id: item.id,
+              label: item.name
+            })))
           ));
       case 'SCHOOL':
-        return this.cachedCandidates('SCHOOL', () => this.schoolService.getAll().pipe(
-          map(response => response.data.content
+        return this.cachedCandidates(
+          'SCHOOL',
+          () => this.loadAllCandidatePages(page =>
+            this.schoolService.getAll(page).pipe(map(response => response.data))
+          ).pipe(
+          map(items => items
             .filter(item => item.isActive)
             .map(item => ({
               id: item.id,
               label: item.code ? `${item.name} — ${item.code}` : item.name
             })))
-        ));
+          )
+        );
       case 'ACADEMIC_YEAR':
         return this.cachedCandidates('ACADEMIC_YEAR', () =>
-          this.academicYearService.getAll().pipe(
-          map(response => response.data.content
+          this.loadAllCandidatePages(page =>
+            this.academicYearService.getAll(page).pipe(map(response => response.data))
+          ).pipe(
+          map(items => items
             .filter(item => item.isActive)
-            .map(item => ({ id: item.id, label: item.name })))
+            .map(item => ({
+              id: item.id,
+              label: item.name
+            })))
           ));
       case 'CLASS':
         return this.getAcademicYearsAndClasses().pipe(
@@ -900,13 +935,16 @@ export class StudentImportComponent {
             if (academicYearId === null) {
               return this.cachedCandidates('CLASS:none', () => of([]));
             }
-            return this.cachedCandidates(`CLASS:${academicYearId}`, () =>
+            return this.cachedCandidates(
+              `CLASS:${academicYearId}`,
+              () =>
               of(classes.data
                 .filter(item => item.academicYearId === academicYearId)
                 .map(item => ({
                   id: item.id,
                   label: `${item.name} — Academic Year: ${issue.academicYear}`
-                }))));
+                })))
+            );
           })
         );
       case 'SECTION':
@@ -922,14 +960,17 @@ export class StudentImportComponent {
             }
             return classId;
           }),
-          switchMap(classId => this.cachedCandidates(`SECTION:${classId}`, () =>
-            this.sectionService.getSections(classId).pipe(
-              map(response => response.data.map(item => ({
-                id: item.id,
-                label: `${item.name} — Class: ${issue.className} · ${issue.academicYear}`
-              })))
-            )))
-        );
+          switchMap(classId =>
+            this.cachedCandidates(`SECTION:${classId}`, () =>
+              this.sectionService.getSections(classId).pipe(
+                map(response => response.data
+                .map(item => ({
+                  id: item.id,
+                  label: `${item.name} — Class: ${issue.className} · ${issue.academicYear}`
+                })))
+              ))
+            )
+          );
       case 'FEE_STRUCTURE':
         return this.getAcademicYearsAndClasses().pipe(
           map(({ years, classes }) => ({
@@ -969,9 +1010,33 @@ export class StudentImportComponent {
 
   private loadAcademicData() {
     return forkJoin({
-      years: this.academicYearService.getAll(),
+      years: this.loadAllCandidatePages(page =>
+        this.academicYearService.getAll(page).pipe(map(response => response.data))
+      ).pipe(map(content => ({ data: { content } }))),
       classes: this.classService.getClasses()
-    }).pipe(shareReplay(1));
+    }).pipe(
+      catchError(error => {
+        this.academicData$ = undefined;
+        return throwError(() => error);
+      }),
+      shareReplay(1)
+    );
+  }
+
+  private loadAllCandidatePages<T>(
+    loadPage: (page: number) => Observable<{
+      content: T[];
+      totalPages: number;
+      number: number;
+    }>
+  ): Observable<T[]> {
+    return loadPage(0).pipe(
+      expand(page => page.number + 1 < page.totalPages
+        ? loadPage(page.number + 1)
+        : EMPTY
+      ),
+      reduce((items, page) => [...items, ...page.content], [] as T[])
+    );
   }
 
   private cachedCandidates(
@@ -980,7 +1045,13 @@ export class StudentImportComponent {
   ): Observable<StudentImportMapCandidate[]> {
     const cached = this.candidateRequests.get(key);
     if (cached) return cached;
-    const shared = request().pipe(shareReplay({ bufferSize: 1, refCount: false }));
+    const shared = request().pipe(
+      catchError(error => {
+        this.candidateRequests.delete(key);
+        return throwError(() => error);
+      }),
+      shareReplay({ bufferSize: 1, refCount: false })
+    );
     this.candidateRequests.set(key, shared);
     return shared;
   }

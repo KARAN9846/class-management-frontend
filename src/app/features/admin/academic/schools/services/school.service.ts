@@ -32,10 +32,13 @@ export class SchoolService {
 
   private readonly endpoint = '/schools';
 
-  getAll(): Observable<ApiResponse<PageResponse<School>>> {
+  getAll(
+    page = 0,
+    size = 50
+  ): Observable<ApiResponse<PageResponse<School>>> {
 
     return this.api.get<ApiResponse<PageResponse<School>>>(
-      `${this.endpoint}?page=0&size=50&sort=createdAt,desc`
+      `${this.endpoint}?page=${page}&size=${size}&sort=createdAt,desc`
     );
   }
 
