@@ -126,20 +126,21 @@ export class FeeStructureList implements OnInit {
 
     {
       key: 'className',
-      label: 'Class',
-      width: '25%'
-    },
-
-    {
-      key: 'academicYearName',
-      label: 'Academic Year',
-      width: '25%'
+      label: 'Fee Structure',
+      width: '45%',
+      type: 'fee-structure-identity'
     },
 
     {
       key: 'feeAmount',
       label: 'Fee Amount',
-      width: '20%'
+      width: '25%',
+      type: 'fee-amount',
+      value: (row: FeeStructure) =>
+        `₹${Number(row.feeAmount ?? 0).toLocaleString('en-IN', {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        })}`
     },
 
     {

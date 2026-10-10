@@ -210,9 +210,55 @@ tbody tr:last-child td {
 // CLASS
 // =====================================================
 
+.class-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 250px;
+}
+
+.class-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+
+  border: 1px solid #ddd6fe;
+  border-radius: 12px;
+
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.class-avatar svg {
+  width: 21px;
+  height: 21px;
+}
+
+.class-identity-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
 .class-name {
   color: #111827;
+  font-size: 14px;
   font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.class-academic-year {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
 }
 
 // =====================================================
@@ -224,6 +270,21 @@ tbody tr:last-child td {
   flex-wrap: wrap;
   align-items: center;
   gap: 7px;
+}
+
+.section-count {
+  padding: 4px 8px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+
+  background: #f8fafc;
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  white-space: nowrap;
 }
 
 .section-chip {
@@ -1016,7 +1077,32 @@ form {
   }
 
   table {
-    min-width: 800px;
+    min-width: 700px;
+  }
+
+  .class-identity {
+    gap: 9px;
+    min-width: 220px;
+  }
+
+  .class-avatar {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    border-radius: 11px;
+  }
+
+  .class-avatar svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .class-name {
+    font-size: 13px;
+  }
+
+  .class-academic-year {
+    font-size: 10px;
   }
 
   .modal,

@@ -31,16 +31,8 @@ columns: TableColumn[] = [
   {
     key: 'name',
     label: 'Academic Year',
-    sortable: true
-  },
-  {
-    key: 'startDate',
-    label: 'Start Date',
-    sortable: true
-  },
-  {
-    key: 'endDate',
-    label: 'End Date',
+    width: '320px',
+    type: 'academic-year-identity',
     sortable: true
   },
   {

@@ -73,10 +73,13 @@ pendingAssignment: Assignment | null = null;
   // =========================
 
 columns: TableColumn[] = [
-  { key: 'title', label: 'Assignment', sortable: true },
-  { key: 'className', label: 'Class', sortable: true },
-  { key: 'sectionName', label: 'Section', align: 'center', sortable: true },
-  { key: 'subjectName', label: 'Subject', sortable: true },
+  {
+    key: 'subjectName',
+    label: 'Assignment',
+    width: '360px',
+    type: 'assignment-identity',
+    sortable: true
+  },
   { key: 'teacherName', label: 'Teacher', sortable: true },
   { key: 'dueDate', label: 'Due Date', type: 'date-time', sortable: true },
   { key: 'maxMarks', label: 'Marks', align: 'center', sortable: true },

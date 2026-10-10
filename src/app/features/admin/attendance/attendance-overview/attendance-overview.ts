@@ -68,17 +68,8 @@ columns: TableColumn[] = [
   {
     key: 'studentName',
     label: 'Student',
-    sortable: true
-  },
-  {
-    key: 'className',
-    label: 'Class',
-    sortable: true
-  },
-  {
-    key: 'sectionName',
-    label: 'Section',
-    align: 'center',
+    width: '300px',
+    type: 'attendance-student',
     sortable: true
   },
   {

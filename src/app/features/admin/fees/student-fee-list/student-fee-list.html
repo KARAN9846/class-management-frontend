@@ -369,34 +369,30 @@
             <tr>
 
               <th>
-                Roll No.
-              </th>
-
-              <th>
                 Student
               </th>
 
               <th>
-                Class
+                Class / Section
               </th>
 
-              <th>
+              <th class="amount-column">
                 Original
               </th>
 
-              <th>
+              <th class="amount-column">
                 Discount
               </th>
 
-              <th>
+              <th class="amount-column">
                 Payable
               </th>
 
-              <th>
+              <th class="amount-column">
                 Paid
               </th>
 
-              <th>
+              <th class="amount-column">
                 Remaining
               </th>
 
@@ -422,15 +418,43 @@
 
               <tr>
 
-                <td>
-                  {{ fee.rollNumber }}
-                </td>
+                <td class="student-identity-column">
 
+                  <div class="student-identity">
 
-                <td>
+                    <div
+                      class="student-avatar"
+                      aria-hidden="true">
 
-                  <div class="student-name">
-                    {{ fee.studentName }}
+                      {{
+                        fee.studentName.trim().charAt(0) +
+                        (
+                          fee.studentName.trim().includes(' ')
+                            ? fee.studentName.trim().split(' ').slice(-1)[0].charAt(0)
+                            : ''
+                        )
+                      }}
+
+                    </div>
+
+                    <div class="student-identity-content">
+
+                      <div class="student-name">
+                        {{ fee.studentName }}
+                      </div>
+
+                      <div class="student-meta">
+                        Student
+
+                        <span aria-hidden="true">
+                          ·
+                        </span>
+
+                        {{ fee.rollNumber }}
+                      </div>
+
+                    </div>
+
                   </div>
 
                 </td>
@@ -441,27 +465,30 @@
                 </td>
 
 
-                <td>
+                <td class="amount-column amount-secondary">
                   ₹{{ fee.originalAmount | number:'1.0-2' }}
                 </td>
 
 
-                <td>
+                <td class="amount-column amount-secondary">
                   ₹{{ fee.discountAmount | number:'1.0-2' }}
                 </td>
 
 
-                <td class="amount-strong">
+                <td class="amount-column amount-payable">
                   ₹{{ fee.payableAmount | number:'1.0-2' }}
                 </td>
 
 
-                <td>
+                <td class="amount-column amount-paid">
                   ₹{{ fee.paidAmount | number:'1.0-2' }}
                 </td>
 
 
-                <td>
+                <td
+                  class="amount-column amount-remaining"
+                  [class.amount-remaining-due]="fee.status === 'REMAINING'"
+                  [class.amount-remaining-unpaid]="fee.status === 'UNPAID'">
                   ₹{{ fee.remainingAmount | number:'1.0-2' }}
                 </td>
 

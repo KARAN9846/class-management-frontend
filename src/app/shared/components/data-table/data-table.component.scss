@@ -472,6 +472,558 @@
   color: #94a3b8;
 }
 
+/* ============================================================
+   TEACHER NAME
+   ============================================================ */
+
+.teacher-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.teacher-name-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border: 1px solid #e0e7ff;
+  border-radius: 50%;
+  background: #f5f3ff;
+  color: #6366f1;
+}
+
+.teacher-name-avatar svg {
+  width: 23px;
+  height: 23px;
+}
+
+.teacher-name-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.teacher-name-primary {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.teacher-name-secondary {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.teacher-name-separator {
+  margin: 0 3px;
+  color: #a5b4fc;
+}
+
+/* ============================================================
+   ASSIGNMENT IDENTITY
+   ============================================================ */
+
+.assignment-identity-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.assignment-identity-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  margin-top: 1px;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #3b82f6;
+  transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.assignment-identity-cell:hover .assignment-identity-avatar {
+  border-color: #bfdbfe;
+  background: #e0f2fe;
+}
+
+.assignment-identity-avatar svg {
+  width: 21px;
+  height: 21px;
+}
+
+.assignment-identity-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.assignment-identity-primary,
+.assignment-identity-title {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.assignment-identity-primary {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.assignment-identity-title {
+  color: #475569;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.assignment-identity-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.assignment-identity-context span + span::before {
+  margin: 0 6px;
+  color: #94a3b8;
+  content: '·';
+}
+
+/* ============================================================
+   ATTENDANCE STUDENT
+   ============================================================ */
+
+.attendance-student-cell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-width: 0;
+}
+
+.attendance-student-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border: 1px solid #dbeafe;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #3b82f6;
+}
+
+.attendance-student-avatar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.attendance-student-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.attendance-student-name {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.attendance-student-id,
+.attendance-student-context {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.attendance-student-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.attendance-student-context span + span::before {
+  margin: 0 5px;
+  color: #94a3b8;
+  content: '·';
+}
+
+/* ============================================================
+   SCHOOL IDENTITY
+   ============================================================ */
+
+.school-identity-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.school-identity-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border: 1px solid #d1fae5;
+  border-radius: 12px;
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.school-identity-avatar svg {
+  width: 21px;
+  height: 21px;
+}
+
+.school-identity-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.school-identity-name,
+.school-identity-address {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.school-identity-name {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.school-identity-code {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.school-identity-address {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   SUBJECT IDENTITY
+   ============================================================ */
+
+.subject-identity-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.subject-identity-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.subject-identity-avatar svg {
+  width: 21px;
+  height: 21px;
+}
+
+.subject-identity-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.subject-identity-name {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.subject-identity-code,
+.subject-identity-context {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+/* ============================================================
+   ACADEMIC YEAR IDENTITY
+   ============================================================ */
+
+.academic-year-identity-cell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-width: 0;
+}
+
+.academic-year-identity-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border: 1px solid #bae6fd;
+  border-radius: 50%;
+  background: #f0f9ff;
+  color: #0284c7;
+}
+
+.academic-year-identity-avatar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.academic-year-identity-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.academic-year-identity-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.academic-year-identity-name {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.academic-year-identity-dates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.academic-year-date-separator {
+  color: #38bdf8;
+}
+
+/* ============================================================
+   FEE STRUCTURE
+   ============================================================ */
+
+.fee-structure-identity-cell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-width: 0;
+}
+
+.fee-structure-identity-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border: 1px solid #bbf7d0;
+  border-radius: 50%;
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.fee-structure-identity-avatar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.fee-structure-identity-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.fee-structure-identity-name {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.fee-structure-identity-context {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.fee-amount-cell {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid #dcfce7;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   BRANCH IDENTITY
+   ============================================================ */
+
+.branch-identity-cell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-width: 0;
+}
+
+.branch-identity-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid #c7d2fe;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.branch-identity-avatar svg {
+  width: 19px;
+  height: 19px;
+}
+
+.branch-identity-content {
+  min-width: 0;
+}
+
+.branch-identity-name {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* ============================================================
+   BOARD / MEDIUM IDENTITY
+   ============================================================ */
+
+.board-medium-identity-cell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  min-width: 0;
+}
+
+.board-medium-identity-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid #bae6fd;
+  border-radius: 50%;
+  background: #f0f9ff;
+  color: #0284c7;
+}
+
+.board-medium-identity-avatar svg {
+  width: 19px;
+  height: 19px;
+}
+
+.board-medium-identity-content {
+  min-width: 0;
+}
+
+.board-medium-identity-name {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .date-cell {
   display: block;
 
@@ -1255,6 +1807,224 @@
 
   .student-name-secondary {
     font-size: 10px;
+  }
+
+  .teacher-name-cell {
+    gap: 9px;
+  }
+
+  .teacher-name-avatar {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  .teacher-name-avatar svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .teacher-name-primary {
+    font-size: 13px;
+  }
+
+  .teacher-name-secondary {
+    font-size: 10px;
+  }
+
+  .assignment-identity-cell {
+    gap: 9px;
+  }
+
+  .assignment-identity-avatar {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    border-radius: 11px;
+  }
+
+  .assignment-identity-avatar svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .assignment-identity-primary {
+    font-size: 13px;
+  }
+
+  .assignment-identity-title {
+    font-size: 11px;
+  }
+
+  .assignment-identity-context {
+    font-size: 9px;
+  }
+
+  .attendance-student-cell {
+    gap: 8px;
+  }
+
+  .attendance-student-avatar {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .attendance-student-avatar svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .attendance-student-name {
+    font-size: 13px;
+  }
+
+  .attendance-student-id,
+  .attendance-student-context {
+    font-size: 9px;
+  }
+
+  .school-identity-cell {
+    gap: 9px;
+  }
+
+  .school-identity-avatar {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    border-radius: 11px;
+  }
+
+  .school-identity-avatar svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .school-identity-name {
+    font-size: 13px;
+  }
+
+  .school-identity-code {
+    font-size: 10px;
+  }
+
+  .school-identity-address {
+    font-size: 9px;
+  }
+
+  .subject-identity-cell {
+    gap: 9px;
+  }
+
+  .subject-identity-avatar {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    border-radius: 11px;
+  }
+
+  .subject-identity-avatar svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .subject-identity-name {
+    font-size: 13px;
+  }
+
+  .subject-identity-code,
+  .subject-identity-context {
+    font-size: 9px;
+  }
+
+  .academic-year-identity-cell {
+    gap: 8px;
+  }
+
+  .academic-year-identity-avatar {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .academic-year-identity-avatar svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .academic-year-identity-name {
+    font-size: 13px;
+  }
+
+  .academic-year-identity-dates {
+    font-size: 9px;
+  }
+
+  .fee-structure-identity-cell {
+    gap: 8px;
+  }
+
+  .fee-structure-identity-avatar {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .fee-structure-identity-avatar svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .fee-structure-identity-name {
+    font-size: 13px;
+  }
+
+  .fee-structure-identity-context {
+    font-size: 9px;
+  }
+
+  .fee-amount-cell {
+    min-height: 28px;
+    padding: 0 8px;
+    font-size: 13px;
+  }
+
+  .branch-identity-cell {
+    gap: 8px;
+  }
+
+  .branch-identity-avatar {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .branch-identity-avatar svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .branch-identity-name {
+    font-size: 13px;
+  }
+
+  .board-medium-identity-cell {
+    gap: 8px;
+  }
+
+  .board-medium-identity-avatar {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .board-medium-identity-avatar svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .board-medium-identity-name {
+    font-size: 13px;
   }
 
   /* Permissions */

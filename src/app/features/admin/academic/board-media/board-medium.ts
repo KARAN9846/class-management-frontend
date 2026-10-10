@@ -58,7 +58,13 @@ export class BoardMediumComponent {
 
 
 readonly columns: TableColumn[] = [
-  { key: 'name', label: 'Board / Medium', sortable: true },
+  {
+    key: 'name',
+    label: 'Board / Medium',
+    width: '320px',
+    type: 'board-medium-identity',
+    sortable: true
+  },
   { key: 'isActive', label: 'Status', type: 'status', sortable: true },
   { key: 'createdAt', label: 'Created At', type: 'date-time', sortable: true },
 ];

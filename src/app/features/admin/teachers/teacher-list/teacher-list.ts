@@ -95,19 +95,13 @@ export class TeacherList implements OnInit {
 
 columns: TableColumn[] = [
   {
-    key: 'teacherNumber',
-    label: 'Teacher No.',
-    sortable: true
-  },
-  {
     key: 'firstName',
-    label: 'First Name',
-    sortable: true
-  },
-  {
-    key: 'lastName',
-    label: 'Last Name',
-    sortable: true
+    label: 'Name',
+    width: '280px',
+    type: 'teacher-name',
+    sortable: true,
+    value: (row: Teacher) =>
+      `${row.firstName ?? ''} ${row.lastName ?? ''}`.trim()
   },
   {
     key: 'email',

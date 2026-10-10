@@ -41,16 +41,8 @@ export class SubjectsComponent implements OnInit {
   {
     key: 'name',
     label: 'Subject',
-    sortable: true
-  },
-  {
-    key: 'code',
-    label: 'Code',
-    sortable: true
-  },
-  {
-    key: 'className',
-    label: 'Class',
+    width: '320px',
+    type: 'subject-identity',
     sortable: true
   },
   {

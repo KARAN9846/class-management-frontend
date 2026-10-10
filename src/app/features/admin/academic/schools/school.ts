@@ -45,9 +45,12 @@ export class SchoolComponent implements OnInit {
   /* TABLE CONFIG */
 
   columns: TableColumn[] = [
-    { key: 'name', label: 'School' },
-    { key: 'code', label: 'Code' },
-    { key: 'address', label: 'Address' },
+    {
+      key: 'name',
+      label: 'School',
+      width: '340px',
+      type: 'school-identity'
+    },
     { key: 'phone', label: 'Phone' },
     { key: 'email', label: 'Email' },
     { key: 'isActive', label: 'Status', type: 'status' }

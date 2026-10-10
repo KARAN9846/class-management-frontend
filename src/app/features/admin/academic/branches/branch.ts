@@ -36,7 +36,13 @@ export class BranchComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   columns: TableColumn[] = [
-    { key: 'name', label: 'Branch Name', sortable: true },
+    {
+      key: 'name',
+      label: 'Branch Name',
+      width: '300px',
+      type: 'branch-identity',
+      sortable: true
+    },
     { key: 'isActive', label: 'Status', type: 'status', sortable: true },
     {
       key: 'createdAt',
