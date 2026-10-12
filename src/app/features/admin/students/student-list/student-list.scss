@@ -1735,7 +1735,8 @@ select.bulk-input {
 }
 
 .bulk-clear-btn,
-.bulk-edit-btn {
+.bulk-edit-btn,
+.bulk-delete-btn {
   min-height: 36px;
   padding: 0 14px;
   border-radius: 7px;
@@ -1756,12 +1757,62 @@ select.bulk-input {
   color: #ffffff;
 }
 
+.bulk-delete-btn {
+  border: 1px solid #dc2626;
+  background: #ffffff;
+  color: #b91c1c;
+}
+
 .bulk-clear-btn:hover {
   background: #f1f5f9;
 }
 
 .bulk-edit-btn:hover {
   background: #1d4ed8;
+}
+
+.bulk-delete-btn:hover {
+  background: #fef2f2;
+}
+
+.bulk-delete-dialog {
+  width: min(560px, calc(100% - 32px)) !important;
+  box-sizing: border-box;
+}
+
+.bulk-delete-content {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.bulk-delete-warning {
+  margin: 12px 0 20px;
+  padding: 12px 14px;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+.bulk-delete-input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  box-sizing: border-box;
+}
+
+.bulk-delete-input:focus {
+  border-color: #dc2626;
+  outline: 3px solid rgba(220, 38, 38, 0.18);
+}
+
+.bulk-delete-error {
+  color: #b91c1c;
+}
+
+.bulk-delete-confirm {
+  border-color: #dc2626 !important;
+  background: #dc2626 !important;
 }
 
 @media (max-width: 600px) {
@@ -1772,7 +1823,9 @@ select.bulk-input {
 
   .bulk-selection-actions {
     justify-content: flex-end;
+    flex-wrap: wrap;
   }
+
 }
 
 
@@ -2575,6 +2628,10 @@ select.bulk-input {
 
     -webkit-overflow-scrolling: touch;
   }
+}
+
+.bulk-delete-overlay {
+  align-items: center;
 }
 /* =========================================================
    RESPONSIVE DESIGN

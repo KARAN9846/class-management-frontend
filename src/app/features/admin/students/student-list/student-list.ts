@@ -116,6 +116,7 @@ bulkUpdating = false;
 bulkSelectedFields = new Set<string>();
 
 bulkGender: 'Male' | 'Female' | null = null;
+bulkIsActive: boolean | null = null;
 
 bulkSchoolId: number | null = null;
 bulkBranchId: number | null = null;
@@ -137,6 +138,10 @@ bulkEditableFields = [
   {
     key: 'gender',
     label: 'Gender'
+  },
+  {
+    key: 'isActive',
+    label: 'Status'
   },
   {
     key: 'schoolId',
@@ -168,6 +173,12 @@ bulkEditableFields = [
 
   selectedStudentIds: number[] = [];
   bulkSelectionMode = false;
+
+  bulkDeleteOpen = false;
+  bulkDeleteSubmitting = false;
+  bulkDeleteConfirmationText = '';
+  bulkDeleteError = '';
+  pendingBulkDeleteIds: number[] = [];
 
   loading = false;
   errorMessage = '';
@@ -914,6 +925,15 @@ get selectedStudentCount(): number {
   return this.selectedStudentIds.length;
 }
 
+get bulkDeleteExpectedPhrase(): string {
+  return `DELETE ${this.pendingBulkDeleteIds.length} STUDENTS AND ALL LINKED DATA`;
+}
+
+get canConfirmBulkDelete(): boolean {
+  return !this.bulkDeleteSubmitting &&
+    this.bulkDeleteConfirmationText === this.bulkDeleteExpectedPhrase;
+}
+
 clearStudentSelection(): void {
   this.selectedStudentIds = [];
 }
@@ -924,6 +944,73 @@ toggleBulkSelectionMode(): void {
   if (!this.bulkSelectionMode) {
     this.clearStudentSelection();
   }
+}
+
+openBulkDelete(): void {
+  if (!this.selectedStudentIds.length || this.bulkDeleteSubmitting) {
+    return;
+  }
+
+  this.pendingBulkDeleteIds = [...this.selectedStudentIds];
+  this.bulkDeleteConfirmationText = '';
+  this.bulkDeleteError = '';
+  this.bulkDeleteOpen = true;
+}
+
+closeBulkDelete(): void {
+  if (this.bulkDeleteSubmitting) {
+    return;
+  }
+
+  this.bulkDeleteOpen = false;
+  this.bulkDeleteConfirmationText = '';
+  this.bulkDeleteError = '';
+  this.pendingBulkDeleteIds = [];
+}
+
+confirmBulkDelete(): void {
+  if (!this.canConfirmBulkDelete || !this.pendingBulkDeleteIds.length) {
+    return;
+  }
+
+  const studentIds = [...this.pendingBulkDeleteIds];
+  this.bulkDeleteSubmitting = true;
+  this.bulkDeleteError = '';
+
+  this.studentService.bulkDeleteStudents({
+    studentIds,
+    deleteLinkedData: true
+  }).subscribe({
+    next: response => {
+      const remainingTotal = Math.max(
+        0,
+        this.totalElements - response.data.deletedCount
+      );
+      const lastPage = Math.max(
+        0,
+        Math.ceil(remainingTotal / this.size) - 1
+      );
+
+      this.page = Math.min(this.page, lastPage);
+      this.bulkDeleteSubmitting = false;
+      this.bulkDeleteOpen = false;
+      this.bulkDeleteConfirmationText = '';
+      this.pendingBulkDeleteIds = [];
+      this.selectedStudentIds = [];
+      this.bulkSelectionMode = false;
+      this.successMessage = response.message;
+      this.loadStudents();
+    },
+    error: error => {
+      this.bulkDeleteSubmitting = false;
+      this.bulkDeleteError =
+        error?.error?.message ||
+        error?.error?.error ||
+        error?.message ||
+        'Failed to delete the selected students. Please try again.';
+      this.cdr.detectChanges();
+    }
+  });
 }
 
 openBulkEdit(): void {
@@ -1005,6 +1092,7 @@ isBulkFieldSelected(field: string): boolean {
 
 private resetBulkEditValues(): void {
   this.bulkGender = null;
+  this.bulkIsActive = null;
 
   this.bulkSchoolId = null;
   this.bulkBranchId = null;
@@ -1138,6 +1226,14 @@ previewBulkEdit(): void {
     }
   }
 
+  if (
+    this.bulkSelectedFields.has('isActive') &&
+    this.bulkIsActive === null
+  ) {
+    this.errorMessage = 'Status is required.';
+    return;
+  }
+
   this.errorMessage = '';
   this.bulkEditStep = 'preview';
 }
@@ -1155,6 +1251,12 @@ saveBulkEdit(): void {
 
   if (this.bulkSelectedFields.has('gender')) {
     request.gender = this.bulkGender;
+  }
+  if (
+    this.bulkSelectedFields.has('isActive') &&
+    this.bulkIsActive !== null
+  ) {
+    request.isActive = this.bulkIsActive;
   }
   if (this.bulkSelectedFields.has('schoolId')) {
     request.schoolId = this.bulkSchoolId;

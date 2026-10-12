@@ -67,6 +67,7 @@ export interface BulkUpdateStudentRequest {
   lastName?: string;
   phone?: string;
   gender?: 'Male' | 'Female' | null;
+  isActive?: boolean;
 
   schoolId?: number | null;
   branchId?: number | null;
@@ -75,6 +76,16 @@ export interface BulkUpdateStudentRequest {
   academicYearId?: number;
   classId?: number;
   sectionId?: number;
+}
+
+export interface BulkDeleteStudentsRequest {
+  studentIds: number[];
+  deleteLinkedData: true;
+}
+
+export interface BulkDeleteStudentsResponse {
+  deletedCount: number;
+  deletedStudentIds: number[];
 }
 
 
@@ -310,7 +321,16 @@ getStudents(
     '/students/bulk',
     request
   );
-}
+  }
+
+  bulkDeleteStudents(
+    request: BulkDeleteStudentsRequest
+  ): Observable<ApiResponse<BulkDeleteStudentsResponse>> {
+    return this.api.post<ApiResponse<BulkDeleteStudentsResponse>>(
+      '/students/bulk-delete',
+      request
+    );
+  }
 
 
   // =========================

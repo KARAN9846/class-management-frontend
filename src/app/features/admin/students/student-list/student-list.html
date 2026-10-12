@@ -323,6 +323,13 @@
         ✎ Bulk Edit
       </button>
 
+      <button
+        type="button"
+        class="bulk-delete-btn"
+        (click)="openBulkDelete()">
+        Delete Selected
+      </button>
+
     </div>
 
   </div>
@@ -514,6 +521,83 @@
     [message]="confirmationMessage" [confirmLabel]="confirmationConfirmLabel" cancelLabel="Cancel" [danger]="true"
     (confirmed)="confirmAction()" (cancelled)="cancelConfirmation()">
   </app-confirmation-dialog>
+
+  @if (bulkDeleteOpen) {
+    <div
+      class="student-edit-overlay bulk-delete-overlay"
+      role="presentation"
+      (click)="closeBulkDelete()">
+
+      <section
+        class="student-edit-modal bulk-delete-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="bulkDeleteTitle"
+        aria-describedby="bulkDeleteDescription"
+        (click)="$event.stopPropagation()">
+
+        <div class="bulk-delete-content">
+          <p class="bulk-delete-eyebrow">
+            {{ pendingBulkDeleteIds.length }} students selected
+          </p>
+
+          <h2 id="bulkDeleteTitle">Permanently delete students?</h2>
+
+          <div id="bulkDeleteDescription" class="bulk-delete-warning">
+            <strong>Permanent linked-data deletion.</strong>
+            Receipts, payments and revisions, fee assignments, attendance,
+            enrollments, students, and linked login users may be permanently
+            deleted. Shared academic data and exam identity snapshots are
+            preserved, but restrictive audit or dependency constraints can reject
+            the entire operation.
+          </div>
+
+          <label class="bulk-delete-label" for="bulkDeleteConfirmation">
+            Type <strong>{{ bulkDeleteExpectedPhrase }}</strong> to confirm
+          </label>
+
+          <input
+            id="bulkDeleteConfirmation"
+            class="bulk-delete-input"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            [disabled]="bulkDeleteSubmitting"
+            [(ngModel)]="bulkDeleteConfirmationText"
+            [attr.aria-invalid]="bulkDeleteError ? 'true' : null" />
+
+          @if (bulkDeleteError) {
+            <div class="bulk-delete-error" role="alert">
+              {{ bulkDeleteError }}
+            </div>
+          }
+        </div>
+
+        <div class="bulk-edit-footer">
+          <button
+            type="button"
+            class="bulk-secondary-btn"
+            [disabled]="bulkDeleteSubmitting"
+            (click)="closeBulkDelete()">
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="bulk-primary-btn bulk-delete-confirm"
+            [disabled]="!canConfirmBulkDelete"
+            (click)="confirmBulkDelete()">
+            @if (bulkDeleteSubmitting) {
+              Deleting...
+            } @else {
+              Delete {{ pendingBulkDeleteIds.length }} Students
+            }
+          </button>
+        </div>
+
+      </section>
+    </div>
+  }
 
 
   <!-- =====================================================
@@ -709,6 +793,41 @@
 
                   <option value="Female">
                     Female
+                  </option>
+
+                </select>
+              }
+
+            </div>
+
+
+            <!-- STATUS -->
+            <div class="bulk-field">
+
+              <label class="bulk-field-check">
+                <input
+                  type="checkbox"
+                  [checked]="isBulkFieldSelected('isActive')"
+                  (change)="toggleBulkField('isActive')">
+
+                <span>Status</span>
+              </label>
+
+              @if (isBulkFieldSelected('isActive')) {
+                <select
+                  class="bulk-input"
+                  [(ngModel)]="bulkIsActive">
+
+                  <option [ngValue]="null">
+                    Select status
+                  </option>
+
+                  <option [ngValue]="true">
+                    Active
+                  </option>
+
+                  <option [ngValue]="false">
+                    Inactive
                   </option>
 
                 </select>
@@ -939,6 +1058,13 @@
                 <div>
                   <strong>Gender:</strong>
                   {{ bulkGender || 'Clear gender' }}
+                </div>
+              }
+
+              @if (isBulkFieldSelected('isActive')) {
+                <div>
+                  <strong>Status:</strong>
+                  {{ bulkIsActive ? 'Active' : 'Inactive' }}
                 </div>
               }
 
