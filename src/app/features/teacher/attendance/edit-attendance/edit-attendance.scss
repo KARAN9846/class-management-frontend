@@ -301,6 +301,58 @@
   text-overflow: ellipsis;
 }
 
+.attendance-actor-identity {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.attendance-actor-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border: 1px solid #bfdbfe;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.attendance-actor-avatar.empty {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #94a3b8;
+}
+
+.attendance-actor-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.attendance-actor-name {
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.attendance-actor-context {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
 
 /* =========================================================
    STATUS SECTION
@@ -731,6 +783,16 @@
 
   .attendance-info {
     grid-template-columns: 1fr;
+  }
+
+  .attendance-actor-identity {
+    gap: 8px;
+  }
+
+  .attendance-actor-avatar {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
   }
 
   .feedback-message {

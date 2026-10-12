@@ -266,9 +266,36 @@
             column.type === 'attendance-teacher'
             ) {
 
-            <span class="attendance-teacher-name">
-              {{ getCellValue(row, column) }}
-            </span>
+            <div class="attendance-actor-cell">
+
+              <div
+                class="attendance-actor-avatar"
+                [class.attendance-actor-avatar-empty]="!getCellValue(row, column)"
+                aria-hidden="true">
+                @if (getCellValue(row, column)) {
+                {{
+                  getCellValue(row, column).trim().charAt(0) +
+                  (
+                    getCellValue(row, column).trim().includes(' ')
+                      ? getCellValue(row, column).trim().split(' ').slice(-1)[0].charAt(0)
+                      : ''
+                  )
+                }}
+                } @else {
+                —
+                }
+              </div>
+
+              <div class="attendance-actor-content">
+                <span class="attendance-actor-name">
+                  {{ getCellValue(row, column) || 'Not available' }}
+                </span>
+                <span class="attendance-actor-context">
+                  Marked attendance
+                </span>
+              </div>
+
+            </div>
 
 
             <!-- =====================================================
@@ -279,19 +306,36 @@
             column.type === 'attendance-last-updated'
             ) {
 
-            @if (getCellValue(row, column)) {
+            <div class="attendance-actor-cell attendance-actor-cell-updated">
 
-            <span class="attendance-last-updated-name">
-              {{ getCellValue(row, column) }}
-            </span>
+              <div
+                class="attendance-actor-avatar attendance-actor-avatar-updated"
+                [class.attendance-actor-avatar-empty]="!getCellValue(row, column)"
+                aria-hidden="true">
+                @if (getCellValue(row, column)) {
+                {{
+                  getCellValue(row, column).trim().charAt(0) +
+                  (
+                    getCellValue(row, column).trim().includes(' ')
+                      ? getCellValue(row, column).trim().split(' ').slice(-1)[0].charAt(0)
+                      : ''
+                  )
+                }}
+                } @else {
+                —
+                }
+              </div>
 
-            } @else {
+              <div class="attendance-actor-content">
+                <span class="attendance-actor-name">
+                  {{ getCellValue(row, column) || 'Not available' }}
+                </span>
+                <span class="attendance-actor-context">
+                  Last updated
+                </span>
+              </div>
 
-            <span class="attendance-last-updated-empty">
-              -
-            </span>
-
-            }
+            </div>
 
 
             <!-- =====================================================
@@ -666,11 +710,24 @@
             <div class="attendance-student-cell">
 
               <div class="attendance-student-avatar" aria-hidden="true">
+                @if (column.attendanceInitialsAvatar) {
+                <span class="attendance-student-initials">
+                  {{
+                    (row['studentName']?.trim().charAt(0) || '') +
+                    (
+                      row['studentName']?.trim().includes(' ')
+                        ? (row['studentName']?.trim().split(' ').slice(-1)[0].charAt(0) || '')
+                        : ''
+                    )
+                  }}
+                </span>
+                } @else {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                   stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="8" r="5" />
                   <path d="M20 21a8 8 0 0 0-16 0" />
                 </svg>
+                }
               </div>
 
               <div class="attendance-student-content">
@@ -718,6 +775,21 @@
               </div>
 
               <div class="assignment-identity-content">
+                @if (column.assignmentTitleFirst) {
+                <span class="assignment-identity-primary">
+                  {{ getCellValue(row, column) }}
+                </span>
+
+                @if (row['subjectName']) {
+                <span class="assignment-identity-title">
+                  {{ row['subjectName'] }}
+                  @if (row['subjectCode']) {
+                  <span class="assignment-identity-separator">·</span>
+                  {{ row['subjectCode'] }}
+                  }
+                </span>
+                }
+                } @else {
                 <span class="assignment-identity-primary">
                   {{ getCellValue(row, column) }}
                 </span>
@@ -726,6 +798,7 @@
                 <span class="assignment-identity-title">
                   {{ row['title'] }}
                 </span>
+                }
                 }
 
                 @if (row['className'] || row['sectionName'] || row['academicYearName']) {

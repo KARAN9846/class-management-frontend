@@ -54,31 +54,59 @@ export class StudentAttendanceComponent implements OnInit {
 
   search = '';
 
+  filteredAttendanceCount = 0;
+
+  get presentDays(): number {
+    return this.allAttendance.filter(
+      record => record.status === 'PRESENT'
+    ).length;
+  }
+
+  get absentDays(): number {
+    return this.allAttendance.filter(
+      record => record.status === 'ABSENT'
+    ).length;
+  }
+
+  get attendancePercentage(): number {
+    return this.allAttendance.length
+      ? Math.round(
+          (this.presentDays / this.allAttendance.length) * 100
+        )
+      : 0;
+  }
+
 columns: TableColumn[] = [
+  {
+    key: 'attendanceDate',
+    label: 'Date',
+    width: '190px',
+    type: 'date-time',
+    sortable: true
+  },
   {
     key: 'academicYearName',
     label: 'Academic Year',
+    width: '170px',
     sortable: true
   },
   {
     key: 'className',
     label: 'Class',
+    width: '150px',
     sortable: true
   },
   {
     key: 'sectionName',
     label: 'Section',
+    width: '120px',
     align: 'center',
-    sortable: true
-  },
-  {
-    key: 'attendanceDate',
-    label: 'Date',
     sortable: true
   },
   {
     key: 'status',
     label: 'Status',
+    width: '130px',
     align: 'center',
     type: 'status',
     sortable: true
@@ -86,6 +114,7 @@ columns: TableColumn[] = [
   {
     key: 'markedByTeacherName',
     label: 'Marked By',
+    width: '220px',
     type: 'attendance-teacher',
     sortable: true
   }
@@ -131,6 +160,12 @@ columns: TableColumn[] = [
   }
 
   private updatePagination(): void {
+  const filteredAttendance =
+    this.getFilteredAttendance();
+
+  this.filteredAttendanceCount =
+    filteredAttendance.length;
+
   const startIndex =
     (this.currentPage - 1) * this.pageSize;
 
@@ -138,10 +173,25 @@ columns: TableColumn[] = [
     startIndex + this.pageSize;
 
   this.attendance =
-    this.allAttendance.slice(
+    filteredAttendance.slice(
       startIndex,
       endIndex
     );
+}
+
+private getFilteredAttendance(): Attendance[] {
+  if (!this.search) {
+    return [...this.allAttendance];
+  }
+
+  return this.allAttendance.filter(record =>
+    record.academicYearName?.toLowerCase().includes(this.search) ||
+    record.className?.toLowerCase().includes(this.search) ||
+    record.sectionName?.toLowerCase().includes(this.search) ||
+    record.attendanceDate?.toLowerCase().includes(this.search) ||
+    record.status?.toLowerCase().includes(this.search) ||
+    record.markedByTeacherName?.toLowerCase().includes(this.search)
+  );
 }
 
 onPageChange(page: number): void {
@@ -152,5 +202,9 @@ onPageChange(page: number): void {
 
   onSearchChange(value: string): void {
     this.search = value.trim().toLowerCase();
+
+    this.currentPage = 1;
+
+    this.updatePagination();
   }
 }

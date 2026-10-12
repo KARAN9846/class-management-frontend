@@ -15,6 +15,8 @@ export interface TableColumn {
   width?: string;
   align?: 'left' | 'center' | 'right';
   sortable?: boolean;
+  assignmentTitleFirst?: boolean;
+  attendanceInitialsAvatar?: boolean;
 
   /**
    * Optional value formatter for display-only values.

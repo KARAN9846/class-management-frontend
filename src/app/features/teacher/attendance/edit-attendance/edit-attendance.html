@@ -208,9 +208,36 @@
               Marked By
             </span>
 
-            <span class="value">
-              {{ attendance.markedByTeacherName }}
-            </span>
+            <div class="attendance-actor-identity">
+
+              <div
+                class="attendance-actor-avatar"
+                [class.empty]="!attendance.markedByTeacherName"
+                aria-hidden="true">
+                @if (attendance.markedByTeacherName) {
+                {{
+                  attendance.markedByTeacherName.trim().charAt(0) +
+                  (
+                    attendance.markedByTeacherName.trim().includes(' ')
+                      ? attendance.markedByTeacherName.trim().split(' ').slice(-1)[0].charAt(0)
+                      : ''
+                  )
+                }}
+                } @else {
+                —
+                }
+              </div>
+
+              <div class="attendance-actor-content">
+                <span class="attendance-actor-name">
+                  {{ attendance.markedByTeacherName || 'Not available' }}
+                </span>
+                <span class="attendance-actor-context">
+                  Marked attendance
+                </span>
+              </div>
+
+            </div>
 
           </div>
 

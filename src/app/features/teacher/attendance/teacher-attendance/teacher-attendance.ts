@@ -83,22 +83,15 @@ columns: TableColumn[] = [
   {
     key: 'studentName',
     label: 'Student',
-    sortable: true
-  },
-  {
-    key: 'className',
-    label: 'Class',
-    sortable: true
-  },
-  {
-    key: 'sectionName',
-    label: 'Section',
-    align: 'center',
+    width: '320px',
+    type: 'attendance-student',
+    attendanceInitialsAvatar: true,
     sortable: true
   },
   {
     key: 'attendanceDate',
     label: 'Date',
+    type: 'date-time',
     sortable: true
   },
   {
@@ -117,7 +110,7 @@ columns: TableColumn[] = [
   {
     key: 'lastUpdatedByTeacherName',
     label: 'Last Updated By',
-    type: 'attendance-teacher',
+    type: 'attendance-last-updated',
     sortable: true
   }
 ];

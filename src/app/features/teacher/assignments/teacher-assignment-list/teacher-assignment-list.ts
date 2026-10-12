@@ -69,22 +69,9 @@ columns: TableColumn[] = [
   {
     key: 'title',
     label: 'Assignment',
-    sortable: true
-  },
-  {
-    key: 'className',
-    label: 'Class',
-    sortable: true
-  },
-  {
-    key: 'sectionName',
-    label: 'Section',
-    align: 'center',
-    sortable: true
-  },
-  {
-    key: 'subjectName',
-    label: 'Subject',
+    width: '420px',
+    type: 'assignment-identity',
+    assignmentTitleFirst: true,
     sortable: true
   },
   {

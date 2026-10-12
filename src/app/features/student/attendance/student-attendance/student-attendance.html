@@ -10,15 +10,15 @@
 
       <div class="page-title-image">
         <img
-          src="/assets/images/attendance.png"
-          alt="Attendance"
+          src="/assets/images/myattandence.png"
+          alt="My Attendance illustration"
         />
       </div>
 
       <div class="page-title-content">
 
         <span class="page-title-eyebrow">
-          ATTENDANCE MANAGEMENT
+          STUDENT PORTAL
         </span>
 
         <h1>
@@ -26,7 +26,7 @@
         </h1>
 
         <p>
-          Track your attendance records and academic presence
+          Review your attendance summary and daily history.
         </p>
 
       </div>
@@ -34,6 +34,37 @@
     </div>
 
   </div>
+
+
+  <!-- =====================================================
+       ATTENDANCE SUMMARY
+       ===================================================== -->
+
+  @if (!loading && !errorMessage && allAttendance.length > 0) {
+
+  <section class="summary-grid" aria-label="Attendance summary">
+
+    <article class="summary-card summary-card-primary">
+      <span class="summary-label">Attendance</span>
+      <strong>{{ attendancePercentage }}%</strong>
+      <span class="summary-caption">Present days out of total records</span>
+    </article>
+
+    <article class="summary-card summary-card-present">
+      <span class="summary-label">Present Days</span>
+      <strong>{{ presentDays }}</strong>
+      <span class="summary-caption">Days marked present</span>
+    </article>
+
+    <article class="summary-card summary-card-absent">
+      <span class="summary-label">Absent Days</span>
+      <strong>{{ absentDays }}</strong>
+      <span class="summary-caption">Days marked absent</span>
+    </article>
+
+  </section>
+
+  }
 
 
   <!-- =====================================================
@@ -102,7 +133,7 @@
 
     <!-- EMPTY -->
 
-    @if (!loading && attendance.length === 0) {
+    @if (!loading && !errorMessage && filteredAttendanceCount === 0) {
 
       <div class="empty-state">
 
@@ -111,17 +142,20 @@
         </div>
 
         <h3>
-          No attendance records found
+          {{ search ? 'No matching records found' : 'No attendance records found' }}
         </h3>
 
         <p>
-          Your attendance records will appear here once
-          attendance has been marked.
+          {{
+            search
+              ? 'Try a different search term.'
+              : 'Your attendance records will appear here once attendance has been marked.'
+          }}
         </p>
 
       </div>
 
-    } @else {
+    } @else if (!errorMessage) {
 
       <!-- TABLE -->
 
@@ -132,8 +166,6 @@
           [data]="attendance"
           [loading]="loading"
           [showActions]="false"
-          [enableSearch]="true"
-          [searchPlaceholder]="'Search attendance...'"
         >
         </app-data-table>
 
@@ -142,7 +174,7 @@
 
       <!-- PAGINATION -->
 
-      @if (allAttendance.length > 0) {
+      @if (filteredAttendanceCount > 0) {
 
         <div class="pagination-wrapper">
 
@@ -154,7 +186,7 @@
             </strong>
             of
             <strong>
-              {{ allAttendance.length }}
+              {{ filteredAttendanceCount }}
             </strong>
             attendance records
 
@@ -162,7 +194,7 @@
 
           <app-pagination
             [currentPage]="currentPage"
-            [totalItems]="allAttendance.length"
+            [totalItems]="filteredAttendanceCount"
             [pageSize]="pageSize"
             (pageChange)="onPageChange($event)"
           >
