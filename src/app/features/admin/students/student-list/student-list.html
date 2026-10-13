@@ -380,14 +380,14 @@
 
           <div class="student-avatar">
 
-            {{ student.firstName.charAt(0) || '' }}{{ student.lastName.charAt(0) || '' }}
+            {{ getStudentInitials(student.name) }}
 
           </div>
 
           <div class="student-card-identity">
 
             <h3>
-              {{ student.firstName }} {{ student.lastName }}
+              {{ student.name }}
             </h3>
 
             <span>
@@ -459,6 +459,16 @@
           <div class="info-item">
             <span class="info-label">Branch</span>
             <span class="info-value">{{ student.branchName || '—' }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Alternative Phone</span>
+            <span class="info-value">{{ student.alternatePhone || '—' }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label">Address</span>
+            <span class="info-value">{{ student.address || '—' }}</span>
           </div>
 
         </div>

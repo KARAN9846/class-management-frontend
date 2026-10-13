@@ -286,7 +286,9 @@ student
 
             @if (
             student.email ||
-            student.phone
+            student.phone ||
+            student.alternatePhone ||
+            student.address
             ) {
 
             <div class="quick-view-section">
@@ -318,6 +320,15 @@ student
 
                     }
 
+                    @if (student.address) {
+
+                    <div class="detail-item">
+                        <span class="detail-label">Address</span>
+                        <strong>{{ student.address }}</strong>
+                    </div>
+
+                    }
+
 
                     @if (
                     student.phone
@@ -333,6 +344,22 @@ student
                             {{
                             student.phone
                             }}
+                        </strong>
+
+                    </div>
+
+                    }
+
+                    @if (student.alternatePhone) {
+
+                    <div class="detail-item">
+
+                        <span class="detail-label">
+                            Alternative Phone
+                        </span>
+
+                        <strong>
+                            {{ student.alternatePhone }}
                         </strong>
 
                     </div>

@@ -5,12 +5,13 @@
 export interface TeacherStudent {
   studentId: number;
 
-  firstName: string;
-  lastName: string;
+  name: string;
 
   rollNumber: string | null;
   email: string | null;
   phone: string | null;
+  alternatePhone: string | null;
+  address: string | null;
 
   isActive: boolean | null;
 
@@ -74,11 +75,12 @@ export interface TeacherStudentQuery {
 // =========================================================
 
 export interface CreateStudentRequest {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   password: string;
   phone?: string;
+  alternatePhone?: string;
+  address?: string;
 
   academicYearId: number;
   classId: number;
@@ -91,10 +93,11 @@ export interface CreateStudentRequest {
 // =========================================================
 
 export interface UpdateStudentRequest {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   phone?: string;
+  alternatePhone?: string;
+  address?: string;
   rollNumber?: string;
 
   academicYearId: number;

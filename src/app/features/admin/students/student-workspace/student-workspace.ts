@@ -419,7 +419,7 @@ receiptErrorMessage = '';
         doc.setTextColor(15, 23, 42);
 
         doc.text(
-            `${student.firstName} ${student.lastName}`,
+            student.name,
             margin + 7,
             currentY + 9
         );
@@ -489,7 +489,8 @@ receiptErrorMessage = '';
                 doc,
                 [
                     ['Email', student.email || '—'],
-                    ['Phone', student.phone || '—']
+                    ['Phone', student.phone || '—'],
+                    ['Alternative Phone', student.alternatePhone || '—']
                 ],
                 currentY,
                 contentWidth,
@@ -799,7 +800,7 @@ receiptErrorMessage = '';
             );
         }
 
-        const studentName = `${student.firstName}-${student.lastName}`
+        const studentName = student.name
             .trim()
             .replace(/\s+/g, '-')
             .toLowerCase();
@@ -919,8 +920,7 @@ receiptErrorMessage = '';
             return 'Student';
         }
 
-        return `${this.student.firstName ?? ''} ${this.student.lastName ?? ''}`
-            .trim() || 'Student';
+        return this.student.name?.trim() || 'Student';
     }
 
     get studentInitials(): string {
@@ -928,8 +928,9 @@ receiptErrorMessage = '';
             return 'ST';
         }
 
-        const first = this.student.firstName?.charAt(0) ?? '';
-        const last = this.student.lastName?.charAt(0) ?? '';
+        const parts = this.student.name?.trim().split(/\s+/).filter(Boolean) ?? [];
+        const first = parts[0]?.charAt(0) ?? '';
+        const last = parts.length > 1 ? parts.at(-1)?.charAt(0) ?? '' : '';
 
         return `${first}${last}`.toUpperCase() || 'ST';
     }

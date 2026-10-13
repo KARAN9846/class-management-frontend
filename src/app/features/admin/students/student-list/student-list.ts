@@ -248,8 +248,7 @@ bulkEditableFields = [
       width: '240px',
       type: 'student-name',
       sortable: true,
-      value: (row: StudentListRow) =>
-        `${row.firstName ?? ''} ${row.lastName ?? ''}`.trim()
+      value: (row: StudentListRow) => row.name
     },
     {
       key: 'rollNumber',
@@ -320,6 +319,20 @@ bulkEditableFields = [
       sortable: true
     },
     {
+      key: 'alternatePhone',
+      label: 'Alternative Phone',
+      width: '160px',
+      sortable: true,
+      value: (row: StudentListRow) => row.alternatePhone || '—'
+    },
+    {
+      key: 'address',
+      label: 'Address',
+      width: '240px',
+      sortable: true,
+      value: (row: StudentListRow) => row.address || '—'
+    },
+    {
       key: 'originalFee',
       label: 'Original Fee (₹)',
       width: '140px',
@@ -387,6 +400,8 @@ bulkEditableFields = [
     'isActive',
     'email',
     'phone',
+    'alternatePhone',
+    'address',
     'originalFee',
     'discountAmount',
     'payableAmount',
@@ -1365,7 +1380,7 @@ saveBulkEdit(): void {
         : 'Deactivate Student?';
 
     this.confirmationMessage =
-      `Are you sure you want to ${action} ${student.firstName} ${student.lastName}?`;
+      `Are you sure you want to ${action} ${student.name}?`;
 
     this.confirmationConfirmLabel =
       newStatus
@@ -1388,7 +1403,7 @@ saveBulkEdit(): void {
       'Delete Student?';
 
     this.confirmationMessage =
-      `Are you sure you want to delete ${student.firstName} ${student.lastName}?`;
+      `Are you sure you want to delete ${student.name}?`;
 
     this.confirmationConfirmLabel =
       'Delete';
@@ -1622,6 +1637,8 @@ saveBulkEdit(): void {
       'Status',
       'Email',
       'Phone',
+      'Alternative Phone',
+      'Address',
       'Original Fee (₹)',
       'Discount (₹)',
       'Payable (₹)',
@@ -1632,7 +1649,7 @@ saveBulkEdit(): void {
     ];
 
     const rows = students.map(student => [
-      `${student.firstName ?? ''} ${student.lastName ?? ''}`.trim(),
+      student.name,
       student.rollNumber ?? '',
       student.schoolName ?? 'No School',
       student.academicYearName ?? '',
@@ -1641,6 +1658,8 @@ saveBulkEdit(): void {
       student.isActive ? 'Active' : 'Inactive',
       student.email ?? '',
       student.phone ?? '',
+      student.alternatePhone ?? '',
+      student.address ?? '',
       student.originalFee ?? 0,
       student.discountAmount ?? 0,
       student.payableAmount ?? 0,
@@ -1841,6 +1860,13 @@ onStudentsImported(): void {
     // Refresh the current page without changing
     // search, filters or pagination.
     this.loadStudents();
+  }
+
+  getStudentInitials(name: string): string {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    const first = parts[0]?.charAt(0) ?? '';
+    const last = parts.length > 1 ? parts.at(-1)?.charAt(0) ?? '' : '';
+    return `${first}${last}`.toUpperCase();
   }
 
 

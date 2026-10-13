@@ -691,8 +691,7 @@ if (role === 'ADMIN') {
 
           id: student.id,
 
-          title:
-            `${student.firstName} ${student.lastName}`.trim(),
+          title: student.name,
 
           subtitle:
             `${student.className} • Roll No: ${student.rollNumber}`,
@@ -817,7 +816,7 @@ if (role === 'ADMIN') {
 
           search: normalizedQuery,
 
-          sortBy: 'firstName',
+          sortBy: 'name',
 
           sortDirection: 'asc'
 
@@ -834,8 +833,7 @@ if (role === 'ADMIN') {
               id:
                 student.studentId,
 
-              title:
-                `${student.firstName} ${student.lastName}`.trim(),
+              title: student.name,
 
               subtitle:
                 `${student.className} • Roll No: ${student.rollNumber ?? 'N/A'
@@ -988,17 +986,19 @@ if (role === 'ADMIN') {
             id:
               studentResponse.id,
 
-            firstName:
-              studentResponse.firstName,
-
-            lastName:
-              studentResponse.lastName,
+            name: studentResponse.name,
 
             email:
               studentResponse.email,
 
             phone:
               studentResponse.phone,
+
+            alternatePhone:
+              studentResponse.alternatePhone,
+
+            address:
+              studentResponse.address,
 
             rollNumber:
               studentResponse.rollNumber,
@@ -1205,17 +1205,19 @@ if (role === 'ADMIN') {
                   id:
                     student.studentId,
 
-                  firstName:
-                    student.firstName,
-
-                  lastName:
-                    student.lastName,
+                  name: student.name,
 
                   email:
                     student.email,
 
                   phone:
                     student.phone,
+
+                  alternatePhone:
+                    student.alternatePhone,
+
+                  address:
+                    student.address,
 
                   rollNumber:
                     student.rollNumber,
@@ -1462,10 +1464,11 @@ if (role === 'ADMIN') {
 
     student: {
       id: number;
-      firstName: string;
-      lastName: string;
+      name: string;
       email?: string | null;
       phone?: string | null;
+      alternatePhone?: string | null;
+      address?: string | null;
       rollNumber?: string | null;
       enrollmentNumber?: string | null;
       className?: string | null;
@@ -1555,14 +1558,19 @@ if (role === 'ADMIN') {
       id:
         student.id,
 
-      name:
-        `${student.firstName} ${student.lastName}`.trim(),
+      name: student.name,
 
       email:
         student.email ?? undefined,
 
       phone:
         student.phone ?? undefined,
+
+      alternatePhone:
+        student.alternatePhone ?? undefined,
+
+      address:
+        student.address ?? undefined,
 
       rollNumber:
         student.rollNumber ?? undefined,

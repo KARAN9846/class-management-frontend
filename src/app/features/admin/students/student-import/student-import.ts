@@ -469,10 +469,11 @@ export class StudentImportComponent {
       return;
     }
 
-    this.mapCandidateLoading.add(key);
-    this.mapCandidateErrors.delete(key);
+this.mapCandidateLoading.add(key);
+this.mapCandidateErrors.delete(key);
+this.cdr.detectChanges();
 
-    this.getMapCandidates(issue).subscribe({
+this.getMapCandidates(issue).subscribe({
       next: candidates => {
         this.mapCandidates.set(key, candidates);
         this.mapCandidateLoading.delete(key);
@@ -830,7 +831,7 @@ export class StudentImportComponent {
     const rows = [
       ['Student Name', 'Email', 'Temporary Password'],
       ...students.map(student => [
-        `${student.firstName ?? ''} ${student.lastName ?? ''}`.trim(),
+        student.name,
         student.email,
         student.temporaryPassword
       ])

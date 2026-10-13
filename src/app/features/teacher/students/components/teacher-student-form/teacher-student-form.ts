@@ -84,9 +84,18 @@ canViewStudent(): boolean {
     'STUDENT_VIEW_ROLL_NUMBER',
     'STUDENT_VIEW_EMAIL',
     'STUDENT_VIEW_PHONE',
+    'STUDENT_VIEW_ADDRESS',
     'STUDENT_VIEW_STATUS'
   ]);
 }
+
+  canViewAddress(): boolean {
+    return this.permissionService.hasPermission('STUDENT_VIEW_ADDRESS');
+  }
+
+  canEditAddress(): boolean {
+    return this.permissionService.hasPermission('STUDENT_EDIT_ADDRESS');
+  }
 
   canCreateStudent(): boolean {
     return this.permissionService.hasPermission(
@@ -95,9 +104,14 @@ canViewStudent(): boolean {
   }
 
   canUpdateStudent(): boolean {
-    return this.permissionService.hasPermission(
-      'STUDENT_UPDATE'
-    );
+    return this.permissionService.hasAnyPermission([
+      'STUDENT_EDIT_NAME',
+      'STUDENT_EDIT_ROLL_NUMBER',
+      'STUDENT_EDIT_EMAIL',
+      'STUDENT_EDIT_PHONE',
+      'STUDENT_EDIT_ADDRESS',
+      'STUDENT_EDIT_ENROLLMENT'
+    ]);
   }
 
 
@@ -113,14 +127,7 @@ canViewStudent(): boolean {
         []
       ],
 
-      firstName: [
-        '',
-        [
-          Validators.required
-        ]
-      ],
-
-      lastName: [
+      name: [
         '',
         [
           Validators.required
@@ -141,6 +148,18 @@ canViewStudent(): boolean {
       ],
 
       phone: [
+        ''
+      ],
+
+      alternatePhone: [
+        '',
+        [
+          Validators.maxLength(20),
+          Validators.pattern(/^[0-9+()\-\s]{7,20}$/)
+        ]
+      ],
+
+      address: [
         ''
       ],
 
@@ -830,17 +849,20 @@ canViewStudent(): boolean {
         rollNumber:
           student.rollNumber ?? '',
 
-        firstName:
-          student.firstName ?? '',
-
-        lastName:
-          student.lastName ?? '',
+        name:
+          student.name ?? '',
 
         email:
           student.email ?? '',
 
         phone:
           student.phone ?? '',
+
+        alternatePhone:
+          student.alternatePhone ?? '',
+
+        address:
+          student.address ?? '',
 
         academicYearId:
           student.academicYearId,
@@ -1021,11 +1043,8 @@ canViewStudent(): boolean {
 
     const request: CreateStudentRequest = {
 
-      firstName:
-        formValue.firstName!.trim(),
-
-      lastName:
-        formValue.lastName!.trim(),
+      name:
+        formValue.name!.trim(),
 
       email:
         formValue.email!.trim(),
@@ -1033,8 +1052,9 @@ canViewStudent(): boolean {
       password:
         formValue.password!,
 
-      phone:
-        formValue.phone?.trim() || '',
+      phone: formValue.phone?.trim() || undefined,
+      alternatePhone: formValue.alternatePhone?.trim() || undefined,
+      address: formValue.address?.trim() || undefined,
 
       academicYearId:
         Number(
@@ -1148,17 +1168,15 @@ canViewStudent(): boolean {
           .trim()
           .toUpperCase(),
 
-      firstName:
-        formValue.firstName!.trim(),
-
-      lastName:
-        formValue.lastName!.trim(),
+      name:
+        formValue.name!.trim(),
 
       email:
         formValue.email!.trim(),
 
-      phone:
-        formValue.phone?.trim() || '',
+      phone: formValue.phone?.trim() || undefined,
+      alternatePhone: formValue.alternatePhone?.trim() || undefined,
+      address: formValue.address?.trim() || undefined,
 
       academicYearId:
         Number(

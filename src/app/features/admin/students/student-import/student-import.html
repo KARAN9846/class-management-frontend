@@ -32,10 +32,10 @@
 
         <div>
           <strong>Use the official Excel template</strong>
-          <p>
-            Download the template first and enter student
-            information using the provided columns.
-          </p>
+<p>
+  Download the template and enter student information using the provided columns.
+  Address and Alternative Phone are optional.
+</p>
         </div>
       </div>
 
@@ -163,7 +163,7 @@
                   <tr>
                     <td>
                       <strong>
-                        {{ student.firstName }} {{ student.lastName }}
+                        {{ student.name }}
                       </strong>
                     </td>
                     <td>{{ student.email }}</td>
@@ -179,7 +179,7 @@
                           (click)="toggleCredentialVisibility(credentialIndex)"
                           [attr.aria-label]="
                             (isCredentialVisible(credentialIndex) ? 'Hide' : 'Show') +
-                            ' temporary password for ' + student.firstName + ' ' + student.lastName
+                            ' temporary password for ' + student.name
                           "
                           [attr.aria-pressed]="isCredentialVisible(credentialIndex)"
                         >

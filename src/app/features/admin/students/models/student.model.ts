@@ -1,10 +1,11 @@
 export interface Student {
   id: number;
   rollNumber: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
-  phone: string;
+  phone: string | null;
+  alternatePhone: string | null;
+  address: string | null;
   isActive: boolean;
 
   academicYearId: number;
@@ -40,11 +41,12 @@ export interface StudentDetails extends Student {
 }
 
 export interface CreateStudentRequest {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   password: string;
-  phone: string;
+  phone?: string | null;
+  alternatePhone?: string | null;
+  address?: string | null;
 
   academicYearId: number;
   classId: number;
@@ -62,10 +64,11 @@ export interface CreateStudentRequest {
 
 export interface UpdateStudentRequest {
   rollNumber: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
-  phone: string;
+  phone?: string | null;
+  alternatePhone?: string | null;
+  address?: string | null;
 
   academicYearId: number;
   classId: number;

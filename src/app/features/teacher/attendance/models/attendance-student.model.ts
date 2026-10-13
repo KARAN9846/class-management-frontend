@@ -1,6 +1,5 @@
 export interface AttendanceStudent {
   studentId: number;
-  firstName: string;
-  lastName: string;
+  name: string;
   rollNumber: string | null;
 }

@@ -165,53 +165,26 @@
             }
 
 
-            <!-- ================= FIRST NAME ================= -->
+            <!-- ================= NAME ================= -->
 
             <div class="form-group">
 
-              <label for="firstName">
-                First Name
+              <label for="name">
+                Name
                 <span>*</span>
               </label>
 
               <input
-                id="firstName"
+                id="name"
                 type="text"
-                formControlName="firstName"
-                placeholder="Enter first name"
-                [class.invalid]="isInvalid('firstName')" />
+                formControlName="name"
+                placeholder="Enter student name"
+                [class.invalid]="isInvalid('name')" />
 
-              @if (isInvalid('firstName')) {
+              @if (isInvalid('name')) {
 
                 <small class="field-error">
-                  First name is required.
-                </small>
-
-              }
-
-            </div>
-
-
-            <!-- ================= LAST NAME ================= -->
-
-            <div class="form-group">
-
-              <label for="lastName">
-                Last Name
-                <span>*</span>
-              </label>
-
-              <input
-                id="lastName"
-                type="text"
-                formControlName="lastName"
-                placeholder="Enter last name"
-                [class.invalid]="isInvalid('lastName')" />
-
-              @if (isInvalid('lastName')) {
-
-                <small class="field-error">
-                  Last name is required.
+                  Name is required.
                 </small>
 
               }
@@ -263,8 +236,7 @@
             <div class="form-group">
 
               <label for="phone">
-                Phone
-                <span>*</span>
+                Phone No. <small>(Optional)</small>
               </label>
 
               <input
@@ -274,14 +246,29 @@
                 placeholder="Enter phone number"
                 [class.invalid]="isInvalid('phone')" />
 
-              @if (isInvalid('phone')) {
+            </div>
 
-                <small class="field-error">
-                  Phone is required.
-                </small>
+            <div class="form-group">
 
-              }
+              <label for="alternatePhone">
+                Alternative Phone Number <small>(Optional)</small>
+              </label>
 
+              <input
+                id="alternatePhone"
+                type="tel"
+                formControlName="alternatePhone"
+                placeholder="Enter alternative phone number" />
+
+            </div>
+
+            <div class="form-group">
+              <label for="address">Address <small>(Optional)</small></label>
+              <textarea
+                id="address"
+                formControlName="address"
+                rows="3"
+                placeholder="Enter student address"></textarea>
             </div>
 
             <div class="form-group">

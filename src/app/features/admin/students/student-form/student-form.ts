@@ -202,14 +202,7 @@ export class StudentForm implements OnInit {
       []
     ],
 
-    firstName: [
-      '',
-      [
-        Validators.required
-      ]
-    ],
-
-    lastName: [
+    name: [
       '',
       [
         Validators.required
@@ -225,10 +218,19 @@ export class StudentForm implements OnInit {
     ],
 
     phone: [
+      ''
+    ],
+
+    alternatePhone: [
       '',
       [
-        Validators.required
+        Validators.maxLength(20),
+        Validators.pattern(/^[0-9+()\-\s]{7,20}$/)
       ]
+    ],
+
+    address: [
+      ''
     ],
 
     gender: [
@@ -680,17 +682,20 @@ export class StudentForm implements OnInit {
             rollNumber:
               student.rollNumber,
 
-            firstName:
-              student.firstName,
-
-            lastName:
-              student.lastName,
+            name:
+              student.name,
 
             email:
               student.email,
 
             phone:
-              student.phone,
+              student.phone ?? '',
+
+            alternatePhone:
+              student.alternatePhone ?? '',
+
+            address:
+              student.address ?? '',
 
             gender:
               student.gender,
@@ -889,11 +894,8 @@ export class StudentForm implements OnInit {
 
     const request: CreateStudentRequest = {
 
-      firstName:
-        formValue.firstName!.trim(),
-
-      lastName:
-        formValue.lastName!.trim(),
+      name:
+        formValue.name!.trim(),
 
       email:
         formValue.email!.trim(),
@@ -901,8 +903,9 @@ export class StudentForm implements OnInit {
       password:
         formValue.password!,
 
-      phone:
-        formValue.phone?.trim() || '',
+      phone: formValue.phone?.trim() || null,
+      alternatePhone: formValue.alternatePhone?.trim() || null,
+      address: formValue.address?.trim() || null,
 
       academicYearId:
         Number(
@@ -1031,17 +1034,15 @@ next: () => {
       rollNumber:
         requestedRollNumber,
 
-      firstName:
-        formValue.firstName!.trim(),
-
-      lastName:
-        formValue.lastName!.trim(),
+      name:
+        formValue.name!.trim(),
 
       email:
         formValue.email!.trim(),
 
-      phone:
-        formValue.phone?.trim() || '',
+      phone: formValue.phone?.trim() || null,
+      alternatePhone: formValue.alternatePhone?.trim() || null,
+      address: formValue.address?.trim() || null,
 
       academicYearId:
         Number(

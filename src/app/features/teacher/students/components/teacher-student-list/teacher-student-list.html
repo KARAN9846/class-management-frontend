@@ -259,6 +259,13 @@
             <small>Phone</small>
             <strong>{{ displayValue(selectedStudent.phone) }}</strong>
           </div>
+
+          @if (selectedStudent.address) {
+          <div>
+            <small>Address</small>
+            <strong>{{ selectedStudent.address }}</strong>
+          </div>
+          }
         </div>
       </section>
 

@@ -374,12 +374,7 @@
               <div class="student-avatar">
 
                 {{
-                (
-                student.firstName.charAt(0) || ''
-                ) +
-                (
-                student.lastName.charAt(0)|| ''
-                )
+                student.name.charAt(0) || ''
                 }}
 
               </div>
@@ -387,8 +382,7 @@
               <div>
 
                 <div class="student-name">
-                  {{ student.firstName }}
-                  {{ student.lastName }}
+                  {{ student.name }}
                 </div>
 
                 <div class="student-id">

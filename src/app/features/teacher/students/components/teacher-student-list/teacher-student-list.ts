@@ -132,7 +132,7 @@ export class TeacherStudentListComponent implements OnInit {
   // SORTING
   // =========================================================
 
-  sortBy = 'firstName';
+  sortBy = 'name';
 
   sortDirection: 'asc' | 'desc' = 'asc';
 
@@ -886,20 +886,14 @@ export class TeacherStudentListComponent implements OnInit {
   getStudentName(
     student: TeacherStudent
   ): string {
-    return `${student.firstName} ${student.lastName}`
-      .trim();
+    return student.name?.trim() || '—';
   }
 
   getInitials(
     student: TeacherStudent
   ): string {
-    const first =
-      student.firstName?.charAt(0) ?? '';
-
-    const last =
-      student.lastName?.charAt(0) ?? '';
-
-    return `${first}${last}`
+    const parts = student.name?.trim().split(/\s+/).filter(Boolean) ?? [];
+    return `${parts[0]?.charAt(0) ?? ''}${parts.length > 1 ? parts.at(-1)?.charAt(0) ?? '' : ''}`
       .toUpperCase();
   }
 

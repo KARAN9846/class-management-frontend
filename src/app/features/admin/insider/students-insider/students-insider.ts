@@ -3050,9 +3050,7 @@ export class StudentsInsider implements OnInit {
         student: Student
     ): string {
 
-        return (
-            `${student.firstName ?? ''} ${student.lastName ?? ''}`
-        ).trim();
+        return student.name?.trim() ?? '';
 
     }
 

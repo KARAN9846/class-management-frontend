@@ -125,6 +125,10 @@ export interface GlobalSearchStudentQuickView {
 
   phone?: string;
 
+  alternatePhone?: string;
+
+  address?: string;
+
   rollNumber?: string;
 
   enrollmentNumber?: string;

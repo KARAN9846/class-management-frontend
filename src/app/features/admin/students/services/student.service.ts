@@ -63,9 +63,10 @@ export interface BulkUpdateStudentRequest {
   studentIds: number[];
   selectedFields: string[];
 
-  firstName?: string;
-  lastName?: string;
+  name?: string;
   phone?: string;
+  alternatePhone?: string;
+  address?: string;
   gender?: 'Male' | 'Female' | null;
   isActive?: boolean;
 
@@ -130,8 +131,7 @@ export interface StudentImportValidationResponse {
 }
 
 export interface ImportedStudentCredential {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   temporaryPassword: string;
 }
@@ -205,7 +205,7 @@ getStudents(
   academicYearId?: number,
   classId?: number,
   sectionId?: number,
-  sortBy: string | null = 'firstName',
+  sortBy: string | null = 'name',
   sortDirection: 'asc' | 'desc' | null = 'asc'
 ): Observable<ApiResponse<StudentPage>> {
 

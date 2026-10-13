@@ -325,13 +325,13 @@
             <div class="details-grid">
 
                 <div class="detail-card">
-                    <span>First Name</span>
-                    <strong>{{ student.firstName || '—' }}</strong>
+                    <span>Name</span>
+                    <strong>{{ student.name || '—' }}</strong>
                 </div>
 
                 <div class="detail-card">
-                    <span>Last Name</span>
-                    <strong>{{ student.lastName || '—' }}</strong>
+                    <span>Address</span>
+                    <strong>{{ student.address || '—' }}</strong>
                 </div>
 
                 <div class="detail-card">
@@ -342,6 +342,11 @@
                 <div class="detail-card">
                     <span>Phone</span>
                     <strong>{{ student.phone || '—' }}</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Alternative Phone</span>
+                    <strong>{{ student.alternatePhone || '—' }}</strong>
                 </div>
 
                 <div class="detail-card">
@@ -793,8 +798,7 @@
             <div>
                 <h2 id="addPaymentTitle">Add Payment</h2>
                 <p>
-                    Record a payment for {{ student?.firstName }}
-                    {{ student?.lastName }}
+                    Record a payment for {{ student?.name }}
                 </p>
             </div>
 
@@ -826,8 +830,7 @@
                 <h2 id="editPaymentTitle">Edit Payment</h2>
                 <p>
                     Update payment details for
-                    {{ student?.firstName }}
-                    {{ student?.lastName }}
+                    {{ student?.name }}
                 </p>
             </div>
 
@@ -1072,8 +1075,7 @@
                 </span>
 
                 <strong>
-                    {{ student?.firstName }}
-                    {{ student?.lastName }}
+                    {{ student?.name }}
                 </strong>
             </div>
 

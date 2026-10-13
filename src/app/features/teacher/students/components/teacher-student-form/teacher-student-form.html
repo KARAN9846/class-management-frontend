@@ -85,48 +85,24 @@
 
         <div class="form-grid">
 
-          <!-- FIRST NAME -->
+          <!-- NAME -->
 
           <div class="form-field">
 
-            <label for="firstName">
-              First Name
+            <label for="name">
+              Name
             </label>
 
             <input
-              id="firstName"
+              id="name"
               type="text"
-              formControlName="firstName"
-              placeholder="Enter first name"
+              formControlName="name"
+              placeholder="Enter student name"
             />
 
-            @if (isFieldInvalid('firstName')) {
+            @if (isFieldInvalid('name')) {
               <small class="field-error">
-                {{ getFieldError('firstName') }}
-              </small>
-            }
-
-          </div>
-
-
-          <!-- LAST NAME -->
-
-          <div class="form-field">
-
-            <label for="lastName">
-              Last Name
-            </label>
-
-            <input
-              id="lastName"
-              type="text"
-              formControlName="lastName"
-              placeholder="Enter last name"
-            />
-
-            @if (isFieldInvalid('lastName')) {
-              <small class="field-error">
-                {{ getFieldError('lastName') }}
+                {{ getFieldError('name') }}
               </small>
             }
 
@@ -162,7 +138,7 @@
           <div class="form-field">
 
             <label for="phone">
-              Phone
+              Phone No. (Optional)
             </label>
 
             <input
@@ -173,6 +149,34 @@
             />
 
           </div>
+
+          <div class="form-field">
+
+            <label for="alternatePhone">
+              Alternative Phone Number (Optional)
+            </label>
+
+            <input
+              id="alternatePhone"
+              type="text"
+              formControlName="alternatePhone"
+              placeholder="Enter alternative phone number"
+            />
+
+          </div>
+
+          @if (!isEditMode || canViewAddress() || canEditAddress()) {
+            <div class="form-field">
+              <label for="address">Address (Optional)</label>
+              <textarea
+                id="address"
+                formControlName="address"
+                rows="3"
+                placeholder="Enter student address"
+                [readonly]="isEditMode && !canEditAddress()"
+              ></textarea>
+            </div>
+          }
 
 
           <!-- PASSWORD -->

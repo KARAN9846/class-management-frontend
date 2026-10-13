@@ -867,14 +867,7 @@
 
               <div class="student-name-avatar">
 
-                {{
-                (
-                row['firstName']?.charAt(0) || ''
-                ) +
-                (
-                row['lastName']?.charAt(0) || ''
-                )
-                }}
+                {{ getIdentityInitials(row) }}
 
               </div>
 
