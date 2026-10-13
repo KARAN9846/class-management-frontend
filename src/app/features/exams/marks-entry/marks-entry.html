@@ -1,0 +1,239 @@
+<section class="marks-page">
+  <header class="page-header">
+    <button type="button" class="back-link" [disabled]="saving"
+      (click)="back()">← Exams &amp; Marks</button>
+
+    @if (loadingExam) {
+      <h1>Loading exam...</h1>
+    } @else if (exam) {
+      <div class="title-row">
+        <div>
+          <h1>{{ exam.title }}</h1>
+          <p>{{ exam.className }} · {{ exam.sectionName }} · {{ exam.subjectName }}</p>
+        </div>
+        <div class="max-marks">
+          <span>Maximum marks</span>
+          <strong>{{ exam.maximumMarks }}</strong>
+        </div>
+      </div>
+    }
+  </header>
+
+  @if (errorMessage) {
+    <div class="alert-error" role="alert">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="alert-success" role="status">{{ successMessage }}</div>
+  }
+
+  @if (exam?.status === 'PUBLISHED') {
+    <section class="marks-card">
+      <div class="toolbar">
+        <div>
+          <h2>Candidate roster</h2>
+          <p>{{ totalElements }} students · Select students for a bulk action.</p>
+        </div>
+        <button type="button" class="secondary-btn" (click)="refresh()"
+          [disabled]="loadingMarks || saving">Refresh</button>
+      </div>
+
+      @if (selectedCount > 0 || bulkActionStatus) {
+      <div class="bulk-bar">
+        <div class="selection-summary" aria-live="polite">
+          <strong>{{ selectedCount }}</strong>
+          <span>student{{ selectedCount === 1 ? '' : 's' }} selected</span>
+          <button type="button" class="clear-selection-btn"
+            [disabled]="selectedCount === 0 || saving || bulkActionStatus !== null"
+            (click)="clearSelection()">Clear selection</button>
+        </div>
+
+        <div class="bulk-actions" aria-label="Bulk mark status actions">
+          <button type="button" class="pending-btn"
+            [disabled]="selectedCount === 0 || saving || bulkActionStatus !== null"
+            (click)="markSelectedPending()">Set Pending</button>
+          <button type="button" class="absent-btn"
+            [disabled]="selectedCount === 0 || saving || bulkActionStatus !== null"
+            (click)="markSelectedAbsent()">Set Absent</button>
+          <button type="button" class="exempt-btn"
+            [disabled]="selectedCount === 0 || saving || bulkActionStatus !== null"
+            (click)="markSelectedExempt()">Set Exempt</button>
+          <button type="button" class="na-btn"
+            [disabled]="selectedCount === 0 || saving || bulkActionStatus !== null"
+            (click)="markSelectedNotApplicable()">Set Not Applicable</button>
+        </div>
+      </div>
+      }
+
+      @if (bulkActionStatus) {
+        <section class="bulk-confirm-card" aria-labelledby="bulk-confirm-title">
+          <div>
+            <span class="bulk-confirm-eyebrow">Confirm bulk update</span>
+            <h3 id="bulk-confirm-title">
+              Mark {{ bulkActionCandidateIds.length }}
+              student{{ bulkActionCandidateIds.length === 1 ? '' : 's' }}
+              as {{ bulkActionLabel }}?
+            </h3>
+            <p>
+              This status will be saved immediately. Successfully updated students
+              will be deselected so you can continue with another group.
+            </p>
+            @if (bulkActionError) {
+              <div class="bulk-confirm-error" role="alert">{{ bulkActionError }}</div>
+            }
+          </div>
+          <div class="bulk-confirm-actions">
+            <button type="button" class="secondary-btn"
+              [disabled]="saving" (click)="closeBulkAction()">Cancel</button>
+            <button type="button" class="primary-btn"
+              [disabled]="saving" (click)="confirmBulkAction()">
+              {{ saving ? 'Saving...' : 'Confirm and save' }}
+            </button>
+          </div>
+        </section>
+      }
+
+      @if (loadingMarks) {
+        <div class="state-message">Loading candidate roster...</div>
+      } @else if (marks.length === 0) {
+        <div class="empty-state">
+          <h3>No candidates found</h3>
+          <p>The published exam roster is empty or this page has no records.</p>
+        </div>
+      } @else {
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th class="checkbox-cell">
+                  <input type="checkbox"
+                    aria-label="Select all students on this page"
+                    [checked]="allOnPageSelected"
+                    [disabled]="saving || bulkActionStatus !== null"
+                    (change)="toggleAll($any($event.target).checked)" />
+                </th>
+                <th>Student</th>
+                <th>Roll number</th>
+                <th>Enrollment no.</th>
+                <th>Status</th>
+                <th class="score-header">Score / {{ exam!.maximumMarks }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (mark of marks; track trackMark($index, mark)) {
+                <tr
+                  [class.row-dirty]="isDirty(mark.candidateId)"
+                  [class.row-selected]="selected[mark.candidateId] === true"
+                >
+                  <td class="checkbox-cell">
+                    <input type="checkbox"
+                      [attr.aria-label]="'Select ' + mark.firstName + ' ' + mark.lastName"
+                      [checked]="selected[mark.candidateId] === true"
+                      [disabled]="saving || bulkActionStatus !== null"
+                      (change)="toggleSelection(mark.candidateId, $any($event.target).checked)" />
+                  </td>
+                  <td>
+                    <strong>{{ mark.firstName }} {{ mark.lastName }}</strong>
+                  </td>
+                  <td>{{ mark.rollNumber || '—' }}</td>
+                  <td>{{ mark.enrollmentNumber }}</td>
+                  <td>
+                    <select
+                      [name]="'status-' + mark.candidateId"
+                      [ngModel]="mark.markStatus"
+                      (ngModelChange)="onStatusChange(mark, $event)"
+                      [disabled]="saving || bulkActionStatus !== null"
+                      [attr.aria-label]="'Mark status for ' + mark.firstName + ' ' + mark.lastName"
+                    >
+                      <option value="PENDING">Pending</option>
+                      <option value="SCORED">Scored</option>
+                      <option value="ABSENT">Absent</option>
+                      <option value="EXEMPT">Exempt</option>
+                      <option value="NOT_APPLICABLE">Not applicable</option>
+                    </select>
+                  </td>
+                  <td>
+                    @if (mark.markStatus === 'SCORED') {
+                      <input
+                        class="score-input"
+                        type="number"
+                        [name]="'score-' + mark.candidateId"
+                        [ngModel]="mark.score"
+                        (ngModelChange)="onScoreChange(mark, $event)"
+                        min="0"
+                        [max]="exam!.maximumMarks"
+                        step="0.01"
+                        [disabled]="saving || bulkActionStatus !== null"
+                        [attr.aria-label]="'Score for ' + mark.firstName + ' ' + mark.lastName"
+                        placeholder="Enter score"
+                      />
+                    } @else {
+                      <span class="no-score">—</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <footer class="table-footer">
+          <div class="footer-note">
+            @if (dirtyCount > 0) {
+              <span>{{ dirtyCount }} unsaved change{{ dirtyCount === 1 ? '' : 's' }}</span>
+            } @else {
+              <span>Changes are saved only when you select Save marks.</span>
+            }
+          </div>
+          <div class="footer-actions">
+            <button type="button" class="secondary-btn"
+              (click)="refresh()"
+              [disabled]="saving || loadingMarks || bulkActionStatus !== null">
+              Discard changes
+            </button>
+            <button type="button" class="primary-btn"
+              (click)="saveChanges()"
+              [disabled]="saving || loadingMarks || dirtyCount === 0 || bulkActionStatus !== null">
+              {{ saving ? 'Saving...' : 'Save marks' }}
+            </button>
+          </div>
+        </footer>
+      }
+
+      @if (!loadingMarks && totalPages > 1) {
+        <footer class="pagination">
+          <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+          <div>
+            <button type="button" class="secondary-btn"
+              [disabled]="page === 0 || loadingMarks || saving"
+              (click)="changePage(page - 1)">Previous</button>
+            <button type="button" class="secondary-btn"
+              [disabled]="page + 1 >= totalPages || loadingMarks || saving"
+              (click)="changePage(page + 1)">Next</button>
+          </div>
+        </footer>
+      }
+    </section>
+  }
+
+  <p class="status-help">
+    <strong>Absent:</strong> expected to attend but did not.
+    <strong>Not applicable:</strong> not required to take this exam.
+    Neither status has a score; a scored result of 0 remains valid.
+  </p>
+
+  <app-confirmation-dialog
+    [visible]="discardAction !== null"
+    title="Discard unsaved mark changes?"
+    [message]="discardAction === 'back'
+      ? 'Your unsaved mark changes will be discarded before returning to exams.'
+      : discardAction === 'page'
+        ? 'Your unsaved mark changes will be discarded before changing pages.'
+        : 'Your unsaved mark changes will be discarded before reloading the roster.'"
+    confirmLabel="Discard changes"
+    cancelLabel="Keep editing"
+    [danger]="true"
+    (confirmed)="confirmDiscard()"
+    (cancelled)="cancelDiscard()"
+  />
+</section>

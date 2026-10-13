@@ -119,6 +119,82 @@
         </div>
       }
 
+      @if (importResult && importResult.students.length > 0) {
+        <section class="credentials-section" aria-labelledby="credentials-title">
+          <div class="credentials-heading">
+            <div>
+              <span class="credentials-eyebrow">Import complete</span>
+              <h3 id="credentials-title">Student Login Credentials</h3>
+              <p>
+                Save these temporary credentials securely before closing this window.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="credentials-download"
+              (click)="downloadCredentialsCsv()"
+            >
+              ↓ Download CSV
+            </button>
+          </div>
+
+          <div class="credentials-warning" role="note">
+            <strong>Sensitive information.</strong>
+            This CSV contains temporary passwords. Store it securely, share it only
+            with the intended students, and delete it when it is no longer needed.
+          </div>
+
+          <div class="credentials-table-wrap">
+            <table class="credentials-table">
+              <thead>
+                <tr>
+                  <th scope="col">Student</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Temporary password</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (
+                  student of importResult.students;
+                  track $index;
+                  let credentialIndex = $index
+                ) {
+                  <tr>
+                    <td>
+                      <strong>
+                        {{ student.firstName }} {{ student.lastName }}
+                      </strong>
+                    </td>
+                    <td>{{ student.email }}</td>
+                    <td>
+                      <div class="credential-password">
+                        <code>
+                          {{ isCredentialVisible(credentialIndex)
+                            ? student.temporaryPassword
+                            : '••••••••••••' }}
+                        </code>
+                        <button
+                          type="button"
+                          (click)="toggleCredentialVisibility(credentialIndex)"
+                          [attr.aria-label]="
+                            (isCredentialVisible(credentialIndex) ? 'Hide' : 'Show') +
+                            ' temporary password for ' + student.firstName + ' ' + student.lastName
+                          "
+                          [attr.aria-pressed]="isCredentialVisible(credentialIndex)"
+                        >
+                          {{ isCredentialVisible(credentialIndex) ? 'Hide' : 'Show' }}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
+
       <!-- VALIDATION SUMMARY -->
       @if (validationResult) {
         <div class="validation-section">

@@ -92,6 +92,7 @@ import { StudentDashboard } from './features/student/dashboard/student-dashboard
 import { StudentAttendanceComponent } from './features/student/attendance/student-attendance/student-attendance';
 import { StudentFeesComponent } from './features/student/fees/fees';
 import { StudentAssignmentsComponent } from './features/student/assignments/student-assignments/student-assignments';
+import { StudentExamResultsComponent } from './features/student/exams/student-exam-results/student-exam-results';
 import { FeeManagementComponent } from './features/admin/fees/fee-management/fee-management';
 
 export const routes: Routes = [
@@ -348,6 +349,36 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
 
+      // -------------------- EXAMS --------------------
+      {
+        path: 'admin/exams/create',
+        loadComponent: () => import('./features/exams/exam-form/exam-form')
+          .then(m => m.ExamFormComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'], examRole: 'ADMIN' }
+      },
+      {
+        path: 'admin/exams/:id/marks',
+        loadComponent: () => import('./features/exams/marks-entry/marks-entry')
+          .then(m => m.MarksEntryComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'], examRole: 'ADMIN' }
+      },
+      {
+        path: 'admin/exams/:id/edit',
+        loadComponent: () => import('./features/exams/exam-form/exam-form')
+          .then(m => m.ExamFormComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'], examRole: 'ADMIN' }
+      },
+      {
+        path: 'admin/exams',
+        loadComponent: () => import('./features/exams/exam-list/exam-list')
+          .then(m => m.ExamListComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'], examRole: 'ADMIN' }
+      },
+
       // -------------------- ASSIGNMENTS --------------------
 
       {
@@ -490,6 +521,52 @@ export const routes: Routes = [
         data: { roles: ['TEACHER'] }
       },
 
+      // -------------------- EXAMS --------------------
+      {
+        path: 'teacher/exams/create',
+        loadComponent: () => import('./features/exams/exam-form/exam-form')
+          .then(m => m.ExamFormComponent),
+        canActivate: [roleGuard, permissionGuard],
+        data: {
+          roles: ['TEACHER'],
+          permissions: ['EXAM_VIEW', 'EXAM_CREATE'],
+          examRole: 'TEACHER'
+        }
+      },
+      {
+        path: 'teacher/exams/:id/marks',
+        loadComponent: () => import('./features/exams/marks-entry/marks-entry')
+          .then(m => m.MarksEntryComponent),
+        canActivate: [roleGuard, permissionGuard],
+        data: {
+          roles: ['TEACHER'],
+          permissions: ['EXAM_VIEW', 'EXAM_MARKS_MANAGE'],
+          examRole: 'TEACHER'
+        }
+      },
+      {
+        path: 'teacher/exams/:id/edit',
+        loadComponent: () => import('./features/exams/exam-form/exam-form')
+          .then(m => m.ExamFormComponent),
+        canActivate: [roleGuard, permissionGuard],
+        data: {
+          roles: ['TEACHER'],
+          permissions: ['EXAM_VIEW', 'EXAM_EDIT'],
+          examRole: 'TEACHER'
+        }
+      },
+      {
+        path: 'teacher/exams',
+        loadComponent: () => import('./features/exams/exam-list/exam-list')
+          .then(m => m.ExamListComponent),
+        canActivate: [roleGuard, permissionGuard],
+        data: {
+          roles: ['TEACHER'],
+          permissions: ['EXAM_VIEW'],
+          examRole: 'TEACHER'
+        }
+      },
+
       // -------------------- ASSIGNMENTS --------------------
 
       {
@@ -609,6 +686,17 @@ export const routes: Routes = [
           roles: ['STUDENT'],
           title: 'Assignments',
           description: 'View your assignments and deadlines.'
+        }
+      },
+
+      {
+        path: 'student/exams',
+        component: StudentExamResultsComponent,
+        canActivate: [roleGuard],
+        data: {
+          roles: ['STUDENT'],
+          title: 'Exam Results',
+          description: 'View your published exams and marks.'
         }
       }
     ]

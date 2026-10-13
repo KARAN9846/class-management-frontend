@@ -82,6 +82,7 @@ export class StudentImportComponent {
   importing = false;
 
   importResult: StudentImportResult | null = null;
+  visibleCredentialRows = new Set<number>();
 
   validationResult: StudentImportValidationResponse | null = null;
 
@@ -132,7 +133,7 @@ export class StudentImportComponent {
     this.resetFileSpecificState();
 
     this.setupConfirmed = false;
-    this.importResult = null;
+    this.clearCredentialState();
 
     if (!file.name.toLowerCase().endsWith('.xlsx')) {
       this.errorMessage =
@@ -162,7 +163,7 @@ export class StudentImportComponent {
     this.validationResult = null;
     this.resetFileSpecificState();
     this.setupConfirmed = false;
-    this.importResult = null;
+    this.clearCredentialState();
     this.clearMessages();
 
     
@@ -372,7 +373,7 @@ export class StudentImportComponent {
     }
 
     this.importing = true;
-    this.importResult = null;
+    this.clearCredentialState();
     this.clearMessages();
 
     this.studentService
@@ -804,7 +805,53 @@ export class StudentImportComponent {
       return;
     }
 
+    this.clearCredentialState();
     this.closed.emit();
+  }
+
+  toggleCredentialVisibility(index: number): void {
+    if (this.visibleCredentialRows.has(index)) {
+      this.visibleCredentialRows.delete(index);
+    } else {
+      this.visibleCredentialRows.add(index);
+    }
+  }
+
+  isCredentialVisible(index: number): boolean {
+    return this.visibleCredentialRows.has(index);
+  }
+
+  downloadCredentialsCsv(): void {
+    const students = this.importResult?.students ?? [];
+    if (students.length === 0) {
+      return;
+    }
+
+    const rows = [
+      ['Student Name', 'Email', 'Temporary Password'],
+      ...students.map(student => [
+        `${student.firstName ?? ''} ${student.lastName ?? ''}`.trim(),
+        student.email,
+        student.temporaryPassword
+      ])
+    ];
+    const csv = rows
+      .map(row => row.map(value => this.escapeCsvValue(value)).join(','))
+      .join('\r\n');
+    const url = URL.createObjectURL(
+      new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' })
+    );
+    const link = document.createElement('a');
+
+    try {
+      link.href = url;
+      link.download = 'student-login-credentials.csv';
+      document.body.appendChild(link);
+      link.click();
+    } finally {
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
   }
 
   trackError(
@@ -817,6 +864,15 @@ export class StudentImportComponent {
   private clearMessages(): void {
     this.errorMessage = '';
     this.successMessage = '';
+  }
+
+  private clearCredentialState(): void {
+    this.importResult = null;
+    this.visibleCredentialRows.clear();
+  }
+
+  private escapeCsvValue(value: string | null | undefined): string {
+    return `"${String(value ?? '').replace(/"/g, '""')}"`;
   }
 
   private resetFileSpecificState(): void {

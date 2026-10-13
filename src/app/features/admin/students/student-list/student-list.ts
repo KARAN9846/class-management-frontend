@@ -1809,7 +1809,6 @@ closeStudentImport(): void {
 }
 
 onStudentsImported(): void {
-  this.importPopupOpen = false;
   this.loadStudents();
 }
 

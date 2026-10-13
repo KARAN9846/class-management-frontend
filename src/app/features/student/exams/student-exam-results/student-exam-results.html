@@ -1,0 +1,112 @@
+<section class="exam-results-page">
+  <header class="page-heading">
+    <div>
+      <span class="eyebrow">STUDENT PORTAL</span>
+      <h1>Exam Results</h1>
+      <p>View your published exams and marks.</p>
+    </div>
+    <button class="refresh-button" type="button"
+            (click)="loadResults()" [disabled]="loading">
+      {{ loading ? 'Loading…' : '↻ Refresh' }}
+    </button>
+  </header>
+
+  <div class="summary-grid">
+    <article class="summary-card">
+      <span class="summary-label">Published exams</span>
+      <strong>{{ totalExams }}</strong>
+    </article>
+    <article class="summary-card">
+      <span class="summary-label">Results scored</span>
+      <strong>{{ scoredCount }}</strong>
+    </article>
+    <article class="summary-card">
+      <span class="summary-label">Marks pending</span>
+      <strong>{{ pendingCount }}</strong>
+    </article>
+  </div>
+
+  <div class="results-toolbar">
+    <div>
+      <h2>Your results</h2>
+      <p>Only your own published exam records are shown.</p>
+    </div>
+    <label class="search-box">
+      <span class="sr-only">Search exams</span>
+      <span aria-hidden="true">⌕</span>
+      <input type="search" placeholder="Search exams or subjects…"
+             [value]="search" (input)="onSearchChange($event)">
+    </label>
+  </div>
+
+  <p *ngIf="errorMessage" class="message error-message" role="alert">
+    {{ errorMessage }}
+    <button type="button" (click)="loadResults()">Try again</button>
+  </p>
+
+  <div *ngIf="loading" class="message loading-message">
+    Loading your exam results…
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && results.length === 0"
+       class="empty-state">
+    <div class="empty-icon" aria-hidden="true">▤</div>
+    <h2>{{ allResults.length ? 'No matching exams' : 'No published exams yet' }}</h2>
+    <p>
+      {{ allResults.length
+        ? 'Try another search term.'
+        : 'Your published exams and results will appear here.' }}
+    </p>
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && results.length > 0"
+       class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Exam / Subject</th>
+          <th>Exam date</th>
+          <th>Class</th>
+          <th>Marks</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let result of results">
+          <td>
+            <strong class="exam-title">{{ result.title }}</strong>
+            <span class="subject-name">{{ result.subjectName }}
+              <span *ngIf="result.subjectCode">· {{ result.subjectCode }}</span>
+            </span>
+          </td>
+          <td>{{ result.examDate | date:'mediumDate' }}</td>
+          <td>
+            {{ result.className }} · {{ result.sectionName }}
+            <span class="academic-year">{{ result.academicYearName }}</span>
+          </td>
+          <td>
+            <strong *ngIf="result.markStatus === 'SCORED' && result.score !== null">
+              {{ result.score }} / {{ result.maximumMarks }}
+            </strong>
+            <span *ngIf="result.markStatus !== 'SCORED'" class="muted">
+              —
+            </span>
+          </td>
+          <td>
+            <span class="status-pill"
+                  [class.status-scored]="result.markStatus === 'SCORED'"
+                  [class.status-pending]="result.markStatus === 'PENDING'"
+                  [class.status-absent]="result.markStatus === 'ABSENT'"
+                  [class.status-other]="result.markStatus === 'EXEMPT' || result.markStatus === 'NOT_APPLICABLE'">
+              {{ statusLabel(result.markStatus) }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="results-count" *ngIf="!loading && !errorMessage && results.length">
+    Showing {{ results.length }} of {{ allResults.length }} exams
+  </p>
+</section>

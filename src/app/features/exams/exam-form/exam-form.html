@@ -1,0 +1,182 @@
+<section class="form-page">
+  <header class="page-header">
+    <button type="button" class="back-link" (click)="cancel()">← Exams &amp; Marks</button>
+    <h1>{{ isEditMode ? 'Edit Exam' : 'Create Exam' }}</h1>
+    <p>
+      {{ isAdmin
+        ? 'Schedule an exam for an academic year, class, section, and subject.'
+        : 'Schedule an exam for one of your assigned classes and subjects.' }}
+    </p>
+  </header>
+
+  @if (errorMessage) {
+    <div class="alert-error" role="alert">{{ errorMessage }}</div>
+  }
+
+  @if (loading) {
+    <div class="form-card state-message">Loading exam details...</div>
+  } @else {
+    <form class="form-card" (ngSubmit)="save()">
+      @if (isAdmin) {
+        <div class="form-section">
+          <h2>Academic scope</h2>
+          <p class="section-description">Choose where this exam applies.</p>
+
+          <div class="form-grid">
+            <label>
+              Academic year <span class="required">*</span>
+              <select
+                name="academicYearId"
+                [(ngModel)]="adminForm.academicYearId"
+                (ngModelChange)="onAcademicYearChange()"
+                required
+              >
+                <option [ngValue]="0" disabled>Select academic year</option>
+                @for (year of academicYears; track year.id) {
+                  <option [ngValue]="year.id">{{ year.name }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              Class <span class="required">*</span>
+              <select
+                name="classId"
+                [(ngModel)]="adminForm.classId"
+                (ngModelChange)="onClassChange()"
+                [disabled]="!adminForm.academicYearId"
+                required
+              >
+                <option [ngValue]="0" disabled>Select class</option>
+                @for (item of classes; track item.id) {
+                  <option [ngValue]="item.id">{{ item.name }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              Section <span class="required">*</span>
+              <select
+                name="sectionId"
+                [(ngModel)]="adminForm.sectionId"
+                [disabled]="!adminForm.classId"
+                required
+              >
+                <option [ngValue]="0" disabled>Select section</option>
+                @for (section of sections; track section.id) {
+                  <option [ngValue]="section.id">{{ section.name }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              Subject <span class="required">*</span>
+              <select
+                name="subjectId"
+                [(ngModel)]="adminForm.subjectId"
+                [disabled]="!adminForm.classId"
+                required
+              >
+                <option [ngValue]="0" disabled>Select subject</option>
+                @for (subject of subjects; track subject.id) {
+                  <option [ngValue]="subject.id">
+                    {{ subject.name }}{{ subject.code ? ' (' + subject.code + ')' : '' }}
+                  </option>
+                }
+              </select>
+            </label>
+          </div>
+        </div>
+      } @else {
+        <div class="form-section">
+          <h2>Teaching assignment</h2>
+          <p class="section-description">The exam will use the roster for this assignment.</p>
+          <label>
+            Class, section and subject <span class="required">*</span>
+            <select
+              name="teacherAssignmentId"
+              [(ngModel)]="teacherForm.teacherAssignmentId"
+              required
+            >
+              <option [ngValue]="0" disabled>Select your assignment</option>
+              @for (assignment of teacherAssignments; track assignment.id) {
+                <option [ngValue]="assignment.id">
+                  {{ assignment.academicYearName }} · {{ assignment.className }}
+                  · {{ assignment.sectionName }} · {{ assignment.subjectName }}
+                </option>
+              }
+            </select>
+          </label>
+          @if (teacherAssignments.length === 0) {
+            <p class="inline-note">No teaching assignments are available for your account.</p>
+          }
+        </div>
+      }
+
+      <div class="form-section">
+        <h2>Exam details</h2>
+        <p class="section-description">Set the exam title, date, and maximum score.</p>
+
+        <div class="form-grid">
+          <label class="span-two">
+            Exam title <span class="required">*</span>
+            <input
+              type="text"
+              name="title"
+              [(ngModel)]="formTitle"
+              placeholder="e.g. Unit Test 1"
+              maxlength="200"
+              required
+            />
+          </label>
+
+          <label>
+            Exam date <span class="required">*</span>
+            <input
+              type="date"
+              name="examDate"
+              [(ngModel)]="formExamDate"
+              [min]="today"
+              required
+            />
+          </label>
+
+          <label>
+            Maximum marks <span class="required">*</span>
+            <input
+              type="number"
+              name="maximumMarks"
+              [(ngModel)]="formMaximumMarks"
+              min="0.01"
+              max="999999.99"
+              step="0.01"
+              required
+            />
+          </label>
+
+          <label class="span-two">
+            Description <span class="optional">(optional)</span>
+            <textarea
+              name="description"
+              [(ngModel)]="formDescription"
+              rows="3"
+              placeholder="Add syllabus or instructions..."
+            ></textarea>
+          </label>
+        </div>
+      </div>
+
+      <footer class="form-footer">
+        <span class="draft-note">New exams are saved as drafts.</span>
+        <div class="footer-actions">
+          <button type="button" class="secondary-btn" (click)="cancel()" [disabled]="saving">
+            Cancel
+          </button>
+          <button type="submit" class="primary-btn" [disabled]="saving">
+            {{ saving ? 'Saving...' : (isEditMode ? 'Save changes' : 'Create exam') }}
+          </button>
+        </div>
+      </footer>
+    </form>
+  }
+</section>

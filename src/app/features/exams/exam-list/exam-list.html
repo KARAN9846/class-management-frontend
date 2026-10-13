@@ -1,0 +1,168 @@
+<section class="exam-page">
+  <header class="page-header">
+    <div>
+      <div class="eyebrow">ACADEMIC MANAGEMENT</div>
+      <h1>Exams &amp; Marks</h1>
+      <p>Manage exam schedules, publish candidate rosters, and prepare marks entry.</p>
+    </div>
+
+    @if (canCreate) {
+      <button class="primary-btn" type="button" (click)="createExam()">
+        <span aria-hidden="true">＋</span> Create Exam
+      </button>
+    }
+  </header>
+
+  <section class="filters" aria-label="Exam filters">
+    <form class="search-form" (ngSubmit)="search()">
+      <label class="sr-only" for="exam-search">Search exams</label>
+      <input
+        id="exam-search"
+        name="searchTerm"
+        [(ngModel)]="searchTerm"
+        placeholder="Search exam title..."
+        autocomplete="off"
+      />
+      <button type="submit" class="secondary-btn">Search</button>
+    </form>
+
+    <label class="status-filter">
+      <span>Status</span>
+      <select
+        name="status"
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="changeStatus($event)"
+      >
+        <option value="">All statuses</option>
+        <option value="DRAFT">Draft</option>
+        <option value="PUBLISHED">Published</option>
+        <option value="CANCELLED">Cancelled</option>
+      </select>
+    </label>
+  </section>
+
+  @if (errorMessage) {
+    <div class="alert-error" role="alert">{{ errorMessage }}</div>
+  }
+
+  <section class="table-card">
+    <div class="table-heading">
+      <div>
+        <h2>Exam schedule</h2>
+        <p>{{ totalElements }} exam{{ totalElements === 1 ? '' : 's' }}</p>
+      </div>
+      <button
+        type="button"
+        class="secondary-btn"
+        (click)="loadExams()"
+        [disabled]="loading"
+      >
+        Refresh
+      </button>
+    </div>
+
+    @if (loading) {
+      <div class="state-message">Loading exams...</div>
+    } @else if (exams.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">▤</div>
+        <h3>No exams found</h3>
+        <p>Create an exam or change your search and status filters.</p>
+        @if (canCreate) {
+          <button type="button" class="primary-btn" (click)="createExam()">
+            Create your first exam
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Exam</th>
+              <th>Class &amp; Section</th>
+              <th>Subject</th>
+              <th>Exam date</th>
+              <th class="numeric">Max marks</th>
+              <th>Status</th>
+              <th class="actions-heading">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (exam of exams; track trackExam($index, exam)) {
+              <tr>
+                <td>
+                  <div class="exam-title">{{ exam.title }}</div>
+                  @if (exam.description) {
+                    <div class="exam-description">{{ exam.description }}</div>
+                  }
+                </td>
+                <td>
+                  <div class="main-cell">{{ exam.className }}</div>
+                  <div class="muted-cell">{{ exam.sectionName }} · {{ exam.academicYearName }}</div>
+                </td>
+                <td>
+                  <div class="main-cell">{{ exam.subjectName }}</div>
+                  @if (exam.subjectCode) {
+                    <div class="muted-cell">{{ exam.subjectCode }}</div>
+                  }
+                </td>
+                <td>{{ exam.examDate | date:'dd MMM yyyy' }}</td>
+                <td class="numeric">{{ exam.maximumMarks }}</td>
+                <td>
+                  <span class="status" [ngClass]="'status-' + exam.status.toLowerCase()">
+                    {{ exam.status }}
+                  </span>
+                </td>
+                <td>
+                  <div class="row-actions">
+                    @if (exam.status === 'PUBLISHED' && canManageMarks) {
+                      <button
+                        type="button"
+                        class="text-btn"
+                        (click)="manageMarks(exam)"
+                      >Marks</button>
+                    }
+                    @if (exam.status === 'DRAFT' && canEdit) {
+                      <button
+                        type="button"
+                        class="text-btn"
+                        (click)="editExam(exam)"
+                      >Edit</button>
+                    }
+                    @if (exam.status === 'DRAFT' && canPublish) {
+                      <button
+                        type="button"
+                        class="text-btn publish-btn"
+                        [disabled]="busyExamId === exam.id"
+                        (click)="publishExam(exam)"
+                      >{{ busyExamId === exam.id ? 'Working...' : 'Publish' }}</button>
+                    }
+                    @if (exam.status === 'DRAFT' && canEdit) {
+                      <button
+                        type="button"
+                        class="text-btn danger-btn"
+                        [disabled]="busyExamId === exam.id"
+                        (click)="deleteExam(exam)"
+                      >Delete</button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="pagination">
+        <span>Page {{ page + 1 }} of {{ totalPages || 1 }}</span>
+        <div class="pagination-buttons">
+          <button type="button" class="secondary-btn" [disabled]="loading || page === 0"
+            (click)="goToPage(page - 1)">Previous</button>
+          <button type="button" class="secondary-btn" [disabled]="loading || page + 1 >= totalPages"
+            (click)="goToPage(page + 1)">Next</button>
+        </div>
+      </footer>
+    }
+  </section>
+</section>

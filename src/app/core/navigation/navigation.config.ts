@@ -94,6 +94,11 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
                     icon: '♙'
                 },
                 {
+                    label: 'Exams & Marks',
+                    route: '/admin/exams',
+                    icon: '▤'
+                },
+                {
                     label: 'Assignments',
                     route: '/admin/assignments',
                     icon: '≡'
@@ -121,6 +126,11 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
         {
             title: 'TEACHING',
             items: [
+                {
+                    label: 'Exams & Marks',
+                    route: '/teacher/exams',
+                    icon: '▤'
+                },
                 {
                     label: 'My Assignments',
                     route: '/teacher/assignments',
@@ -168,6 +178,11 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
                     label: 'Assignments',
                     route: '/student/assignments',
                     icon: '≡'
+                },
+                {
+                    label: 'Exam Results',
+                    route: '/student/exams',
+                    icon: '▤'
                 }
             ]
         }
