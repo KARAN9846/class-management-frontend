@@ -4,18 +4,22 @@
       (click)="back()">← Exams &amp; Marks</button>
 
     @if (loadingExam) {
-      <h1>Loading exam...</h1>
+      <app-exam-hero
+        [compact]="true"
+        title="Loading exam..."
+        subtitle="Preparing the candidate roster and marks workspace."
+      />
     } @else if (exam) {
-      <div class="title-row">
-        <div>
-          <h1>{{ exam.title }}</h1>
-          <p>{{ exam.className }} · {{ exam.sectionName }} · {{ exam.subjectName }}</p>
-        </div>
+      <app-exam-hero
+        [compact]="true"
+        [title]="exam.title"
+        [subtitle]="exam.className + ' · ' + exam.sectionName + ' · ' + exam.subjectName"
+      >
         <div class="max-marks">
           <span>Maximum marks</span>
           <strong>{{ exam.maximumMarks }}</strong>
         </div>
-      </div>
+      </app-exam-hero>
     }
   </header>
 

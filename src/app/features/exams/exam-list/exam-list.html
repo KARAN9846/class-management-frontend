@@ -1,17 +1,16 @@
 <section class="exam-page">
-  <header class="page-header">
-    <div>
-      <div class="eyebrow">ACADEMIC MANAGEMENT</div>
-      <h1>Exams &amp; Marks</h1>
-      <p>Manage exam schedules, publish candidate rosters, and prepare marks entry.</p>
-    </div>
-
+  <app-exam-hero
+    title="Exams & Marks"
+    [subtitle]="isAdmin
+      ? 'Manage exams, marks, and academic results.'
+      : 'Create exams, record marks, and review student performance.'"
+  >
     @if (canCreate) {
       <button class="primary-btn" type="button" (click)="createExam()">
         <span aria-hidden="true">＋</span> Create Exam
       </button>
     }
-  </header>
+  </app-exam-hero>
 
   <section class="filters" aria-label="Exam filters">
     <form class="search-form" (ngSubmit)="search()">

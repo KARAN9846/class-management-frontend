@@ -6,11 +6,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PermissionService } from '../../../core/auth/permission.service';
 import { ExamService } from '../services/exam.service';
 import { Exam, ExamStatus } from '../models/exam.model';
+import { ExamHeroComponent } from '../shared/exam-hero/exam-hero';
 
 @Component({
   selector: 'app-exam-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ExamHeroComponent],
   templateUrl: './exam-list.html',
   styleUrl: './exam-list.scss'
 })

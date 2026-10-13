@@ -16,6 +16,7 @@ import { TeacherAttendance } from '../../teacher/attendance/services/teacher-att
 import { TeacherAttendanceAssignment } from '../../teacher/attendance/models/teacher-attendance-assignment.model';
 
 import { ExamService } from '../services/exam.service';
+import { ExamHeroComponent } from '../shared/exam-hero/exam-hero';
 import {
   AdminExamRequest,
   ApiResponse,
@@ -26,7 +27,7 @@ import {
 @Component({
   selector: 'app-exam-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ExamHeroComponent],
   templateUrl: './exam-form.html',
   styleUrl: './exam-form.scss'
 })

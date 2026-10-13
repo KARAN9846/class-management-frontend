@@ -1,15 +1,14 @@
 <section class="exam-results-page">
-  <header class="page-heading">
-    <div>
-      <span class="eyebrow">STUDENT PORTAL</span>
-      <h1>Exam Results</h1>
-      <p>View your published exams and marks.</p>
-    </div>
+  <app-exam-hero
+    eyebrow="STUDENT PORTAL"
+    title="Exam Results"
+    subtitle="View your exam results and academic progress."
+  >
     <button class="refresh-button" type="button"
             (click)="loadResults()" [disabled]="loading">
       {{ loading ? 'Loading…' : '↻ Refresh' }}
     </button>
-  </header>
+  </app-exam-hero>
 
   <div class="summary-grid">
     <article class="summary-card">

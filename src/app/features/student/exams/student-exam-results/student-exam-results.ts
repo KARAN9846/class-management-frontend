@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 
 import { StudentExamService } from '../services/student-exam.service';
 import { StudentExamMarkStatus, StudentExamResult } from '../models/student-exam.model';
+import { ExamHeroComponent } from '../../../exams/shared/exam-hero/exam-hero';
 
 @Component({
   selector: 'app-student-exam-results',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ExamHeroComponent],
   templateUrl: './student-exam-results.html',
   styleUrl: './student-exam-results.scss'
 })

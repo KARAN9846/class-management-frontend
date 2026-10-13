@@ -1,12 +1,13 @@
 <section class="form-page">
   <header class="page-header">
     <button type="button" class="back-link" (click)="cancel()">← Exams &amp; Marks</button>
-    <h1>{{ isEditMode ? 'Edit Exam' : 'Create Exam' }}</h1>
-    <p>
-      {{ isAdmin
+    <app-exam-hero
+      [compact]="true"
+      [title]="isEditMode ? 'Edit Exam' : 'Create Exam'"
+      [subtitle]="isAdmin
         ? 'Schedule an exam for an academic year, class, section, and subject.'
-        : 'Schedule an exam for one of your assigned classes and subjects.' }}
-    </p>
+        : 'Schedule an exam for one of your assigned classes and subjects.'"
+    />
   </header>
 
   @if (errorMessage) {

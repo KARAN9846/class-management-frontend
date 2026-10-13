@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { ExamHeroComponent } from '../shared/exam-hero/exam-hero';
 
 import { ExamService } from '../services/exam.service';
 import {
@@ -15,7 +16,7 @@ import {
 @Component({
   selector: 'app-exam-marks-entry',
   standalone: true,
-  imports: [CommonModule, FormsModule, ConfirmationDialogComponent],
+  imports: [CommonModule, FormsModule, ConfirmationDialogComponent, ExamHeroComponent],
   templateUrl: './marks-entry.html',
   styleUrl: './marks-entry.scss'
 })
