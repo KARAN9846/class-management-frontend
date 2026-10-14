@@ -1,183 +1,219 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ChangeDetectorRef } from '@angular/core';
+import { of, throwError } from 'rxjs';
 
 import { SubjectsComponent } from './subjects';
+import { SubjectService } from './subject.service';
+import { ClassService } from '../classes/class.service';
+import { Subject } from './subject.model';
 
 describe('SubjectsComponent', () => {
-
   let component: SubjectsComponent;
   let fixture: ComponentFixture<SubjectsComponent>;
+  let subjectService: {
+    getSubjects: ReturnType<typeof vi.fn>;
+    createSubject: ReturnType<typeof vi.fn>;
+    updateSubject: ReturnType<typeof vi.fn>;
+    deleteSubject: ReturnType<typeof vi.fn>;
+  };
+  let classService: { getClasses: ReturnType<typeof vi.fn> };
+
+  const subjects: Subject[] = [
+    {
+      id: 1,
+      name: 'Mathematics',
+      code: 'MATH',
+      classId: 1,
+      className: 'Class 10',
+      academicYear: '2026-2027'
+    },
+    {
+      id: 2,
+      name: 'Science',
+      code: 'SCI',
+      classId: 1,
+      className: 'Class 10',
+      academicYear: '2026-2027'
+    },
+    {
+      id: 3,
+      name: 'English',
+      code: 'ENG',
+      classId: 2,
+      className: 'Class 9',
+      academicYear: '2026-2027'
+    }
+  ];
+
+  const apiResponse = <T>(data: T) => ({
+    success: true,
+    message: 'Success',
+    data,
+    errors: null
+  });
 
   beforeEach(async () => {
+    subjectService = {
+      getSubjects: vi.fn(),
+      createSubject: vi.fn(),
+      updateSubject: vi.fn(),
+      deleteSubject: vi.fn()
+    };
+    classService = {
+      getClasses: vi.fn()
+    };
+
+    subjectService.getSubjects.mockReturnValue(of(apiResponse(subjects)));
+    classService.getClasses.mockReturnValue(of(apiResponse([
+      {
+        id: 1,
+        name: 'Class 10',
+        academicYear: '2026-2027'
+      },
+      {
+        id: 2,
+        name: 'Class 9',
+        academicYear: '2026-2027'
+      }
+    ] as any)));
 
     await TestBed.configureTestingModule({
-      imports: [SubjectsComponent]
+      imports: [SubjectsComponent],
+      providers: [
+        { provide: SubjectService, useValue: subjectService },
+        { provide: ClassService, useValue: classService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SubjectsComponent);
-
     component = fixture.componentInstance;
-
     fixture.detectChanges();
-
   });
 
-
-  it('should create', () => {
-
+  it('should create and load subjects and classes', () => {
     expect(component).toBeTruthy();
-
+    expect(subjectService.getSubjects).toHaveBeenCalled();
+    expect(classService.getClasses).toHaveBeenCalled();
+    expect(component.subjects.length).toBe(3);
+    expect(component.classes.length).toBe(2);
   });
 
+  it('should filter subjects by name or code', () => {
+    component.searchTerm = 'math';
+    expect(component.filteredSubjects.map(subject => subject.id)).toEqual([1]);
 
-  it('should contain subjects', () => {
-
-    expect(component.subjects.length).toBeGreaterThan(0);
-
+    component.searchTerm = 'SCI';
+    expect(component.filteredSubjects.map(subject => subject.id)).toEqual([2]);
   });
-
-
-  it('should filter subjects by search term', () => {
-
-    component.searchTerm = 'Mathematics';
-
-    expect(component.filteredSubjects.length).toBe(1);
-
-    expect(component.filteredSubjects[0].name)
-      .toBe('Mathematics');
-
-  });
-
 
   it('should filter subjects by class', () => {
-
     component.classFilter = 1;
-
-    expect(component.filteredSubjects.length).toBe(3);
-
+    expect(component.filteredSubjects.map(subject => subject.id)).toEqual([1, 2]);
   });
 
-
-  it('should filter subjects by status', () => {
-
-    component.statusFilter = 'ACTIVE';
-
-    expect(component.filteredSubjects.length).toBe(5);
-
-  });
-
-
-  it('should open add form', () => {
-
+  it('should open and close the add form', () => {
     component.openAddForm();
 
     expect(component.showForm).toBe(true);
-
-    expect(component.editingSubject).toBe(null);
-
-  });
-
-
-  it('should close form', () => {
-
-    component.openAddForm();
+    expect(component.editingSubject).toBeNull();
+    expect(component.form).toEqual({
+      name: '',
+      code: '',
+      classId: 1
+    });
 
     component.closeForm();
-
     expect(component.showForm).toBe(false);
-
-    expect(component.editingSubject).toBe(null);
-
+    expect(component.editingSubject).toBeNull();
   });
 
+  it('should create a subject through the service', () => {
+    subjectService.createSubject.mockReturnValue(of(apiResponse(subjects[0])));
 
-  it('should add a new subject', () => {
-
-    const initialCount =
-      component.subjects.length;
-
-    component.form = {
-      name: 'Biology',
-      code: 'BIO',
-      classId: 1,
-      status: 'ACTIVE'
-    };
-
+    component.form = { name: 'Biology', code: 'BIO', classId: 1 };
     component.saveSubject();
 
-    expect(component.subjects.length)
-      .toBe(initialCount + 1);
-
-    expect(component.subjects[0].name)
-      .toBe('Biology');
-
-    expect(component.subjects[0].code)
-      .toBe('BIO');
-
+    expect(subjectService.createSubject).toHaveBeenCalledWith({
+      name: 'Biology',
+      code: 'BIO',
+      classId: 1
+    });
+    expect(component.showForm).toBe(false);
+    expect(subjectService.getSubjects).toHaveBeenCalledTimes(2);
   });
 
+  it('should trim values before creating a subject', () => {
+    subjectService.createSubject.mockReturnValue(of(apiResponse(subjects[0])));
 
-  it('should edit a subject', () => {
+    component.form = { name: ' Biology ', code: ' BIO ', classId: 1 };
+    component.saveSubject();
 
-    const subject =
-      component.subjects[0];
+    expect(subjectService.createSubject).toHaveBeenCalledWith({
+      name: 'Biology',
+      code: 'BIO',
+      classId: 1
+    });
+  });
 
-    component.openEditForm(subject);
+  it('should not create a subject with invalid required fields', () => {
+    component.form = { name: '  ', code: 'BIO', classId: 1 };
+    component.saveSubject();
 
+    expect(subjectService.createSubject).not.toHaveBeenCalled();
+  });
+
+  it('should update an existing subject through the service', () => {
+    subjectService.updateSubject.mockReturnValue(of(apiResponse(subjects[0])));
+
+    component.openEditForm(subjects[0]);
     component.form = {
       name: 'Advanced Mathematics',
       code: 'AMATH',
-      classId: 1,
-      status: 'ACTIVE'
+      classId: 2
     };
-
     component.saveSubject();
 
-    expect(component.subjects[0].name)
-      .toBe('Advanced Mathematics');
-
-    expect(component.subjects[0].code)
-      .toBe('AMATH');
-
+    expect(subjectService.updateSubject).toHaveBeenCalledWith(1, {
+      name: 'Advanced Mathematics',
+      code: 'AMATH',
+      classId: 2
+    });
+    expect(component.showForm).toBe(false);
   });
 
+  it('should open and cancel delete confirmation', () => {
+    component.deleteSubject(subjects[0]);
 
-  it('should not save an empty subject', () => {
+    expect(component.showDeleteDialog).toBe(true);
+    expect(component.subjectToDelete).toEqual(subjects[0]);
 
-    const initialCount =
-      component.subjects.length;
+    component.cancelDeleteSubject();
 
-    component.form = {
-      name: '',
-      code: '',
-      classId: 1,
-      status: 'ACTIVE'
-    };
-
-    component.saveSubject();
-
-    expect(component.subjects.length)
-      .toBe(initialCount);
-
+    expect(component.showDeleteDialog).toBe(false);
+    expect(component.subjectToDelete).toBeNull();
+    expect(subjectService.deleteSubject).not.toHaveBeenCalled();
   });
 
+  it('should delete a subject after confirmation', () => {
+    subjectService.deleteSubject.mockReturnValue(of(apiResponse(undefined)));
 
-  it('should delete a subject', () => {
+    component.deleteSubject(subjects[0]);
+    component.confirmDeleteSubject();
 
-    const subject =
-      component.subjects[0];
+    expect(subjectService.deleteSubject).toHaveBeenCalledWith(1);
+    expect(component.showDeleteDialog).toBe(false);
+    expect(subjectService.getSubjects).toHaveBeenCalledTimes(2);
+  });
 
-    const initialCount =
-      component.subjects.length;
-
-    // Avoid browser confirm() in the unit test.
-    component.subjects =
-      component.subjects.filter(
-        item => item.id !== subject.id
+  it('should handle a subject-loading error', () => {
+    subjectService.getSubjects
+      .mockReturnValue(
+        throwError(() => ({ error: { message: 'Unable to load subjects' } }))
       );
 
-    expect(component.subjects.length)
-      .toBe(initialCount - 1);
+    component.loadSubjects();
 
+    expect(component.errorMessage).toBe('Unable to load subjects');
+    expect(component.loading).toBe(false);
   });
-
 });

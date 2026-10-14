@@ -36,19 +36,12 @@ describe('ClassesComponent', () => {
   });
 
 
-  it('should open add section form', () => {
+  it('should open the add form with empty sections', () => {
+    component.openAddForm();
 
-    component.openAddSectionForm({
-      id: 1,
-      name: 'Class 10',
-      academicYear: '2026',
-      academicYearId: 1,
-      sections: []
-    });
-
-    expect(component.showSectionForm).toBe(true);
-    expect(component.sectionForm.classId).toBe(1);
-
+    expect(component.showForm).toBe(true);
+    expect(component.editingClass).toBeNull();
+    expect(component.formSections).toEqual([]);
   });
 
 });
