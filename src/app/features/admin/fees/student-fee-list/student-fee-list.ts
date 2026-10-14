@@ -138,23 +138,13 @@ export class StudentFeeList implements OnInit {
 
 
         const currentYear =
-          this.academicYears.find(
-            (year: any) =>
-              year.isCurrent === true
-          );
+          this.academicYearService.findCurrentYear(this.academicYears);
 
 
         if (currentYear) {
 
           this.academicYearFilter =
             currentYear.id;
-
-        } else if (
-          this.academicYears.length > 0
-        ) {
-
-          this.academicYearFilter =
-            this.academicYears[0].id;
 
         } else {
 

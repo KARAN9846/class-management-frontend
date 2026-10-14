@@ -42,6 +42,13 @@ export class AcademicYearService {
     );
   }
 
+  findCurrentYear(
+    years: readonly AcademicYear[]
+  ): AcademicYear | undefined {
+
+    return years.find(year => year.isCurrent === true);
+  }
+
   getById(
     id: number
   ): Observable<ApiResponse<AcademicYear>> {

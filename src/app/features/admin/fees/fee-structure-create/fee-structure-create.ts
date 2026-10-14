@@ -76,6 +76,7 @@ export class FeeStructureCreateComponent implements OnInit {
   academicYears: {
     id: number;
     name: string;
+    isCurrent: boolean;
   }[] = [];
 
   classes: {
@@ -133,10 +134,13 @@ export class FeeStructureCreateComponent implements OnInit {
 
         next: response => {
 
+          const years = response.data.content ?? [];
+
           this.academicYears =
-            response.data.content.map(year => ({
+            years.map(year => ({
               id: year.id,
-              name: year.name
+              name: year.name,
+              isCurrent: year.isCurrent
             }));
 
           this.classService
@@ -153,16 +157,11 @@ export class FeeStructureCreateComponent implements OnInit {
                       cls.academicYearId
                   }));
 
+                const currentYear =
+                  this.academicYearService.findCurrentYear(years);
 
-                // Select first academic year
-                if (this.academicYears.length) {
-
-                  this.form.academicYearId =
-                    this.academicYears[0].id;
-
-                  this.updateClassSelection();
-
-                }
+                this.form.academicYearId = currentYear?.id ?? 0;
+                this.updateClassSelection();
 
 
                 this.loading = false;
@@ -243,12 +242,17 @@ export class FeeStructureCreateComponent implements OnInit {
       );
 
 
-    if (availableClasses.length) {
+    const selectedClassIsAvailable =
+      availableClasses.some(
+        classroom => classroom.id === this.form.classId
+      );
+
+    if (!selectedClassIsAvailable && availableClasses.length) {
 
       this.form.classId =
         availableClasses[0].id;
 
-    } else {
+    } else if (!selectedClassIsAvailable) {
 
       this.form.classId = 0;
 

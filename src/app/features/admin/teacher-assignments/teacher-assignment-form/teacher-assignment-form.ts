@@ -92,6 +92,15 @@ export class TeacherAssignmentForm implements OnInit {
             if (this.isEditMode && this.assignmentId) {
               this.loadAssignment(this.assignmentId);
             } else {
+              const currentYear =
+                this.academicYearService.findCurrentYear(this.academicYears);
+
+              this.selectedAcademicYearId = currentYear?.id ?? null;
+
+              if (this.selectedAcademicYearId) {
+                this.loadClasses(this.selectedAcademicYearId);
+              }
+
               this.loading = false;
               this.cdr.detectChanges();
             }

@@ -172,6 +172,14 @@ export class AssignmentForm implements OnInit {
           this.academicYears =
             response.data.content;
 
+          if (!this.assignmentId) {
+            const currentYear =
+              this.academicYearService.findCurrentYear(this.academicYears);
+
+            this.form.academicYearId = currentYear?.id ?? 0;
+            this.loadClasses();
+          }
+
           this.cdr.markForCheck();
         },
 

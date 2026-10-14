@@ -157,6 +157,11 @@ set formDescription(value: string | null) {
         if (this.isEditMode && this.examId) {
           this.loadAdminExam(Number(this.examId));
         } else {
+          const currentYear =
+            this.academicYearService.findCurrentYear(this.academicYears);
+
+          this.adminForm.academicYearId = currentYear?.id ?? 0;
+          this.classes = this.classesForYear(this.adminForm.academicYearId);
           this.loading = false;
           this.cdr.markForCheck();
         }
