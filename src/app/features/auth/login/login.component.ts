@@ -59,8 +59,6 @@ export class LoginComponent {
 
           this.ngZone.run(() => {
 
-            console.log('Login successful:', response);
-
             this.isLoading = false;
 
             const token = response.data.accessToken;
@@ -75,7 +73,6 @@ export class LoginComponent {
 
             const role = this.tokenService.getRole();
 
-            console.log('User role:', role);
 
             switch (role) {
 
@@ -110,8 +107,6 @@ export class LoginComponent {
 
           this.ngZone.run(() => {
 
-            console.error('Login failed:', error);
-
             // STOP LOADING FIRST
             this.isLoading = false;
 
@@ -136,9 +131,6 @@ export class LoginComponent {
               this.errorMessage =
                 'Something went wrong. Please try again.';
             }
-
-            console.log('ERROR MESSAGE:', this.errorMessage);
-            console.log('LOADING:', this.isLoading);
 
             // FORCE IMMEDIATE UI UPDATE
             this.cdr.detectChanges();
