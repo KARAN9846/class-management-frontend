@@ -231,24 +231,16 @@ export class MarksEntryComponent implements OnInit {
     this.persistEntries(this.entriesForCandidateIds(frozenIds), true);
   }
 
-  onStatusChange(mark: ExamMark, status: ExamMarkStatus): void {
-    mark.markStatus = status;
-
-    if (status !== 'SCORED') {
-      mark.score = null;
-    }
-
-    this.dirtyCandidateIds.add(mark.candidateId);
-    this.successMessage = '';
-    this.errorMessage = '';
+  canEnterScore(mark: ExamMark): boolean {
+    return mark.markStatus === 'PENDING' || mark.markStatus === 'SCORED';
   }
 
-  onScoreChange(mark: ExamMark, value: number | null): void {
-    mark.score = value === null || value === undefined || value === ('' as unknown as number)
-      ? null
-      : Number(value);
-
-    if (mark.score !== null) {
+  onScoreChange(mark: ExamMark, value: number | string | null): void {
+    if (value === null || value === undefined || value === '') {
+      mark.score = null;
+      mark.markStatus = 'PENDING';
+    } else {
+      mark.score = Number(value);
       mark.markStatus = 'SCORED';
     }
 

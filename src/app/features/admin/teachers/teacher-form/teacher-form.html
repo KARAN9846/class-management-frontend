@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page" [class.popup-mode]="popupMode">
 
   <!-- ================= HEADER ================= -->
 
@@ -408,7 +408,7 @@
 
             @else {
 
-              {{ editing ? 'Update Teacher' : 'Create Teacher' }}
+              {{ editing ? 'Update Teacher' : (popupMode ? 'Add Teacher' : 'Create Teacher') }}
 
             }
 

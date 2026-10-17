@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ChangeDetectorRef,
+  EventEmitter,
+  Input,
   OnInit,
+  Output,
   inject
 } from '@angular/core';
 
@@ -32,6 +35,12 @@ import { TeacherService } from '../services/teacher.service';
   styleUrl: './teacher-form.scss'
 })
 export class TeacherForm implements OnInit {
+
+  @Input() popupMode = false;
+
+  @Output() closePopup = new EventEmitter<void>();
+
+  @Output() saved = new EventEmitter<void>();
 
   // =========================================================
   // SERVICES
@@ -468,6 +477,11 @@ export class TeacherForm implements OnInit {
 
           this.saving = false;
 
+          if (this.popupMode) {
+            this.saved.emit();
+            return;
+          }
+
           this.successMessage =
             'Teacher created successfully.';
 
@@ -670,6 +684,11 @@ export class TeacherForm implements OnInit {
   // =========================================================
 
   cancel(): void {
+
+    if (this.popupMode) {
+      this.closePopup.emit();
+      return;
+    }
 
     this.router.navigate([
       '/admin/teachers'

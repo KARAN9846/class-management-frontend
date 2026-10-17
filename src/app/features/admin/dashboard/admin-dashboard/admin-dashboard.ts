@@ -1299,7 +1299,7 @@ financeError = false;
 
     this.router
       .navigate([
-        '/admin/classes'
+        '/admin/academic'
       ])
       .then(
 

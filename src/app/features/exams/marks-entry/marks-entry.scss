@@ -240,8 +240,7 @@ button:disabled {
 }
 
 button:focus-visible,
-input:focus-visible,
-select:focus-visible {
+input:focus-visible {
   outline: 3px solid rgb(36 86 214 / 20%);
   outline-offset: 2px;
 }
@@ -309,7 +308,6 @@ input[type='checkbox'] {
   cursor: pointer;
 }
 
-select,
 .score-input {
   box-sizing: border-box;
   width: 100%;
@@ -330,7 +328,6 @@ select,
   width: 115px;
 }
 
-select:focus,
 .score-input:focus {
   border-color: #557ce7;
   box-shadow: 0 0 0 3px rgb(36 86 214 / 10%);
@@ -338,6 +335,49 @@ select:focus,
 
 .no-score {
   color: #94a3b8;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.status-pending {
+  border-color: #d8dee9;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.status-scored {
+  border-color: #b9e8ce;
+  background: #f0fbf5;
+  color: #187244;
+}
+
+.status-absent {
+  border-color: #f4c7c7;
+  background: #fff5f5;
+  color: #a52828;
+}
+
+.status-exempt {
+  border-color: #f0d5ae;
+  background: #fff8ed;
+  color: #94530a;
+}
+
+.status-not-applicable {
+  border-color: #cdd8f7;
+  background: #f0f4ff;
+  color: #2a4ca7;
 }
 
 .table-footer {

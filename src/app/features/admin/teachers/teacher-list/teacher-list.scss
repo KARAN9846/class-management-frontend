@@ -279,6 +279,89 @@
   box-sizing: border-box;
 }
 
+.teacher-form-backdrop {
+  z-index: 1100;
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(2px);
+}
+
+.teacher-form-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.22),
+    0 8px 20px rgba(15, 23, 42, 0.1);
+  animation: modal-enter 0.18s ease-out;
+}
+
+.teacher-form-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex: 0 0 auto;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.teacher-form-modal-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.teacher-form-modal-header p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.teacher-form-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.teacher-form-close:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.teacher-form-close:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.teacher-form-close:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.teacher-form-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .status-modal {
   width: 100%;
   max-width: 420px;
@@ -740,6 +823,21 @@
 
     font-size: 13px;
   }
+
+  .teacher-form-backdrop {
+    align-items: flex-end;
+    padding: 14px;
+  }
+
+  .teacher-form-modal {
+    width: 100%;
+    max-height: calc(100vh - 28px);
+    border-radius: 14px;
+  }
+
+  .teacher-form-modal-header {
+    padding: 18px;
+  }
 }
 
 
@@ -783,12 +881,14 @@
   }
 
   .status-modal h2,
-  .delete-modal h2 {
+  .delete-modal h2,
+  .teacher-form-modal-header h2 {
     font-size: 18px;
   }
 
   .status-modal p,
-  .delete-modal p {
+  .delete-modal p,
+  .teacher-form-modal-header p {
     font-size: 13px;
   }
 

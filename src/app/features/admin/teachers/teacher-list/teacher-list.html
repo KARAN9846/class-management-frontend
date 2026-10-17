@@ -23,7 +23,7 @@
                 <app-search-input placeholder="Search by name, email or phone..." (searchChange)="onSearch($event)">
                 </app-search-input>
 
-                <button type="button" class="add-btn" (click)="router.navigate(['/admin/teachers/create'])">
+                <button type="button" class="add-btn" (click)="openAddTeacherModal()">
 
                     <span class="add-icon" aria-hidden="true">+</span>
                     <span>Add Teacher</span>
@@ -244,6 +244,44 @@
 
                 </button>
 
+            </div>
+
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- =====================================================
+       ADD TEACHER MODAL
+  ====================================================== -->
+
+    @if (showAddTeacherModal) {
+
+    <div class="modal-backdrop teacher-form-backdrop" (click)="closeAddTeacherModal()">
+
+        <div class="teacher-form-modal" role="dialog" aria-modal="true" aria-labelledby="addTeacherTitle"
+            (click)="$event.stopPropagation()">
+
+            <div class="teacher-form-modal-header">
+
+                <div>
+                    <h2 id="addTeacherTitle">Add Teacher</h2>
+                    <p>Create a new teacher account for your institution.</p>
+                </div>
+
+                <button type="button" class="teacher-form-close" aria-label="Close add teacher form"
+                    [disabled]="addTeacherForm?.saving" (click)="closeAddTeacherModal()">
+                    ×
+                </button>
+
+            </div>
+
+            <div class="teacher-form-modal-body">
+                <app-teacher-form [popupMode]="true" (closePopup)="closeAddTeacherModal()"
+                    (saved)="onTeacherCreated()">
+                </app-teacher-form>
             </div>
 
         </div>

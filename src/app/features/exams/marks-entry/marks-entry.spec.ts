@@ -154,4 +154,74 @@ describe('MarksEntryComponent bulk selection', () => {
 
     expect(examService.saveTeacherMarks).toHaveBeenCalledTimes(1);
   });
+
+  it('marks a pending row as scored when a direct numeric score is entered', () => {
+    const pendingMark = mark(1);
+
+    component.onScoreChange(pendingMark, 72.5);
+
+    expect(pendingMark.markStatus).toBe('SCORED');
+    expect(pendingMark.score).toBe(72.5);
+    expect(component.dirtyCount).toBe(1);
+  });
+
+  it('accepts zero as a scored mark', () => {
+    const pendingMark = mark(1);
+
+    component.onScoreChange(pendingMark, 0);
+
+    expect(pendingMark.markStatus).toBe('SCORED');
+    expect(pendingMark.score).toBe(0);
+  });
+
+  it('returns a scored row to pending when its score is cleared', () => {
+    const scoredMark = { ...mark(1), markStatus: 'SCORED' as const, score: 56 };
+
+    component.onScoreChange(scoredMark, '');
+
+    expect(scoredMark.markStatus).toBe('PENDING');
+    expect(scoredMark.score).toBeNull();
+  });
+
+  it('keeps score entry unavailable for exceptional statuses', () => {
+    expect(component.canEnterScore({ ...mark(1), markStatus: 'PENDING' })).toBe(true);
+    expect(component.canEnterScore({ ...mark(2), markStatus: 'SCORED', score: 0 })).toBe(true);
+    expect(component.canEnterScore({ ...mark(3), markStatus: 'ABSENT' })).toBe(false);
+    expect(component.canEnterScore({ ...mark(4), markStatus: 'EXEMPT' })).toBe(false);
+    expect(component.canEnterScore({ ...mark(5), markStatus: 'NOT_APPLICABLE' })).toBe(false);
+  });
+
+  it('provides readable labels for the displayed status badges', () => {
+    expect(component.statusLabel('PENDING')).toBe('Pending');
+    expect(component.statusLabel('SCORED')).toBe('Scored');
+    expect(component.statusLabel('ABSENT')).toBe('Absent');
+    expect(component.statusLabel('EXEMPT')).toBe('Exempt');
+    expect(component.statusLabel('NOT_APPLICABLE')).toBe('Not applicable');
+  });
+
+  it('rejects an invalid direct score before calling the save API', () => {
+    const pendingMark = mark(1);
+    component.marks = [pendingMark];
+    component.onScoreChange(pendingMark, 101);
+
+    component.saveChanges();
+
+    expect(component.errorMessage).toBe('Scores must be between 0 and 100.');
+    expect(examService.saveTeacherMarks).not.toHaveBeenCalled();
+  });
+
+  it('retains direct score edits when saving fails', () => {
+    const pendingMark = mark(1);
+    component.marks = [pendingMark];
+    component.onScoreChange(pendingMark, 42);
+    examService.saveTeacherMarks.mockReturnValue(throwError(() => ({
+      error: { message: 'Save failed' }
+    })));
+
+    component.saveChanges();
+
+    expect(component.errorMessage).toBe('Save failed');
+    expect(component.dirtyCount).toBe(1);
+    expect(component.marks[0]).toMatchObject({ markStatus: 'SCORED', score: 42 });
+  });
 });

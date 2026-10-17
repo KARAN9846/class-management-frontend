@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, HostListener, ViewChild, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { TeacherService } from '../services/teacher.service';
@@ -13,6 +13,7 @@ import {
 
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
+import { TeacherForm } from '../teacher-form/teacher-form';
 
 @Component({
   selector: 'app-teacher-list',
@@ -21,7 +22,8 @@ import { SearchInputComponent } from '../../../../shared/components/search-input
     CommonModule,
     DataTableComponent,
     PaginationComponent,
-    SearchInputComponent
+    SearchInputComponent,
+    TeacherForm
   ],
   templateUrl: './teacher-list.html',
   styleUrl: './teacher-list.scss'
@@ -39,6 +41,16 @@ export class TeacherList implements OnInit {
 
   private readonly cdr =
     inject(ChangeDetectorRef);
+
+  @ViewChild(TeacherForm)
+  addTeacherForm?: TeacherForm;
+
+
+  // =========================================================
+  // ADD TEACHER MODAL
+  // =========================================================
+
+  showAddTeacherModal = false;
 
 
   // =========================================================
@@ -157,6 +169,11 @@ columns: TableColumn[] = [
 
   }
 
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.closeAddTeacherModal();
+  }
+
 
   // =========================================================
   // LOAD TEACHERS
@@ -229,6 +246,36 @@ columns: TableColumn[] = [
 
     this.loadTeachers();
 
+  }
+
+
+  // =========================================================
+  // ADD TEACHER
+  // =========================================================
+
+  openAddTeacherModal(): void {
+    if (this.loading) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.showAddTeacherModal = true;
+  }
+
+  closeAddTeacherModal(): void {
+    if (this.addTeacherForm?.saving) {
+      return;
+    }
+
+    this.showAddTeacherModal = false;
+  }
+
+  onTeacherCreated(): void {
+    this.showAddTeacherModal = false;
+    this.loadTeachers();
+    this.successMessage = 'Teacher created successfully.';
+    this.cdr.detectChanges();
   }
 
 

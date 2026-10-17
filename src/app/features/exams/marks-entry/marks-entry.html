@@ -142,22 +142,18 @@
                   <td>{{ mark.rollNumber || '—' }}</td>
                   <td>{{ mark.enrollmentNumber }}</td>
                   <td>
-                    <select
-                      [name]="'status-' + mark.candidateId"
-                      [ngModel]="mark.markStatus"
-                      (ngModelChange)="onStatusChange(mark, $event)"
-                      [disabled]="saving || bulkActionStatus !== null"
-                      [attr.aria-label]="'Mark status for ' + mark.firstName + ' ' + mark.lastName"
-                    >
-                      <option value="PENDING">Pending</option>
-                      <option value="SCORED">Scored</option>
-                      <option value="ABSENT">Absent</option>
-                      <option value="EXEMPT">Exempt</option>
-                      <option value="NOT_APPLICABLE">Not applicable</option>
-                    </select>
+                    <span
+                      class="status-badge"
+                      [class.status-pending]="mark.markStatus === 'PENDING'"
+                      [class.status-scored]="mark.markStatus === 'SCORED'"
+                      [class.status-absent]="mark.markStatus === 'ABSENT'"
+                      [class.status-exempt]="mark.markStatus === 'EXEMPT'"
+                      [class.status-not-applicable]="mark.markStatus === 'NOT_APPLICABLE'"
+                      [attr.aria-label]="'Status: ' + statusLabel(mark.markStatus)"
+                    >{{ statusLabel(mark.markStatus) }}</span>
                   </td>
                   <td>
-                    @if (mark.markStatus === 'SCORED') {
+                    @if (canEnterScore(mark)) {
                       <input
                         class="score-input"
                         type="number"
