@@ -43,6 +43,17 @@
     <option value="ABSENT">Absent</option>
   </select>
 
+  <select
+    class="academic-year-filter"
+    [value]="academicYearFilter ?? 'ALL'"
+    (change)="onAcademicYearChange($any($event.target).value)"
+  >
+    <option value="ALL">All Academic Years</option>
+    @for (year of academicYears; track year.id) {
+      <option [value]="year.id">{{ year.name }}</option>
+    }
+  </select>
+
   <input
   type="date"
   class="date-filter"
@@ -52,28 +63,28 @@
 
 <select
   class="class-filter"
-  [value]="classFilter"
+  [value]="classFilter ?? 'ALL'"
   (change)="onClassChange($any($event.target).value)"
 >
   <option value="ALL">All Classes</option>
 
-  @for (className of classOptions; track className) {
-    <option [value]="className">
-      {{ className }}
+  @for (academicClass of classOptions; track academicClass.id) {
+    <option [value]="academicClass.id">
+      {{ academicClass.name }}
     </option>
   }
 </select>
 
 <select
   class="section-filter"
-  [value]="sectionFilter"
+  [value]="sectionFilter ?? 'ALL'"
   (change)="onSectionChange($any($event.target).value)"
 >
   <option value="ALL">All Sections</option>
 
-  @for (sectionName of sectionOptions; track sectionName) {
-    <option [value]="sectionName">
-      {{ sectionName }}
+  @for (section of sectionOptions; track section.id) {
+    <option [value]="section.id">
+      {{ section.name }}
     </option>
   }
 </select>
@@ -86,20 +97,19 @@
   Clear
 </button>
 
+@if (filterOptionsError) {
+  <span class="filter-options-error">{{ filterOptionsError }}</span>
+}
+
 </div>
 
-    @if (errorMessage) {
+@if (errorMessage) {
 
-      <div class="error-state">
+  <div class="error-state">
+    {{ errorMessage }}
+  </div>
 
-        {{ errorMessage }}
-
-      </div>
-
-    }
-
-
-@if (!loading && attendance.length === 0) {
+} @else if (!loading && attendance.length === 0) {
 
   <div class="empty-state">
     <h3>No attendance records found</h3>
@@ -113,17 +123,17 @@
 <app-data-table
   [columns]="columns"
   [data]="attendance"
-  [enableSearch]="true"
-  [searchPlaceholder]="'Search attendance...'"
   [loading]="loading"
+  [serverSideSorting]="true"
+  (sortChange)="onSortChange($event)"
   [showActions]="false">
 </app-data-table>
 
-  @if (filteredAttendance.length > 0) {
+  @if (totalElements > 0) {
 
     <app-pagination
-      [currentPage]="currentPage"
-      [totalItems]="filteredAttendance.length"
+      [currentPage]="page + 1"
+      [totalItems]="totalElements"
       [pageSize]="pageSize"
       (pageChange)="onPageChange($event)">
     </app-pagination>

@@ -39,3 +39,21 @@ export interface PendingAttendanceApiResponse {
   message: string;
   data: PendingAttendanceNotification[];
 }
+
+export interface PendingLeaveNotification {
+  id: number;
+  applicantName: string | null;
+  studentId: number | null;
+  teacherId: number | null;
+  startDate: string;
+  endDate: string;
+  dayPortion: string;
+  reason: string;
+  status: 'PENDING';
+}
+
+export interface PendingLeaveApiResponse {
+  success: boolean;
+  message: string;
+  data: { content: PendingLeaveNotification[]; totalElements: number; totalPages: number; number: number; size: number };
+}

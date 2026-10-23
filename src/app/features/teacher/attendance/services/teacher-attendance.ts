@@ -4,7 +4,11 @@ import { Observable } from 'rxjs';
 
 import { ApiService } from '../../../../core/services/api.service';
 
-import { Attendance } from '../../../admin/attendance/models/attendance.model';
+import {
+  Attendance,
+  AttendancePageQuery,
+  AttendancePageResponse
+} from '../../../admin/attendance/models/attendance.model';
 
 import {
   MarkAttendanceRequest
@@ -44,6 +48,37 @@ export class TeacherAttendance {
 
     return this.api.get<ApiResponse<Attendance[]>>(
       '/attendance/teacher'
+    );
+  }
+
+  getAttendancePage(
+    query: AttendancePageQuery
+  ): Observable<ApiResponse<AttendancePageResponse>> {
+    let params = new HttpParams()
+      .set('page', query.page)
+      .set('size', query.size);
+
+    const optionalParams: Record<string, string | number | undefined> = {
+      dateFrom: query.dateFrom,
+      dateTo: query.dateTo,
+      status: query.status,
+      academicYearId: query.academicYearId,
+      classId: query.classId,
+      sectionId: query.sectionId,
+      search: query.search,
+      sortBy: query.sortBy,
+      sortDirection: query.sortDirection
+    };
+
+    Object.entries(optionalParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== '') {
+        params = params.set(key, value);
+      }
+    });
+
+    return this.api.get<ApiResponse<AttendancePageResponse>>(
+      '/attendance/teacher/page',
+      params
     );
   }
 

@@ -6,19 +6,16 @@
   display: block;
   width: 100%;
 
-  --danger: #dc2626;
+  --danger: var(--color-danger);
   --danger-dark: #b91c1c;
   --danger-light: #fef2f2;
   --danger-border: #fecaca;
 
-  --surface: #ffffff;
+  --surface: var(--color-surface);
 
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
 
-  --radius-md: 10px;
-
-  --transition: 150ms ease;
 }
 
 
@@ -38,7 +35,7 @@
 
   box-sizing: border-box;
 
-  padding: 32px 24px;
+  padding: var(--space-6);
 
   text-align: center;
 
@@ -58,7 +55,7 @@
   align-items: center;
   justify-content: center;
 
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 
   border: 1px solid var(--danger-border);
 
@@ -111,7 +108,7 @@
 
 
 .error-description {
-  margin: 6px 0 0;
+  margin: var(--space-2) 0 0;
 
   color: var(--text-secondary);
 
@@ -168,10 +165,10 @@
   cursor: pointer;
 
   transition:
-    background var(--transition),
-    border-color var(--transition),
-    color var(--transition),
-    transform var(--transition);
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 
@@ -194,6 +191,8 @@
 
   outline-offset: 2px;
 }
+
+.retry-button:disabled { opacity: .55; cursor: not-allowed; }
 
 
 .retry-icon {

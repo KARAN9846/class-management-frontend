@@ -31,6 +31,14 @@ import { RouterLink } from '@angular/router';
 
 import { PermissionService } from '../../../../core/auth/permission.service';
 
+export function formatLocalCalendarDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 @Component({
   selector: 'app-mark-attendance',
   standalone: true,
@@ -46,7 +54,7 @@ import { PermissionService } from '../../../../core/auth/permission.service';
 })
 export class MarkAttendanceComponent implements OnInit {
 
-  today = new Date().toISOString().split('T')[0];
+  today = formatLocalCalendarDate(new Date());
 
   private readonly attendanceService =
     inject(TeacherAttendance);
@@ -86,6 +94,8 @@ export class MarkAttendanceComponent implements OnInit {
   studentStatuses: Record<number, AttendanceStatus> = {};
 
   loadingStudents = false;
+
+  private requestSequence = 0;
 
 
   // =========================================================
@@ -165,6 +175,8 @@ export class MarkAttendanceComponent implements OnInit {
 
   onAssignmentChange(): void {
 
+    this.requestSequence += 1;
+
     this.students = [];
 
     this.studentStatuses = {};
@@ -191,6 +203,8 @@ export class MarkAttendanceComponent implements OnInit {
     assignmentId: number
   ): void {
 
+    const requestId = ++this.requestSequence;
+
     this.loadingStudents = true;
 
     this.attendanceService
@@ -198,6 +212,10 @@ export class MarkAttendanceComponent implements OnInit {
       .subscribe({
 
         next: (response) => {
+
+          if (requestId !== this.requestSequence) {
+            return;
+          }
 
           this.students =
             response.data ?? [];
@@ -210,6 +228,10 @@ export class MarkAttendanceComponent implements OnInit {
         },
 
         error: (error) => {
+
+          if (requestId !== this.requestSequence) {
+            return;
+          }
 
           console.error(
             'Failed to load attendance students:',
@@ -385,23 +407,7 @@ getAbsentCount(): number {
   // =========================================================
 
   private getTodayDate(): string {
-
-    const today = new Date();
-
-    const year =
-      today.getFullYear();
-
-    const month =
-      String(
-        today.getMonth() + 1
-      ).padStart(2, '0');
-
-    const day =
-      String(
-        today.getDate()
-      ).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
+    return formatLocalCalendarDate(new Date());
   }
 
 }

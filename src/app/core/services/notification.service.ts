@@ -1,11 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
 
 import { ApiService } from './api.service';
 import {
   AbsentStudentNotification,
   NotificationApiResponse,
-  PendingAttendanceApiResponse
+  PendingAttendanceApiResponse,
+  PendingLeaveApiResponse
 } from '../models/notification.model';
 
 @Injectable({
@@ -34,4 +36,9 @@ getPendingAttendance(): Observable<PendingAttendanceApiResponse> {
     '/attendance/notifications/pending'
   );
 }
+
+  getPendingLeaveRequests(): Observable<PendingLeaveApiResponse> {
+    const params = new HttpParams().set('page', 0).set('size', 10);
+    return this.api.get<PendingLeaveApiResponse>('/leave-requests/admin/pending', params);
+  }
 }

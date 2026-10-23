@@ -6,10 +6,10 @@
   display: block;
   width: 100%;
 
-  --primary: #3b82f6;
-  --primary-light: #eff6ff;
+  --primary: var(--color-primary-hover);
+  --primary-light: var(--color-primary-soft);
 
-  --text-secondary: #6b7280;
+  --text-secondary: var(--color-text-secondary);
 }
 
 
@@ -57,7 +57,7 @@
   align-items: center;
   justify-content: center;
 
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 
@@ -75,6 +75,7 @@
 
   border-color: var(--primary-light);
   border-top-color: var(--primary);
+  border-right-color: color-mix(in srgb, var(--primary) 45%, var(--primary-light));
 
   animation: loading-spin 700ms linear infinite;
 }
@@ -148,7 +149,8 @@
 @media (prefers-reduced-motion: reduce) {
 
   .spinner {
-    animation-duration: 1.5s;
+    animation: none;
+    opacity: .75;
   }
 }
 

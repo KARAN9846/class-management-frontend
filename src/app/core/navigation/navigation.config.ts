@@ -107,6 +107,11 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
                     label: 'Attendance',
                     route: '/admin/attendance',
                     icon: '✓'
+                },
+                {
+                    label: 'Leave Requests',
+                    route: '/admin/leave',
+                    icon: '▣'
                 }
             ]
         }
@@ -144,6 +149,16 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
                 {
                     label: 'Attendance',
                     route: '/teacher/attendance',
+                    icon: '✓'
+                },
+                {
+                    label: 'Leave Management',
+                    route: '/teacher/leave',
+                    icon: '▣'
+                },
+                {
+                    label: 'Student Leave Reviews',
+                    route: '/teacher/leave/review',
                     icon: '✓'
                 }
             ]
@@ -183,6 +198,11 @@ export const NAVIGATION_CONFIG: Record<string, NavigationSection[]> = {
                     label: 'Exam Results',
                     route: '/student/exams',
                     icon: '▤'
+                },
+                {
+                    label: 'Leave Management',
+                    route: '/student/leave',
+                    icon: '▣'
                 }
             ]
         }

@@ -205,38 +205,35 @@
           <div class="notification-dropdown-header">
             <div>
               <h3>Notifications</h3>
-              <span>Absences &amp; pending attendance</span>
+              <span>Absences, attendance &amp; leave requests</span>
             </div>
 
             @if (notificationCount > 0) {
-              <span class="notification-header-count">
-                {{ notificationCount }}
-              </span>
+            <span class="notification-header-count">
+              {{ notificationCount }}
+            </span>
             }
           </div>
 
           <!-- Notification category tabs -->
           <div class="notification-tabs" role="group" aria-label="Notification category">
-            <button
-              type="button"
-              class="notification-tab absent-tab"
+            <button type="button" class="notification-tab absent-tab"
               [class.active]="activeNotificationTab === 'absent'"
-              [attr.aria-pressed]="activeNotificationTab === 'absent'"
-              (click)="setNotificationTab('absent')"
-            >
+              [attr.aria-pressed]="activeNotificationTab === 'absent'" (click)="setNotificationTab('absent')">
               <span>Absent Students</span>
               <span class="notification-tab-count">
                 {{ absentNotifications.length }}
               </span>
             </button>
 
-            <button
-              type="button"
-              class="notification-tab pending-tab"
+            <button type="button" class="notification-tab leave-tab" [class.active]="activeNotificationTab === 'leave'"
+              [attr.aria-pressed]="activeNotificationTab === 'leave'" (click)="setNotificationTab('leave')">
+              <span>Leave Requests</span><span class="notification-tab-count">{{ pendingLeaveCount }}</span>
+            </button>
+
+            <button type="button" class="notification-tab pending-tab"
               [class.active]="activeNotificationTab === 'pending'"
-              [attr.aria-pressed]="activeNotificationTab === 'pending'"
-              (click)="setNotificationTab('pending')"
-            >
+              [attr.aria-pressed]="activeNotificationTab === 'pending'" (click)="setNotificationTab('pending')">
               <span>Attendance Pending</span>
               <span class="notification-tab-count">
                 {{ pendingAttendanceNotifications.length }}
@@ -248,7 +245,11 @@
           <div class="notification-dropdown-content">
 
             <!-- Loading -->
-            @if (notificationLoading) {
+            @if (
+            (activeNotificationTab === 'absent' && absentNotificationLoading) ||
+            (activeNotificationTab === 'pending' && pendingAttendanceNotificationLoading) ||
+            (activeNotificationTab === 'leave' && leaveNotificationLoading)
+            ) {
 
             <div class="notification-state">
               <span class="notification-spinner"></span>
@@ -258,7 +259,11 @@
             }
 
             <!-- Error -->
-            @else if (notificationError) {
+            @else if (
+            (activeNotificationTab === 'absent' && absentNotificationError) ||
+            (activeNotificationTab === 'pending' && pendingAttendanceNotificationError) ||
+            (activeNotificationTab === 'leave' && leaveNotificationError)
+            ) {
 
             <div class="notification-state notification-error-state">
 
@@ -269,7 +274,12 @@
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
 
-              <span>{{ notificationError }}</span>
+              <span>
+                {{
+                activeNotificationTab === 'absent' ? absentNotificationError : activeNotificationTab === 'pending'
+                ? pendingAttendanceNotificationError : leaveNotificationError
+                }}
+              </span>
 
             </div>
 
@@ -277,143 +287,128 @@
 
             <!-- Empty state for the selected tab -->
             @else if (
-              activeNotificationTab === 'absent'
-                ? absentNotifications.length === 0
-                : pendingAttendanceNotifications.length === 0
+            activeNotificationTab === 'absent' ? absentNotifications.length === 0 : activeNotificationTab === 'pending'
+            ? pendingAttendanceNotifications.length === 0 : pendingLeaveNotifications.length === 0
             ) {
-              <div class="notification-state notification-empty-state">
-                <div class="notification-empty-icon">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M20 6 9 17l-5-5"></path>
-                  </svg>
-                </div>
-
-                <strong>
-                  {{
-                    activeNotificationTab === 'absent'
-                      ? 'No absent students'
-                      : 'No pending attendance'
-                  }}
-                </strong>
-
-                <span>
-                  {{
-                    activeNotificationTab === 'absent'
-                      ? 'No students are marked absent today.'
-                      : 'All class sections have completed attendance.'
-                  }}
-                </span>
+            <div class="notification-state notification-empty-state">
+              <div class="notification-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5"></path>
+                </svg>
               </div>
+
+              <strong>
+                {{
+                activeNotificationTab === 'absent' ? 'No absent students' : activeNotificationTab === 'pending' ? 'No
+                pending attendance' : 'No pending leave requests'
+                }}
+              </strong>
+
+              <span>
+                {{
+                activeNotificationTab === 'absent' ? 'No students are marked absent today.' : activeNotificationTab ===
+                'pending' ? 'All class sections have completed attendance.' : 'There are no leave requests awaiting
+                review.'
+                }}
+              </span>
+            </div>
             }
 
             <!-- Notifications for the selected tab -->
             @else {
-              <div class="notification-list">
-                @if (activeNotificationTab === 'absent') {
-                  <!-- Absent students -->
-                  @for (
-                    notification of absentNotifications;
-                    track notification.studentId
-                  ) {
-                    <button
-                      type="button"
-                      class="notification-item"
-                      (click)="goToAttendance()"
-                    >
-                      <div class="notification-item-avatar">
-                        {{ notification.studentName.charAt(0).toUpperCase() }}
-                      </div>
+            <div class="notification-list">
+              @if (activeNotificationTab === 'absent') {
+              <!-- Absent students -->
+              @for (
+              notification of absentNotifications;
+              track notification.studentId
+              ) {
+              <button type="button" class="notification-item" (click)="goToAttendance()">
+                <div class="notification-item-avatar">
+                  {{ notification.studentName.charAt(0).toUpperCase() }}
+                </div>
 
-                      <div class="notification-item-details">
-                        <strong>{{ notification.studentName }}</strong>
+                <div class="notification-item-details">
+                  <strong>{{ notification.studentName }}</strong>
 
-                        <span>
-                          Class {{ notification.className }}
-                          <span class="notification-separator">•</span>
-                          Section {{ notification.sectionName }}
-                          <span class="notification-separator">•</span>
-                          Roll {{ notification.rollNumber }}
-                        </span>
-                      </div>
+                  <span>
+                    Class {{ notification.className }}
+                    <span class="notification-separator">•</span>
+                    Section {{ notification.sectionName }}
+                    <span class="notification-separator">•</span>
+                    Roll {{ notification.rollNumber }}
+                  </span>
+                </div>
 
-                      <svg
-                        class="notification-item-arrow"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </button>
-                  }
-                } @else {
-                  <!-- Attendance pending -->
-                  @for (
-                    notification of pendingAttendanceNotifications;
-                    track notification.classId + '-' + notification.sectionId
-                  ) {
-                    <button
-                      type="button"
-                      class="notification-item"
-                      (click)="goToAttendance()"
-                    >
-                      <div class="notification-item-avatar pending-avatar">!</div>
+                <svg class="notification-item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+              }
+              } @else if (activeNotificationTab === 'pending') {
+              <!-- Attendance pending -->
+              @for (
+              notification of pendingAttendanceNotifications;
+              track notification.classId + '-' + notification.sectionId
+              ) {
+              <button type="button" class="notification-item" (click)="goToAttendance()">
+                <div class="notification-item-avatar pending-avatar">!</div>
 
-                      <div class="notification-item-details">
-                        <strong>Attendance not completed</strong>
+                <div class="notification-item-details">
+                  <strong>Attendance not completed</strong>
 
-                        <span>
-                          Class {{ notification.className }}
-                          <span class="notification-separator">•</span>
-                          Section {{ notification.sectionName }}
-                        </span>
+                  <span>
+                    Class {{ notification.className }}
+                    <span class="notification-separator">•</span>
+                    Section {{ notification.sectionName }}
+                  </span>
 
-                        <span>
-                          Marked {{ notification.markedStudents }}/{{ notification.totalStudents }}
-                          <span class="notification-separator">•</span>
-                          {{ notification.pendingStudents }} pending
-                        </span>
-                      </div>
+                  <span>
+                    Marked {{ notification.markedStudents }}/{{ notification.totalStudents }}
+                    <span class="notification-separator">•</span>
+                    {{ notification.pendingStudents }} pending
+                  </span>
+                </div>
 
-                      <svg
-                        class="notification-item-arrow"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </button>
-                  }
-                }
-              </div>
+                <svg class="notification-item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+              }
+              } @else {
+              @for (notification of pendingLeaveNotifications; track notification.id) {
+              <button type="button" class="notification-item" (click)="goToLeave()">
+                <div class="notification-item-avatar pending-avatar">L</div>
+                <div class="notification-item-details"><strong>Leave request #{{ notification.id }}</strong><span>{{
+                    notification.studentId ? 'Student' : 'Teacher' }} · {{ notification.startDate }}{{
+                    notification.endDate !== notification.startDate ? ' – ' + notification.endDate : ''
+                    }}</span><span>{{ notification.reason }}</span></div><span class="notification-item-arrow">→</span>
+              </button>
+              }
+              }
+            </div>
             }
 
           </div>
 
           <!-- Footer -->
-          @if (!notificationLoading && !notificationError) {
+          @if (
+          !(activeNotificationTab === 'absent' && absentNotificationLoading) &&
+          !(activeNotificationTab === 'pending' && pendingAttendanceNotificationLoading) &&
+          !(activeNotificationTab === 'leave' && leaveNotificationLoading) &&
+          !(activeNotificationTab === 'absent' && absentNotificationError) &&
+          !(activeNotificationTab === 'pending' && pendingAttendanceNotificationError) &&
+          !(activeNotificationTab === 'leave' && leaveNotificationError)
+          ) {
 
           <div class="notification-dropdown-footer">
 
-            <button type="button" class="notification-view-all" (click)="goToAttendance()">
-              View Attendance
+            <button type="button" class="notification-view-all"
+              (click)="activeNotificationTab === 'leave' ? goToLeave() : goToAttendance()">
+              {{ activeNotificationTab === 'leave' ? 'View Leave Requests' : 'View Attendance' }}
 
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
                 stroke-linejoin="round" aria-hidden="true">

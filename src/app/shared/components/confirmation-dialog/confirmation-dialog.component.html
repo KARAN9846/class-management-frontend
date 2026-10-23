@@ -6,10 +6,16 @@
     role="presentation">
 
     <section
+      #dialog
       class="confirmation-dialog"
       role="dialog"
       aria-modal="true"
-      [attr.aria-labelledby]="'confirmation-title'">
+      tabindex="-1"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      [attr.aria-labelledby]="titleId"
+      [attr.aria-describedby]="message ? messageId : null"
+      (click)="$event.stopPropagation()">
 
       <!-- Icon -->
       <div
@@ -46,14 +52,14 @@
       <div class="dialog-content">
 
         <h2
-          id="confirmation-title"
+          [id]="titleId"
           class="dialog-title">
 
           {{ title }}
 
         </h2>
 
-        <p class="dialog-message">
+        <p class="dialog-message" [id]="messageId">
 
           {{ message }}
 

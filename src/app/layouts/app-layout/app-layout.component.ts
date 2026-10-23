@@ -30,7 +30,8 @@ import {
 
 import {
   AbsentStudentNotification,
-  PendingAttendanceNotification
+  PendingAttendanceNotification,
+  PendingLeaveNotification
 } from '../../core/models/notification.model';
 
 import {
@@ -71,8 +72,16 @@ private readonly notificationPollingInterval = 30_000;
   // =====================================================
 
   absentNotifications: AbsentStudentNotification[] = [];
+  absentNotificationLoading = false;
+  absentNotificationError = '';
 
   pendingAttendanceNotifications: PendingAttendanceNotification[] = [];
+  pendingAttendanceNotificationLoading = false;
+  pendingAttendanceNotificationError = '';
+  pendingLeaveNotifications: PendingLeaveNotification[] = [];
+  pendingLeaveCount = 0;
+  leaveNotificationLoading = false;
+  leaveNotificationError = '';
 
   notificationCount = 0;
 
@@ -80,7 +89,7 @@ private readonly notificationPollingInterval = 30_000;
 
   notificationError = '';
 
-  activeNotificationTab: 'absent' | 'pending' = 'absent';
+  activeNotificationTab: 'absent' | 'pending' | 'leave' = 'absent';
 
   notificationOpen = false;
 
@@ -200,81 +209,112 @@ logout(): void {
   // ADMIN NOTIFICATIONS
   // =====================================================
 
-private loadAdminNotifications(): void {
-  if (this.userRole !== 'Admin') {
-    return;
+  private loadAdminNotifications(): void {
+    if (this.userRole !== 'Admin') {
+      return;
+    }
+
+    this.absentNotificationLoading = true;
+    this.pendingAttendanceNotificationLoading = true;
+    this.leaveNotificationLoading = true;
+    this.updateNotificationState();
+
+    this.notificationService.getTodayAbsentStudents().subscribe({
+      next: response => {
+        this.ngZone.run(() => {
+          this.absentNotifications = response.data ?? [];
+          this.absentNotificationLoading = false;
+          this.absentNotificationError = '';
+          this.recalculateNotificationCount();
+          this.updateNotificationState();
+          this.cdr.detectChanges();
+        });
+      },
+      error: error => {
+        console.error('Failed to load absent student notifications:', error);
+
+        this.ngZone.run(() => {
+          this.absentNotificationLoading = false;
+          this.absentNotificationError =
+            error?.error?.message || 'Unable to load absent student notifications.';
+          this.updateNotificationState();
+          this.cdr.detectChanges();
+        });
+      }
+    });
+
+    this.notificationService.getPendingAttendance().subscribe({
+      next: response => {
+        this.ngZone.run(() => {
+          this.pendingAttendanceNotifications = response.data ?? [];
+          this.pendingAttendanceNotificationLoading = false;
+          this.pendingAttendanceNotificationError = '';
+          this.recalculateNotificationCount();
+          this.updateNotificationState();
+          this.cdr.detectChanges();
+        });
+      },
+      error: error => {
+        console.error('Failed to load pending attendance notifications:', error);
+
+        this.ngZone.run(() => {
+          this.pendingAttendanceNotificationLoading = false;
+          this.pendingAttendanceNotificationError =
+            error?.error?.message || 'Unable to load pending attendance notifications.';
+          this.updateNotificationState();
+          this.cdr.detectChanges();
+        });
+      }
+    });
+
+    this.notificationService.getPendingLeaveRequests().subscribe({
+      next: response => {
+        this.ngZone.run(() => {
+          this.pendingLeaveNotifications = response.data?.content ?? [];
+          this.pendingLeaveCount = response.data?.totalElements ?? 0;
+          this.leaveNotificationLoading = false;
+          this.leaveNotificationError = '';
+          this.recalculateNotificationCount();
+          this.updateNotificationState();
+          this.cdr.detectChanges();
+        });
+      },
+      error: error => {
+        console.error('Failed to load pending leave notifications:', error);
+
+        this.ngZone.run(() => {
+          this.leaveNotificationLoading = false;
+          this.leaveNotificationError =
+            error?.error?.message || 'Unable to load leave notifications.';
+          this.updateNotificationState();
+          this.cdr.detectChanges();
+        });
+      }
+    });
   }
 
-  this.notificationLoading = true;
-  this.notificationError = '';
+  private recalculateNotificationCount(): void {
+    this.notificationCount =
+      this.absentNotifications.length +
+      this.pendingAttendanceNotifications.length +
+      this.pendingLeaveCount;
+  }
 
-  let absentLoaded = false;
-  let pendingLoaded = false;
-  let absentFailed = false;
-  let pendingFailed = false;
+  private updateNotificationState(): void {
+    this.notificationLoading =
+      this.absentNotificationLoading ||
+      this.pendingAttendanceNotificationLoading ||
+      this.leaveNotificationLoading;
 
-  const updateLoadingState = (): void => {
-    this.notificationLoading = !(absentLoaded && pendingLoaded);
+    const allCategoriesFailed =
+      Boolean(this.absentNotificationError) &&
+      Boolean(this.pendingAttendanceNotificationError) &&
+      Boolean(this.leaveNotificationError);
 
-    if (absentLoaded && pendingLoaded) {
-      this.notificationError = '';
-    } else if (absentFailed && pendingFailed) {
-      this.notificationError = 'Unable to load notifications.';
-    }
-  };
-
-  this.notificationService.getTodayAbsentStudents().subscribe({
-    next: response => {
-      this.ngZone.run(() => {
-        this.absentNotifications = response.data ?? [];
-        absentLoaded = true;
-
-        this.notificationCount =
-          this.absentNotifications.length +
-          this.pendingAttendanceNotifications.length;
-
-        updateLoadingState();
-        this.cdr.detectChanges();
-      });
-    },
-    error: error => {
-      console.error('Failed to load absent student notifications:', error);
-
-      this.ngZone.run(() => {
-        absentFailed = true;
-        absentLoaded = true;
-        updateLoadingState();
-        this.cdr.detectChanges();
-      });
-    }
-  });
-
-  this.notificationService.getPendingAttendance().subscribe({
-    next: response => {
-      this.ngZone.run(() => {
-        this.pendingAttendanceNotifications = response.data ?? [];
-        pendingLoaded = true;
-
-        this.notificationCount =
-          this.absentNotifications.length +
-          this.pendingAttendanceNotifications.length;
-
-        updateLoadingState();
-        this.cdr.detectChanges();
-      });
-    },
-    error: error => {
-      console.error('Failed to load pending attendance notifications:', error);
-
-      this.ngZone.run(() => {
-        pendingFailed = true;
-        pendingLoaded = true;
-        updateLoadingState();
-        this.cdr.detectChanges();
-      });
-    }
-  });
-}
+    this.notificationError = allCategoriesFailed
+      ? 'Unable to load notifications.'
+      : '';
+  }
 
   ngOnDestroy(): void {
     if (this.notificationPollingSubscription) {
@@ -307,6 +347,8 @@ private loadAdminNotifications(): void {
     ]);
   }
 
+  goToLeave(): void { this.notificationOpen = false; this.router.navigate(['/admin/leave']); }
+
   @HostListener('document:click', ['$event'])
 onDocumentClick(event: MouseEvent): void {
   if (!this.notificationOpen) {
@@ -328,7 +370,7 @@ onDocumentClick(event: MouseEvent): void {
   }
 }
 
-setNotificationTab(tab: 'absent' | 'pending'): void {
+  setNotificationTab(tab: 'absent' | 'pending' | 'leave'): void {
   this.activeNotificationTab = tab;
 }
 }

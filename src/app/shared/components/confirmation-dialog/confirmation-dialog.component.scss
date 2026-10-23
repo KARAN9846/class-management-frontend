@@ -5,25 +5,25 @@
 :host {
   display: contents;
 
-  --primary: #3b82f6;
-  --primary-dark: #2563eb;
+  --primary: var(--color-primary);
+  --primary-dark: var(--color-primary-active);
 
   --danger: #dc2626;
   --danger-dark: #b91c1c;
   --danger-light: #fef2f2;
   --danger-border: #fecaca;
 
-  --surface: #ffffff;
+  --surface: var(--color-surface);
 
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
 
-  --border: #e5e7eb;
+  --border: var(--color-border);
 
   --radius-md: 10px;
   --radius-lg: 14px;
 
-  --transition: 150ms ease;
+  --transition: var(--transition-fast);
 }
 
 
@@ -100,7 +100,7 @@
 
   border-radius: 50%;
 
-  background: #eff6ff;
+  background: var(--color-primary-soft);
 
   color: var(--primary);
 }

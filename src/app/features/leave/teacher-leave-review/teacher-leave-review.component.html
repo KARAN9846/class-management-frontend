@@ -1,0 +1,181 @@
+<main class="teacher-leave-page">
+  <div class="leave-hero">
+    <div class="leave-hero-image"><img src="/assets/images/leave.png" alt="" /></div>
+    <div class="leave-hero-content">
+      <span class="leave-hero-eyebrow">STUDENT LEAVE REVIEW</span>
+      <app-page-header title="Student Leave Requests"
+        description="Review student leave applications within your assigned scope."
+        breadcrumb="Teacher / Leave Review"></app-page-header>
+    </div>
+  </div>
+
+  @if (success) { <div class="notice success" role="status">{{ success }}</div> }
+  @if (permissionsError) { <app-error-state title="Unable to load leave permissions" [description]="permissionsError"
+    (actionClick)="ngOnInit()"></app-error-state> }
+
+  <section class="panel requests-panel" aria-labelledby="student-leave-title">
+    <div class="section-heading">
+      <div>
+        <p class="section-eyebrow">TEACHER REVIEW</p>
+        <h2 id="student-leave-title">Student leave requests</h2>
+        <p class="section-description">Review requests from students in your assigned academic scope.</p>
+      </div>
+      @if (!loading && !listError && totalElements) { <span class="result-count">{{ totalElements }} request{{
+        totalElements === 1 ? '' : 's' }}</span> }
+    </div>
+
+    <form class="leave-filters" (ngSubmit)="applyFilters()">
+      <div class="filter-primary">
+        <label>Search<input type="search" name="search" [(ngModel)]="search" maxlength="100"
+            placeholder="Request ID or student name" /></label>
+        <label>Status<select name="filterStatus" [(ngModel)]="filterStatus">
+            <option value="">All statuses</option>
+            <option value="PENDING">Pending</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select></label>
+      </div>
+
+      <div class="filter-toolbar-row">
+        <details class="advanced-filters">
+          <summary><span>More filters</span>@if (leaveStartFrom || leaveEndTo || submittedFrom || submittedTo) { <span
+              class="filter-active">Filters selected</span> }</summary>
+          <div class="advanced-filter-grid">
+            <label>Leave from<input type="date" name="leaveStartFrom" [(ngModel)]="leaveStartFrom" /></label>
+            <label>Leave to<input type="date" name="leaveEndTo" [(ngModel)]="leaveEndTo" /></label>
+            <label>Submitted from<input type="date" name="submittedFrom" [(ngModel)]="submittedFrom" /></label>
+            <label>Submitted to<input type="date" name="submittedTo" [(ngModel)]="submittedTo" /></label>
+          </div>
+        </details>
+        <div class="sort-group" aria-label="Sort requests">
+          <span class="sort-label">Sort</span>
+          <label>Sort by<select name="sortBy" [(ngModel)]="sortBy">
+              <option value="createdAt">Submitted date</option>
+              <option value="startDate">Leave start</option>
+              <option value="endDate">Leave end</option>
+              <option value="status">Status</option>
+              <option value="id">Request ID</option>
+            </select></label>
+          <label>Order<select name="sortDirection" [(ngModel)]="sortDirection">
+              <option value="desc">Newest first</option>
+              <option value="asc">Oldest first</option>
+            </select></label>
+        </div>
+      </div>
+      <div class="filter-actions"><button class="primary" type="submit" [disabled]="permissionsLoading">Apply
+          filters</button><button class="secondary" type="button" (click)="clearFilters()">Clear all</button></div>
+    </form>
+
+    @if (permissionsLoading || loading) { <app-loading message="Loading student leave requests…"></app-loading> }
+    @else if (listError) { <app-error-state title="Unable to load student leave requests" [description]="listError"
+      (actionClick)="load()"></app-error-state> }
+    @else if (!requests.length) { <app-empty-state title="No student leave requests found."
+      description="Requests within your assigned scope will appear here."></app-empty-state> }
+    @else {
+    <div class="request-table-wrapper">
+      <table class="request-table">
+        <caption class="visually-hidden">Student leave requests</caption>
+        <thead>
+          <tr>
+            <th scope="col">Student</th>
+            <th scope="col">Leave dates</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Reason</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="action-column">Action</th>
+          </tr>
+        </thead>
+        <tbody>@for (request of requests; track request.id) { <tr>
+            <td><strong>{{ request.applicantName || 'Student #' + request.studentId }}</strong><small>Request #{{
+                request.id }}</small></td>
+            <td><strong>{{ request.startDate }}</strong>@if (request.endDate !== request.startDate) { <span>to {{
+                request.endDate }}</span> }</td>
+            <td><strong>{{ request.dayCount }} day{{ request.dayCount === 1 ? '' : 's' }}</strong><small>{{
+                request.dayPortion }}</small></td>
+            <td class="reason-cell">{{ request.reason }}</td>
+            <td><app-status-badge [label]="request.status" [variant]="statusVariant(request.status)"></app-status-badge>
+            </td>
+            <td class="action-column"><button class="review-button" type="button"
+                (click)="open(request)">Review</button></td>
+          </tr> }</tbody>
+      </table>
+    </div>
+    <app-pagination [currentPage]="page + 1" [totalItems]="totalElements" [pageSize]="size" [maxVisiblePages]="5"
+      (pageChange)="pageChange($event)"></app-pagination>
+    }
+  </section>
+
+  @if (detailOpen) { <div class="modal-backdrop" role="presentation" (click)="closeOnBackdrop($event)">
+    <section class="leave-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-leave-dialog-title"
+      tabindex="-1" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" (keydown.escape)="closeDetails()"
+      (click)="$event.stopPropagation()">
+      @if (detailLoading) { <div class="dialog-state"><app-loading message="Loading request details…"
+          size="small"></app-loading></div> }
+      @else if (detailError) { <div class="dialog-state">
+        <div class="dialog-header">
+          <h2 id="teacher-leave-dialog-title">Request details</h2><button class="close-button" type="button"
+            (click)="closeDetails()">Close</button>
+        </div><app-error-state title="Unable to load request details" [description]="detailError"
+          (actionClick)="retryDetail()"></app-error-state>
+      </div> }
+      @else if (selected) { <div class="dialog-header">
+        <div>
+          <p class="section-eyebrow">REQUEST DETAILS</p>
+          <h2 id="teacher-leave-dialog-title">Request #{{ selected.id }}</h2>
+        </div><button class="close-button" type="button" (click)="closeDetails()">Close</button>
+      </div>
+      <div class="detail-status"><app-status-badge [label]="selected.status"
+          [variant]="statusVariant(selected.status)"></app-status-badge></div>@if (decisionError) { <div
+        class="notice error" role="alert">{{ decisionError }}</div> }<div class="detail-grid">
+        <div class="detail-block">
+          <h3>Student</h3>
+          <p>{{ selected.applicantName || 'Student #' + selected.studentId }}</p>
+        </div>
+        <div class="detail-block">
+          <h3>Leave dates</h3>
+          <p>{{ selected.startDate }}{{ selected.endDate !== selected.startDate ? ' – ' + selected.endDate : '' }}</p>
+        </div>
+        <div class="detail-block">
+          <h3>Duration</h3>
+          <p>{{ selected.dayCount }} day{{ selected.dayCount === 1 ? '' : 's' }} · {{ selected.dayPortion }}</p>
+        </div>
+        <div class="detail-block detail-wide">
+          <h3>Reason</h3>
+          <p>{{ selected.reason }}</p>
+        </div>@if (selected.academicYearId || selected.classId || selected.sectionId) { <div
+          class="detail-block detail-wide">
+          <h3>Stored academic scope</h3>
+          <p>Academic year #{{ selected.academicYearId ?? '—' }} · Class #{{ selected.classId ?? '—' }} · Section #{{
+            selected.sectionId ?? '—' }}</p>
+        </div> }@if (selected.adminComment) { <div class="detail-block detail-wide">
+          <h3>Review comment</h3>
+          <p>{{ selected.adminComment }}</p>
+        </div> }
+      </div>
+      <section class="history-section">
+        <h3>History</h3>@if (selected.history.length) { <ol class="history-list">@for (event of selected.history; track
+          event.id) { <li>
+            <div class="history-marker" aria-hidden="true"></div>
+            <div class="history-entry"><strong>{{ event.eventType }}</strong><span>{{ event.actorType }} · {{
+                event.createdAt | date:'medium' }}</span><small>{{ event.previousStatus || '—' }} → {{ event.newStatus
+                || '—' }}{{ event.comment ? ' · ' + event.comment : '' }}</small></div>
+          </li> }</ol> } @else { <p class="muted">No history available.</p> }
+      </section>@if (selected.status === 'PENDING' && (canApprove() || canReject())) { <section
+        class="decision-section">
+        <h3>Review decision</h3><label>Decision comment<textarea [(ngModel)]="comment" maxlength="1000" rows="3"
+            placeholder="Optional for approval; required for rejection"></textarea></label>
+        <p class="field-help">A comment is required when rejecting a request.</p>
+        <div class="actions">@if (canApprove()) { <button class="approve" type="button" [disabled]="processingId!==null"
+            (click)="beginDecision('approve')">{{ processingId===selected.id ? 'Saving…' : 'Approve' }}</button> } @if
+          (canReject()) { <button class="reject" type="button" [disabled]="processingId!==null"
+            (click)="beginDecision('reject')">Reject</button> }</div>
+      </section> } }
+    </section>
+  </div> }
+
+  <app-confirmation-dialog [visible]="confirmationVisible" [title]="confirmationTitle" [message]="confirmationMessage"
+    [confirmLabel]="pendingDecision === 'reject' ? 'Reject request' : 'Approve request'"
+    [danger]="pendingDecision === 'reject'" (confirmed)="confirmDecision()"
+    (cancelled)="cancelDecision()"></app-confirmation-dialog>
+</main>

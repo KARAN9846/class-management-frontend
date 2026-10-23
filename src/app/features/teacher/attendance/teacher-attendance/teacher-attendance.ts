@@ -16,8 +16,13 @@ import {
 import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
 import { PermissionService } from '../../../../core/auth/permission.service';
 
-import { Attendance } from '../../../admin/attendance/models/attendance.model';
+import {
+  Attendance,
+  AttendancePageQuery,
+  AttendanceStatus
+} from '../../../admin/attendance/models/attendance.model';
 import { TeacherAttendance } from '../services/teacher-attendance';
+import { TeacherAttendanceAssignment } from '../models/teacher-attendance-assignment.model';
 
 import {
   Router,
@@ -57,13 +62,11 @@ export class TeacherAttendanceComponent implements OnInit {
 
   attendance: Attendance[] = [];
 
-  private allAttendance: Attendance[] = [];
-
-  filteredAttendanceCount = 0;
-
-  currentPage = 1;
+  page = 0;
 
   pageSize = 50;
+
+  totalElements = 0;
 
   loading = false;
 
@@ -71,13 +74,25 @@ export class TeacherAttendanceComponent implements OnInit {
 
   search = '';
 
-  statusFilter: 'ALL' | 'PRESENT' | 'ABSENT' = 'ALL';
+  statusFilter: AttendanceStatus | 'ALL' = 'ALL';
 
   dateFilter = '';
 
-  classFilter = 'ALL';
+  academicYearFilter: number | null = null;
 
-  sectionFilter = 'ALL';
+  classFilter: number | null = null;
+
+  sectionFilter: number | null = null;
+
+  assignments: TeacherAttendanceAssignment[] = [];
+
+  filterOptionsError = '';
+
+  sortBy = 'attendanceDate';
+
+  sortDirection: 'asc' | 'desc' = 'desc';
+
+  private requestSequence = 0;
 
 columns: TableColumn[] = [
   {
@@ -105,13 +120,13 @@ columns: TableColumn[] = [
     key: 'markedByTeacherName',
     label: 'Marked By',
     type: 'attendance-teacher',
-    sortable: true
+    sortable: false
   },
   {
     key: 'lastUpdatedByTeacherName',
     label: 'Last Updated By',
     type: 'attendance-last-updated',
-    sortable: true
+    sortable: false
   }
 ];
 
@@ -162,6 +177,7 @@ columns: TableColumn[] = [
       .subscribe({
         next: () => {
           this.loadAttendance();
+          this.loadFilterOptions();
         },
 
         error: (error) => {
@@ -180,20 +196,41 @@ columns: TableColumn[] = [
 
   loadAttendance(): void {
 
+    const requestId = ++this.requestSequence;
+
     this.loading = true;
 
     this.errorMessage = '';
 
+    const query: AttendancePageQuery = {
+      page: this.page,
+      size: this.pageSize,
+      dateFrom: this.dateFilter || undefined,
+      dateTo: this.dateFilter || undefined,
+      status: this.statusFilter === 'ALL' ? undefined : this.statusFilter,
+      academicYearId: this.academicYearFilter ?? undefined,
+      classId: this.classFilter ?? undefined,
+      sectionId: this.sectionFilter ?? undefined,
+      search: this.search.trim() || undefined,
+      sortBy: this.sortBy,
+      sortDirection: this.sortDirection
+    };
+
     this.attendanceService
-      .getAttendance()
+      .getAttendancePage(query)
       .subscribe({
 
         next: (response) => {
 
-          this.allAttendance =
-            response.data ?? [];
+          if (requestId !== this.requestSequence) {
+            return;
+          }
 
-          this.applySearch();
+          const pageResponse = response.data;
+          this.attendance = pageResponse?.content ?? [];
+          this.page = pageResponse?.page ?? this.page;
+          this.pageSize = pageResponse?.size ?? this.pageSize;
+          this.totalElements = pageResponse?.totalElements ?? 0;
 
           this.loading = false;
 
@@ -201,6 +238,10 @@ columns: TableColumn[] = [
         },
 
         error: (error) => {
+
+          if (requestId !== this.requestSequence) {
+            return;
+          }
 
           console.error(
             'Failed to load teacher attendance:',
@@ -210,6 +251,9 @@ columns: TableColumn[] = [
           this.errorMessage =
             'Failed to load attendance.';
 
+          this.attendance = [];
+          this.totalElements = 0;
+
           this.loading = false;
 
           this.cdr.detectChanges();
@@ -217,152 +261,132 @@ columns: TableColumn[] = [
       });
   }
 
-  private getFilteredAttendance(): Attendance[] {
-
-    const searchValue =
-      this.search.trim().toLowerCase();
-
-    return this.allAttendance.filter((item) => {
-
-      const matchesSection =
-        this.sectionFilter === 'ALL' ||
-        item.sectionName === this.sectionFilter;
-
-      const matchesSearch =
-        !searchValue ||
-        item.studentName?.toLowerCase().includes(searchValue) ||
-        item.className?.toLowerCase().includes(searchValue) ||
-        item.sectionName?.toLowerCase().includes(searchValue) ||
-        item.markedByTeacherName?.toLowerCase().includes(searchValue) ||
-        item.status?.toLowerCase().includes(searchValue);
-
-      const matchesStatus =
-        this.statusFilter === 'ALL' ||
-        item.status === this.statusFilter;
-
-      const matchesDate =
-        !this.dateFilter ||
-        item.attendanceDate === this.dateFilter;
-
-      const matchesClass =
-        this.classFilter === 'ALL' ||
-        item.className === this.classFilter;
-
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesDate &&
-        matchesClass &&
-        matchesSection
-      );
+  private loadFilterOptions(): void {
+    this.attendanceService.getMyTeacherAssignments().subscribe({
+      next: (response) => {
+        this.assignments = response.data ?? [];
+        this.filterOptionsError = '';
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.filterOptionsError =
+          'Some attendance filter options could not be loaded.';
+        this.cdr.detectChanges();
+      }
     });
   }
 
-  applySearch(): void {
+  onPageChange(pageOneBased: number): void {
+    const nextPage = pageOneBased - 1;
+    const totalPages = Math.ceil(this.totalElements / this.pageSize);
 
-    const filteredAttendance =
-      this.getFilteredAttendance();
+    if (nextPage < 0 || (totalPages > 0 && nextPage >= totalPages)) {
+      return;
+    }
 
-    this.filteredAttendanceCount =
-      filteredAttendance.length;
-
-    this.currentPage = 1;
-
-    this.attendance =
-      filteredAttendance.slice(
-        0,
-        this.pageSize
-      );
+    this.page = nextPage;
+    this.loadAttendance();
   }
 
-  onPageChange(page: number): void {
-
-    const filteredAttendance =
-      this.getFilteredAttendance();
-
-    this.currentPage = page;
-
-    const start =
-      (page - 1) * this.pageSize;
-
-    const end =
-      start + this.pageSize;
-
-    this.attendance =
-      filteredAttendance.slice(
-        start,
-        end
-      );
+  get academicYearOptions(): TeacherAttendanceAssignment[] {
+    return this.assignments.filter((assignment, index, all) =>
+      all.findIndex(item => item.academicYearId === assignment.academicYearId) === index
+    );
   }
 
-  get classOptions(): string[] {
-    return [
-      ...new Set(
-        this.allAttendance
-          .map(item => item.className)
-          .filter(Boolean)
-      )
-    ];
+  get classOptions(): TeacherAttendanceAssignment[] {
+    const assignments = this.academicYearFilter === null
+      ? this.assignments
+      : this.assignments.filter(item => item.academicYearId === this.academicYearFilter);
+
+    return assignments.filter((assignment, index, all) =>
+      all.findIndex(item => item.classId === assignment.classId) === index
+    );
   }
 
-  get sectionOptions(): string[] {
-    return [
-      ...new Set(
-        this.allAttendance
-          .map(item => item.sectionName)
-          .filter(Boolean)
-      )
-    ];
+  get sectionOptions(): TeacherAttendanceAssignment[] {
+    const assignments = this.classFilter === null
+      ? this.assignments
+      : this.assignments.filter(item => item.classId === this.classFilter);
+
+    const yearScopedAssignments = this.academicYearFilter === null
+      ? assignments
+      : assignments.filter(item => item.academicYearId === this.academicYearFilter);
+
+    return yearScopedAssignments.filter((assignment, index, all) =>
+      all.findIndex(item => item.sectionId === assignment.sectionId) === index
+    );
   }
 
   onStatusChange(value: string): void {
 
-    this.statusFilter =
-      value as 'ALL' | 'PRESENT' | 'ABSENT';
-
-    this.applySearch();
+    this.statusFilter = value as AttendanceStatus | 'ALL';
+    this.resetAndLoad();
   }
 
   onDateChange(value: string): void {
 
     this.dateFilter = value;
 
-    this.applySearch();
+    this.resetAndLoad();
+  }
+
+  onAcademicYearChange(value: string): void {
+    this.academicYearFilter = value === 'ALL' ? null : Number(value);
+    this.classFilter = null;
+    this.sectionFilter = null;
+    this.resetAndLoad();
   }
 
   onClassChange(value: string): void {
-
-    this.classFilter = value;
-
-    this.applySearch();
+    this.classFilter = value === 'ALL' ? null : Number(value);
+    this.sectionFilter = null;
+    this.resetAndLoad();
   }
 
   onSectionChange(value: string): void {
-
-    this.sectionFilter = value;
-
-    this.applySearch();
-  }
-
-  clearFilters(): void {
-
-    this.search = '';
-
-    this.statusFilter = 'ALL';
-
-    this.dateFilter = '';
-
-    this.classFilter = 'ALL';
-
-    this.sectionFilter = 'ALL';
-
-    this.applySearch();
+    this.sectionFilter = value === 'ALL' ? null : Number(value);
+    this.resetAndLoad();
   }
 
   onSearchChange(value: string): void {
-
     this.search = value;
+    this.resetAndLoad();
+  }
 
-    this.applySearch();
+  onSortChange(event: {
+    sortBy: string | null;
+    sortDirection: 'asc' | 'desc' | null;
+  }): void {
+    const allowedSortFields = new Set([
+      'studentName',
+      'attendanceDate',
+      'status'
+    ]);
+
+    if (event.sortBy && !allowedSortFields.has(event.sortBy)) {
+      return;
+    }
+
+    this.sortBy = event.sortBy ?? 'attendanceDate';
+    this.sortDirection = event.sortDirection ?? 'desc';
+    this.resetAndLoad();
+  }
+
+  private resetAndLoad(): void {
+    this.page = 0;
+    this.loadAttendance();
+  }
+
+  clearFilters(): void {
+    this.search = '';
+    this.statusFilter = 'ALL';
+    this.dateFilter = '';
+    this.academicYearFilter = null;
+    this.classFilter = null;
+    this.sectionFilter = null;
+    this.sortBy = 'attendanceDate';
+    this.sortDirection = 'desc';
+    this.resetAndLoad();
   }
 }

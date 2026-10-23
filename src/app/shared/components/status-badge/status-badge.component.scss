@@ -1,6 +1,4 @@
-:host{
-display:inline-flex;
-}
+:host{display:inline-flex;}
 
 .status-badge{
 display:inline-flex;
@@ -9,7 +7,7 @@ gap:7px;
 height:28px;
 padding:0 12px;
 border-radius:999px;
-font-family:Inter,Arial,sans-serif;
+font-family:var(--font-family-sans);
 font-size:12px;
 font-weight:600;
 line-height:1;
@@ -83,11 +81,15 @@ border-color:#e2e8f0;
 /* Hover */
 
 .status-badge{
-transition:.2s ease;
+transition:transform var(--transition-fast);
 }
 
 .status-badge:hover{
 transform:translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce){
+  .status-badge:hover{transform:none;}
 }
 
 

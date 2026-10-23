@@ -190,6 +190,12 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         data: { roles: ['ADMIN'] }
       },
+      {
+        path: 'admin/leave',
+        loadComponent: () => import('./features/leave/admin-leave-management/admin-leave-management.component').then(m => m.AdminLeaveManagementComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }
+      },
 
       // --------------------- ACADEMIC ----------------------
 
@@ -577,6 +583,23 @@ export const routes: Routes = [
       },
 
       {
+        path: 'teacher/leave/review',
+        loadComponent: () => import('./features/leave/teacher-leave-review/teacher-leave-review.component').then(m => m.TeacherLeaveReviewComponent),
+        canActivate: [roleGuard, permissionGuard],
+        data: {
+          roles: ['TEACHER'],
+          permissions: ['LEAVE_STUDENT_VIEW']
+        }
+      },
+
+      {
+        path: 'teacher/leave',
+        loadComponent: () => import('./features/leave/leave-management/leave-management.component').then(m => m.LeaveManagementComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['TEACHER'] }
+      },
+
+      {
         path: 'teacher/assignments/:id/edit',
         component: TeacherAssignmentForm,
         canActivate: [roleGuard],
@@ -698,6 +721,12 @@ export const routes: Routes = [
           title: 'Exam Results',
           description: 'View your published exams and marks.'
         }
+      },
+      {
+        path: 'student/leave',
+        loadComponent: () => import('./features/leave/leave-management/leave-management.component').then(m => m.LeaveManagementComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['STUDENT'] }
       }
     ]
   },

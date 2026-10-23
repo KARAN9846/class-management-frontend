@@ -40,25 +40,38 @@
        ATTENDANCE SUMMARY
        ===================================================== -->
 
-  @if (!loading && !errorMessage && allAttendance.length > 0) {
+  @if (summaryLoading) {
+
+  <div class="summary-feedback" role="status">
+    Loading attendance summary...
+  </div>
+
+  } @else if (summaryError) {
+
+  <div class="summary-feedback summary-feedback-error" role="alert">
+    <span>{{ summaryError }}</span>
+    <button type="button" (click)="loadSummary()">Retry</button>
+  </div>
+
+  } @else if (summary && summary.totalRecords > 0) {
 
   <section class="summary-grid" aria-label="Attendance summary">
 
     <article class="summary-card summary-card-primary">
       <span class="summary-label">Attendance</span>
-      <strong>{{ attendancePercentage }}%</strong>
+      <strong>{{ summary.attendancePercentage }}%</strong>
       <span class="summary-caption">Present days out of total records</span>
     </article>
 
     <article class="summary-card summary-card-present">
       <span class="summary-label">Present Days</span>
-      <strong>{{ presentDays }}</strong>
+      <strong>{{ summary.presentDays }}</strong>
       <span class="summary-caption">Days marked present</span>
     </article>
 
     <article class="summary-card summary-card-absent">
       <span class="summary-label">Absent Days</span>
-      <strong>{{ absentDays }}</strong>
+      <strong>{{ summary.absentDays }}</strong>
       <span class="summary-caption">Days marked absent</span>
     </article>
 
@@ -124,6 +137,10 @@
           <p>
             {{ errorMessage }}
           </p>
+
+          <button type="button" class="retry-button" (click)="loadAttendance()">
+            Retry
+          </button>
         </div>
 
       </div>
@@ -133,7 +150,7 @@
 
     <!-- EMPTY -->
 
-    @if (!loading && !errorMessage && filteredAttendanceCount === 0) {
+    @if (!loading && !errorMessage && totalElements === 0) {
 
       <div class="empty-state">
 
@@ -165,6 +182,8 @@
           [columns]="columns"
           [data]="attendance"
           [loading]="loading"
+          [serverSideSorting]="true"
+          (sortChange)="onSortChange($event)"
           [showActions]="false"
         >
         </app-data-table>
@@ -174,7 +193,7 @@
 
       <!-- PAGINATION -->
 
-      @if (filteredAttendanceCount > 0) {
+      @if (totalElements > 0) {
 
         <div class="pagination-wrapper">
 
@@ -186,15 +205,15 @@
             </strong>
             of
             <strong>
-              {{ filteredAttendanceCount }}
+              {{ totalElements }}
             </strong>
             attendance records
 
           </div>
 
           <app-pagination
-            [currentPage]="currentPage"
-            [totalItems]="filteredAttendanceCount"
+            [currentPage]="page + 1"
+            [totalItems]="totalElements"
             [pageSize]="pageSize"
             (pageChange)="onPageChange($event)"
           >

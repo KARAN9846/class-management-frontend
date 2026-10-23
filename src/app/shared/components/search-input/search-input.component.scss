@@ -6,20 +6,17 @@
   display: block;
   width: 100%;
 
-  --primary: #3b82f6;
-  --primary-light: #eff6ff;
+  --primary: var(--color-primary-hover);
+  --primary-light: var(--color-primary-soft);
 
-  --surface: #ffffff;
+  --surface: var(--color-surface);
 
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
-  --text-muted: #9ca3af;
+  --text-primary: var(--color-text);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
 
-  --border: #e5e7eb;
+  --border: var(--color-border);
 
-  --radius-md: 10px;
-
-  --transition: 150ms ease;
 }
 
 
@@ -48,9 +45,9 @@
   color: var(--text-secondary);
 
   transition:
-    border-color var(--transition),
-    box-shadow var(--transition),
-    background var(--transition);
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
 }
 
 
@@ -78,7 +75,7 @@
 
   color: var(--text-muted);
 
-  transition: color var(--transition);
+  transition: color var(--transition-fast);
 }
 
 .search-input:focus-within .search-icon {
@@ -159,20 +156,20 @@
   cursor: pointer;
 
   transition:
-    background var(--transition),
-    color var(--transition);
+    background var(--transition-fast),
+    color var(--transition-fast);
 }
 
 
 .clear-button:hover {
-  background: #f3f4f6;
+  background: var(--color-surface-muted);
 
   color: var(--text-primary);
 }
 
 
 .clear-button:active {
-  background: #e5e7eb;
+  background: var(--color-border);
 }
 
 

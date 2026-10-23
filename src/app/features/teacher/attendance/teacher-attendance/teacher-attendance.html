@@ -58,6 +58,23 @@
       </select>
 
 
+      <!-- Academic year -->
+      <select
+        [value]="academicYearFilter ?? 'ALL'"
+        (change)="onAcademicYearChange($any($event.target).value)"
+        aria-label="Filter by academic year">
+
+        <option value="ALL">All Academic Years</option>
+
+        @for (assignment of academicYearOptions; track assignment.academicYearId) {
+          <option [value]="assignment.academicYearId">
+            {{ assignment.academicYearName }}
+          </option>
+        }
+
+      </select>
+
+
       <!-- Date -->
       <input
         type="date"
@@ -69,16 +86,16 @@
 
       <!-- Class -->
       <select
-        [value]="classFilter"
+        [value]="classFilter ?? 'ALL'"
         (change)="onClassChange($any($event.target).value)"
         aria-label="Filter by class">
 
         <option value="ALL">All Classes</option>
 
-        @for (className of classOptions; track className) {
+        @for (assignment of classOptions; track assignment.classId) {
 
-          <option [value]="className">
-            {{ className }}
+          <option [value]="assignment.classId">
+            {{ assignment.className }}
           </option>
 
         }
@@ -88,16 +105,16 @@
 
       <!-- Section -->
       <select
-        [value]="sectionFilter"
+        [value]="sectionFilter ?? 'ALL'"
         (change)="onSectionChange($any($event.target).value)"
         aria-label="Filter by section">
 
         <option value="ALL">All Sections</option>
 
-        @for (sectionName of sectionOptions; track sectionName) {
+        @for (assignment of sectionOptions; track assignment.sectionId) {
 
-          <option [value]="sectionName">
-            {{ sectionName }}
+          <option [value]="assignment.sectionId">
+            {{ assignment.sectionName }}
           </option>
 
         }
@@ -115,6 +132,10 @@
 
       </button>
 
+      @if (filterOptionsError) {
+        <span class="filter-options-error">{{ filterOptionsError }}</span>
+      }
+
     </div>
 
 
@@ -122,7 +143,10 @@
     @if (errorMessage) {
 
       <div class="error-state">
-        {{ errorMessage }}
+        <span>{{ errorMessage }}</span>
+        <button type="button" class="retry-button" (click)="loadAttendance()">
+          Retry
+        </button>
       </div>
 
     }
@@ -139,7 +163,7 @@
 
 
     <!-- ==================== EMPTY ==================== -->
-    @if (!loading && attendance.length === 0) {
+    @if (!loading && !errorMessage && attendance.length === 0) {
 
       <div class="empty-state">
 
@@ -161,21 +185,21 @@
   [columns]="columns"
   [data]="attendance"
   [loading]="loading"
+  [serverSideSorting]="true"
   [actions]="actions"
   [showActions]="true"
   [stickyFirstColumn]="true"
-  [enableSearch]="true"
-  [searchPlaceholder]="'Search attendance...'"
-  (actionClick)="onActionClick($event)">
+  (actionClick)="onActionClick($event)"
+  (sortChange)="onSortChange($event)">
 </app-data-table>
 
     }
 
-    @if (filteredAttendanceCount > 0) {
+    @if (totalElements > 0) {
 
   <app-pagination
-    [currentPage]="currentPage"
-    [totalItems]="filteredAttendanceCount"
+    [currentPage]="page + 1"
+    [totalItems]="totalElements"
     [pageSize]="pageSize"
     (pageChange)="onPageChange($event)">
   </app-pagination>

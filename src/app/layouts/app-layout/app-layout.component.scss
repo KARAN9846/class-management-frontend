@@ -1645,3 +1645,21 @@
     animation: none;
   }
 }
+
+/* Phase 2 shell refinement: shared Phase 1 tokens and predictable focus states. */
+.app-shell { background: var(--color-surface-muted); }
+.sidebar { border-color: var(--color-border); box-shadow: var(--shadow-sm); }
+.sidebar-brand { background: var(--color-surface); border-color: var(--color-border); }
+.brand-logo { background: var(--color-primary-soft); border-color: #bfdbfe; box-shadow: var(--shadow-sm); }
+.sidebar-nav { scrollbar-color: var(--color-border-strong) transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--color-border-strong); }
+.nav-section-title { color: var(--color-text-muted); letter-spacing: .08em; }
+.nav-item:focus-visible, .quick-action:focus-visible, .user-card:focus-visible, .menu-button:focus-visible, .notification-button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.top-header { background: var(--color-surface); border-color: var(--color-border); box-shadow: var(--shadow-sm); }
+.notification-dropdown { border-color: var(--color-border); box-shadow: 0 12px 30px rgba(15, 23, 42, .12); }
+.notification-tab:focus-visible, .notification-item:focus-visible, .notification-view-all:focus-visible { outline: 2px solid var(--color-primary); outline-offset: -2px; }
+.notification-tab.active { color: var(--color-primary); }
+
+@media (prefers-reduced-motion: reduce) {
+  .notification-dropdown, .notification-item, .notification-tab { transition: none; }
+}
