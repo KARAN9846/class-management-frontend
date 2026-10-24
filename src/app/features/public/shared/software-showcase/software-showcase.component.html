@@ -1,0 +1,60 @@
+<section #showcaseSection class="software-showcase" [attr.aria-labelledby]="titleId()">
+  <div class="showcase-shell">
+    <header class="showcase-heading">
+      <p class="showcase-eyebrow">{{ eyebrow() }}</p>
+      <h2 [id]="titleId()">{{ heading() }}</h2>
+      <p class="showcase-description">{{ description() }}</p>
+    </header>
+
+    <div class="video-card">
+      <div #videoFrame class="video-frame">
+        <div #playerMount class="player-mount"></div>
+
+        @if (!isReady()) {
+          <div class="video-placeholder" [class.is-loading]="isLoading()">
+            <span class="placeholder-mark" aria-hidden="true">
+              <svg viewBox="0 0 64 64" role="presentation">
+                <rect x="7" y="12" width="50" height="40" rx="11"></rect>
+                <path d="m27 23 15 9-15 9z"></path>
+              </svg>
+            </span>
+            <strong>{{ hasLoadError() ? 'Preview unavailable' : 'Software walkthrough' }}</strong>
+            <span>
+              {{
+                hasLoadError()
+                  ? 'Open the video on YouTube to continue.'
+                  : isLoading()
+                    ? 'Preparing the video preview…'
+                    : 'The video loads when this section approaches the screen.'
+              }}
+            </span>
+          </div>
+        }
+      </div>
+
+      <div class="video-actions">
+        <p class="playback-note" aria-live="polite">
+          @if (hasLoadError()) {
+            The embedded preview could not be loaded.
+          } @else if (manualPlaybackRequired()) {
+            Automatic playback is unavailable. Use the play button to begin.
+          } @else if (isPlaying()) {
+            Playing muted. Use the video controls to adjust playback.
+          } @else {
+            Plays muted when in view. You remain in control.
+          }
+        </p>
+
+        <div class="action-links">
+          @if (manualPlaybackRequired() && !hasLoadError()) {
+            <button class="manual-play" type="button" (click)="playManually()">Play video</button>
+          }
+
+          <a class="youtube-link" [href]="youtubeUrl()" target="_blank" rel="noopener noreferrer">
+            Watch on YouTube <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  inject,
-  HostListener,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, HostListener } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -17,7 +11,7 @@ import { TeacherStudentService } from '../../services/teacher-student.service';
 import {
   TeacherStudent,
   TeacherStudentPage,
-  TeacherStudentScopeOption
+  TeacherStudentScopeOption,
 } from '../../models/teacher-student.model';
 
 import { PageHeaderComponent } from '../../../../../shared/components/page-header/page-header.component';
@@ -39,55 +33,42 @@ import { EmptyStateComponent } from '../../../../../shared/components/empty-stat
     StatusBadgeComponent,
     LoadingComponent,
     EmptyStateComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
   ],
   templateUrl: './teacher-student-list.html',
-  styleUrl: './teacher-student-list.scss'
+  styleUrl: './teacher-student-list.scss',
 })
 export class TeacherStudentListComponent implements OnInit {
-
   // =========================================================
   // DEPENDENCIES
   // =========================================================
 
-  private readonly service =
-    inject(TeacherStudentService);
+  private readonly service = inject(TeacherStudentService);
 
-  private readonly cdr =
-    inject(ChangeDetectorRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  private readonly router =
-    inject(Router);
+  private readonly router = inject(Router);
 
-  private readonly permissionService =
-    inject(PermissionService);
+  private readonly permissionService = inject(PermissionService);
 
   // =========================================================
   // PERMISSIONS
   // =========================================================
 
   canCreateStudent(): boolean {
-    return this.permissionService.hasPermission(
-      'STUDENT_CREATE'
-    );
+    return this.permissionService.hasPermission('STUDENT_CREATE');
   }
 
   canUpdateStudent(): boolean {
-    return this.permissionService.hasPermission(
-      'STUDENT_UPDATE'
-    );
+    return this.permissionService.hasPermission('STUDENT_UPDATE');
   }
 
   canUpdateStudentStatus(): boolean {
-    return this.permissionService.hasPermission(
-      'STUDENT_UPDATE_STATUS'
-    );
+    return this.permissionService.hasPermission('STUDENT_UPDATE_STATUS');
   }
 
   canDeleteStudent(): boolean {
-    return this.permissionService.hasPermission(
-      'STUDENT_DELETE'
-    );
+    return this.permissionService.hasPermission('STUDENT_DELETE');
   }
 
   // =========================================================
@@ -169,33 +150,23 @@ export class TeacherStudentListComponent implements OnInit {
   // =========================================================
 
   ngOnInit(): void {
-    this.permissionService
-      .loadMyPermissions()
-      .subscribe({
+    this.permissionService.loadMyPermissions().subscribe({
+      next: () => {
+        this.loadStudents();
 
-        next: () => {
+        this.loadScopeOptions();
 
-          this.loadStudents();
+        this.cdr.markForCheck();
+      },
 
-          this.loadScopeOptions();
+      error: (error: unknown) => {
+        console.error('Failed to load teacher permissions:', error);
 
-          this.cdr.markForCheck();
-        },
+        this.errorMessage = 'Unable to load your permissions. Please try again.';
 
-        error: (error: unknown) => {
-
-          console.error(
-            'Failed to load teacher permissions:',
-            error
-          );
-
-          this.errorMessage =
-            'Unable to load your permissions. Please try again.';
-
-          this.cdr.markForCheck();
-        }
-
-      });
+        this.cdr.markForCheck();
+      },
+    });
   }
 
   // =========================================================
@@ -211,53 +182,36 @@ export class TeacherStudentListComponent implements OnInit {
 
     this.service
       .getStudents({
-
         page: this.currentPage,
 
         size: this.pageSize,
 
-        search:
-          this.searchTerm.trim(),
+        search: this.searchTerm.trim(),
 
-        sortBy:
-          this.sortBy,
+        sortBy: this.sortBy,
 
-        sortDirection:
-          this.sortDirection
-
+        sortDirection: this.sortDirection,
       })
       .subscribe({
-
         next: (response) => {
-
           if (response.success) {
+            const data: TeacherStudentPage = response.data;
 
-            const data: TeacherStudentPage =
-              response.data;
+            this.students = data.content ?? [];
 
-            this.students =
-              data.content ?? [];
+            this.totalElements = data.totalElements ?? 0;
 
-            this.totalElements =
-              data.totalElements ?? 0;
+            this.totalPages = data.totalPages ?? 0;
 
-            this.totalPages =
-              data.totalPages ?? 0;
-
-            this.currentPage =
-              data.number ?? this.currentPage;
-
+            this.currentPage = data.number ?? this.currentPage;
           } else {
-
             this.students = [];
 
             this.totalElements = 0;
 
             this.totalPages = 0;
 
-            this.errorMessage =
-              response.message ||
-              'Unable to load students.';
+            this.errorMessage = response.message || 'Unable to load students.';
           }
 
           this.isLoading = false;
@@ -266,11 +220,7 @@ export class TeacherStudentListComponent implements OnInit {
         },
 
         error: (error: unknown) => {
-
-          console.error(
-            'Failed to load teacher students:',
-            error
-          );
+          console.error('Failed to load teacher students:', error);
 
           this.students = [];
 
@@ -278,22 +228,19 @@ export class TeacherStudentListComponent implements OnInit {
 
           this.totalPages = 0;
 
-          const httpError =
-            error as {
-              error?: {
-                message?: string;
-              };
+          const httpError = error as {
+            error?: {
+              message?: string;
             };
+          };
 
           this.errorMessage =
-            httpError?.error?.message ||
-            'Unable to load students. Please try again.';
+            httpError?.error?.message || 'Unable to load students. Please try again.';
 
           this.isLoading = false;
 
           this.cdr.markForCheck();
-        }
-
+        },
       });
   }
 
@@ -308,57 +255,40 @@ export class TeacherStudentListComponent implements OnInit {
 
     this.cdr.markForCheck();
 
-    this.service
-      .getScopeOptions()
-      .subscribe({
-
-        next: (response) => {
-
-          if (response.success) {
-
-            this.scopeOptions =
-              response.data ?? [];
-
-          } else {
-
-            this.scopeOptions = [];
-
-            this.scopeOptionsError =
-              response.message ||
-              'Unable to load student scope options.';
-          }
-
-          this.isLoadingScopeOptions = false;
-
-          this.cdr.markForCheck();
-        },
-
-        error: (error: unknown) => {
-
-          console.error(
-            'Failed to load teacher student scope options:',
-            error
-          );
-
+    this.service.getScopeOptions().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.scopeOptions = response.data ?? [];
+        } else {
           this.scopeOptions = [];
 
-          const httpError =
-            error as {
-              error?: {
-                message?: string;
-              };
-            };
-
-          this.scopeOptionsError =
-            httpError?.error?.message ||
-            'Unable to load student scope options.';
-
-          this.isLoadingScopeOptions = false;
-
-          this.cdr.markForCheck();
+          this.scopeOptionsError = response.message || 'Unable to load student scope options.';
         }
 
-      });
+        this.isLoadingScopeOptions = false;
+
+        this.cdr.markForCheck();
+      },
+
+      error: (error: unknown) => {
+        console.error('Failed to load teacher student scope options:', error);
+
+        this.scopeOptions = [];
+
+        const httpError = error as {
+          error?: {
+            message?: string;
+          };
+        };
+
+        this.scopeOptionsError =
+          httpError?.error?.message || 'Unable to load student scope options.';
+
+        this.isLoadingScopeOptions = false;
+
+        this.cdr.markForCheck();
+      },
+    });
   }
 
   // =========================================================
@@ -367,7 +297,6 @@ export class TeacherStudentListComponent implements OnInit {
 
   searchStudents(value?: string): void {
     if (typeof value === 'string') {
-
       this.searchTerm = value;
     }
 
@@ -390,14 +319,8 @@ export class TeacherStudentListComponent implements OnInit {
 
   changeSort(sortBy: string): void {
     if (this.sortBy === sortBy) {
-
-      this.sortDirection =
-        this.sortDirection === 'asc'
-          ? 'desc'
-          : 'asc';
-
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-
       this.sortBy = sortBy;
 
       this.sortDirection = 'asc';
@@ -414,13 +337,10 @@ export class TeacherStudentListComponent implements OnInit {
 
   getSortIcon(column: string): string {
     if (this.sortBy !== column) {
-
       return '↕';
     }
 
-    return this.sortDirection === 'asc'
-      ? '↑'
-      : '↓';
+    return this.sortDirection === 'asc' ? '↑' : '↓';
   }
 
   // =========================================================
@@ -428,12 +348,7 @@ export class TeacherStudentListComponent implements OnInit {
   // =========================================================
 
   goToPage(page: number): void {
-    if (
-      page < 0 ||
-      page >= this.totalPages ||
-      page === this.currentPage
-    ) {
-
+    if (page < 0 || page >= this.totalPages || page === this.currentPage) {
       return;
     }
 
@@ -444,7 +359,6 @@ export class TeacherStudentListComponent implements OnInit {
 
   previousPage(): void {
     if (this.currentPage <= 0) {
-
       return;
     }
 
@@ -454,11 +368,7 @@ export class TeacherStudentListComponent implements OnInit {
   }
 
   nextPage(): void {
-    if (
-      this.currentPage >=
-      this.totalPages - 1
-    ) {
-
+    if (this.currentPage >= this.totalPages - 1) {
       return;
     }
 
@@ -473,30 +383,16 @@ export class TeacherStudentListComponent implements OnInit {
 
   get pageNumbers(): number[] {
     if (this.totalPages <= 0) {
-
       return [];
     }
 
     const pages: number[] = [];
 
-    const start =
-      Math.max(
-        0,
-        this.currentPage - 2
-      );
+    const start = Math.max(0, this.currentPage - 2);
 
-    const end =
-      Math.min(
-        this.totalPages - 1,
-        this.currentPage + 2
-      );
+    const end = Math.min(this.totalPages - 1, this.currentPage + 2);
 
-    for (
-      let page = start;
-      page <= end;
-      page++
-    ) {
-
+    for (let page = start; page <= end; page++) {
       pages.push(page);
     }
 
@@ -523,20 +419,13 @@ export class TeacherStudentListComponent implements OnInit {
      * Spring Data uses 0-based pages.
      */
 
-    const backendPage =
-      page - 1;
+    const backendPage = page - 1;
 
-    if (
-      backendPage < 0 ||
-      backendPage >= this.totalPages ||
-      backendPage === this.currentPage
-    ) {
-
+    if (backendPage < 0 || backendPage >= this.totalPages || backendPage === this.currentPage) {
       return;
     }
 
-    this.currentPage =
-      backendPage;
+    this.currentPage = backendPage;
 
     this.loadStudents();
   }
@@ -545,9 +434,7 @@ export class TeacherStudentListComponent implements OnInit {
   // STUDENT DETAILS
   // =========================================================
 
-  viewStudent(
-    student: TeacherStudent
-  ): void {
+  viewStudent(student: TeacherStudent): void {
     this.isLoadingStudent = true;
 
     this.selectedStudent = null;
@@ -556,55 +443,35 @@ export class TeacherStudentListComponent implements OnInit {
 
     this.cdr.markForCheck();
 
-    this.service
-      .getStudentById(
-        student.studentId
-      )
-      .subscribe({
-
-        next: (response) => {
-
-          if (response.success) {
-
-            this.selectedStudent =
-              response.data;
-
-          } else {
-
-            this.errorMessage =
-              response.message ||
-              'Unable to load student details.';
-          }
-
-          this.isLoadingStudent = false;
-
-          this.cdr.markForCheck();
-        },
-
-        error: (error: unknown) => {
-
-          console.error(
-            'Failed to load student:',
-            error
-          );
-
-          const httpError =
-            error as {
-              error?: {
-                message?: string;
-              };
-            };
-
-          this.errorMessage =
-            httpError?.error?.message ||
-            'Unable to load student details.';
-
-          this.isLoadingStudent = false;
-
-          this.cdr.markForCheck();
+    this.service.getStudentById(student.studentId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.selectedStudent = response.data;
+        } else {
+          this.errorMessage = response.message || 'Unable to load student details.';
         }
 
-      });
+        this.isLoadingStudent = false;
+
+        this.cdr.markForCheck();
+      },
+
+      error: (error: unknown) => {
+        console.error('Failed to load student:', error);
+
+        const httpError = error as {
+          error?: {
+            message?: string;
+          };
+        };
+
+        this.errorMessage = httpError?.error?.message || 'Unable to load student details.';
+
+        this.isLoadingStudent = false;
+
+        this.cdr.markForCheck();
+      },
+    });
   }
 
   closeStudentDetails(): void {
@@ -624,104 +491,69 @@ export class TeacherStudentListComponent implements OnInit {
       return;
     }
 
-    this.router.navigate([
-      '/teacher/students/create'
-    ]);
+    this.router.navigate(['/teacher/students/create']);
   }
 
-  openEditStudent(
-    student: TeacherStudent
-  ): void {
+  openEditStudent(student: TeacherStudent): void {
     if (!this.canUpdateStudent()) {
       return;
     }
 
-    this.router.navigate([
-      '/teacher/students',
-      student.studentId,
-      'edit'
-    ]);
+    this.router.navigate(['/teacher/students', student.studentId, 'edit']);
   }
 
-  openStatusChange(
-    student: TeacherStudent
-  ): void {
+  openStatusChange(student: TeacherStudent): void {
     if (!this.canUpdateStudentStatus()) {
       return;
     }
 
     if (student.isActive === null) {
-
-      this.errorMessage =
-        'Student status is unavailable.';
+      this.errorMessage = 'Student status is unavailable.';
 
       this.cdr.markForCheck();
 
       return;
     }
 
-    const newStatus =
-      !student.isActive;
+    const newStatus = !student.isActive;
 
-    this.pendingStudent =
-      student;
+    this.pendingStudent = student;
 
-    this.pendingAction =
-      'status';
+    this.pendingAction = 'status';
 
-    this.pendingNewStatus =
-      newStatus;
+    this.pendingNewStatus = newStatus;
 
-    this.confirmationTitle =
-      newStatus
-        ? 'Activate Student?'
-        : 'Deactivate Student?';
+    this.confirmationTitle = newStatus ? 'Activate Student?' : 'Deactivate Student?';
 
-    this.confirmationMessage =
-      `Are you sure you want to ${
-        newStatus
-          ? 'activate'
-          : 'deactivate'
-      } ${this.getStudentName(student)}?`;
+    this.confirmationMessage = `Are you sure you want to ${
+      newStatus ? 'activate' : 'deactivate'
+    } ${this.getStudentName(student)}?`;
 
-    this.confirmationConfirmLabel =
-      newStatus
-        ? 'Activate'
-        : 'Deactivate';
+    this.confirmationConfirmLabel = newStatus ? 'Activate' : 'Deactivate';
 
-    this.showConfirmationDialog =
-      true;
+    this.showConfirmationDialog = true;
   }
 
-  confirmDelete(
-    student: TeacherStudent
-  ): void {
+  confirmDelete(student: TeacherStudent): void {
     if (!this.canDeleteStudent()) {
       return;
     }
 
-    this.pendingStudent =
-      student;
+    this.pendingStudent = student;
 
-    this.pendingAction =
-      'delete';
+    this.pendingAction = 'delete';
 
-    this.pendingNewStatus =
-      null;
+    this.pendingNewStatus = null;
 
-    this.confirmationTitle =
-      'Delete Student?';
+    this.confirmationTitle = 'Delete Student?';
 
-    this.confirmationMessage =
-      `Are you sure you want to delete ${
-        this.getStudentName(student)
-      }? This action cannot be undone.`;
+    this.confirmationMessage = `Are you sure you want to delete ${this.getStudentName(
+      student,
+    )}? This action cannot be undone.`;
 
-    this.confirmationConfirmLabel =
-      'Delete';
+    this.confirmationConfirmLabel = 'Delete';
 
-    this.showConfirmationDialog =
-      true;
+    this.showConfirmationDialog = true;
   }
 
   // =========================================================
@@ -729,124 +561,78 @@ export class TeacherStudentListComponent implements OnInit {
   // =========================================================
 
   confirmAction(): void {
-    if (
-      !this.pendingStudent ||
-      !this.pendingAction
-    ) {
+    if (!this.pendingStudent || !this.pendingAction) {
       this.cancelConfirmation();
 
       return;
     }
 
-    const student =
-      this.pendingStudent;
+    const student = this.pendingStudent;
 
-    const action =
-      this.pendingAction;
+    const action = this.pendingAction;
 
-    const newStatus =
-      this.pendingNewStatus;
+    const newStatus = this.pendingNewStatus;
 
     this.closeConfirmationDialog();
 
-    if (
-      action === 'status' &&
-      newStatus !== null
-    ) {
-      this.service
-        .updateStudentStatus(
-          student.studentId,
-          newStatus
-        )
-        .subscribe({
-
-          next: (response) => {
-
-            if (response.success) {
-
-              this.loadStudents();
-
-            } else {
-
-              this.errorMessage =
-                response.message ||
-                'Unable to update student status.';
-
-              this.cdr.markForCheck();
-            }
-          },
-
-          error: (error: unknown) => {
-
-            console.error(
-              'Failed to update student status:',
-              error
-            );
-
-            const httpError =
-              error as {
-                error?: {
-                  message?: string;
-                };
-              };
-
-            this.errorMessage =
-              httpError?.error?.message ||
-              'Unable to update student status. Please try again.';
+    if (action === 'status' && newStatus !== null) {
+      this.service.updateStudentStatus(student.studentId, newStatus).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.loadStudents();
+          } else {
+            this.errorMessage = response.message || 'Unable to update student status.';
 
             this.cdr.markForCheck();
           }
+        },
 
-        });
+        error: (error: unknown) => {
+          console.error('Failed to update student status:', error);
+
+          const httpError = error as {
+            error?: {
+              message?: string;
+            };
+          };
+
+          this.errorMessage =
+            httpError?.error?.message || 'Unable to update student status. Please try again.';
+
+          this.cdr.markForCheck();
+        },
+      });
 
       return;
     }
 
     if (action === 'delete') {
-      this.service
-        .deleteStudent(
-          student.studentId
-        )
-        .subscribe({
-
-          next: (response) => {
-
-            if (response.success) {
-
-              this.loadStudents();
-
-            } else {
-
-              this.errorMessage =
-                response.message ||
-                'Unable to delete student.';
-
-              this.cdr.markForCheck();
-            }
-          },
-
-          error: (error: unknown) => {
-
-            console.error(
-              'Failed to delete student:',
-              error
-            );
-
-            const httpError =
-              error as {
-                error?: {
-                  message?: string;
-                };
-              };
-
-            this.errorMessage =
-              httpError?.error?.message ||
-              'Unable to delete student. Please try again.';
+      this.service.deleteStudent(student.studentId).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.loadStudents();
+          } else {
+            this.errorMessage = response.message || 'Unable to delete student.';
 
             this.cdr.markForCheck();
           }
+        },
 
-        });
+        error: (error: unknown) => {
+          console.error('Failed to delete student:', error);
+
+          const httpError = error as {
+            error?: {
+              message?: string;
+            };
+          };
+
+          this.errorMessage =
+            httpError?.error?.message || 'Unable to delete student. Please try again.';
+
+          this.cdr.markForCheck();
+        },
+      });
     }
   }
 
@@ -855,26 +641,19 @@ export class TeacherStudentListComponent implements OnInit {
   }
 
   private closeConfirmationDialog(): void {
-    this.showConfirmationDialog =
-      false;
+    this.showConfirmationDialog = false;
 
-    this.confirmationTitle =
-      '';
+    this.confirmationTitle = '';
 
-    this.confirmationMessage =
-      '';
+    this.confirmationMessage = '';
 
-    this.confirmationConfirmLabel =
-      'Confirm';
+    this.confirmationConfirmLabel = 'Confirm';
 
-    this.pendingStudent =
-      null;
+    this.pendingStudent = null;
 
-    this.pendingAction =
-      null;
+    this.pendingAction = null;
 
-    this.pendingNewStatus =
-      null;
+    this.pendingNewStatus = null;
 
     this.cdr.markForCheck();
   }
@@ -883,26 +662,17 @@ export class TeacherStudentListComponent implements OnInit {
   // DISPLAY HELPERS
   // =========================================================
 
-  getStudentName(
-    student: TeacherStudent
-  ): string {
+  getStudentName(student: TeacherStudent): string {
     return student.name?.trim() || '—';
   }
 
-  getInitials(
-    student: TeacherStudent
-  ): string {
+  getInitials(student: TeacherStudent): string {
     const parts = student.name?.trim().split(/\s+/).filter(Boolean) ?? [];
-    return `${parts[0]?.charAt(0) ?? ''}${parts.length > 1 ? parts.at(-1)?.charAt(0) ?? '' : ''}`
-      .toUpperCase();
+    return `${parts[0]?.charAt(0) ?? ''}${parts.length > 1 ? (parts.at(-1)?.charAt(0) ?? '') : ''}`.toUpperCase();
   }
 
-  displayValue(
-    value: string | null | undefined
-  ): string {
-    return value?.trim()
-      ? value
-      : '—';
+  displayValue(value: string | null | undefined): string {
+    return value?.trim() ? value : '—';
   }
 
   // =========================================================
@@ -911,54 +681,36 @@ export class TeacherStudentListComponent implements OnInit {
 
   getStartRecord(): number {
     if (this.totalElements === 0) {
-
       return 0;
     }
 
-    return (
-      this.currentPage *
-      this.pageSize
-    ) + 1;
+    return this.currentPage * this.pageSize + 1;
   }
 
   getEndRecord(): number {
-    return Math.min(
-      (
-        this.currentPage + 1
-      ) * this.pageSize,
-      this.totalElements
-    );
+    return Math.min((this.currentPage + 1) * this.pageSize, this.totalElements);
   }
 
   // =========================================================
   // TRACKING
   // =========================================================
 
-  trackByStudentId(
-    _index: number,
-    student: TeacherStudent
-  ): number {
+  trackByStudentId(_index: number, student: TeacherStudent): number {
     return student.studentId;
   }
 
-  toggleActionMenu(
-  studentId: number,
-  event: Event
-): void {
-  event.stopPropagation();
+  toggleActionMenu(studentId: number, event: Event): void {
+    event.stopPropagation();
 
-  this.openActionMenuStudentId =
-    this.openActionMenuStudentId === studentId
-      ? null
-      : studentId;
-}
+    this.openActionMenuStudentId = this.openActionMenuStudentId === studentId ? null : studentId;
+  }
 
-closeActionMenu(): void {
-  this.openActionMenuStudentId = null;
-}
+  closeActionMenu(): void {
+    this.openActionMenuStudentId = null;
+  }
 
-@HostListener('document:click')
-onDocumentClick(): void {
-  this.closeActionMenu();
-}
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.closeActionMenu();
+  }
 }

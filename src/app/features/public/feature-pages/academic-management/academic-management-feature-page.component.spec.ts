@@ -23,6 +23,7 @@ describe('AcademicManagementFeaturePageComponent', () => {
     expect(host.querySelector('app-navbar')).not.toBeNull();
     expect(host.querySelector('.academic-hero')).not.toBeNull();
     expect(host.querySelector('.academic-details')).not.toBeNull();
+    expect(host.querySelector('app-software-showcase')).not.toBeNull();
     expect(host.querySelector('app-book-demo')).not.toBeNull();
     expect(host.querySelector('app-footer')).not.toBeNull();
     expect(host.querySelectorAll('main > section').length).toBe(2);
@@ -32,6 +33,18 @@ describe('AcademicManagementFeaturePageComponent', () => {
     expect(host.querySelector('#connected-academic-title')?.textContent?.trim()).toBe(
       'One Connected Academic Workspace',
     );
+  });
+
+  it('places the matching walkthrough immediately before the demo call to action', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    const showcase = host.querySelector('app-software-showcase');
+    const bookDemo = host.querySelector('app-book-demo');
+
+    expect(showcase?.textContent).toContain('See Academic Management in Action');
+    expect(showcase?.querySelector<HTMLAnchorElement>('.youtube-link')?.href).toBe(
+      'https://www.youtube.com/watch?v=HX7DKhTV46w',
+    );
+    expect(showcase?.nextElementSibling).toBe(bookDemo);
   });
 
   it('starts on Academic Structure and switches the illustrative dashboard view', () => {

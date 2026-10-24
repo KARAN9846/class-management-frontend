@@ -3,6 +3,7 @@ import { Component, signal } from '@angular/core';
 import { BookDemoComponent } from '../../landing-page/sections/book-demo/book-demo.component';
 import { FooterComponent } from '../../landing-page/sections/footer/footer.component';
 import { NavbarComponent } from '../../landing-page/sections/navbar/navbar.component';
+import { SoftwareShowcaseComponent } from '../../shared/software-showcase/software-showcase.component';
 
 type FeePreview = 'structures' | 'records' | 'payments';
 
@@ -14,7 +15,7 @@ interface PreviewTab {
 @Component({
   selector: 'app-fee-management-feature-page',
   standalone: true,
-  imports: [NavbarComponent, BookDemoComponent, FooterComponent],
+  imports: [NavbarComponent, BookDemoComponent, FooterComponent, SoftwareShowcaseComponent],
   templateUrl: './fee-management-feature-page.component.html',
   styleUrl: './fee-management-feature-page.component.scss',
 })

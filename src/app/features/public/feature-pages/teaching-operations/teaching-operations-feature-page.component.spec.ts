@@ -21,8 +21,21 @@ describe('TeachingOperationsFeaturePageComponent', () => {
 
     expect(host.querySelectorAll('main > section').length).toBe(2);
     expect(host.querySelector('app-navbar')).not.toBeNull();
+    expect(host.querySelector('app-software-showcase')).not.toBeNull();
     expect(host.querySelector('app-book-demo')).not.toBeNull();
     expect(host.querySelector('app-footer')).not.toBeNull();
+  });
+
+  it('places the matching walkthrough immediately before the demo call to action', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    const showcase = host.querySelector('app-software-showcase');
+    const bookDemo = host.querySelector('app-book-demo');
+
+    expect(showcase?.textContent).toContain('See Teaching Operations in Action');
+    expect(showcase?.querySelector<HTMLAnchorElement>('.youtube-link')?.href).toBe(
+      'https://www.youtube.com/watch?v=aTJrm0m6Onw',
+    );
+    expect(showcase?.nextElementSibling).toBe(bookDemo);
   });
 
   it('starts on attendance and switches all three preview tabs', () => {
