@@ -14,7 +14,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-.fee-feature-page { width: 100%; min-height: 100vh; overflow: hidden; background: #f8fbff; }
+.fee-feature-page { width: 100%; min-height: 100vh; overflow-x: clip; background: #f8fbff; }
 .page-shell { width: min(var(--landing-content-max-width), calc(100% - 40px)); margin-inline: auto; }
 .eyebrow { margin: 0; color: #315fea; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.14em; line-height: 1.4; text-transform: uppercase; }
 

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 
-interface SampleTestimonial {
+interface Testimonial {
   readonly id: string;
   readonly quote: string;
   readonly authorName: string;
   readonly authorRole: string;
   readonly institutionName: string;
   readonly initials: string;
+  readonly imageUrl?: string;
 }
 
 @Component({
@@ -17,15 +18,16 @@ interface SampleTestimonial {
   styleUrl: './trusted-by.component.scss',
 })
 export class TrustedByComponent {
-  readonly testimonials: readonly SampleTestimonial[] = [
+  readonly testimonials: readonly Testimonial[] = [
     {
-      id: 'sample-review-1',
+      id: 'ajay-bhartiya',
       quote:
-        'CMS gives our academic team one clear place to organize student records and everyday workflows. The experience feels focused and easy to follow.',
-      authorName: 'Priya Shah',
-      authorRole: 'Institute Administrator',
-      institutionName: 'Sunrise Learning Centre',
-      initials: 'PS',
+        'CMS has made it much easier for us to keep academic information and day-to-day institute work organized. The platform is clear, practical, and helps our team manage operations with greater confidence.',
+      authorName: 'Ajay Bhartiya',
+      authorRole: 'Founder',
+      institutionName: 'Mahavir Classes',
+      initials: 'AB',
+      imageUrl: 'assets/images/ajay-bhartiya.png',
     },
     {
       id: 'sample-review-2',

@@ -16,7 +16,7 @@
   justify-content: space-between;
   gap: 32px;
   margin-inline: auto;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--line, #dce5ef);
   background: transparent;
 }
 
@@ -75,7 +75,7 @@
 
 .primary-nav a,
 .sign-in-link {
-  color: var(--muted);
+  color: var(--muted, #52647a);
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
@@ -84,7 +84,7 @@
 
 .primary-nav a:hover,
 .sign-in-link:hover {
-  color: var(--blue);
+  color: var(--blue, #2563eb);
 }
 
 .header-actions {
@@ -107,26 +107,26 @@
 }
 
 .sign-in-link {
-  border-color: var(--line);
-  background: var(--white);
-  color: var(--navy);
+  border-color: var(--line, #dce5ef);
+  background: var(--white, #ffffff);
+  color: var(--navy, #152d50);
 }
 
 .demo-link {
-  border-color: var(--blue);
-  background: var(--blue);
-  color: var(--white);
+  border-color: var(--blue, #2563eb);
+  background: var(--blue, #2563eb);
+  color: var(--white, #ffffff);
 }
 
 .demo-link:hover {
-  background: var(--blue-dark);
-  border-color: var(--blue-dark);
-  color: var(--white);
+  background: var(--blue-dark, #1d4ed8);
+  border-color: var(--blue-dark, #1d4ed8);
+  color: var(--white, #ffffff);
 }
 
 a:focus-visible,
 button:focus-visible {
-  outline: 3px solid var(--blue-dark);
+  outline: 3px solid var(--blue-dark, #1d4ed8);
   outline-offset: 3px;
 }
 
@@ -149,7 +149,7 @@ button:focus-visible {
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--white);
+    background: var(--white, #ffffff);
   }
 
   .site-header {
@@ -159,7 +159,7 @@ button:focus-visible {
     flex-wrap: nowrap;
     justify-content: space-between;
     gap: 0 16px;
-    background: var(--white);
+    background: var(--white, #ffffff);
   }
 
   .brand-logo {
@@ -175,10 +175,10 @@ button:focus-visible {
     align-items: center;
     justify-content: center;
     padding: 0;
-    border: 1px solid var(--line);
+    border: 1px solid var(--line, #dce5ef);
     border-radius: 8px;
-    background: var(--white);
-    color: var(--navy);
+    background: var(--white, #ffffff);
+    color: var(--navy, #152d50);
     cursor: pointer;
   }
 
@@ -221,10 +221,10 @@ button:focus-visible {
     justify-items: stretch;
     overflow: hidden;
     padding: 0 14px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--line, #dce5ef);
     border-top: 0;
     border-radius: 0 0 12px 12px;
-    background: var(--white);
+    background: var(--white, #ffffff);
     opacity: 0;
     visibility: hidden;
     box-shadow: 0 8px 20px rgb(16 35 64 / 9%);

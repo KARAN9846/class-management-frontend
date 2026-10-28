@@ -1,12 +1,6 @@
-import {
-  ApplicationConfig,
-  provideZonelessChangeDetection
-} from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import {
-  provideHttpClient,
-  withInterceptors
-} from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
@@ -19,15 +13,10 @@ export const appConfig: ApplicationConfig = {
       routes,
       withInMemoryScrolling({
         anchorScrolling: 'enabled',
-        scrollPositionRestoration: 'enabled'
-      })
+        scrollPositionRestoration: 'enabled',
+      }),
     ),
 
-    provideHttpClient(
-withInterceptors([
-  authInterceptor,
-  errorInterceptor
-])
-    )
-  ]
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+  ],
 };

@@ -25,15 +25,30 @@ describe('TrustedByComponent', () => {
     );
   });
 
-  it('shows exactly three clearly labelled sample reviews', () => {
+  it('shows exactly three reviews without sample badges', () => {
     const host = fixture.nativeElement as HTMLElement;
 
     expect(component.testimonials.length).toBe(3);
     expect(host.querySelectorAll('.testimonial-card').length).toBe(3);
-    expect(host.querySelectorAll('.sample-label').length).toBe(3);
+    expect(host.querySelectorAll('.sample-label').length).toBe(0);
     expect(host.querySelector('.section-heading small')?.textContent?.trim()).toBe(
       'Sample reviews shown for design preview.',
     );
+  });
+
+  it('uses Ajay Bhartiya and the supplied portrait for the first review', () => {
+    const host = fixture.nativeElement as HTMLElement;
+    const firstReview = host.querySelector('.testimonial-card');
+    const portrait = firstReview?.querySelector<HTMLImageElement>('.author-photo img');
+
+    expect(firstReview?.textContent).toContain('Ajay Bhartiya');
+    expect(firstReview?.textContent).toContain('Founder');
+    expect(firstReview?.textContent).toContain('Mahavir Classes');
+    expect(firstReview?.querySelector('.rating')?.getAttribute('aria-label')).toBe(
+      'Five out of five stars',
+    );
+    expect(portrait?.getAttribute('src')).toBe('assets/images/ajay-bhartiya.png');
+    expect(portrait?.alt).toBe('Ajay Bhartiya');
   });
 
   it('does not add unrelated controls or forms', () => {

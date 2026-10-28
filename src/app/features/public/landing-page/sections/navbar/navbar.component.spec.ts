@@ -94,4 +94,46 @@ describe('NavbarComponent', () => {
 
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
   });
+
+  it('should keep the menu open for pointer interaction inside the navbar', () => {
+    const toggle = fixture.nativeElement.querySelector(
+      'button[aria-controls="primary-navigation"]',
+    ) as HTMLButtonElement;
+    const navigationContainer = fixture.nativeElement.querySelector(
+      '#primary-navigation',
+    ) as HTMLElement;
+
+    toggle.click();
+    fixture.detectChanges();
+    navigationContainer.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('should close the menu after pointer interaction outside the navbar', () => {
+    const toggle = fixture.nativeElement.querySelector(
+      'button[aria-controls="primary-navigation"]',
+    ) as HTMLButtonElement;
+
+    toggle.click();
+    fixture.detectChanges();
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('should close the menu when the page starts scrolling', () => {
+    const toggle = fixture.nativeElement.querySelector(
+      'button[aria-controls="primary-navigation"]',
+    ) as HTMLButtonElement;
+
+    toggle.click();
+    fixture.detectChanges();
+    window.dispatchEvent(new Event('scroll'));
+    fixture.detectChanges();
+
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+  });
 });
