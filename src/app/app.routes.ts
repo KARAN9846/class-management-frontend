@@ -38,7 +38,6 @@ import { TeacherList } from './features/admin/teachers/teacher-list/teacher-list
 import { TeacherDetails } from './features/admin/teachers/teacher-details/teacher-details';
 import { TeacherForm } from './features/admin/teachers/teacher-form/teacher-form';
 
-
 import { StudentForm } from './features/admin/students/student-form/student-form';
 
 import { TeacherRoleList } from './features/admin/teacher-roles/teacher-role-list/teacher-role-list';
@@ -60,8 +59,6 @@ import { StudentWorkspace } from './features/admin/students/student-workspace/st
 import { AcademicWorkspaceComponent } from './features/admin/academic/academic-workspace/academic-workspace';
 import { TeacherManagementComponent } from './features/admin/teachers/teacher-management/teacher-management';
 
-
-
 // FEES
 import { FeeStructureList } from './features/admin/fees/fee-structure-list/fee-structure-list';
 import { FeeStructureCreateComponent } from './features/admin/fees/fee-structure-create/fee-structure-create';
@@ -72,7 +69,6 @@ import { AddPayment } from './features/admin/fees/add-payment/add-payment';
 import { ReceiptSettingsComponent } from './features/admin/fees/receipt-settings/receipt-settings';
 import { ReceiptListComponent } from './features/admin/fees/receipt-list/receipt-list';
 import { ReceiptViewComponent } from './features/admin/fees/receipt-view/receipt-view';
-
 
 // TEACHER
 import { TeacherDashboard } from './features/teacher/dashboard/teacher-dashboard/teacher-dashboard';
@@ -97,7 +93,6 @@ import { StudentExamResultsComponent } from './features/student/exams/student-ex
 import { FeeManagementComponent } from './features/admin/fees/fee-management/fee-management';
 
 export const routes: Routes = [
-
   // =========================================================
   // PUBLIC
   // =========================================================
@@ -105,57 +100,60 @@ export const routes: Routes = [
   {
     path: '',
     component: LandingPageComponent,
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
 
   {
     path: 'features/academic-management',
     loadComponent: () =>
-      import('./features/public/feature-pages/academic-management/academic-management-feature-page.component')
-        .then(m => m.AcademicManagementFeaturePageComponent)
+      import('./features/public/feature-pages/academic-management/academic-management-feature-page.component').then(
+        (m) => m.AcademicManagementFeaturePageComponent,
+      ),
   },
 
   {
     path: 'features/teaching-operations',
     loadComponent: () =>
-      import('./features/public/feature-pages/teaching-operations/teaching-operations-feature-page.component')
-        .then(m => m.TeachingOperationsFeaturePageComponent)
+      import('./features/public/feature-pages/teaching-operations/teaching-operations-feature-page.component').then(
+        (m) => m.TeachingOperationsFeaturePageComponent,
+      ),
   },
 
   {
     path: 'features/fee-management',
     loadComponent: () =>
-      import('./features/public/feature-pages/fee-management/fee-management-feature-page.component')
-        .then(m => m.FeeManagementFeaturePageComponent)
+      import('./features/public/feature-pages/fee-management/fee-management-feature-page.component').then(
+        (m) => m.FeeManagementFeaturePageComponent,
+      ),
   },
 
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
   },
 
   {
-  path: 'forgot-password',
-  component: ForgotPasswordComponent
+    path: 'forgot-password',
+    component: ForgotPasswordComponent,
   },
   {
-  path: 'reset-password',
-  component: ResetPasswordComponent
-},
+    path: 'reset-password',
+    component: ResetPasswordComponent,
+  },
 
   {
     path: 'access-denied',
-    component: AccessDeniedComponent
+    component: AccessDeniedComponent,
   },
 
   {
     path: 'not-found',
-    component: NotFoundComponent
+    component: NotFoundComponent,
   },
 
   {
     path: 'server-error',
-    component: ServerErrorComponent
+    component: ServerErrorComponent,
   },
 
   // =========================================================
@@ -168,7 +166,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
 
     children: [
-
       // =====================================================
       // SUPER ADMIN
       // =====================================================
@@ -177,35 +174,35 @@ export const routes: Routes = [
         path: 'super-admin/dashboard',
         component: SuperAdminDashboard,
         canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
+        data: { roles: ['SUPER_ADMIN'] },
       },
 
       {
         path: 'super-admin/admins',
         component: AdminListComponent,
         canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
+        data: { roles: ['SUPER_ADMIN'] },
       },
 
       {
         path: 'super-admin/admins/create',
         component: AdminCreateComponent,
         canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
+        data: { roles: ['SUPER_ADMIN'] },
       },
 
       {
         path: 'super-admin/admins/:id/edit',
         component: AdminEditComponent,
         canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
+        data: { roles: ['SUPER_ADMIN'] },
       },
 
       {
         path: 'super-admin/admins/:id/details',
         component: AdminDetailsComponent,
         canActivate: [roleGuard],
-        data: { roles: ['SUPER_ADMIN'] }
+        data: { roles: ['SUPER_ADMIN'] },
       },
 
       // =====================================================
@@ -216,7 +213,7 @@ export const routes: Routes = [
         path: 'admin/dashboard',
         component: AdminDashboard,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       // --------------------- ACADEMIC ----------------------
@@ -225,7 +222,7 @@ export const routes: Routes = [
         path: 'admin/academic',
         component: AcademicWorkspaceComponent,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       // --------------------- TEACHERS -----------------------
@@ -234,60 +231,59 @@ export const routes: Routes = [
         path: 'admin/teachers',
         component: TeacherManagementComponent,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teachers/create',
         component: TeacherForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teachers/:id/edit',
         component: TeacherForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teachers/:id',
         component: TeacherDetails,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       // --------------------- STUDENTS ----------------------
 
-{
-  path: 'admin/students',
-  loadComponent: () =>
-    import('./features/admin/students/student-list/student-list')
-      .then(m => m.StudentList),
-  canActivate: [roleGuard],
-  data: { roles: ['ADMIN'] }
-},
+      {
+        path: 'admin/students',
+        loadComponent: () =>
+          import('./features/admin/students/student-list/student-list').then((m) => m.StudentList),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] },
+      },
 
       {
         path: 'admin/students/create',
         component: StudentForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/students/:id',
         component: StudentWorkspace,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/students/:id/edit',
         component: StudentForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       // ------------------- TEACHER ROLES --------------------
@@ -296,21 +292,21 @@ export const routes: Routes = [
         path: 'admin/teacher-roles',
         component: TeacherRoleList,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teacher-roles/create',
         component: TeacherRoleForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teacher-roles/:id/edit',
         component: TeacherRoleForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       // ------------ TEACHER ROLE ASSIGNMENTS ---------------
@@ -319,28 +315,28 @@ export const routes: Routes = [
         path: 'admin/teacher-role-assignments',
         component: TeacherRoleAssignmentList,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teacher-role-assignments/create',
         component: TeacherRoleAssignmentForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teacher-role-assignments/:teacherId/view',
         component: TeacherRoleAssignmentView,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teacher-role-assignments/:teacherId/edit',
         component: TeacherRoleAssignmentForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       // teacher assignments
@@ -348,63 +344,63 @@ export const routes: Routes = [
         path: 'admin/teacher-assignments',
         component: AdminTeacherAssignmentList,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
       {
         path: 'admin/teacher-assignments/create',
         component: AdminTeacherAssignmentForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teacher-assignments/manage/:teacherId/:academicYearId',
         component: TeacherAssignmentManager,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/teacher-assignments/:id/view',
         component: AdminTeacherAssignmentView,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
       {
         path: 'admin/teacher-assignments/:id/edit',
         component: AdminTeacherAssignmentForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       // -------------------- EXAMS --------------------
       {
         path: 'admin/exams/create',
-        loadComponent: () => import('./features/exams/exam-form/exam-form')
-          .then(m => m.ExamFormComponent),
+        loadComponent: () =>
+          import('./features/exams/exam-form/exam-form').then((m) => m.ExamFormComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'], examRole: 'ADMIN' }
+        data: { roles: ['ADMIN'], examRole: 'ADMIN' },
       },
       {
         path: 'admin/exams/:id/marks',
-        loadComponent: () => import('./features/exams/marks-entry/marks-entry')
-          .then(m => m.MarksEntryComponent),
+        loadComponent: () =>
+          import('./features/exams/marks-entry/marks-entry').then((m) => m.MarksEntryComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'], examRole: 'ADMIN' }
+        data: { roles: ['ADMIN'], examRole: 'ADMIN' },
       },
       {
         path: 'admin/exams/:id/edit',
-        loadComponent: () => import('./features/exams/exam-form/exam-form')
-          .then(m => m.ExamFormComponent),
+        loadComponent: () =>
+          import('./features/exams/exam-form/exam-form').then((m) => m.ExamFormComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'], examRole: 'ADMIN' }
+        data: { roles: ['ADMIN'], examRole: 'ADMIN' },
       },
       {
         path: 'admin/exams',
-        loadComponent: () => import('./features/exams/exam-list/exam-list')
-          .then(m => m.ExamListComponent),
+        loadComponent: () =>
+          import('./features/exams/exam-list/exam-list').then((m) => m.ExamListComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'], examRole: 'ADMIN' }
+        data: { roles: ['ADMIN'], examRole: 'ADMIN' },
       },
 
       // -------------------- ASSIGNMENTS --------------------
@@ -413,21 +409,21 @@ export const routes: Routes = [
         path: 'admin/assignments',
         component: AssignmentList,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/assignments/create',
         component: AssignmentForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/assignments/:id/edit',
         component: AssignmentForm,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       // -------------------- ATTENDANCE ---------------------
@@ -439,8 +435,8 @@ export const routes: Routes = [
         data: {
           roles: ['ADMIN'],
           title: 'Attendance',
-          description: 'Manage attendance.'
-        }
+          description: 'Manage attendance.',
+        },
       },
 
       // =====================================================
@@ -451,91 +447,91 @@ export const routes: Routes = [
         path: 'admin/fees',
         component: FeeManagementComponent,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/fee-structures',
         component: FeeStructureList,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/fee-structures/create',
         component: FeeStructureCreateComponent,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/fee-structures/:id/edit',
         component: FeeStructureEdit,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/student-fees',
         component: StudentFeeList,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/student-fees/:id/payment',
         component: AddPayment,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/student-fees/:id/receipts',
         component: ReceiptListComponent,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/student-fees/:id/edit',
         component: StudentFeeView,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/student-fees/:id',
         component: StudentFeeView,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/receipts/:id',
         component: ReceiptViewComponent,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees/receipt-settings',
         component: ReceiptSettingsComponent,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/insider/students',
         component: StudentsInsider,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       {
         path: 'admin/fees-insider',
         component: FeesInsider,
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN'] },
       },
 
       // =====================================================
@@ -546,53 +542,53 @@ export const routes: Routes = [
         path: 'teacher/dashboard',
         component: TeacherDashboard,
         canActivate: [roleGuard],
-        data: { roles: ['TEACHER'] }
+        data: { roles: ['TEACHER'] },
       },
 
       // -------------------- EXAMS --------------------
       {
         path: 'teacher/exams/create',
-        loadComponent: () => import('./features/exams/exam-form/exam-form')
-          .then(m => m.ExamFormComponent),
+        loadComponent: () =>
+          import('./features/exams/exam-form/exam-form').then((m) => m.ExamFormComponent),
         canActivate: [roleGuard, permissionGuard],
         data: {
           roles: ['TEACHER'],
           permissions: ['EXAM_VIEW', 'EXAM_CREATE'],
-          examRole: 'TEACHER'
-        }
+          examRole: 'TEACHER',
+        },
       },
       {
         path: 'teacher/exams/:id/marks',
-        loadComponent: () => import('./features/exams/marks-entry/marks-entry')
-          .then(m => m.MarksEntryComponent),
+        loadComponent: () =>
+          import('./features/exams/marks-entry/marks-entry').then((m) => m.MarksEntryComponent),
         canActivate: [roleGuard, permissionGuard],
         data: {
           roles: ['TEACHER'],
           permissions: ['EXAM_VIEW', 'EXAM_MARKS_MANAGE'],
-          examRole: 'TEACHER'
-        }
+          examRole: 'TEACHER',
+        },
       },
       {
         path: 'teacher/exams/:id/edit',
-        loadComponent: () => import('./features/exams/exam-form/exam-form')
-          .then(m => m.ExamFormComponent),
+        loadComponent: () =>
+          import('./features/exams/exam-form/exam-form').then((m) => m.ExamFormComponent),
         canActivate: [roleGuard, permissionGuard],
         data: {
           roles: ['TEACHER'],
           permissions: ['EXAM_VIEW', 'EXAM_EDIT'],
-          examRole: 'TEACHER'
-        }
+          examRole: 'TEACHER',
+        },
       },
       {
         path: 'teacher/exams',
-        loadComponent: () => import('./features/exams/exam-list/exam-list')
-          .then(m => m.ExamListComponent),
+        loadComponent: () =>
+          import('./features/exams/exam-list/exam-list').then((m) => m.ExamListComponent),
         canActivate: [roleGuard, permissionGuard],
         data: {
           roles: ['TEACHER'],
           permissions: ['EXAM_VIEW'],
-          examRole: 'TEACHER'
-        }
+          examRole: 'TEACHER',
+        },
       },
 
       // -------------------- ASSIGNMENTS --------------------
@@ -601,14 +597,14 @@ export const routes: Routes = [
         path: 'teacher/assignments',
         component: TeacherAssignmentList,
         canActivate: [roleGuard],
-        data: { roles: ['TEACHER'] }
+        data: { roles: ['TEACHER'] },
       },
 
       {
         path: 'teacher/assignments/:id/edit',
         component: TeacherAssignmentForm,
         canActivate: [roleGuard],
-        data: { roles: ['TEACHER'] }
+        data: { roles: ['TEACHER'] },
       },
 
       // -------------------- STUDENTS -----------------------
@@ -617,64 +613,53 @@ export const routes: Routes = [
         path: 'teacher/students',
         component: TeacherStudentListComponent,
         canActivate: [roleGuard],
-        data: { roles: ['TEACHER'] }
+        data: { roles: ['TEACHER'] },
       },
 
       {
         path: 'teacher/students/create',
         component: TeacherStudentFormComponent,
         canActivate: [roleGuard],
-        data: { roles: ['TEACHER'] }
+        data: { roles: ['TEACHER'] },
       },
 
       {
         path: 'teacher/students/:id/edit',
         component: TeacherStudentFormComponent,
         canActivate: [roleGuard],
-        data: { roles: ['TEACHER'] }
+        data: { roles: ['TEACHER'] },
       },
-
-
 
       // -------------------- ATTENDANCE ---------------------
 
       {
         path: 'teacher/attendance',
         component: TeacherAttendanceComponent,
-        canActivate: [
-          roleGuard,
-          permissionGuard
-        ],
+        canActivate: [roleGuard, permissionGuard],
         data: {
           roles: ['TEACHER'],
-          permissions: ['ATTENDANCE_VIEW']
-        }
+          permissions: ['ATTENDANCE_VIEW'],
+        },
       },
 
       {
         path: 'teacher/attendance/mark',
         component: MarkAttendanceComponent,
-        canActivate: [
-          roleGuard,
-          permissionGuard
-        ],
+        canActivate: [roleGuard, permissionGuard],
         data: {
           roles: ['TEACHER'],
-          permissions: ['ATTENDANCE_MARK']
-        }
+          permissions: ['ATTENDANCE_MARK'],
+        },
       },
 
       {
         path: 'teacher/attendance/edit/:id',
         component: EditAttendanceComponent,
-        canActivate: [
-          roleGuard,
-          permissionGuard
-        ],
+        canActivate: [roleGuard, permissionGuard],
         data: {
           roles: ['TEACHER'],
-          permissions: ['ATTENDANCE_EDIT']
-        }
+          permissions: ['ATTENDANCE_EDIT'],
+        },
       },
 
       // =====================================================
@@ -685,14 +670,14 @@ export const routes: Routes = [
         path: 'student/dashboard',
         component: StudentDashboard,
         canActivate: [roleGuard],
-        data: { roles: ['STUDENT'] }
+        data: { roles: ['STUDENT'] },
       },
 
       {
         path: 'student/fees',
         component: StudentFeesComponent,
         canActivate: [roleGuard],
-        data: { roles: ['STUDENT'] }
+        data: { roles: ['STUDENT'] },
       },
 
       {
@@ -702,8 +687,8 @@ export const routes: Routes = [
         data: {
           roles: ['STUDENT'],
           title: 'My Attendance',
-          description: 'View attendance records.'
-        }
+          description: 'View attendance records.',
+        },
       },
 
       {
@@ -713,8 +698,8 @@ export const routes: Routes = [
         data: {
           roles: ['STUDENT'],
           title: 'Assignments',
-          description: 'View your assignments and deadlines.'
-        }
+          description: 'View your assignments and deadlines.',
+        },
       },
 
       {
@@ -724,10 +709,10 @@ export const routes: Routes = [
         data: {
           roles: ['STUDENT'],
           title: 'Exam Results',
-          description: 'View your published exams and marks.'
-        }
-      }
-    ]
+          description: 'View your published exams and marks.',
+        },
+      },
+    ],
   },
 
   // =========================================================
@@ -736,8 +721,6 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: 'not-found'
-  }
-
-
+    redirectTo: 'not-found',
+  },
 ];
